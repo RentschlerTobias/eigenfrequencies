@@ -1,0 +1,3 @@
+[submodule "dtOO"]
+	path = dtOO
+	url = https://github.com/ihs-ustutt/dtOO.git
