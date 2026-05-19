@@ -5,7 +5,7 @@ from typing import Tuple
 
 import gmsh
 
-from .config import BeamConfig
+from config import BeamConfig
 
 
 def create_rectangular_beam(config: BeamConfig) -> Tuple[int, int, int]:
@@ -100,7 +100,7 @@ def beam_to_xdmf(config: BeamConfig, output_dir: str) -> str:
         output_dir: Directory for output files
 
     Returns:
-        Path to XDMF file
+        Path to XDMF file (currently just returns .msh path)
     """
     os.makedirs(output_dir, exist_ok=True)
 
@@ -108,13 +108,4 @@ def beam_to_xdmf(config: BeamConfig, output_dir: str) -> str:
 
     xdmf_file = os.path.join(output_dir, "beam.xdmf")
 
-    try:
-        fromdolfinx.io import XDMFFile
-        import dolfinx
-
-        with XDMFFile(dolfinx.MPI.comm_world, xdmf_file, "w") as xdmf:
-            pass
-    exceptImportError:
-        pass
-
-    return xdmf_file
+    return msh_file

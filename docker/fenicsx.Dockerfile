@@ -5,4 +5,5 @@ RUN conda install -c conda-forge \
     matplotlib \
     pyvista \
     gmsh \
+    scipy \
     && conda clean -afy

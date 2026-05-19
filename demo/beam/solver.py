@@ -7,10 +7,9 @@ from slepc4py import SLEPc
 
 import ufl
 from dolfinx import fem, mesh, log
-from dolfinx.fem.petsc import LinearProblem
 from dolfinx.io import XDMFFile
 
-from .config import BeamConfig, SolverConfig, OutputConfig
+from config import BeamConfig, SolverConfig, OutputConfig
 
 
 class ModalSolver:
@@ -31,13 +30,15 @@ class ModalSolver:
         from dolfinx.io import gmshio
 
         msh_file = f"{self.output.output_dir}/beam.msh"
-        return gmshio.read_msh(msh_file, rank=0)
+        mesh, _, _ = gmshio.read_msh(msh_file, rank=0)
+        return mesh
 
     def apply_clamped_bc(self, V: fem.FunctionSpace):
         """Apply clamped boundary condition at x=0."""
         dofs = fem.locate_dofs_geometrical(V, lambda x: np.isclose(x[0], 0.0))
         u_bc = fem.Function(V)
-        u_bc.x.array[:] = 0.0
+        with u_bc.vector.localForm() as u_local:
+            u_local.set(0.0)
         return fem.bc.DirichletBC(u_bc, dofs)
 
     def solve(self) -> tuple:
@@ -74,14 +75,7 @@ class ModalSolver:
         B.assemble()
 
         bc = self.apply_clamped_bc(V)
-        A.setValues(
-            PETSc.LocateErrorcode(),
-            PETSc.LocateErrorcode(),
-            PETSc.Mat(),
-            PETSc.InsertMode.ADD_VALUES,
-        )
-        for bc_func in bc:
-            bc_func.apply(A)
+        bc.apply(A)
 
         num_eigenvalues = min(self.solver.num_eigenvalues, V.dofmap.index_map.size)
 

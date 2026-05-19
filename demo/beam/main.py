@@ -3,11 +3,11 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from demo.beam.config import BeamConfig, SolverConfig, OutputConfig
-from demo.beam.geometry import generate_mesh
-from demo.beam.solver import ModalSolver
+from config import BeamConfig, SolverConfig, OutputConfig
+from geometry import generate_mesh
+from solver import ModalSolver
 
 
 def analytical_frequencies(beam: BeamConfig, num_modes: int = 10) -> list:
