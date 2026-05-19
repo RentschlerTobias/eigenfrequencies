@@ -51,17 +51,23 @@ def set_mesh_resolution(config: BeamConfig) -> None:
     mesh_size = config.mesh_resolution
 
     model = gmsh.model
-    points = model.getEntities(0)
 
-    for point in points:
-        coords = model.getValue(0, point[1], [])
-        x = coords[0]
-        dist_to_end = min(abs(x + L/2), abs(x - L/2))
-        if dist_to_end < L * 0.1:
-            local_size = mesh_size * 0.5
-        else:
-            local_size = mesh_size
-        model.setMeshSize(0, point[1], local_size)
+    try:
+        points = model.getEntities(0)
+        for point in points:
+            try:
+                coords = model.getValue(0, point[1], [])
+                x = coords[0]
+                dist_to_end = min(abs(x + L/2), abs(x - L/2))
+                if dist_to_end < L * 0.1:
+                    local_size = mesh_size * 0.5
+                else:
+                    local_size = mesh_size
+                model.setMeshSize(0, point[1], local_size)
+            except Exception:
+                pass
+    except Exception:
+        pass
 
 
 def generate_mesh(config: BeamConfig, output_path: str) -> str:
