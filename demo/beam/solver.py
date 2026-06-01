@@ -26,20 +26,21 @@ class ModalSolver:
         self.output = output_config
 
     def create_mesh(self) -> mesh.Mesh:
-        """Load mesh from XDMF file."""
-        from dolfinx.io import gmshio
+        """Load mesh from Gmsh .msh file."""
+        from dolfinx.io import gmsh
 
         msh_file = f"{self.output.output_dir}/beam.msh"
-        mesh, _, _ = gmshio.read_msh(msh_file, rank=0)
-        return mesh
+        mesh_data = gmsh.read_from_msh(msh_file, MPI.COMM_WORLD, rank=0, gdim=3)
+        return mesh_data.mesh
 
     def apply_clamped_bc(self, V: fem.FunctionSpace):
         """Apply clamped boundary condition at x=0."""
-        dofs = fem.locate_dofs_geometrical(V, lambda x: np.isclose(x[0], 0.0))
+        domain = V.mesh
+        facets = mesh.locate_entities_boundary(domain, 1, lambda x: np.isclose(x[0], 0.0))
+        dofs = fem.locate_dofs_topological(V, 1, facets)
         u_bc = fem.Function(V)
-        with u_bc.vector.localForm() as u_local:
-            u_local.set(0.0)
-        return fem.bc.DirichletBC(u_bc, dofs)
+        u_bc.x.array[:] = 0.0
+        return fem.dirichletbc(u_bc, dofs)
 
     def solve(self) -> tuple:
         """Solve the modal analysis problem.
@@ -50,7 +51,8 @@ class ModalSolver:
         log.set_log_level(log.LogLevel.INFO)
 
         domain = self.create_mesh()
-        V = fem.functionspace(domain, ("Lagrange", 2))
+        domain.topology.create_connectivity(1, 3)
+        V = fem.functionspace(domain, ("Lagrange", 2, (3,)))
 
         u = ufl.TrialFunction(V)
         v = ufl.TestFunction(V)
@@ -69,20 +71,41 @@ class ModalSolver:
         a = ufl.inner(sigma(u), epsilon(v)) * ufl.dx
         b = rho * ufl.dot(u, v) * ufl.dx
 
-        A = fem.assemble_matrix(a)
-        B = fem.assemble_matrix(b)
+        a_form = fem.form(a)
+        b_form = fem.form(b)
+        bc = self.apply_clamped_bc(V)
+        A_csr = fem.assemble_matrix(a_form, bcs=[bc])
+        B_csr = fem.assemble_matrix(b_form)
+
+        A_dense = A_csr.to_dense()
+        B_dense = B_csr.to_dense()
+        m, n = A_dense.shape
+        nnz = np.count_nonzero(A_dense)
+
+        A = PETSc.Mat().createAIJ(size=(m, n), comm=MPI.COMM_WORLD)
+        A.setPreallocationNNZ(nnz)
+        A.setUp()
+        rows, cols = np.where(A_dense != 0)
+        for idx in range(len(rows)):
+            A.setValue(rows[idx], cols[idx], A_dense[rows[idx], cols[idx]])
         A.assemble()
+
+        m, n = B_dense.shape
+        nnz = np.count_nonzero(B_dense)
+        B = PETSc.Mat().createAIJ(size=(m, n), comm=MPI.COMM_WORLD)
+        B.setPreallocationNNZ(nnz)
+        B.setUp()
+        rows, cols = np.where(B_dense != 0)
+        for idx in range(len(rows)):
+            B.setValue(rows[idx], cols[idx], B_dense[rows[idx], cols[idx]])
         B.assemble()
 
-        bc = self.apply_clamped_bc(V)
-        bc.apply(A)
-
-        num_eigenvalues = min(self.solver.num_eigenvalues, V.dofmap.index_map.size)
+        num_eigenvalues = min(self.solver.num_eigenvalues, V.dofmap.index_map.size_local)
 
         eigensolver = SLEPc.EPS().create()
         eigensolver.setDimensions(num_eigenvalues)
         eigensolver.setOperators(A, B)
-        eigensolver.setProblemType(SLEPc.EPS.ProblemType.GENERALIZED_HERMITIAN)
+        eigensolver.setProblemType(SLEPc.EPS.ProblemType.GHEP)
         eigensolver.setTolerances(self.solver.tolerance)
         eigensolver.setWhichEigenpairs(SLEPc.EPS.Which.TARGET_MAGNITUDE)
 

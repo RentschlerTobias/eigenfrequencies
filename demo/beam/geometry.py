@@ -90,7 +90,7 @@ def generate_mesh(config: BeamConfig, output_path: str) -> str:
     set_mesh_resolution(config)
 
     gmsh.model.occ.synchronize()
-
+    gmsh.model.mesh.generate()
     gmsh.write(os.path.join(output_path, "beam.msh"))
 
     gmsh.finalize()

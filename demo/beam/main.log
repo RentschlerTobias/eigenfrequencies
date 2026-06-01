@@ -1,0 +1,153 @@
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 20%] Meshing curve 3 (Line)
+Info    : [ 30%] Meshing curve 4 (Line)
+Info    : [ 40%] Meshing curve 5 (Line)
+Info    : [ 50%] Meshing curve 6 (Line)
+Info    : [ 60%] Meshing curve 7 (Line)
+Info    : [ 60%] Meshing curve 8 (Line)
+Info    : [ 70%] Meshing curve 9 (Line)
+Info    : [ 80%] Meshing curve 10 (Line)
+Info    : [ 90%] Meshing curve 11 (Line)
+Info    : [100%] Meshing curve 12 (Line)
+Info    : Done meshing 1D (Wall 0.000629045s, CPU 0.000625s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0021652s, CPU 0.002158s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 86 nodes...
+Info    : Done tetrahedrizing 94 nodes (Wall 0.000649584s, CPU 0.000646s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    :  - Added 2 Steiner points
+Info    : Done reconstructing mesh (Wall 0.00324464s, CPU 0.003212s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 1.13994 (nodes removed 0 0)
+Info    : 3D refinement terminated (88 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 5 nodes could not be inserted
+Info    :  - 196 tetrahedra created in 1.3796e-05 sec. (14207016 tets/s)
+Info    : 5 node relocations
+Info    : Done meshing 3D (Wall 0.00438695s, CPU 0.004352s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 0.005) with worst = 0.142654 / average = 0.621549:
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         4 elements
+Info    : 0.20 < quality < 0.30 :         4 elements
+Info    : 0.30 < quality < 0.40 :         0 elements
+Info    : 0.40 < quality < 0.50 :        46 elements
+Info    : 0.50 < quality < 0.60 :        10 elements
+Info    : 0.60 < quality < 0.70 :       100 elements
+Info    : 0.70 < quality < 0.80 :        16 elements
+Info    : 0.80 < quality < 0.90 :         8 elements
+Info    : 0.90 < quality < 1.00 :         8 elements
+Info    : 2 edge swaps, 2 node relocations (volume = 0.005): worst = 0.371908 / average = 0.634749 (Wall 7.7897e-05s, CPU 7.8e-05s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         4 elements
+Info    : 0.40 < quality < 0.50 :        46 elements
+Info    : 0.50 < quality < 0.60 :         8 elements
+Info    : 0.60 < quality < 0.70 :       106 elements
+Info    : 0.70 < quality < 0.80 :        16 elements
+Info    : 0.80 < quality < 0.90 :         8 elements
+Info    : 0.90 < quality < 1.00 :         8 elements
+Info    : Done optimizing mesh (Wall 0.000233319s, CPU 0.000233s)
+Info    : 88 nodes 420 elements
+Info    : Writing 'demo/beam/output/beam.msh'...
+Info    : Done writing 'demo/beam/output/beam.msh'
+Info    : Reading 'demo/beam/output/beam.msh'...
+Info    : 27 entities
+Info    : 88 nodes
+Info    : 196 elements
+Info    : Done reading 'demo/beam/output/beam.msh'
+[2026-05-20 15:48:35.191] [info] Extract basic topology: 784->784
+[2026-05-20 15:48:35.191] [info] Build local dual graphs, re-order cells, and compute process boundary vertices.
+[2026-05-20 15:48:35.191] [info] Build local part of mesh dual graph (mixed)
+[2026-05-20 15:48:35.192] [info] GPS pseudo-diameter:(50) 18-184
+[2026-05-20 15:48:35.192] [info] Create topology (generalised)
+[2026-05-20 15:48:35.192] [info] Computing communication graph edges (using NBX algorithm). Number of input edges: 1
+[2026-05-20 15:48:35.192] [info] Finished graph edge discovery using NBX algorithm. Number of discovered edges 1
+[2026-05-20 15:48:35.192] [info] Compute ghost indices
+[2026-05-20 15:48:35.192] [info] Computing communication graph edges (using PCX algorithm). Number of input edges: 0
+[2026-05-20 15:48:35.192] [info] Finished graph edge discovery using PCX algorithm. Number of discovered edges 0
+[2026-05-20 15:48:35.192] [info] Computing communication graph edges (using NBX algorithm). Number of input edges: 0
+[2026-05-20 15:48:35.192] [info] Finished graph edge discovery using NBX algorithm. Number of discovered edges 0
+[2026-05-20 15:48:35.192] [info] Computing communication graph edges (using NBX algorithm). Number of input edges: 0
+[2026-05-20 15:48:35.192] [info] Finished graph edge discovery using NBX algorithm. Number of discovered edges 0
+[2026-05-20 15:48:35.192] [info] Number of neighbourhood source ranks in distribute_to_postoffice: 0
+[2026-05-20 15:48:35.192] [info] Computing communication graph edges (using NBX algorithm). Number of input edges: 0
+[2026-05-20 15:48:35.192] [info] Finished graph edge discovery using NBX algorithm. Number of discovered edges 0
+[2026-05-20 15:48:35.192] [info] Neighbourhood destination ranks from post office in distribute_data (rank, num dests, num dests/mpi_size): 0, 0, 0
+[2026-05-20 15:48:35.192] [info] Create Geometry (multiple)
+[2026-05-20 15:48:35.192] [info] Got 1 dof layouts
+[2026-05-20 15:48:35.192] [info] Checking required entities per dimension
+[2026-05-20 15:48:35.192] [info] Cell type: 0 dofmap: 196x4
+[2026-05-20 15:48:35.192] [info] Global index computation
+[2026-05-20 15:48:35.192] [info] Got 1 index_maps
+[2026-05-20 15:48:35.192] [info] Get global indices
+[2026-05-20 15:48:35.192] [info] Calling compute_local_to_global
+[2026-05-20 15:48:35.192] [info] xdofs.size = 784
+[2026-05-20 15:48:35.192] [info] dofmap sizes = 784 
+[2026-05-20 15:48:35.192] [info] all_dofmaps.size = 784
+[2026-05-20 15:48:35.192] [info] nodes.size = 88
+[2026-05-20 15:48:35.192] [info] Creating geometry with 1 dofmaps
+[2026-05-20 15:48:35.192] [info] XDMF distribute entity data
+[2026-05-20 15:48:35.192] [info] Computing communication graph edges (using NBX algorithm). Number of input edges: 1
+[2026-05-20 15:48:35.192] [info] Finished graph edge discovery using NBX algorithm. Number of discovered edges 1
+[2026-05-20 15:48:35.192] [info] Computing communication graph edges (using NBX algorithm). Number of input edges: 1
+[2026-05-20 15:48:35.192] [info] Finished graph edge discovery using NBX algorithm. Number of discovered edges 1
+[2026-05-20 15:48:35.192] [info] XDMF build map
+[2026-05-20 15:48:35.192] [info] Requesting connectivity (3, 0) - (3, 0)
+[2026-05-20 15:48:35.192] [info] Building MeshTags object from tagged entities (defined by vertices).
+[2026-05-20 15:48:35.192] [info] Build list of mesh entity indices from the entity vertices.
+[2026-05-20 15:48:35.193] [info] Computing mesh entities of dimension 1
+[2026-05-20 15:48:35.193] [info] Computing communication graph edges (using NBX algorithm). Number of input edges: 0
+[2026-05-20 15:48:35.193] [info] Finished graph edge discovery using NBX algorithm. Number of discovered edges 0
+[2026-05-20 15:48:35.193] [info] Checking required entities per dimension
+[2026-05-20 15:48:35.193] [info] Cell type: 0 dofmap: 196x10
+[2026-05-20 15:48:35.193] [info] Global index computation
+[2026-05-20 15:48:35.193] [info] Got 2 index_maps
+[2026-05-20 15:48:35.193] [info] Get global indices
+============================================================
+Beam Modal Analysis Demo
+============================================================
+Beam dimensions: 1.0 x 0.05 x 0.1 m
+Material: E=2.10e+11 Pa, rho=7850.0 kg/m³
+
+Generating mesh...
+Mesh saved to: demo/beam/output/beam.msh
+
+Solving modal analysis...
+Traceback (most recent call last):
+  File "/workspace/demo/beam/main.py", line 108, in <module>
+    main()
+  File "/workspace/demo/beam/main.py", line 83, in main
+    eigenvalues, _ = solver.solve()
+                     ^^^^^^^^^^^^^^
+  File "/workspace/demo/beam/solver.py", line 69, in solve
+    a = ufl.inner(sigma(u), epsilon(v)) * ufl.dx
+                  ^^^^^^^^
+  File "/workspace/demo/beam/solver.py", line 67, in sigma
+    return lmbda * ufl.tr(epsilon(u)) * ufl.Identity(3) + 2 * mu * epsilon(u)
+                          ^^^^^^^^^^
+  File "/workspace/demo/beam/solver.py", line 64, in epsilon
+    return ufl.sym(ufl.grad(u))
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/dolfinx-env/lib/python3.12/site-packages/ufl/operators.py", line 337, in sym
+    return Sym(A)
+           ^^^^^^
+  File "/dolfinx-env/lib/python3.12/site-packages/ufl/tensoralgebra.py", line 539, in __new__
+    raise ValueError("Symmetric part of tensor with rank != 2 is undefined.")
+ValueError: Symmetric part of tensor with rank != 2 is undefined.

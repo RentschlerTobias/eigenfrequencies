@@ -1,0 +1,2118 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "beam_analysis_pipeline",
+        "label": "Beam Analysis Pipeline",
+        "nodes": [
+          "demo_beam_config",
+          "demo_beam_geometry_generatemesh",
+          "demo_beam_solver_modalsolver",
+          "demo_beam_main_analyticalfreqs",
+          "demo_beam_main"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "demo/beam/main.py"
+      },
+      {
+        "id": "eigenvalue_theory_concepts",
+        "label": "Eigenvalue Theory Concepts",
+        "nodes": [
+          "generalized_eigenvalue_problem",
+          "stiffness_matrix",
+          "mass_matrix",
+          "eigenfrequency",
+          "weak_formulation",
+          "shape_functions"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "docs/source/theory/eigenvalues.md"
+      },
+      {
+        "id": "io_operations",
+        "label": "IO Operations",
+        "nodes": [
+          "src_io_meshtoxdmf",
+          "src_io_readxdmfmesh",
+          "src_io_writeresultsxdmf",
+          "xdmf_format"
+        ],
+        "relation": "participate_in",
+        "confidence": "INFERRED",
+        "confidence_score": 0.85,
+        "source_file": "src/io/__init__.py"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "conf.py",
+      "file_type": "code",
+      "source_file": "docs/source/conf.py",
+      "source_location": "L1",
+      "id": "docs_source_conf_py",
+      "community": 8,
+      "norm_label": "conf.py"
+    },
+    {
+      "label": "config.py",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L1",
+      "id": "demo_beam_config_py",
+      "community": 0,
+      "norm_label": "config.py"
+    },
+    {
+      "label": "BeamConfig",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L7",
+      "id": "beam_config_beamconfig",
+      "community": 0,
+      "norm_label": "beamconfig"
+    },
+    {
+      "label": "cross_section_area()",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L27",
+      "id": "beam_config_cross_section_area",
+      "community": 0,
+      "norm_label": "cross_section_area()"
+    },
+    {
+      "label": "moment_of_inertia_y()",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L31",
+      "id": "beam_config_moment_of_inertia_y",
+      "community": 0,
+      "norm_label": "moment_of_inertia_y()"
+    },
+    {
+      "label": "moment_of_inertia_z()",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L35",
+      "id": "beam_config_moment_of_inertia_z",
+      "community": 0,
+      "norm_label": "moment_of_inertia_z()"
+    },
+    {
+      "label": "SolverConfig",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L40",
+      "id": "beam_config_solverconfig",
+      "community": 0,
+      "norm_label": "solverconfig"
+    },
+    {
+      "label": "OutputConfig",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L57",
+      "id": "beam_config_outputconfig",
+      "community": 0,
+      "norm_label": "outputconfig"
+    },
+    {
+      "label": "Beam configuration parameters for modal analysis.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L1",
+      "id": "beam_config_rationale_1",
+      "community": 0,
+      "norm_label": "beam configuration parameters for modal analysis."
+    },
+    {
+      "label": "Configuration for a rectangular beam.      Attributes:         length: Beam leng",
+      "file_type": "rationale",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L8",
+      "id": "beam_config_rationale_8",
+      "community": 0,
+      "norm_label": "configuration for a rectangular beam.      attributes:         length: beam leng"
+    },
+    {
+      "label": "Configuration for the modal solver.      Attributes:         freq_min: Minimum f",
+      "file_type": "rationale",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L41",
+      "id": "beam_config_rationale_41",
+      "community": 0,
+      "norm_label": "configuration for the modal solver.      attributes:         freq_min: minimum f"
+    },
+    {
+      "label": "Configuration for output options.      Attributes:         save_vtk: Save result",
+      "file_type": "rationale",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L58",
+      "id": "beam_config_rationale_58",
+      "community": 0,
+      "norm_label": "configuration for output options.      attributes:         save_vtk: save result"
+    },
+    {
+      "label": "solver.py",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L1",
+      "id": "demo_beam_solver_py",
+      "community": 1,
+      "norm_label": "solver.py"
+    },
+    {
+      "label": "ModalSolver",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L15",
+      "id": "beam_solver_modalsolver",
+      "community": 1,
+      "norm_label": "modalsolver"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L18",
+      "id": "beam_solver_modalsolver_init",
+      "community": 1,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".create_mesh()",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L28",
+      "id": "beam_solver_modalsolver_create_mesh",
+      "community": 1,
+      "norm_label": ".create_mesh()"
+    },
+    {
+      "label": ".apply_clamped_bc()",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L36",
+      "id": "beam_solver_modalsolver_apply_clamped_bc",
+      "community": 1,
+      "norm_label": ".apply_clamped_bc()"
+    },
+    {
+      "label": ".solve()",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L45",
+      "id": "beam_solver_modalsolver_solve",
+      "community": 1,
+      "norm_label": ".solve()"
+    },
+    {
+      "label": ".compute_frequencies()",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L126",
+      "id": "beam_solver_modalsolver_compute_frequencies",
+      "community": 1,
+      "norm_label": ".compute_frequencies()"
+    },
+    {
+      "label": ".save_results()",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L130",
+      "id": "beam_solver_modalsolver_save_results",
+      "community": 1,
+      "norm_label": ".save_results()"
+    },
+    {
+      "label": "FEniCSx modal analysis solver for eigenfrequency computation.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L1",
+      "id": "beam_solver_rationale_1",
+      "community": 1,
+      "norm_label": "fenicsx modal analysis solver for eigenfrequency computation."
+    },
+    {
+      "label": "Modal analysis solver using FEniCSx and SLEPc.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L16",
+      "id": "beam_solver_rationale_16",
+      "community": 1,
+      "norm_label": "modal analysis solver using fenicsx and slepc."
+    },
+    {
+      "label": "Load mesh from Gmsh .msh file.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L29",
+      "id": "beam_solver_rationale_29",
+      "community": 1,
+      "norm_label": "load mesh from gmsh .msh file."
+    },
+    {
+      "label": "Apply clamped boundary condition at x=0.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L37",
+      "id": "beam_solver_rationale_37",
+      "community": 1,
+      "norm_label": "apply clamped boundary condition at x=0."
+    },
+    {
+      "label": "Solve the modal analysis problem.          Returns:             Tuple of (eigenv",
+      "file_type": "rationale",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L46",
+      "id": "beam_solver_rationale_46",
+      "community": 1,
+      "norm_label": "solve the modal analysis problem.          returns:             tuple of (eigenv"
+    },
+    {
+      "label": "Convert eigenvalues to frequencies in Hz.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L127",
+      "id": "beam_solver_rationale_127",
+      "community": 1,
+      "norm_label": "convert eigenvalues to frequencies in hz."
+    },
+    {
+      "label": "Save results to files.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L131",
+      "id": "beam_solver_rationale_131",
+      "community": 1,
+      "norm_label": "save results to files."
+    },
+    {
+      "label": "main.py",
+      "file_type": "code",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L1",
+      "id": "demo_beam_main_py",
+      "community": 0,
+      "norm_label": "main.py"
+    },
+    {
+      "label": "analytical_frequencies()",
+      "file_type": "code",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L13",
+      "id": "beam_main_analytical_frequencies",
+      "community": 0,
+      "norm_label": "analytical_frequencies()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L44",
+      "id": "beam_main_main",
+      "community": 0,
+      "norm_label": "main()"
+    },
+    {
+      "label": "Main entry point for beam modal analysis demo.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L1",
+      "id": "beam_main_rationale_1",
+      "community": 0,
+      "norm_label": "main entry point for beam modal analysis demo."
+    },
+    {
+      "label": "Compute analytical eigenfrequencies for a clamped-clamped beam.      Uses Euler-",
+      "file_type": "rationale",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L14",
+      "id": "beam_main_rationale_14",
+      "community": 0,
+      "norm_label": "compute analytical eigenfrequencies for a clamped-clamped beam.      uses euler-"
+    },
+    {
+      "label": "Run the beam modal analysis demo.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L45",
+      "id": "beam_main_rationale_45",
+      "community": 0,
+      "norm_label": "run the beam modal analysis demo."
+    },
+    {
+      "label": "geometry.py",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L1",
+      "id": "demo_beam_geometry_py",
+      "community": 3,
+      "norm_label": "geometry.py"
+    },
+    {
+      "label": "create_rectangular_beam()",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L11",
+      "id": "beam_geometry_create_rectangular_beam",
+      "community": 3,
+      "norm_label": "create_rectangular_beam()"
+    },
+    {
+      "label": "set_mesh_resolution()",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L48",
+      "id": "beam_geometry_set_mesh_resolution",
+      "community": 3,
+      "norm_label": "set_mesh_resolution()"
+    },
+    {
+      "label": "generate_mesh()",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L73",
+      "id": "beam_geometry_generate_mesh",
+      "community": 3,
+      "norm_label": "generate_mesh()"
+    },
+    {
+      "label": "beam_to_xdmf()",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L101",
+      "id": "beam_geometry_beam_to_xdmf",
+      "community": 3,
+      "norm_label": "beam_to_xdmf()"
+    },
+    {
+      "label": "Beam geometry generation using gmsh.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L1",
+      "id": "beam_geometry_rationale_1",
+      "community": 3,
+      "norm_label": "beam geometry generation using gmsh."
+    },
+    {
+      "label": "Create a rectangular beam geometry.      Args:         config: Beam configuratio",
+      "file_type": "rationale",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L12",
+      "id": "beam_geometry_rationale_12",
+      "community": 3,
+      "norm_label": "create a rectangular beam geometry.      args:         config: beam configuratio"
+    },
+    {
+      "label": "Set mesh resolution for the beam geometry.",
+      "file_type": "rationale",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L49",
+      "id": "beam_geometry_rationale_49",
+      "community": 3,
+      "norm_label": "set mesh resolution for the beam geometry."
+    },
+    {
+      "label": "Generate beam mesh and save to XDMF format.      Args:         config: Beam conf",
+      "file_type": "rationale",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L74",
+      "id": "beam_geometry_rationale_74",
+      "community": 3,
+      "norm_label": "generate beam mesh and save to xdmf format.      args:         config: beam conf"
+    },
+    {
+      "label": "Convert gmsh mesh to XDMF format for FEniCSx.      Args:         config: Beam co",
+      "file_type": "rationale",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L102",
+      "id": "beam_geometry_rationale_102",
+      "community": 3,
+      "norm_label": "convert gmsh mesh to xdmf format for fenicsx.      args:         config: beam co"
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "src/__init__.py",
+      "source_location": "L1",
+      "id": "src_init_py",
+      "community": 7,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "Eigenfrequencies package.",
+      "file_type": "rationale",
+      "source_file": "src/__init__.py",
+      "source_location": "L1",
+      "id": "src_init_rationale_1",
+      "community": 7,
+      "norm_label": "eigenfrequencies package."
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "src/geometry/__init__.py",
+      "source_location": "L1",
+      "id": "src_geometry_init_py",
+      "community": 9,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "src/solver/__init__.py",
+      "source_location": "L1",
+      "id": "src_solver_init_py",
+      "community": 10,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "src/optimization/__init__.py",
+      "source_location": "L1",
+      "id": "src_optimization_init_py",
+      "community": 11,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L1",
+      "id": "src_io_init_py",
+      "community": 5,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "mesh_to_xdmf()",
+      "file_type": "code",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L9",
+      "id": "io_init_mesh_to_xdmf",
+      "community": 5,
+      "norm_label": "mesh_to_xdmf()"
+    },
+    {
+      "label": "read_xdmf_mesh()",
+      "file_type": "code",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L26",
+      "id": "io_init_read_xdmf_mesh",
+      "community": 5,
+      "norm_label": "read_xdmf_mesh()"
+    },
+    {
+      "label": "write_results_xdmf()",
+      "file_type": "code",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L43",
+      "id": "io_init_write_results_xdmf",
+      "community": 5,
+      "norm_label": "write_results_xdmf()"
+    },
+    {
+      "label": "XDMF IO utilities for mesh and results handling.",
+      "file_type": "rationale",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L1",
+      "id": "io_init_rationale_1",
+      "community": 5,
+      "norm_label": "xdmf io utilities for mesh and results handling."
+    },
+    {
+      "label": "Convert mesh file to XDMF format.      Args:         mesh_file: Path to mesh fil",
+      "file_type": "rationale",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L10",
+      "id": "io_init_rationale_10",
+      "community": 5,
+      "norm_label": "convert mesh file to xdmf format.      args:         mesh_file: path to mesh fil"
+    },
+    {
+      "label": "Read mesh from XDMF file using dolfinx.      Args:         xdmf_file: Path to XD",
+      "file_type": "rationale",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L27",
+      "id": "io_init_rationale_27",
+      "community": 5,
+      "norm_label": "read mesh from xdmf file using dolfinx.      args:         xdmf_file: path to xd"
+    },
+    {
+      "label": "Write modal analysis results to XDMF file.      Args:         frequencies: Array",
+      "file_type": "rationale",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L49",
+      "id": "io_init_rationale_49",
+      "community": 5,
+      "norm_label": "write modal analysis results to xdmf file.      args:         frequencies: array"
+    },
+    {
+      "label": "build_container.sh",
+      "file_type": "code",
+      "source_file": "scripts/build_container.sh",
+      "source_location": "L1",
+      "id": "scripts_build_container_sh",
+      "community": 12,
+      "norm_label": "build_container.sh"
+    },
+    {
+      "label": "run_container.sh",
+      "file_type": "code",
+      "source_file": "scripts/run_container.sh",
+      "source_location": "L1",
+      "id": "scripts_run_container_sh",
+      "community": 13,
+      "norm_label": "run_container.sh"
+    },
+    {
+      "label": "Sphinx Configuration",
+      "file_type": "code",
+      "source_file": "docs/source/conf.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_source_conf",
+      "community": 14,
+      "norm_label": "sphinx configuration"
+    },
+    {
+      "label": "BeamConfig",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_config",
+      "community": 2,
+      "norm_label": "beamconfig"
+    },
+    {
+      "label": "SolverConfig",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_config_sol",
+      "community": 2,
+      "norm_label": "solverconfig"
+    },
+    {
+      "label": "OutputConfig",
+      "file_type": "code",
+      "source_file": "demo/beam/config.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_config_out",
+      "community": 2,
+      "norm_label": "outputconfig"
+    },
+    {
+      "label": "ModalSolver",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_solver_modalsolver",
+      "community": 2,
+      "norm_label": "modalsolver"
+    },
+    {
+      "label": "create_mesh",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_solver_createmesh",
+      "community": 6,
+      "norm_label": "create_mesh"
+    },
+    {
+      "label": "apply_clamped_bc",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_solver_applyclampedbc",
+      "community": 6,
+      "norm_label": "apply_clamped_bc"
+    },
+    {
+      "label": "solve",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_solver_solve",
+      "community": 6,
+      "norm_label": "solve"
+    },
+    {
+      "label": "compute_frequencies",
+      "file_type": "code",
+      "source_file": "demo/beam/solver.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_solver_computefreq",
+      "community": 4,
+      "norm_label": "compute_frequencies"
+    },
+    {
+      "label": "create_rectangular_beam",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_geometry_createbeam",
+      "community": 2,
+      "norm_label": "create_rectangular_beam"
+    },
+    {
+      "label": "set_mesh_resolution",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_geometry_setmeshres",
+      "community": 2,
+      "norm_label": "set_mesh_resolution"
+    },
+    {
+      "label": "generate_mesh",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_geometry_generatemesh",
+      "community": 2,
+      "norm_label": "generate_mesh"
+    },
+    {
+      "label": "beam_to_xdmf",
+      "file_type": "code",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_geometry_beamtoxdmf",
+      "community": 15,
+      "norm_label": "beam_to_xdmf"
+    },
+    {
+      "label": "analytical_frequencies",
+      "file_type": "code",
+      "source_file": "demo/beam/main.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_main_analyticalfreqs",
+      "community": 2,
+      "norm_label": "analytical_frequencies"
+    },
+    {
+      "label": "mesh_to_xdmf",
+      "file_type": "code",
+      "source_file": "src/io/__init__.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "src_io_meshtoxdmf",
+      "community": 16,
+      "norm_label": "mesh_to_xdmf"
+    },
+    {
+      "label": "read_xdmf_mesh",
+      "file_type": "code",
+      "source_file": "src/io/__init__.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "src_io_readxdmfmesh",
+      "community": 2,
+      "norm_label": "read_xdmf_mesh"
+    },
+    {
+      "label": "write_results_xdmf",
+      "file_type": "code",
+      "source_file": "src/io/__init__.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "src_io_writeresultsxdmf",
+      "community": 2,
+      "norm_label": "write_results_xdmf"
+    },
+    {
+      "label": "Generalized Eigenvalue Problem",
+      "file_type": "concept",
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "generalized_eigenvalue_problem",
+      "community": 4,
+      "norm_label": "generalized eigenvalue problem"
+    },
+    {
+      "label": "Stiffness Matrix",
+      "file_type": "concept",
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "stiffness_matrix",
+      "community": 4,
+      "norm_label": "stiffness matrix"
+    },
+    {
+      "label": "Mass Matrix",
+      "file_type": "concept",
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "mass_matrix",
+      "community": 4,
+      "norm_label": "mass matrix"
+    },
+    {
+      "label": "Eigenfrequency",
+      "file_type": "concept",
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "eigenfrequency",
+      "community": 4,
+      "norm_label": "eigenfrequency"
+    },
+    {
+      "label": "Euler-Bernoulli Beam Theory",
+      "file_type": "concept",
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "euler_bernoulli_beam",
+      "community": 4,
+      "norm_label": "euler-bernoulli beam theory"
+    },
+    {
+      "label": "Shape Functions",
+      "file_type": "concept",
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "shape_functions",
+      "community": 4,
+      "norm_label": "shape functions"
+    },
+    {
+      "label": "Weak Formulation",
+      "file_type": "concept",
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "weak_formulation",
+      "community": 4,
+      "norm_label": "weak formulation"
+    },
+    {
+      "label": "Modal Analysis",
+      "file_type": "concept",
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "modal_analysis",
+      "community": 4,
+      "norm_label": "modal analysis"
+    },
+    {
+      "label": "Lagrange P2 Elements",
+      "file_type": "concept",
+      "source_file": "docs/source/plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "lagrange_p2",
+      "community": 6,
+      "norm_label": "lagrange p2 elements"
+    },
+    {
+      "label": "Clamped Boundary Condition",
+      "file_type": "concept",
+      "source_file": "docs/source/plan.md",
+      "source_location": null,
+      "source_url": null,
+      "author": null,
+      "contributor": null,
+      "id": "clamped_boundary",
+      "community": 6,
+      "norm_label": "clamped boundary condition"
+    },
+    {
+      "label": "FEniCSx",
+      "file_type": "concept",
+      "source_file": "docs/source/plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fenicsx",
+      "community": 4,
+      "norm_label": "fenicsx"
+    },
+    {
+      "label": "SLEPc",
+      "file_type": "concept",
+      "source_file": "docs/source/plan.md",
+      "source_location": null,
+      "source_url": null,
+      "author": null,
+      "contributor": null,
+      "id": "slepc",
+      "community": 6,
+      "norm_label": "slepc"
+    },
+    {
+      "label": "gmsh",
+      "file_type": "concept",
+      "source_file": "docs/source/plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "gmsh",
+      "community": 3,
+      "norm_label": "gmsh"
+    },
+    {
+      "label": "XDMF Format",
+      "file_type": "concept",
+      "source_file": "docs/source/plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "xdmf_format",
+      "community": 2,
+      "norm_label": "xdmf format"
+    },
+    {
+      "label": "pygmo",
+      "file_type": "concept",
+      "source_file": "docs/source/plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "pygmo",
+      "community": 4,
+      "norm_label": "pygmo"
+    },
+    {
+      "label": "Mesh Resolution Refinement",
+      "file_type": "rationale",
+      "source_file": "demo/beam/geometry.md",
+      "source_location": null,
+      "source_url": null,
+      "author": null,
+      "contributor": null,
+      "id": "mesh_resolution_refinement",
+      "community": 2,
+      "norm_label": "mesh resolution refinement"
+    },
+    {
+      "label": "Beam Demo Main",
+      "file_type": "code",
+      "source_file": "demo/beam/main.py",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "demo_beam_main",
+      "community": 2,
+      "norm_label": "beam demo main"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "demo_beam_config_py",
+      "target": "beam_config_beamconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "demo_beam_config_py",
+      "target": "beam_config_cross_section_area",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "demo_beam_config_py",
+      "target": "beam_config_moment_of_inertia_y",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "demo_beam_config_py",
+      "target": "beam_config_moment_of_inertia_z",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "demo_beam_config_py",
+      "target": "beam_config_solverconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "demo_beam_config_py",
+      "target": "beam_config_outputconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "beam_config_rationale_1",
+      "target": "demo_beam_config_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "beam_config_rationale_8",
+      "target": "beam_config_beamconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L12",
+      "weight": 0.8,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_config_beamconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "demo/beam/main.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "beam_main_main",
+      "target": "beam_config_beamconfig"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "beam_config_rationale_41",
+      "target": "beam_config_solverconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L12",
+      "weight": 0.8,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_config_solverconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "demo/beam/main.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "beam_main_main",
+      "target": "beam_config_solverconfig"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/config.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "beam_config_rationale_58",
+      "target": "beam_config_outputconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L12",
+      "weight": 0.8,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_config_outputconfig",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "demo/beam/main.py",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "beam_main_main",
+      "target": "beam_config_outputconfig"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "demo_beam_solver_py",
+      "target": "beam_solver_modalsolver",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "beam_solver_rationale_1",
+      "target": "demo_beam_solver_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_solver_modalsolver_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_solver_modalsolver_create_mesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_solver_modalsolver_apply_clamped_bc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_solver_modalsolver_solve",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_solver_modalsolver_compute_frequencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "source": "beam_solver_modalsolver",
+      "target": "beam_solver_modalsolver_save_results",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "beam_solver_rationale_16",
+      "target": "beam_solver_modalsolver",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "demo/beam/main.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "beam_main_main",
+      "target": "beam_solver_modalsolver"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "beam_solver_modalsolver_solve",
+      "target": "beam_solver_modalsolver_create_mesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "beam_solver_rationale_29",
+      "target": "beam_solver_modalsolver_create_mesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "beam_solver_modalsolver_solve",
+      "target": "beam_solver_modalsolver_apply_clamped_bc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "beam_solver_rationale_37",
+      "target": "beam_solver_modalsolver_apply_clamped_bc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "beam_solver_rationale_46",
+      "target": "beam_solver_modalsolver_solve",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "beam_solver_rationale_127",
+      "target": "beam_solver_modalsolver_compute_frequencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/solver.py",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "beam_solver_rationale_131",
+      "target": "beam_solver_modalsolver_save_results",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "demo_beam_main_py",
+      "target": "beam_main_analytical_frequencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "demo_beam_main_py",
+      "target": "beam_main_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "beam_main_rationale_1",
+      "target": "demo_beam_main_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L98",
+      "weight": 1.0,
+      "source": "beam_main_main",
+      "target": "beam_main_analytical_frequencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "beam_main_rationale_14",
+      "target": "beam_main_analytical_frequencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/main.py",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "beam_main_rationale_45",
+      "target": "beam_main_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "demo/beam/main.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "beam_main_main",
+      "target": "beam_geometry_generate_mesh"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_py",
+      "target": "gmsh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_py",
+      "target": "beam_geometry_create_rectangular_beam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_py",
+      "target": "beam_geometry_set_mesh_resolution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_py",
+      "target": "beam_geometry_generate_mesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_py",
+      "target": "beam_geometry_beam_to_xdmf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "beam_geometry_rationale_1",
+      "target": "demo_beam_geometry_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "beam_geometry_generate_mesh",
+      "target": "beam_geometry_create_rectangular_beam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "beam_geometry_rationale_12",
+      "target": "beam_geometry_create_rectangular_beam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "beam_geometry_generate_mesh",
+      "target": "beam_geometry_set_mesh_resolution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "beam_geometry_rationale_49",
+      "target": "beam_geometry_set_mesh_resolution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "beam_geometry_beam_to_xdmf",
+      "target": "beam_geometry_generate_mesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "beam_geometry_rationale_74",
+      "target": "beam_geometry_generate_mesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "beam_geometry_rationale_102",
+      "target": "beam_geometry_beam_to_xdmf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/__init__.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_init_rationale_1",
+      "target": "src_init_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_io_init_py",
+      "target": "io_init_mesh_to_xdmf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "src_io_init_py",
+      "target": "io_init_read_xdmf_mesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "src_io_init_py",
+      "target": "io_init_write_results_xdmf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "io_init_rationale_1",
+      "target": "src_io_init_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "io_init_rationale_10",
+      "target": "io_init_mesh_to_xdmf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "io_init_rationale_27",
+      "target": "io_init_read_xdmf_mesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/io/__init__.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "io_init_rationale_49",
+      "target": "io_init_write_results_xdmf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 18-26",
+      "weight": 1.0,
+      "source": "demo_beam_solver_modalsolver",
+      "target": "demo_beam_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "line 32",
+      "weight": 1.0,
+      "source": "demo_beam_solver_createmesh",
+      "target": "demo_beam_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "line 11",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_createbeam",
+      "target": "demo_beam_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "line 48",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_setmeshres",
+      "target": "demo_beam_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/main.py",
+      "source_location": "line 8",
+      "weight": 1.0,
+      "source": "demo_beam_main",
+      "target": "demo_beam_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/main.py",
+      "source_location": "line 21-25",
+      "weight": 1.0,
+      "source": "demo_beam_main_analyticalfreqs",
+      "target": "demo_beam_config"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 18-26",
+      "weight": 1.0,
+      "source": "demo_beam_solver_modalsolver",
+      "target": "demo_beam_config_sol"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 18-26",
+      "weight": 1.0,
+      "source": "demo_beam_solver_modalsolver",
+      "target": "demo_beam_config_out"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "line 83",
+      "weight": 1.0,
+      "source": "demo_beam_solver_modalsolver",
+      "target": "demo_beam_solver_solve"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "line 86",
+      "weight": 1.0,
+      "source": "demo_beam_solver_modalsolver",
+      "target": "demo_beam_solver_computefreq"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/main.py",
+      "source_location": "line 82",
+      "weight": 1.0,
+      "source": "demo_beam_main",
+      "target": "demo_beam_solver_modalsolver"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "line 53",
+      "weight": 1.0,
+      "source": "demo_beam_solver_solve",
+      "target": "demo_beam_solver_createmesh"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "line 76",
+      "weight": 1.0,
+      "source": "demo_beam_solver_solve",
+      "target": "demo_beam_solver_applyclampedbc"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/plan.md",
+      "source_location": "table line",
+      "weight": 1.0,
+      "source": "clamped_boundary",
+      "target": "demo_beam_solver_applyclampedbc"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 105-114",
+      "weight": 1.0,
+      "source": "demo_beam_solver_solve",
+      "target": "slepc"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 53-55",
+      "weight": 1.0,
+      "source": "demo_beam_solver_solve",
+      "target": "fenicsx"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/plan.md",
+      "source_location": "table line",
+      "weight": 1.0,
+      "source": "lagrange_p2",
+      "target": "demo_beam_solver_solve"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 126-128",
+      "weight": 1.0,
+      "source": "demo_beam_solver_computefreq",
+      "target": "eigenfrequency"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "line 128",
+      "weight": 1.0,
+      "source": "demo_beam_solver_computefreq",
+      "target": "generalized_eigenvalue_problem"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "line 89",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_generatemesh",
+      "target": "demo_beam_geometry_createbeam"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "line 90",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_generatemesh",
+      "target": "demo_beam_geometry_setmeshres"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/geometry.md",
+      "source_location": "lines 107-116",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_setmeshres",
+      "target": "mesh_resolution_refinement"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/main.py",
+      "source_location": "line 77",
+      "weight": 1.0,
+      "source": "demo_beam_main",
+      "target": "demo_beam_geometry_generatemesh"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "line 94",
+      "weight": 1.0,
+      "source": "xdmf_format",
+      "target": "demo_beam_geometry_generatemesh"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/geometry.py",
+      "source_location": "lines 83-96",
+      "weight": 1.0,
+      "source": "demo_beam_geometry_generatemesh",
+      "target": "gmsh"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "demo/beam/main.py",
+      "source_location": "lines 13-41",
+      "weight": 1.0,
+      "source": "demo_beam_main_analyticalfreqs",
+      "target": "euler_bernoulli_beam"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "src/io/__init__.py",
+      "source_location": "lines 26-40",
+      "weight": 1.0,
+      "source": "src_io_readxdmfmesh",
+      "target": "xdmf_format"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "src/io/__init__.py",
+      "source_location": "lines 43-66",
+      "weight": 1.0,
+      "source": "src_io_writeresultsxdmf",
+      "target": "xdmf_format"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 16",
+      "weight": 1.0,
+      "source": "generalized_eigenvalue_problem",
+      "target": "stiffness_matrix"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 16",
+      "weight": 1.0,
+      "source": "generalized_eigenvalue_problem",
+      "target": "mass_matrix"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 25-28",
+      "weight": 1.0,
+      "source": "generalized_eigenvalue_problem",
+      "target": "eigenfrequency"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 214",
+      "weight": 1.0,
+      "source": "euler_bernoulli_beam",
+      "target": "generalized_eigenvalue_problem"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 12-16",
+      "weight": 1.0,
+      "source": "modal_analysis",
+      "target": "generalized_eigenvalue_problem"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 105-114",
+      "weight": 1.0,
+      "source": "slepc",
+      "target": "generalized_eigenvalue_problem"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 162",
+      "weight": 1.0,
+      "source": "stiffness_matrix",
+      "target": "shape_functions"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 138-143",
+      "weight": 1.0,
+      "source": "stiffness_matrix",
+      "target": "weak_formulation"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 57-71",
+      "weight": 1.0,
+      "source": "fenicsx",
+      "target": "stiffness_matrix"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "demo/beam/geometry.md",
+      "source_location": "line 172-177",
+      "weight": 1.0,
+      "source": "gmsh",
+      "target": "stiffness_matrix"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 163",
+      "weight": 1.0,
+      "source": "mass_matrix",
+      "target": "shape_functions"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "demo/beam/solver.py",
+      "source_location": "lines 72",
+      "weight": 1.0,
+      "source": "fenicsx",
+      "target": "mass_matrix"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 212-220",
+      "weight": 1.0,
+      "source": "euler_bernoulli_beam",
+      "target": "eigenfrequency"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/source/plan.md",
+      "source_location": "lines 76-84",
+      "weight": 1.0,
+      "source": "pygmo",
+      "target": "eigenfrequency"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md",
+      "source_location": "line 147-153",
+      "weight": 1.0,
+      "source": "weak_formulation",
+      "target": "shape_functions"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "beam_analysis_pipeline",
+      "label": "Beam Analysis Pipeline",
+      "nodes": [
+        "demo_beam_config",
+        "demo_beam_geometry_generatemesh",
+        "demo_beam_solver_modalsolver",
+        "demo_beam_main_analyticalfreqs",
+        "demo_beam_main"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "demo/beam/main.py"
+    },
+    {
+      "id": "eigenvalue_theory_concepts",
+      "label": "Eigenvalue Theory Concepts",
+      "nodes": [
+        "generalized_eigenvalue_problem",
+        "stiffness_matrix",
+        "mass_matrix",
+        "eigenfrequency",
+        "weak_formulation",
+        "shape_functions"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/source/theory/eigenvalues.md"
+    },
+    {
+      "id": "io_operations",
+      "label": "IO Operations",
+      "nodes": [
+        "src_io_meshtoxdmf",
+        "src_io_readxdmfmesh",
+        "src_io_writeresultsxdmf",
+        "xdmf_format"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "src/io/__init__.py"
+    }
+  ],
+  "built_at_commit": "97057fe4a626b0dee448824c0a04294a637442df"
+}
