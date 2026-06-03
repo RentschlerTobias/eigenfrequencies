@@ -1,5 +1,6 @@
 """Beam configuration parameters for modal analysis."""
 
+import os
 from dataclasses import dataclass
 
 
@@ -21,7 +22,7 @@ class BeamConfig:
     height: float = 0.1
     youngs_modulus: float = 210e9
     density: float = 7850.0
-    mesh_resolution: float = 0.005
+    mesh_resolution: float = 0.05
 
     @property
     def cross_section_area(self) -> float:
@@ -50,7 +51,7 @@ class SolverConfig:
     freq_min: float = 0.0
     freq_max: float = 1000.0
     num_eigenvalues: int = 10
-    tolerance: float = 1e-12
+    tolerance: float = 1e-6
 
 
 @dataclass
@@ -65,4 +66,4 @@ class OutputConfig:
 
     save_vtk: bool = True
     save_xdmf: bool = True
-    output_dir: str = "output"
+    output_dir: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")

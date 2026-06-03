@@ -18,7 +18,7 @@ def create_rectangular_beam(config: BeamConfig) -> Tuple[int, int, int]:
         Tuple of (volume_tag, surface_tags, line_tags)
     """
     L, B, H = config.length, config.width, config.height
-
+    lc = config.mesh_resolution
     model = gmsh.model
     occ = gmsh.model.occ
 
@@ -26,48 +26,53 @@ def create_rectangular_beam(config: BeamConfig) -> Tuple[int, int, int]:
     B2 = B / 2
     H2 = H / 2
 
-    occ.addBox(-L2, -B2, -H2, L, B, H)
+    p1 = occ.addPoint(-L2, -B2, -H2, lc)
+    p2 = occ.addPoint( L2, -B2, -H2, lc)
+    p3 = occ.addPoint( L2,  B2, -H2, lc)
+    p4 = occ.addPoint(-L2,  B2, -H2, lc)
+    p5 = occ.addPoint(-L2, -B2,  H2, lc)
+    p6 = occ.addPoint( L2, -B2,  H2, lc)
+    p7 = occ.addPoint( L2,  B2,  H2, lc)
+    p8 = occ.addPoint(-L2,  B2,  H2, lc)
+
+    e1  = occ.addLine(p1, p2)
+    e2  = occ.addLine(p2, p3)
+    e3  = occ.addLine(p3, p4)
+    e4  = occ.addLine(p4, p1)
+    e5  = occ.addLine(p5, p6)
+    e6  = occ.addLine(p6, p7)
+    e7  = occ.addLine(p7, p8)
+    e8  = occ.addLine(p8, p5)
+    e9  = occ.addLine(p1, p5)
+    e10 = occ.addLine(p2, p6)
+    e11 = occ.addLine(p3, p7)
+    e12 = occ.addLine(p4, p8)
+
+    bottom_loop = occ.addCurveLoop([e1, e2, e3, e4])
+    bottom = occ.addSurfaceFilling(bottom_loop)
+    top_loop = occ.addCurveLoop([e5, e6, e7, e8])
+    top = occ.addSurfaceFilling(top_loop)
+    front_loop = occ.addCurveLoop([e1, e10, e5, e9])
+    front = occ.addSurfaceFilling(front_loop)
+    back_loop = occ.addCurveLoop([e3, e11, e7, e12])
+    back = occ.addSurfaceFilling(back_loop)
+    left_loop = occ.addCurveLoop([e4, e12, e8, e9])
+    left = occ.addSurfaceFilling(left_loop)
+    right_loop = occ.addCurveLoop([e2, e10, e6, e11])
+    right = occ.addSurfaceFilling(right_loop)
+
+    surfaces = [bottom, top, front, back, left, right]
+    lines = [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12]
+
+    surface_loop = occ.addSurfaceLoop(surfaces)
+    volume_tag = occ.addVolume([surface_loop])
+
     occ.synchronize()
 
-    surfaces = []
-    lines = []
-    for entity in model.getEntities():
-        dim = entity[0]
-        tag = entity[1]
-        if dim == 2:
-            surfaces.append(tag)
-        elif dim == 1:
-            lines.append(tag)
-
-    volume = model.addPhysicalGroup(3, [1])
-    model.setPhysicalName(3, volume, "Beam")
+    model.addPhysicalGroup(3, [volume_tag])
+    model.setPhysicalName(3, volume_tag, "Beam")
 
     return 1, surfaces, lines
-
-
-def set_mesh_resolution(config: BeamConfig) -> None:
-    """Set mesh resolution for the beam geometry."""
-    L = config.length
-    mesh_size = config.mesh_resolution
-
-    model = gmsh.model
-
-    try:
-        points = model.getEntities(0)
-        for point in points:
-            try:
-                coords = model.getValue(0, point[1], [])
-                x = coords[0]
-                dist_to_end = min(abs(x + L/2), abs(x - L/2))
-                if dist_to_end < L * 0.1:
-                    local_size = mesh_size * 0.5
-                else:
-                    local_size = mesh_size
-                model.setMeshSize(0, point[1], local_size)
-            except Exception:
-                pass
-    except Exception:
-        pass
 
 
 def generate_mesh(config: BeamConfig, output_path: str) -> str:
@@ -87,10 +92,9 @@ def generate_mesh(config: BeamConfig, output_path: str) -> str:
     model.add("beam")
 
     create_rectangular_beam(config)
-    set_mesh_resolution(config)
 
     gmsh.model.occ.synchronize()
-    gmsh.model.mesh.generate()
+    gmsh.model.mesh.generate(3)
     gmsh.write(os.path.join(output_path, "beam.msh"))
 
     gmsh.finalize()

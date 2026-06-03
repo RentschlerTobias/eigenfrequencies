@@ -49,20 +49,18 @@ def main():
         height=0.1,
         youngs_modulus=210e9,
         density=7850.0,
-        mesh_resolution=0.005,
     )
 
     solver_config = SolverConfig(
         freq_min=0.0,
         freq_max=1000.0,
         num_eigenvalues=6,
-        tolerance=1e-12,
+        tolerance=1e-6,
     )
 
     output_config = OutputConfig(
         save_vtk=True,
         save_xdmf=True,
-        output_dir="demo/beam/output",
     )
 
     print("=" * 60)
