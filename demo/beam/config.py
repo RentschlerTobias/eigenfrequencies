@@ -16,9 +16,8 @@ class BeamConfig:
         density: Material density in kg/m³
         mesh_resolution: Target mesh element size
     """
-
-    length: float = 1.0
-    width: float = 0.05
+    length: float = 10.0
+    width: float = 0.01
     height: float = 0.1
     youngs_modulus: float = 210e9
     density: float = 7850.0
@@ -66,4 +65,5 @@ class OutputConfig:
 
     save_vtk: bool = True
     save_xdmf: bool = True
-    output_dir: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
+    output_dir: str = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "output")
