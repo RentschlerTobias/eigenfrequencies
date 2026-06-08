@@ -1,13 +1,12 @@
 """Main entry point for beam modal analysis demo."""
 
+from solver import ModalSolver
+from geometry import generate_mesh
+from config import BeamConfig, SolverConfig, OutputConfig
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from config import BeamConfig, SolverConfig, OutputConfig
-from geometry import generate_mesh
-from solver import ModalSolver
 
 
 def analytical_frequencies(beam: BeamConfig, num_modes: int = 10) -> list:
@@ -44,8 +43,8 @@ def analytical_frequencies(beam: BeamConfig, num_modes: int = 10) -> list:
 def main():
     """Run the beam modal analysis demo."""
     beam_config = BeamConfig(
-        length=1.0,
-        width=0.05,
+        length=10.0,
+        width=0.1,
         height=0.1,
         youngs_modulus=210e9,
         density=7850.0,
@@ -66,8 +65,10 @@ def main():
     print("=" * 60)
     print("Beam Modal Analysis Demo")
     print("=" * 60)
-    print(f"Beam dimensions: {beam_config.length} x {beam_config.width} x {beam_config.height} m")
-    print(f"Material: E={beam_config.youngs_modulus:.2e} Pa, rho={beam_config.density} kg/m³")
+    print(f"Beam dimensions: {beam_config.length} x {
+          beam_config.width} x {beam_config.height} m")
+    print(f"Material: E={beam_config.youngs_modulus:.2e} Pa, rho={
+          beam_config.density} kg/m³")
     print()
 
     print("Generating mesh...")
@@ -93,7 +94,8 @@ def main():
     print()
     print("Analytical Solution (Euler-Bernoulli):")
     print("-" * 40)
-    analytical = analytical_frequencies(beam_config, solver_config.num_eigenvalues)
+    analytical = analytical_frequencies(
+        beam_config, solver_config.num_eigenvalues)
     for i, freq in enumerate(analytical):
         print(f"  Mode {i+1}: {freq:.2f} Hz")
 

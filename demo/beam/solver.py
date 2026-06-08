@@ -106,7 +106,7 @@ class ModalSolver:
         eigensolver.setDimensions(num_eigenvalues)
         eigensolver.setOperators(A, B)
         eigensolver.setProblemType(SLEPc.EPS.ProblemType.GHEP)
-        eigensolver.setTolerances(self.solver.tolerance,max_it=10000)
+        eigensolver.setTolerances(self.solver.tolerance,max_it=25000)
         eigensolver.setWhichEigenpairs(SLEPc.EPS.Which.TARGET_MAGNITUDE)
 
         target_freq = (self.solver.freq_min + self.solver.freq_max) / 2

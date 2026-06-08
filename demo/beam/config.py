@@ -21,7 +21,7 @@ class BeamConfig:
     height: float = 0.1
     youngs_modulus: float = 210e9
     density: float = 7850.0
-    mesh_resolution: float = 0.05
+    mesh_resolution: float = 0.10
 
     @property
     def cross_section_area(self) -> float:
