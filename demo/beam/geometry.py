@@ -22,18 +22,17 @@ def create_rectangular_beam(config: BeamConfig) -> Tuple[int, int, int]:
     model = gmsh.model
     occ = gmsh.model.occ
 
-    L2 = L / 2
     B2 = B / 2
     H2 = H / 2
 
-    p1 = occ.addPoint(-L2, -B2, -H2, lc)
-    p2 = occ.addPoint( L2, -B2, -H2, lc)
-    p3 = occ.addPoint( L2,  B2, -H2, lc)
-    p4 = occ.addPoint(-L2,  B2, -H2, lc)
-    p5 = occ.addPoint(-L2, -B2,  H2, lc)
-    p6 = occ.addPoint( L2, -B2,  H2, lc)
-    p7 = occ.addPoint( L2,  B2,  H2, lc)
-    p8 = occ.addPoint(-L2,  B2,  H2, lc)
+    p1 = occ.addPoint(0, -B2, -H2, lc)
+    p2 = occ.addPoint(L, -B2, -H2, lc)
+    p3 = occ.addPoint(L,  B2, -H2, lc)
+    p4 = occ.addPoint(0,  B2, -H2, lc)
+    p5 = occ.addPoint(0, -B2,  H2, lc)
+    p6 = occ.addPoint(L, -B2,  H2, lc)
+    p7 = occ.addPoint(L,  B2,  H2, lc)
+    p8 = occ.addPoint(0,  B2,  H2, lc)
 
     e1  = occ.addLine(p1, p2)
     e2  = occ.addLine(p2, p3)

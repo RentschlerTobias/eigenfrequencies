@@ -3,51 +3,22 @@
 from solver import ModalSolver
 from geometry import generate_mesh
 from config import BeamConfig, SolverConfig, OutputConfig
+from cantilever_analytical import analytical_frequencies_cantilever
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-def analytical_frequencies(beam: BeamConfig, num_modes: int = 10) -> list:
-    """Compute analytical eigenfrequencies for a clamped-clamped beam.
-
-    Uses Euler-Bernoulli beam theory.
-    """
-    from scipy.optimize import root
-    import numpy as np
-
-    E = beam.youngs_modulus
-    rho = beam.density
-    L = beam.length
-    I = beam.moment_of_inertia_y
-    S = beam.cross_section_area
-
-    def equation(alpha):
-        return np.tan(alpha) - alpha
-
-    alphas = []
-    for n in range(num_modes):
-        x0 = (2 * n + 1) * np.pi / 2
-        sol = root(equation, x0)
-        alphas.append(sol.x[0] if sol.success else x0)
-
-    frequencies = []
-    for alpha in alphas:
-        omega = alpha**2 * np.sqrt(E * I / (rho * S * L**4))
-        frequencies.append(omega / (2 * np.pi))
-
-    return frequencies
-
-
 def main():
     """Run the beam modal analysis demo."""
     beam_config = BeamConfig(
-        length=10.0,
+        length=1.0,
         width=0.1,
         height=0.1,
         youngs_modulus=210e9,
         density=7850.0,
+        mesh_resolution=0.1,
     )
 
     solver_config = SolverConfig(
@@ -69,6 +40,7 @@ def main():
           beam_config.width} x {beam_config.height} m")
     print(f"Material: E={beam_config.youngs_modulus:.2e} Pa, rho={
           beam_config.density} kg/m³")
+    print(f"Boundary condition: cantilever (fixed at x=0)")
     print()
 
     print("Generating mesh...")
@@ -78,7 +50,7 @@ def main():
     print()
 
     print("Solving modal analysis...")
-    solver = ModalSolver(beam_config, solver_config, output_config)
+    solver = ModalSolver(beam_config, solver_config, output_config, boundary_type="cantilever")
     eigenvalues, _ = solver.solve()
 
     if eigenvalues is not None and len(eigenvalues) > 0:
@@ -92,9 +64,9 @@ def main():
         print("No eigenvalues converged.")
 
     print()
-    print("Analytical Solution (Euler-Bernoulli):")
+    print("Analytical Solution (Euler-Bernoulli - Cantilever):")
     print("-" * 40)
-    analytical = analytical_frequencies(
+    analytical = analytical_frequencies_cantilever(
         beam_config, solver_config.num_eigenvalues)
     for i, freq in enumerate(analytical):
         print(f"  Mode {i+1}: {freq:.2f} Hz")

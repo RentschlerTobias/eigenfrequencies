@@ -1,9 +1,8 @@
 """FEniCSx modal analysis solver for eigenfrequency computation."""
 
 import numpy as np
+from scipy.sparse.linalg import eigsh
 from mpi4py import MPI
-from petsc4py import PETSc
-from slepc4py import SLEPc
 
 import ufl
 from dolfinx import fem, mesh, log
@@ -20,10 +19,12 @@ class ModalSolver:
         beam_config: BeamConfig,
         solver_config: SolverConfig,
         output_config: OutputConfig,
+        boundary_type: str = "cantilever",
     ):
         self.beam = beam_config
         self.solver = solver_config
         self.output = output_config
+        self.boundary_type = boundary_type
 
     def create_mesh(self) -> mesh.Mesh:
         """Load mesh from Gmsh .msh file."""
@@ -33,11 +34,28 @@ class ModalSolver:
         mesh_data = gmsh.read_from_msh(msh_file, MPI.COMM_WORLD, rank=0, gdim=3)
         return mesh_data.mesh
 
-    def apply_clamped_bc(self, V: fem.FunctionSpace):
-        """Apply clamped boundary condition at x=0."""
+    def apply_bc(self, V: fem.FunctionSpace):
+        """Apply boundary conditions based on boundary_type.
+
+        Args:
+            V: Function space
+
+        Returns:
+            DirichletBC object
+        """
         domain = V.mesh
-        facets = mesh.locate_entities_boundary(domain, 1, lambda x: np.isclose(x[0], 0.0))
-        dofs = fem.locate_dofs_topological(V, 1, facets)
+        if self.boundary_type == "cantilever":
+            # Fix only x=0
+            facets = mesh.locate_entities_boundary(domain, 2, lambda x: np.isclose(x[0], 0.0))
+        elif self.boundary_type == "clamped-clamped":
+            # Fix both x=0 and x=L
+            facets = mesh.locate_entities_boundary(
+                domain, 2,
+                lambda x: np.isclose(x[0], 0.0) | np.isclose(x[0], self.beam.length)
+            )
+        else:
+            raise ValueError(f"Unknown boundary_type: {self.boundary_type}. Use 'cantilever' or 'clamped-clamped'.")
+        dofs = fem.locate_dofs_topological(V, 2, facets)
         u_bc = fem.Function(V)
         u_bc.x.array[:] = 0.0
         return fem.dirichletbc(u_bc, dofs)
@@ -59,8 +77,10 @@ class ModalSolver:
 
         E = self.beam.youngs_modulus
         rho = self.beam.density
-        mu = E / (2 * (1 + 0.3))
-        lmbda = E * 0.3 / ((1 + 0.3) * (1 - 2 * 0.3))
+        # Use Poisson ratio = 0 for exact comparison with Euler-Bernoulli theory
+        nu = 0.0
+        mu = E / (2 * (1 + nu))
+        lmbda = E * nu / ((1 + nu) * (1 - 2 * nu))
 
         def epsilon(u):
             return ufl.sym(ufl.grad(u))
@@ -73,55 +93,60 @@ class ModalSolver:
 
         a_form = fem.form(a)
         b_form = fem.form(b)
-        bc = self.apply_clamped_bc(V)
+        bc = self.apply_bc(V)
         A_csr = fem.assemble_matrix(a_form, bcs=[bc])
         B_csr = fem.assemble_matrix(b_form)
 
-        A_dense = A_csr.to_dense()
-        B_dense = B_csr.to_dense()
-        m, n = A_dense.shape
-        nnz = np.count_nonzero(A_dense)
+        # Convert to scipy sparse matrices
+        import scipy.sparse
+        A_scipy = A_csr.to_scipy()
+        B_scipy = B_csr.to_scipy()
 
-        A = PETSc.Mat().createAIJ(size=(m, n), comm=MPI.COMM_WORLD)
-        A.setPreallocationNNZ(nnz)
-        A.setUp()
-        rows, cols = np.where(A_dense != 0)
-        for idx in range(len(rows)):
-            A.setValue(rows[idx], cols[idx], A_dense[rows[idx], cols[idx]])
-        A.assemble()
+        # Get BC DOFs to remove them from the system
+        dof_indices_result = bc.dof_indices()
+        if isinstance(dof_indices_result, tuple):
+            bc_dofs = dof_indices_result[0]
+        else:
+            bc_dofs = dof_indices_result
+        bc_dofs = np.array(bc_dofs)
 
-        m, n = B_dense.shape
-        nnz = np.count_nonzero(B_dense)
-        B = PETSc.Mat().createAIJ(size=(m, n), comm=MPI.COMM_WORLD)
-        B.setPreallocationNNZ(nnz)
-        B.setUp()
-        rows, cols = np.where(B_dense != 0)
-        for idx in range(len(rows)):
-            B.setValue(rows[idx], cols[idx], B_dense[rows[idx], cols[idx]])
-        B.assemble()
+        # Remove BC DOFs from matrices
+        free_dofs = np.setdiff1d(np.arange(A_scipy.shape[0]), bc_dofs)
+        
+        # Convert to dense to extract submatrices (memory intensive but reliable)
+        A_dense = A_scipy.toarray()
+        B_dense = B_scipy.toarray()
+        A_reduced = A_dense[np.ix_(free_dofs, free_dofs)]
+        B_reduced = B_dense[np.ix_(free_dofs, free_dofs)]
+        
+        # Convert back to sparse for eigsh
+        A_reduced = scipy.sparse.csr_matrix(A_reduced)
+        B_reduced = scipy.sparse.csr_matrix(B_reduced)
 
-        num_eigenvalues = min(self.solver.num_eigenvalues, V.dofmap.index_map.size_local)
+        num_eigenvalues = min(self.solver.num_eigenvalues, A_reduced.shape[0] - 1)
 
-        eigensolver = SLEPc.EPS().create()
-        eigensolver.setDimensions(num_eigenvalues)
-        eigensolver.setOperators(A, B)
-        eigensolver.setProblemType(SLEPc.EPS.ProblemType.GHEP)
-        eigensolver.setTolerances(self.solver.tolerance,max_it=25000)
-        eigensolver.setWhichEigenpairs(SLEPc.EPS.Which.TARGET_MAGNITUDE)
+        # Solve generalized eigenvalue problem using scipy
+        # Use shift-invert to find smallest eigenvalues
+        try:
+            eigenvalues, eigenvectors = eigsh(
+                A_reduced, k=num_eigenvalues, M=B_reduced,
+                sigma=0.0, which='LM', tol=self.solver.tolerance
+            )
+        except Exception as e:
+            # Fallback: try without shift-invert
+            eigenvalues, eigenvectors = eigsh(
+                A_reduced, k=num_eigenvalues, M=B_reduced,
+                which='SM', tol=self.solver.tolerance
+            )
 
-        target_freq = (self.solver.freq_min + self.solver.freq_max) / 2
-        eigensolver.setTarget(target_freq**2)
-        eigensolver.solve()
-
-        computed_eigenvalues = []
+        # Reconstruct full eigenvectors with zeros for BC DOFs
         computed_eigenvectors = []
+        for i in range(len(eigenvalues)):
+            full_ev = np.zeros(A_scipy.shape[0])
+            full_ev[free_dofs] = eigenvectors[:, i]
+            computed_eigenvectors.append(full_ev)
 
-        nconv = eigensolver.getConverged()
-        for i in range(min(nconv, num_eigenvalues)):
-            eigenvalue = eigensolver.getEigenvalue(i)
-            computed_eigenvalues.append(eigenvalue)
-
-        return computed_eigenvalues, None
+        return eigenvalues, computed_eigenvectors
 
     def compute_frequencies(self, eigenvalues: np.ndarray) -> np.ndarray:
         """Convert eigenvalues to frequencies in Hz."""
