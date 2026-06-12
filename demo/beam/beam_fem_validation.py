@@ -165,7 +165,7 @@ def plotly_dashboard(eigenvectors, mesh_coords, mode_info, analytical_freqs, out
         specs=[[{"type": "scatter3d"}], [{"type": "bar"}]],
         subplot_titles=(
             "Mode Shape (3D) — gray = original, colored = deformed",
-            "Bending Modes (z-direction) — FEM vs Analytical",
+            "All Modes — FEM vs Analytical (only for bending_z)",
         ),
     )
 
@@ -201,37 +201,51 @@ def plotly_dashboard(eigenvectors, mesh_coords, mode_info, analytical_freqs, out
         row=1, col=1,
     )
 
-    # Bar chart: only bending_z modes with FEM vs Analytical
+    # Bar chart: all modes, FEM always, Analytical only for bending_z
     bending_z = [m for m in unique_modes if m["type"] == "bending_z"]
-    n_bz = len(bending_z)
-    max_freq = max(
-        [m["fem_freq"] for m in bending_z] + list(analytical_freqs[:n_bz])
-    ) * 1.2 if n_bz > 0 else 1.0
+    mode_labels = [f"M{m['mode_num']}" for m in unique_modes]
 
-    # Bar labels: B1, B2, B3... (bending mode numbers)
-    bar_labels = [f"B{i+1}" for i in range(n_bz)]
-    fem_vals = [m["fem_freq"] for m in bending_z]
-    ana_vals = list(analytical_freqs[:n_bz])
+    # FEM values (all modes)
+    fem_vals = [m["fem_freq"] for m in unique_modes]
+    fem_colors = [color_map.get(m["type"], "#95a5a6") for m in unique_modes]
 
-    # Hover text for FEM bars
+    # Analytical values (only for bending_z, None for others)
+    ana_vals = []
+    for m in unique_modes:
+        if m["type"] == "bending_z":
+            bz_idx = bending_z.index(m)
+            if bz_idx < len(analytical_freqs):
+                ana_vals.append(analytical_freqs[bz_idx])
+            else:
+                ana_vals.append(None)
+        else:
+            ana_vals.append(None)
+
+    # Calculate max_freq for y-axis
+    all_freqs = [m["fem_freq"] for m in unique_modes] + [a for a in ana_vals if a is not None]
+    max_freq = max(all_freqs) * 1.2 if all_freqs else 1.0
+
+    # Hover text
     fem_hover = []
-    for i, m in enumerate(bending_z):
-        err = abs(m["fem_freq"] - ana_vals[i]) / ana_vals[i] * 100
-        txt = f"<b>Mode {m['mode_num']} (B{i+1})</b><br>FEM: {m['fem_freq']:.2f} Hz<br>Analytical: {ana_vals[i]:.2f} Hz<br>Error: {err:.1f}%"
-        fem_hover.append(txt)
-
-    # Hover text for Analytical bars
     ana_hover = []
-    for i, m in enumerate(bending_z):
-        txt = f"<b>B{i+1} Analytical</b><br>{ana_vals[i]:.2f} Hz"
-        ana_hover.append(txt)
+    for i, m in enumerate(unique_modes):
+        desc = type_desc.get(m["type"], "Unknown")
+        if ana_vals[i] is not None:
+            err = abs(m["fem_freq"] - ana_vals[i]) / ana_vals[i] * 100
+            fem_txt = f"<b>Mode {m['mode_num']}</b><br>{desc}<br>FEM: {m['fem_freq']:.2f} Hz<br>Analytical: {ana_vals[i]:.2f} Hz<br>Error: {err:.1f}%"
+            ana_txt = f"<b>Mode {m['mode_num']} Analytical</b><br>{ana_vals[i]:.2f} Hz"
+        else:
+            fem_txt = f"<b>Mode {m['mode_num']}</b><br>{desc}<br>FEM: {m['fem_freq']:.2f} Hz<br>Analytical: —"
+            ana_txt = ""
+        fem_hover.append(fem_txt)
+        ana_hover.append(ana_txt)
 
     # Trace 2: FEM bars
     fig.add_trace(
         go.Bar(
-            x=bar_labels, y=fem_vals,
+            x=mode_labels, y=fem_vals,
             name="FEM",
-            marker=dict(color="#3498db", line=dict(color="#000", width=0)),
+            marker=dict(color=fem_colors, line=dict(color="#000", width=0)),
             text=[f"{v:.1f}" for v in fem_vals],
             textposition="outside",
             hovertext=fem_hover,
@@ -240,13 +254,13 @@ def plotly_dashboard(eigenvectors, mesh_coords, mode_info, analytical_freqs, out
         row=2, col=1,
     )
 
-    # Trace 3: Analytical bars
+    # Trace 3: Analytical bars (None for non-bending_z)
     fig.add_trace(
         go.Bar(
-            x=bar_labels, y=ana_vals,
+            x=mode_labels, y=ana_vals,
             name="Analytical",
             marker=dict(color="#e74c3c", line=dict(color="#000", width=0)),
-            text=[f"{v:.1f}" for v in ana_vals],
+            text=[f"{v:.1f}" if v is not None else "" for v in ana_vals],
             textposition="outside",
             hovertext=ana_hover,
             hoverinfo="text",
@@ -254,24 +268,18 @@ def plotly_dashboard(eigenvectors, mesh_coords, mode_info, analytical_freqs, out
         row=2, col=1,
     )
 
-    # Trace 4: Active mode indicator line (if active mode is bending_z)
-    active_bz_idx = None
-    for i, m in enumerate(bending_z):
-        if m["mode_num"] == first_mode["mode_num"]:
-            active_bz_idx = i
-            break
-    if active_bz_idx is not None:
-        active_label = bar_labels[active_bz_idx]
-        fig.add_trace(
-            go.Scatter(
-                x=[active_label, active_label],
-                y=[0, max_freq],
-                mode="lines",
-                line=dict(color="red", width=2, dash="dash"),
-                hoverinfo="skip",
-            ),
-            row=2, col=1,
-        )
+    # Trace 4: Active mode indicator line
+    active_label = f"M{first_mode['mode_num']}"
+    fig.add_trace(
+        go.Scatter(
+            x=[active_label, active_label],
+            y=[0, max_freq],
+            mode="lines",
+            line=dict(color="red", width=2, dash="dash"),
+            hoverinfo="skip",
+        ),
+        row=2, col=1,
+    )
 
     # --- Build frames (one per mode) ---
     frames = []
@@ -282,33 +290,6 @@ def plotly_dashboard(eigenvectors, mesh_coords, mode_info, analytical_freqs, out
         sc = 0.2 * np.max(mesh_coords[:, 0]) / max_d
         deformed = mesh_coords + sc * u
         mode_label = f"M{info['mode_num']}"
-
-        # Active mode indicator for bar chart (only if bending_z)
-        active_bz_idx = None
-        for i, m in enumerate(bending_z):
-            if m["mode_num"] == info["mode_num"]:
-                active_bz_idx = i
-                break
-        if active_bz_idx is not None:
-            active_label = bar_labels[active_bz_idx]
-            active_line = go.Scatter(
-                x=[active_label, active_label],
-                y=[0, max_freq],
-                mode="lines",
-                line=dict(color="red", width=2, dash="dash"),
-                hoverinfo="skip",
-            )
-            frame_traces = [1, 4]
-        else:
-            # Hide active line if not bending_z
-            active_line = go.Scatter(
-                x=[None],
-                y=[None],
-                mode="lines",
-                line=dict(color="red", width=2, dash="dash"),
-                hoverinfo="skip",
-            )
-            frame_traces = [1, 4]
 
         frame = go.Frame(
             data=[
@@ -323,9 +304,15 @@ def plotly_dashboard(eigenvectors, mesh_coords, mode_info, analytical_freqs, out
                     hovertemplate="x: %{x:.3f}<br>y: %{y:.3f}<br>z: %{z:.3f}<br>%{text}<extra></extra>",
                 ),
                 # Trace 4: active line
-                active_line,
+                go.Scatter(
+                    x=[mode_label, mode_label],
+                    y=[0, max_freq],
+                    mode="lines",
+                    line=dict(color="red", width=2, dash="dash"),
+                    hoverinfo="skip",
+                ),
             ],
-            traces=frame_traces,
+            traces=[1, 4],
             name=info["mode_num"],
             layout=dict(
                 title=dict(
@@ -390,6 +377,7 @@ def plotly_dashboard(eigenvectors, mesh_coords, mode_info, analytical_freqs, out
         sliders=sliders,
         height=850,
         showlegend=False,
+        barmode="group",
         margin=dict(l=0, r=0, b=80, t=80),
     )
 
@@ -405,8 +393,8 @@ def main():
     """Run cantilever beam validation test."""
     beam_config = BeamConfig(
         length=1.0,
-        width=0.01,
-        height=0.1,
+        width=0.1,
+        height=0.01,
         youngs_modulus=210e9,
         density=7850.0,
         mesh_resolution=0.1,
@@ -415,7 +403,7 @@ def main():
     solver_config = SolverConfig(
         freq_min=0.0,
         freq_max=1000.0,
-        num_eigenvalues=12,
+        num_eigenvalues=10,
         tolerance=1e-6,
     )
     
