@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "/workspace/demo/beam/main.py", line 107, in <module>
-    main()
-  File "/workspace/demo/beam/main.py", line 52, in main
-    mesh_resolution=beam_config.mesh_resolution,
-                    ^^^^^^^^^^^
-UnboundLocalError: cannot access local variable 'beam_config' where it is not associated with a value
