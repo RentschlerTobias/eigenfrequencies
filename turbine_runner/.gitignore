@@ -5,3 +5,4 @@ data/*.step
 data/*.brep
 build.log
 __pycache__/
+data/design.json

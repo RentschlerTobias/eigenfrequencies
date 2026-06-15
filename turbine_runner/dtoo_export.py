@@ -1,54 +1,70 @@
 #!/usr/bin/env python3
-"""STAGE 1: generate the tistos runner geometry with dtOO and export a .msh.
+"""STAGE 1: build the tistos runner mech mesh with dtOO and export a .msh.
 
-This script runs INSIDE the dtOO container (atismer/dtoo-opensuse:stable) where
-dtOO is installed at /dtOO-install. It is intentionally self-contained: it does
-NOT import turbine_runner.config or any FEniCSx/dolfinx module, because those
-dependencies do not exist in the dtOO container.
+Runs INSIDE the dtOO container (atismer/dtoo-opensuse:stable). Self-contained:
+no FEniCSx/turbine_runner.config imports (those do not exist in this container).
 
-It reproduces the driver pattern of
-``block_structured_meshing/export_t2_7461.py`` and writes the structural
-mechanical mesh ``ruWithRounding_mechMesh`` to the shared work directory.
+Geometry-only: it does NOT run the CFD case (dC.runCurrentState()). Only the
+parametric geometry + the structural mechanical mesh ruWithRounding_mechMesh are
+built, which is all the eigenfrequency analysis needs and keeps each evaluation
+cheap (seconds-minutes, not a CFD run).
 
-NOTE: The existing ``block_structured_meshing/T1_9/T1_9_ru_gridGmsh.msh`` is the
-CFD *fluid* mesh (flow channel, surface-tagged Hub/Shroud), NOT a structural
-solid. Only ``ruWithRounding_mechMesh`` is a valid structural input. The fluid
-mesh may be used as a read->assemble smoke-test, never for valid frequencies.
+Parametric: design parameters are read from a JSON file ({label: value}) and
+applied with cV.get(label).setValue(value) before the geometry is created. The
+labels are dtOO const-value names, e.g. cV_ru_bladeLength_0.5, cV_ru_alpha_1_ex_0.5
+(see tistos/build.py in the block_structured_meshing reference). An empty/missing
+JSON just builds the template (baseline) geometry.
 
-Usage (from the repo root, mounting data/ as the shared /work volume):
+Environment notes (discovered for atismer/dtoo-opensuse:stable):
+  * interpreter MUST be python3.12 (has numpy 2.x that OCC needs; python3.6 fails)
+  * LD_LIBRARY_PATH must include /dtOO-install/lib (OpenCASCADE) and
+    /dtOO-install/lib64 (gmsh); run under a login shell so OpenFOAM env is sourced
+  * the working dir must be a dtOO case dir holding machine.xml + machineSave.xml
+    + xml/ (default /dtOO/test/tistos)
+
+Usage (from the repo root; data/ is the shared volume):
 
     docker run --rm \
-        -v <repo>/turbine_runner/data:/work \
-        -v <repo>:/src \
+        -v "$PWD/turbine_runner/data:/work" \
+        -v "$PWD/turbine_runner:/src" \
+        -w /dtOO/test/tistos \
         atismer/dtoo-opensuse:stable \
-        python3 /src/turbine_runner/dtoo_export.py
+        bash -lc 'export LD_LIBRARY_PATH=/dtOO-install/lib:/dtOO-install/lib64:$LD_LIBRARY_PATH \
+                  && python3.12 /src/dtoo_export.py'
+
+Override via env vars: DTOO_CASE_DIR, DTOO_MACHINE_XML, DTOO_STATE_XML,
+DTOO_STATE, DTOO_MECH_VOLUME, DTOO_ADJUST_PLUGIN, DTOO_DESIGN_JSON, DTOO_OUTPUT_MSH.
 """
 
+import json
 import os
-import sys
 
-# --- configuration (plain constants; the dtOO container has no argparse needs) ---
-DTOO_TOOLS = os.environ.get("DTOO_TOOLS", "/dtOO-install/tools")
-DTOO_LIB = os.environ.get("DTOO_LIB", "/dtOO-install/lib")
-OPENFOAM_LIBS = (
-    "/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:"
-    "/usr/lib64/mpi/gcc/openmpi4/lib64:"
-    "/usr/lib/hpc/gnu7/mpi/openmpi/4.1.6/lib64"
-)
 
+CASE_DIR = os.environ.get("DTOO_CASE_DIR", "/dtOO/test/tistos")
 MACHINE_XML = os.environ.get("DTOO_MACHINE_XML", "machine.xml")
-CASE_XML = os.environ.get("DTOO_CASE_XML", "tistos_ru_of.xml")
-STATE = os.environ.get("DTOO_STATE", "tistos")
-CASE = os.environ.get("DTOO_CASE", "tistos_ru_of_n")
+STATE_XML = os.environ.get("DTOO_STATE_XML", "machineSave.xml")
+STATE = os.environ.get("DTOO_STATE", "templateState")
 MECH_VOLUME = os.environ.get("DTOO_MECH_VOLUME", "ruWithRounding_mechMesh")
+ADJUST_PLUGIN = os.environ.get("DTOO_ADJUST_PLUGIN", "ru_adjustDomain")
 
+DESIGN_JSON = os.environ.get("DTOO_DESIGN_JSON", "/work/design.json")
 OUTPUT_MSH = os.environ.get("DTOO_OUTPUT_MSH", "/work/runner.msh")
-OUTPUT_STEP = os.environ.get("DTOO_OUTPUT_STEP", "/work/runner.step")
+
+
+def _load_design() -> dict:
+    """Read the {label: value} design dict, or {} for the baseline geometry."""
+    if DESIGN_JSON and os.path.isfile(DESIGN_JSON):
+        with open(DESIGN_JSON) as fh:
+            design = json.load(fh)
+        print(f"[dtoo] loaded {len(design)} design parameters from {DESIGN_JSON}")
+        return design
+    print("[dtoo] no design JSON -> building baseline (template) geometry")
+    return {}
 
 
 def main() -> None:
-    sys.path.insert(0, DTOO_TOOLS)
-    os.environ["LD_LIBRARY_PATH"] = f"{DTOO_LIB}:{OPENFOAM_LIBS}"
+    os.chdir(CASE_DIR)
+    design = _load_design()
 
     from dtOOPythonSWIG import (
         logMe,
@@ -62,9 +78,8 @@ def main() -> None:
         labeledVectorHandlingDtPlugin,
     )
 
-    logMe.initLog("build.log")
-    dtXmlParser.init(MACHINE_XML, CASE_XML)
-    parser = dtXmlParser.reference()
+    logMe.initLog("/work/dtoo_build.log")
+    parser = dtXmlParser.init(MACHINE_XML, STATE_XML).reference()
     parser.parse()
 
     bC = baseContainer()
@@ -77,25 +92,30 @@ def main() -> None:
 
     parser.createConstValue(cV)
     parser.loadStateToConst(STATE, cV)
+
+    # Apply the design vector onto the const values before geometry creation.
+    for label, value in design.items():
+        cV.get(label).setValue(float(value))
+    if design:
+        print(f"[dtoo] applied {len(design)} parameter overrides")
+
     parser.destroyAndCreate(bC, cV, aF, aG, bV, dC, dP)
 
-    dC.get(CASE).runCurrentState()
+    # The domain-adjust plugin finalizes the runner geometry (matches build.py).
+    try:
+        dP.get(ADJUST_PLUGIN).apply()
+        parser.destroyAndCreate(bC, cV, aF, aG, bV, dC, dP)
+        print(f"[dtoo] plugin {ADJUST_PLUGIN} applied")
+    except Exception as exc:  # noqa: BLE001 - plugin is optional
+        print(f"[dtoo] plugin {ADJUST_PLUGIN} skipped ({type(exc).__name__}: {exc})")
 
+    print(f"[dtoo] makeGrid on {MECH_VOLUME} ...")
     bV.get(MECH_VOLUME).makeGrid()
     model = bV.get(MECH_VOLUME).getModel()
 
     os.makedirs(os.path.dirname(OUTPUT_MSH), exist_ok=True)
-    print(f"Exporting mechanical mesh to {OUTPUT_MSH} ...")
     model.writeMSH(OUTPUT_MSH)
-    print(f"Mesh exported: {OUTPUT_MSH}")
-
-    # Best-effort CAD export for the mesh_prep volume-meshing fallback. The
-    # dtOO/gmsh model may not support BREP/STEP writing; never fail STAGE 1 on it.
-    try:
-        model.writeBREP(OUTPUT_STEP)
-        print(f"CAD exported: {OUTPUT_STEP}")
-    except Exception as exc:  # noqa: BLE001 - export is optional
-        print(f"CAD export skipped ({type(exc).__name__}: {exc})")
+    print(f"[dtoo] mesh written: {OUTPUT_MSH}")
 
 
 if __name__ == "__main__":

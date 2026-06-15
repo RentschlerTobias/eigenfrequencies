@@ -103,6 +103,63 @@ class SolverConfig:
 
 
 @dataclass
+class DesignConfig:
+    """dtOO design parameters exposed to the optimizer.
+
+    `params` maps a dtOO const-value label to (min, max, initial). The labels are
+    the cV_* names from the tistos case (see block_structured_meshing/tistos/
+    build.py). Default = mid-span blade thickness at LE/mid/TE, which is the most
+    direct lever on stiffness+mass and therefore eigenfrequencies.
+
+    Attributes:
+        params: {label: (min, max, initial)}
+    """
+    params: dict = None
+
+    def __post_init__(self):
+        if self.params is None:
+            self.params = {
+                "cV_ru_t_le_a_0.5": (0.005, 0.06, 0.03),
+                "cV_ru_t_mid_a_0.5": (0.005, 0.06, 0.03),
+                "cV_ru_t_te_a_0.5": (0.005, 0.06, 0.03),
+            }
+
+    @property
+    def labels(self):
+        return list(self.params.keys())
+
+    @property
+    def x0(self):
+        return [v[2] for v in self.params.values()]
+
+    @property
+    def bounds(self):
+        return [(v[0], v[1]) for v in self.params.values()]
+
+
+@dataclass
+class OptimizationConfig:
+    """Resonance-avoidance optimization settings.
+
+    Penalty pushes every eigenfrequency out of the forbidden band [f_min, f_max].
+
+    Attributes:
+        f_min: Lower bound of the forbidden frequency band in Hz
+        f_max: Upper bound of the forbidden frequency band in Hz
+        penalty_k: Penalty weight
+        margin: Extra safety margin (Hz) added around the band
+        max_iter: Maximum optimizer iterations
+        method: scipy.optimize.minimize method (gradient-free recommended)
+    """
+    f_min: float = 100.0
+    f_max: float = 150.0
+    penalty_k: float = 1.0
+    margin: float = 0.0
+    max_iter: int = 40
+    method: str = "Nelder-Mead"
+
+
+@dataclass
 class OutputConfig:
     """Output options.
 
