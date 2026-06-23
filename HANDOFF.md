@@ -35,6 +35,22 @@ end-to-end locally (`output/frequencies.json`, `output/optimization.json`). The 
 math is **ported but unvalidated** without live `simpleFoam`. Wet modes are **interface-only**
 (placeholder ratios; real Laplace solve is `added_mass.rayleigh_ratios`, NotImplementedError).
 
+## 1b. Already verified locally (do not re-do; trust these)
+
+Run on this box (docker images present, real `runner.msh`):
+- **Modal solve** (`evaluate.py` in fenicsx container) → 10 real positive frequencies
+  `18.8, 80.4, 101.1, 108.1, 113.7, 217.2, 324.8, 436.2, 483.3, 487.7 Hz`; 1098 clamped
+  DOFs, no rigid-body modes. `band_report` flags modes 3/4/5 in `[100,150] Hz`, penalty 22.9.
+- **Combined objective** wiring: `f_cfd + f_res`; resonance term is 0 unless a mode is in band.
+- **Resonance-only optimization loop** (`optimize_multi.py`, `CFD_CASE_DIR=""`, 7 evals) ran
+  dtOO→mesh→solve→objective→`output/optimization_multi.json` end to end; objective 35.99→34.30
+  (3 thickness params cannot fully clear the band — expected, not a bug).
+- **dry-vs-wet** (`solver.wet_compare`, placeholder added mass): wet < dry; the ~15 % shift moves
+  modes 3/4/5 *below* 100 Hz, i.e. out of the band — shows why real added mass matters.
+
+What remains is exactly the **CFD half** (η/Vcav/dH from live `simpleFoam`) and the wet-mode
+Laplace solve — both cluster work.
+
 ## 2. Bring-up on bwUniCluster 3.0
 
 1. **dolfinx image (modal solve).** On a box with apptainer:
@@ -47,9 +63,19 @@ math is **ported but unvalidated** without live `simpleFoam`. Wet modes are **in
    case still needs the OF case dir from the **same** dtOO state — port de_framework
    `tistos_files/createStatesAndMeshes.py:CreateMeshes` (`dC.get('tistos_ru_of_n').runCurrentState()`)
    into a CFD-export step so `CFD_CASE_DIR` is populated.
-4. **Wire modal solve through apptainer.** `optimize.py:_run_fenicsx()` calls `docker run`;
-   replace with `apptainer exec --bind "$REPO:/workspace" "$FENICSX_SIF" python3 …`,
-   keeping the `RESULT_JSON` stdout contract. See `cluster/env_notes.md`.
+4. **Adapt the two container backends (the loop is docker-only today).**
+   `turbine_runner/optimize.py` drives both stages with `docker run` — correct locally,
+   wrong on the cluster, which has neither docker image. Two changes needed:
+   - **dtOO → native.** `_run_dtoo()` wraps dtOO in `docker run atismer/...`. On the cluster
+     dtOO is native (`dtOOPythonSWIG` under `source ~/de`): run `python3.12 dtoo_export.py`
+     directly with `DTOO_DESIGN_JSON=$DATA/design.json`, `DTOO_OUTPUT_MSH=$DATA/runner.msh`,
+     `DTOO_CASE_DIR=<staged tistos case>`. No docker.
+   - **fenicsx → apptainer.** `_run_fenicsx()` calls `docker run eigenfrequencies-fenicsx`;
+     replace with `apptainer exec --bind "$REPO:/workspace" "$FENICSX_SIF" python3 …`,
+     keeping the `RESULT_JSON` stdout contract.
+   Cleanest: add a `RUNNER_BACKEND` env switch (`docker` default = local, `native` = cluster)
+   in `optimize.py`; `submit.sh` already assumes the cluster (`native`) path. See
+   `cluster/env_notes.md`. This code is **not testable off-cluster** — validate on first run.
 
 ## 3. Run
 

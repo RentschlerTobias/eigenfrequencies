@@ -61,6 +61,11 @@ CFD math + `tanh` scalarization ported from de_framework `tistos_files/tistosPyB
 - Pre-existing & reused: `solver.py` dry modal, `optimization.py` forbidden-band penalty,
   `dtoo_export.py` mech mesh, `mesh_prep.py`, `evaluate.py`.
 
+### Verified locally (this milestone)
+- Modal solve on the real `runner.msh` → 10 real positive freqs, 1098 clamped DOFs, no rigid-body modes; modes 3/4/5 in `[100,150] Hz` (penalty 22.9).
+- `optimize_multi.py` resonance-only loop ran end to end (7 evals, objective 35.99→34.30, `output/optimization_multi.json`).
+- dry-vs-wet compare: wet < dry; placeholder ~15 % shift moves modes 3/4/5 out of the band.
+
 ### Pending — cluster (handoff)
 - Provision dolfinx via apptainer on bwUniCluster 3.0.
 - Build the dtOO **OF CFD case** from the same state as the mech mesh (extend `dtoo_export.py` /

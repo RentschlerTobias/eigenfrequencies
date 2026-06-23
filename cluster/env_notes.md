@@ -36,6 +36,12 @@ apptainer exec --bind "$REPO:/workspace" "$FENICSX_SIF" \
 Set `FENICSX_IMAGE`/the helper accordingly, or add an `apptainer` branch keyed on
 an env flag (`RUNNER_BACKEND=apptainer`). Keep the `RESULT_JSON` stdout contract.
 
+Likewise `optimize.py:_run_dtoo()` wraps dtOO in `docker run atismer/...` — wrong on
+the cluster, where dtOO is **native** (`dtOOPythonSWIG` under `source ~/de`). Run
+`python3.12 dtoo_export.py` directly with `DTOO_DESIGN_JSON`, `DTOO_OUTPUT_MSH`,
+`DTOO_CASE_DIR` set to the staged paths; no docker. The same `RUNNER_BACKEND` switch
+should select native dtOO vs the local docker image.
+
 ## Distribution pattern (reference, de_framework `start.sh`)
 
 One SLURM allocation; a Pyro5 nameserver (`pyro5-ns`) on the batch node; one worker
