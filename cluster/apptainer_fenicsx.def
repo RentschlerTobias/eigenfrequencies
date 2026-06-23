@@ -1,0 +1,25 @@
+Bootstrap: docker
+From: dolfinx/dolfinx:stable
+
+# Apptainer/Singularity image for the modal (FEniCSx) solve on bwUniCluster 3.0.
+# dolfinx is NOT part of the cluster dtOO+OpenFOAM environment, so the structural
+# eigenfrequency solve runs inside this container while dtOO/simpleFoam run on the
+# host node. Mirrors docker/fenicsx.Dockerfile.
+#
+# Build (on a machine with apptainer + sudo/fakeroot):
+#     apptainer build eigenfrequencies-fenicsx.sif cluster/apptainer_fenicsx.def
+# then copy the .sif to the cluster ($FENICSX_SIF in cluster/submit.sh).
+#
+# Run the headless evaluator (bind the repo so config.py/solver.py are visible):
+#     apptainer exec --bind "$PWD:/workspace" "$FENICSX_SIF" \
+#         python3 /workspace/turbine_runner/evaluate.py /workspace/turbine_runner/data/runner.msh
+
+%post
+    pip install gmsh pygmo matplotlib pyvista scipy plotly
+
+%environment
+    export PYTHONUNBUFFERED=1
+
+%labels
+    Purpose modal-eigenfrequency-solve
+    BasedOn dolfinx/dolfinx:stable

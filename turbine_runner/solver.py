@@ -165,3 +165,15 @@ class RunnerModalSolver:
     def compute_frequencies(eigenvalues: np.ndarray) -> np.ndarray:
         """Convert eigenvalues to frequencies in Hz."""
         return np.sqrt(np.abs(np.real(eigenvalues))) / (2 * np.pi)
+
+    def wet_compare(self, eigenvalues, eigenvectors, wet_cfg) -> dict:
+        """Dry-vs-wet (added-mass) frequency comparison (decision (b), DEFERRED).
+
+        Returns dry + wet frequencies side by side. Uses added_mass.compare, which
+        falls back to a placeholder added-mass ratio until the fluid Laplace solve
+        is implemented (see added_mass.rayleigh_ratios / HANDOFF.md). A static fluid
+        only adds mass; wet frequencies are therefore always <= dry.
+        """
+        from added_mass import compare
+        dry = self.compute_frequencies(eigenvalues)
+        return compare(dry, wet_cfg, mode_shapes=eigenvectors, domain=self.domain)

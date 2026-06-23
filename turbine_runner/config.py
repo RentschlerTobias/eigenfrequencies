@@ -160,6 +160,81 @@ class OptimizationConfig:
 
 
 @dataclass
+class CFDConfig:
+    """Steady-CFD operating point and result-extraction settings.
+
+    The classic hydraulic objectives (efficiency, cavitation volume, design head)
+    come from a steady `simpleFoam` run on the dtOO OF case, exactly as in the
+    de_framework reference (tistos_files/tistosPyBib.py). Values mirror that
+    reference so results are comparable.
+
+    Attributes:
+        omega: Runner angular velocity in rad/s (P = moment * omega)
+        rho: Fluid density in kg/m^3
+        g: Gravitational acceleration in m/s^2
+        design_head: Target design head dH_zul in m (head objective = |dH - design_head|)
+        operating_point: Postprocessing operating-point key (de_framework uses "n")
+        end_time: simpleFoam turbulent-stage endTime (validity = last step == end_time)
+    """
+    omega: float = 7.53982
+    rho: float = 1000.0
+    g: float = 9.81
+    design_head: float = -2.4
+    operating_point: str = "n"
+    end_time: int = 500
+
+
+@dataclass
+class ObjectiveConfig:
+    """Weights for the combined CFD + resonance objective.
+
+    Scalarized (single-objective) to match the de_framework Differential-Evolution
+    setup. The resonance term enters as a constraint/penalty (decision (a)):
+
+        f = w_eta*tanh(eta_term) + w_cav*tanh(Vcav*1e6) + w_head*tanh(head_term)
+            + w_resonance * resonance_penalty
+
+    where resonance_penalty = optimization.compute_penalty(freqs, OptimizationConfig).
+    Lower is better (minimization). resonance_penalty is 0 unless a mode sits in the
+    forbidden band, so it acts as a soft constraint that only bites on violation.
+
+    Attributes:
+        w_eta, w_cav, w_head: weights on the three hydraulic objectives
+        w_resonance: weight on the resonance penalty (the constraint term)
+        mode: "penalty" (soft, additive) or "hard" (large multiplier on violation)
+        hard_penalty: multiplier used when mode == "hard"
+    """
+    w_eta: float = 1.0
+    w_cav: float = 1.0
+    w_head: float = 1.0
+    w_resonance: float = 1.0
+    mode: str = "penalty"
+    hard_penalty: float = 1e6
+
+
+@dataclass
+class WetModeConfig:
+    """Added-mass / wet-mode settings (DEFERRED — interface only).
+
+    Dry modes are computed now; wet (added-mass) modes are a later extension
+    (decision (b)). When `enabled`, the solver also returns wet frequencies and,
+    if `compare_dry_wet`, reports dry and wet side by side so the added-mass shift
+    can be quantified. A static fluid has no resonance of its own; its only modal
+    effect is the inertial added mass that lowers the wet frequencies.
+
+    Attributes:
+        enabled: Compute wet (added-mass) modes in addition to dry
+        compare_dry_wet: Return/report both dry and wet for comparison
+        rho_fluid: Fluid density in kg/m^3 (still water)
+        method: "rayleigh" (per-mode level-1) or "matrix" (coupled added-mass)
+    """
+    enabled: bool = False
+    compare_dry_wet: bool = True
+    rho_fluid: float = 1000.0
+    method: str = "rayleigh"
+
+
+@dataclass
 class OutputConfig:
     """Output options.
 
