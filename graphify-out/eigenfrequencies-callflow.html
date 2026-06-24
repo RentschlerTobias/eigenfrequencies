@@ -1,0 +1,3208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eigenfrequencies — Complete Call Flow &amp; Architecture Documentation</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8;
+  --warn: #fbbf24; --err: #f87171; --ok: #34d399;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+h1 { font-size: 2.4rem; margin-bottom: 8px; background: linear-gradient(135deg, var(--accent), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+h2 { font-size: 1.7rem; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+h3 { font-size: 1.25rem; margin: 32px 0 12px; color: var(--accent); }
+h4 { font-size: 1.05rem; margin: 20px 0 8px; color: var(--warn); }
+p { margin: 8px 0; color: var(--muted); }
+.subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 32px; }
+.mermaid { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; overflow-x: auto; position: relative; }
+.mermaid.is-enhanced { padding: 0; overflow: hidden; min-height: 260px; }
+.mermaid-viewport { padding: 54px 24px 24px; overflow: hidden; cursor: grab; touch-action: none; min-height: 260px; }
+.mermaid-viewport.is-dragging { cursor: grabbing; }
+.mermaid-viewport svg { max-width: none !important; height: auto; transform-origin: 0 0; transition: transform 120ms ease; }
+.mermaid-toolbar { position: absolute; top: 10px; right: 10px; z-index: 3; display: flex; align-items: center; gap: 6px; padding: 6px; background: rgba(15,23,42,0.92); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
+.mermaid-toolbar button, .mermaid-toolbar .zoom-level { height: 28px; min-width: 32px; border: 1px solid var(--border); border-radius: 6px; background: #1e293b; color: var(--text); font: 600 0.78rem system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: center; }
+.mermaid-toolbar button { cursor: pointer; }
+.mermaid-toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+.mermaid-toolbar .zoom-level { min-width: 52px; color: var(--muted); background: transparent; }
+.call-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92rem; }
+.call-table th { background: #1a2744; color: var(--accent); text-align: left; padding: 10px 14px; border: 1px solid var(--border); }
+.call-table td { padding: 8px 14px; border: 1px solid var(--border); vertical-align: top; }
+.call-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+.tag-async { background: #7c3aed33; color: #a78bfa; }
+.tag-class { background: #05966933; color: var(--ok); }
+.tag-func { background: #2563eb33; color: var(--accent); }
+.tag-cmd { background: #d9770633; color: var(--warn); }
+.tag-endpoint { background: #dc262633; color: var(--err); }
+.tag-hook { background: #db277733; color: #f472b6; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; margin: 16px 0; }
+.arrow-chain { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--accent); padding: 10px; background: rgba(56,189,248,0.06); border-radius: 6px; }
+code { font-family: 'Fira Code', 'Cascadia Code', monospace; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-size: 0.88em; }
+ul, ol { margin: 8px 0 8px 24px; color: var(--muted); }
+li { margin: 4px 0; }
+a { color: var(--accent); }
+hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+.nav { position: sticky; top: 0; background: var(--bg); z-index: 10; padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.9rem; }
+.nav a { text-decoration: none; }
+.nav a:hover { text-decoration: underline; }
+@media (max-width: 768px) { .container { padding: 16px; } h1 { font-size: 1.8rem; } }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>eigenfrequencies — Complete Call Flow &amp; Architecture Documentation</h1>
+<p class="subtitle">Generated from graphify knowledge graph: 287 nodes, 405 edges, 22 communities. Commit: 4c0ad01</p>
+
+<div class="nav">
+    <a href="#overview">Architecture Overview</a>
+    <a href="#build-graph">Graph Build</a>
+    <a href="#analysis-clustering">Analysis &amp; Clustering</a>
+    <a href="#cli-skills">CLI &amp; Skill Installers</a>
+    <a href="#serve-api">Serving API</a>
+    <a href="#beam-spline-optimization">Beam Spline Optimization</a>
+    <a href="#runner-config-multi-objective">Runner Config &amp; Multi-Objective</a>
+    <a href="#runner-modal-solver">Runner Modal Solver</a>
+    <a href="#added-mass-wet-modes">Added Mass / Wet Modes</a>
+    <a href="#cfd-evaluation">CFD Evaluation</a>
+    <a href="#container-run-script">Container Run Script</a>
+    <a href="#src-package-init">Src Package Init</a>
+    <a href="#geometry-package">Geometry Package</a>
+    <a href="#optimization-package">Optimization Package</a>
+    <a href="#eigenfrequencies-package">Eigenfrequencies Package</a>
+    <a href="#other">Other</a>
+</div>
+
+<!-- ====== Architecture Overview ====== -->
+<h2 id="overview">1. Architecture Overview</h2>
+
+<div class="mermaid">
+
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    BUILD_GRAPH_321CBB04("Graph Build<br/><small>64 nodes</small>")
+    class BUILD_GRAPH_321CBB04 module;
+    ANALYSIS_CLUSTERING_C79796DA("Analysis &amp; Clustering<br/><small>30 nodes</small>")
+    class ANALYSIS_CLUSTERING_C79796DA module;
+    CLI_SKILLS_9964CBB8("CLI &amp; Skill Installers<br/><small>69 nodes</small>")
+    class CLI_SKILLS_9964CBB8 module;
+    SERVE_API_35EC8E86("Serving API<br/><small>24 nodes</small>")
+    class SERVE_API_35EC8E86 module;
+    BEAM_SPLINE_OPTIMIZATION_9D1CEEB5("Beam Spline Optimization<br/><small>36 nodes</small>")
+    class BEAM_SPLINE_OPTIMIZATION_9D1CEEB5 module;
+    RUNNER_CONFIG_MULTI_OBJECTIVE_12BFCB0D("Runner Config &amp; Multi-Objective<br/><small>23 nodes</small>")
+    class RUNNER_CONFIG_MULTI_OBJECTIVE_12BFCB0D module;
+    RUNNER_MODAL_SOLVER_2A690C5B("Runner Modal Solver<br/><small>14 nodes</small>")
+    class RUNNER_MODAL_SOLVER_2A690C5B module;
+    ADDED_MASS_WET_MODES_EEF9569F("Added Mass / Wet Modes<br/><small>10 nodes</small>")
+    class ADDED_MASS_WET_MODES_EEF9569F module;
+    CFD_EVALUATION_0CFBF9AE("CFD Evaluation<br/><small>8 nodes</small>")
+    class CFD_EVALUATION_0CFBF9AE module;
+    CONTAINER_RUN_SCRIPT_BBD6099C("Container Run Script<br/><small>2 nodes</small>")
+    class CONTAINER_RUN_SCRIPT_BBD6099C module;
+    SRC_PACKAGE_INIT_BFC14828("Src Package Init<br/><small>2 nodes</small>")
+    class SRC_PACKAGE_INIT_BFC14828 module;
+    GEOMETRY_PACKAGE_3A06E1B9("Geometry Package<br/><small>1 nodes</small>")
+    class GEOMETRY_PACKAGE_3A06E1B9 module;
+    OPTIMIZATION_PACKAGE_B00506A3("Optimization Package<br/><small>1 nodes</small>")
+    class OPTIMIZATION_PACKAGE_B00506A3 module;
+    EIGENFREQUENCIES_PACKAGE_B9A9346F("Eigenfrequencies Package<br/><small>1 nodes</small>")
+    class EIGENFREQUENCIES_PACKAGE_B9A9346F module;
+    OTHER_D0941E68("Other<br/><small>2 nodes</small>")
+    class OTHER_D0941E68 module;
+    BEAM_SPLINE_OPTIMIZATION_9D1CEEB5 -->|references x6| CLI_SKILLS_9964CBB8
+    BEAM_SPLINE_OPTIMIZATION_9D1CEEB5 -->|references x4| BUILD_GRAPH_321CBB04
+    BUILD_GRAPH_321CBB04 -->|contains x3| BEAM_SPLINE_OPTIMIZATION_9D1CEEB5
+    RUNNER_CONFIG_MULTI_OBJECTIVE_12BFCB0D -->|contains x3| CLI_SKILLS_9964CBB8
+    BEAM_SPLINE_OPTIMIZATION_9D1CEEB5 -->|references x2| ADDED_MASS_WET_MODES_EEF9569F
+    BEAM_SPLINE_OPTIMIZATION_9D1CEEB5 -->|references x2| RUNNER_MODAL_SOLVER_2A690C5B
+    CLI_SKILLS_9964CBB8 -->|references x2| ANALYSIS_CLUSTERING_C79796DA
+    CLI_SKILLS_9964CBB8 -->|calls x2| SERVE_API_35EC8E86
+    CLI_SKILLS_9964CBB8 -->|contains x2| BUILD_GRAPH_321CBB04
+    SERVE_API_35EC8E86 -->|references x2| ANALYSIS_CLUSTERING_C79796DA
+    CLI_SKILLS_9964CBB8 -->|references| BEAM_SPLINE_OPTIMIZATION_9D1CEEB5
+    BEAM_SPLINE_OPTIMIZATION_9D1CEEB5 -->|references| ANALYSIS_CLUSTERING_C79796DA
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h4>Architecture Layers</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
+      <tr><td>Graph Build</td><td>64</td><td><code>0, 6, 14</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>30</td><td><code>7, 10, 12</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>69</td><td><code>1, 3, 13</code></td></tr><tr><td>Serving API</td><td>24</td><td><code>4</code></td></tr><tr><td>Beam Spline Optimization</td><td>36</td><td><code>2</code></td></tr><tr><td>Runner Config &amp; Multi-Objective</td><td>23</td><td><code>5</code></td></tr><tr><td>Runner Modal Solver</td><td>14</td><td><code>8</code></td></tr><tr><td>Added Mass / Wet Modes</td><td>10</td><td><code>9</code></td></tr><tr><td>CFD Evaluation</td><td>8</td><td><code>11</code></td></tr><tr><td>Container Run Script</td><td>2</td><td><code>15</code></td></tr><tr><td>Src Package Init</td><td>2</td><td><code>16</code></td></tr><tr><td>Geometry Package</td><td>1</td><td><code>17</code></td></tr><tr><td>Optimization Package</td><td>1</td><td><code>18</code></td></tr><tr><td>Eigenfrequencies Package</td><td>1</td><td><code>19</code></td></tr><tr><td>Other</td><td>2</td><td><code>20, 21</code></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Core Flow</h4>
+    <div class="arrow-chain">Runner Config &amp; Multi-Objective -&gt; CLI &amp; Skill Installers -&gt; Serving API -&gt; Analysis &amp; Clustering -&gt; Graph Build -&gt; Beam Spline Optimization -&gt; Runner Modal Solver</div>
+  </div>
+</div>
+<div class="grid">
+  <div class="card">
+    <h4>Graph Report Highlights</h4>
+    <ul>
+      <li>287 nodes · 405 edges · 22 communities (18 shown, 4 thin omitted)</li>
+      <li>Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 66 edges (avg confidence: 0.75)</li>
+      <li>Token cost: 46,856 input · 0 output</li>
+      <li>1. `BeamConfig` - 23 edges</li>
+      <li>2. `ModalSolver` - 18 edges</li>
+      <li>3. `BeamTUI` - 12 edges</li>
+    </ul>
+  </div>
+</div>
+<hr>
+<!-- ====== 2. Graph Build ====== -->
+<h2 id="build-graph">2. Graph Build</h2>
+<p>Graph Build groups implementation around beam, demo, runner, turbine, mostly in demo/beam/tui.py, demo/beam/solver.py, demo/beam/config.py. This section covers 64 nodes and 80 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Graph Build (64 nodes, 80 edges)
+    subgraph build_graph_demo_beam_tui_py_afad761f["demo/beam/tui.py"]
+        beam_tui_beamtui_be98fc03("BeamTUI<br/><small>demo/beam/tui.py</small>")
+        beam_tui_analytical_frequencies_cb214d7c("analytical_frequencies()<br/><small>demo/beam/tui.py</small>")
+        beam_tui_build_configs_74dfe9ba("build_configs()<br/><small>demo/beam/tui.py</small>")
+        beam_tui_tuiconfig_37b86cfc("TUIConfig<br/><small>demo/beam/tui.py</small>")
+        beam_tui_beamtui_run_simulation_3ef829ee("run_simulation()<br/><small>demo/beam/tui.py</small>")
+        beam_tui_beamtui_compose_b9e89454("compose()<br/><small>demo/beam/tui.py</small>")
+        beam_tui_beamtui_on_button_pressed_eb9c85dd("on_button_pressed()<br/><small>demo/beam/tui.py</small>")
+        beam_tui_beamtui_write_log_df2853fa("write_log()<br/><small>demo/beam/tui.py</small>")
+        beam_tui_main_79579e12("main()<br/><small>demo/beam/tui.py</small>")
+    end
+    subgraph build_graph_demo_beam_solver_py_7576808f["demo/beam/solver.py"]
+        beam_solver_modalsolver_d9ca1f55("ModalSolver<br/><small>demo/beam/solver.py</small>")
+        beam_solver_modalsolver_apply_bc_a856edfb("apply_bc()<br/><small>demo/beam/solver.py</small>")
+        beam_solver_modalsolver_compute_frequencies_6dca2602("compute_frequencies()<br/><small>demo/beam/solver.py</small>")
+        beam_solver_modalsolver_create_mesh_d1413287("create_mesh()<br/><small>demo/beam/solver.py</small>")
+        beam_solver_modalsolver_save_results_1445899f("save_results()<br/><small>demo/beam/solver.py</small>")
+        beam_solver_modalsolver_solve_797f2646("solve()<br/><small>demo/beam/solver.py</small>")
+    end
+    subgraph build_graph_turbine_runner_objective_py_a015b663["turbine_runner/objective.py"]
+        turbine_runner_objective_cfd_scalar_38f8278b("cfd_scalar()<br/><small>turbine_runner/objective.py</small>")
+        turbine_runner_objective_combined_objective_3b1db3fc("combined_objective()<br/><small>turbine_runner/objective.py</small>")
+        turbine_runner_objective_resonance_term_af825d38("resonance_term()<br/><small>turbine_runner/objective.py</small>")
+    end
+    beam_solver_modalsolver_d9ca1f55 -->|method| beam_solver_modalsolver_apply_bc_a856edfb
+    beam_solver_modalsolver_d9ca1f55 -->|method| beam_solver_modalsolver_compute_frequencies_6dca2602
+    beam_solver_modalsolver_d9ca1f55 -->|method| beam_solver_modalsolver_create_mesh_d1413287
+    beam_solver_modalsolver_d9ca1f55 -->|method| beam_solver_modalsolver_save_results_1445899f
+    beam_solver_modalsolver_d9ca1f55 -->|method| beam_solver_modalsolver_solve_797f2646
+    beam_solver_modalsolver_create_mesh_d1413287 -->|calls| beam_solver_modalsolver_solve_797f2646
+    beam_solver_modalsolver_apply_bc_a856edfb -->|calls| beam_solver_modalsolver_solve_797f2646
+    beam_tui_tuiconfig_37b86cfc -->|calls| beam_tui_beamtui_run_simulation_3ef829ee
+    beam_tui_build_configs_74dfe9ba -->|calls| beam_tui_beamtui_run_simulation_3ef829ee
+    beam_tui_analytical_frequencies_cb214d7c -->|calls| beam_tui_beamtui_run_simulation_3ef829ee
+    beam_tui_beamtui_be98fc03 -->|method| beam_tui_beamtui_compose_b9e89454
+    beam_tui_beamtui_be98fc03 -->|method| beam_tui_beamtui_on_button_pressed_eb9c85dd
+    beam_tui_beamtui_be98fc03 -->|method| beam_tui_beamtui_run_simulation_3ef829ee
+    beam_tui_beamtui_be98fc03 -->|method| beam_tui_beamtui_write_log_df2853fa
+    beam_tui_beamtui_be98fc03 -->|calls| beam_tui_main_79579e12
+    beam_tui_beamtui_on_button_pressed_eb9c85dd -->|calls| beam_tui_beamtui_run_simulation_3ef829ee
+    beam_tui_beamtui_write_log_df2853fa -->|calls| beam_tui_beamtui_run_simulation_3ef829ee
+    turbine_runner_objective_cfd_scalar_38f8278b -->|calls| turbine_runner_objective_combined_objective_3b1db3fc
+    turbine_runner_objective_resonance_term_af825d38 -->|calls| turbine_runner_objective_combined_objective_3b1db3fc
+    %% Omitted for readability: 46 nodes, 0 edges
+    class beam_tui_beamtui_be98fc03 klass;
+    class beam_tui_analytical_frequencies_cb214d7c function;
+    class beam_tui_build_configs_74dfe9ba function;
+    class beam_tui_tuiconfig_37b86cfc klass;
+    class beam_tui_beamtui_run_simulation_3ef829ee function;
+    class beam_tui_beamtui_compose_b9e89454 function;
+    class beam_tui_beamtui_on_button_pressed_eb9c85dd async;
+    class beam_tui_beamtui_write_log_df2853fa function;
+    class beam_tui_main_79579e12 function;
+    class beam_solver_modalsolver_d9ca1f55 klass;
+    class beam_solver_modalsolver_apply_bc_a856edfb function;
+    class beam_solver_modalsolver_compute_frequencies_6dca2602 function;
+    class beam_solver_modalsolver_create_mesh_d1413287 function;
+    class beam_solver_modalsolver_save_results_1445899f function;
+    class beam_solver_modalsolver_solve_797f2646 function;
+    class turbine_runner_objective_cfd_scalar_38f8278b function;
+    class turbine_runner_objective_combined_objective_3b1db3fc function;
+    class turbine_runner_objective_resonance_term_af825d38 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>config.py</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in demo/beam/config.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>SolverConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>BeamTUI</code><br><small style="color:var(--muted)">demo/beam/tui.py</small><br><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small><br><code>TUIConfig</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>OptimizationConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>OutputConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>BeamTUI</code><br><small style="color:var(--muted)">demo/beam/tui.py</small><br><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small><br><code>TUIConfig</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>Beam configuration parameters for modal analysis.</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Beam configuration parameters for modal analysis..</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>Configuration for the modal solver.      Attributes:         freq_min: Minimum f</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Configuration for the modal solver.      Attributes:         freq_min: Minimum f.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>Configuration for optimization.      Attributes:         f_min: Lower frequency</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Configuration for optimization.      Attributes:         f_min: Lower frequency.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>Configuration for output options.      Attributes:         save_vtk: Save result</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Configuration for output options.      Attributes:         save_vtk: Save result.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>solver.py</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in demo/beam/solver.py.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>OutputConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small><br><code>SolverConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><code>apply_bc()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small><br><code>BeamTUI</code><br><small style="color:var(--muted)">demo/beam/tui.py</small><br><code>compute_frequencies()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small><br>+5 more</td>
+  <td>ModalSolver node in demo/beam/solver.py.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>.create_mesh()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><code>solve()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td>.create_mesh() node in demo/beam/solver.py.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>Mesh</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Mesh node in project.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>.apply_bc()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><code>solve()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td>.apply_bc() node in demo/beam/solver.py.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>FunctionSpace</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>FunctionSpace node in project.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>.solve()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>apply_bc()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small><br><code>create_mesh()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small><br><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.solve() node in demo/beam/solver.py.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>.compute_frequencies()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.compute_frequencies() node in demo/beam/solver.py.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>.save_results()</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.save_results() node in demo/beam/solver.py.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>FEniCSx modal analysis solver for eigenfrequency computation.</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for FEniCSx modal analysis solver for eigenfrequency computation..</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>Modal analysis solver using FEniCSx and SLEPc.</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Modal analysis solver using FEniCSx and SLEPc..</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>Load mesh from Gmsh .msh file.</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Load mesh from Gmsh .msh file..</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>Apply boundary conditions based on boundary_type.          Args:             V:</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Apply boundary conditions based on boundary_type.          Args:             V:.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>Solve the modal analysis problem.          Returns:             Tuple of (eigenv</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Solve the modal analysis problem.          Returns:             Tuple of (eigenv.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>Convert eigenvalues to frequencies in Hz.</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Convert eigenvalues to frequencies in Hz..</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>Save results to files.</code><br><small style="color:var(--muted)">demo/beam/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Save results to files..</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>tui.py</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in demo/beam/tui.py.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>TUIConfig</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small><br><code>OutputConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small><br><code>SolverConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><code>run_simulation()</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>build_configs()</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>run_simulation()</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>analytical_frequencies()</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>run_simulation()</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td>Orchestrates analysis and returns structured documentation data.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>BeamTUI</code><br><small style="color:var(--muted)">demo/beam/tui.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>ModalSolver</code><br><small style="color:var(--muted)">demo/beam/solver.py</small><br><code>OutputConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small><br><code>SolverConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><code>compose()</code><br><small style="color:var(--muted)">demo/beam/tui.py</small><br><code>main()</code><br><small style="color:var(--muted)">demo/beam/tui.py</small><br><code>on_button_pressed()</code><br><small style="color:var(--muted)">demo/beam/tui.py</small><br>+2 more</td>
+  <td>BeamTUI node in demo/beam/tui.py.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>App</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>App node in project.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>demo/beam/tui.py</code></td><td>15 nodes</td></tr>
+<tr><td><code>demo/beam/solver.py</code></td><td>14 nodes</td></tr>
+<tr><td><code>demo/beam/config.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>turbine_runner/objective.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>turbine_runner/optimization.py</code></td><td>6 nodes</td></tr>
+<tr><td><code>turbine_runner/optimize.py</code></td><td>4 nodes</td></tr>
+<tr><td><code>scripts/build_container.sh</code></td><td>2 nodes</td></tr>
+<tr><td><code>turbine_runner/optimize_multi.py</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x26, contains x15, calls x10, method x9. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 3. Analysis & Clustering ====== -->
+<h2 id="analysis-clustering">3. Analysis &amp; Clustering</h2>
+<p>Analysis &amp; Clustering groups implementation around cluster, xdmf, mesh, submitsh, mostly in src/io/__init__.py, documentation.md, HANDOFF.md. This section covers 30 nodes and 33 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Analysis &amp; Clustering (30 nodes, 33 edges)
+    subgraph analysis_clustering_cluster_submit_sh_dece7b93["cluster/submit.sh"]
+        cluster_submit_94fd6517("submit.sh")
+        cluster_submit_fenicsx_sif_c9facb82("FENICSX_SIF<br/><small>cluster/submit.sh</small>")
+        cluster_submit_foam_sigfpe_d15ab212("FOAM_SIGFPE<br/><small>cluster/submit.sh</small>")
+        cluster_submit_oslo_lock_path_6d1b0132("OSLO_LOCK_PATH<br/><small>cluster/submit.sh</small>")
+        root_repos_eigenfrequencies_cluster_submit_sh_en_0ae1eaec("submit.sh script<br/><small>cluster/submit.sh</small>")
+    end
+    subgraph analysis_clustering_documentation_md_abc770e4["documentation.md"]
+        documentation_project_doc_ee938077("Project Documentation — Eigenfrequency...<br/><small>documentation.md</small>")
+        documentation_tanh_scalarization_ef14e55d("tanh scalarized combined objective<br/><small>documentation.md</small>")
+        documentation_added_mass_wet_modes_ec224700("Added mass / wet modes (20-40% frequenc...<br/><small>documentation.md</small>")
+        documentation_blade_passing_excitation_9dece708("Kinematic blade-passing excitation (Z_g...<br/><small>documentation.md</small>")
+        documentation_fsi_helmholtz_1f9a80ab("FSI Helmholtz-acoustic ↔ elasticity cou...<br/><small>documentation.md</small>")
+    end
+    subgraph analysis_clustering_cluster_env_notes_md_bc703a1e["cluster/env_notes.md"]
+        env_notes_cluster_env_2ebaaebe("bwUniCluster 3.0 Environment Notes<br/><small>cluster/env_notes.md</small>")
+        env_notes_dtoo_openfoam_stack_28854001("dtOO + OpenFOAM stack<br/><small>cluster/env_notes.md</small>")
+        env_notes_fenicsx_dolfinx_stack_045ec660("FEniCSx / dolfinx stack (apptainer)<br/><small>cluster/env_notes.md</small>")
+    end
+    subgraph analysis_clustering_src_io_init_py_e561d10b["src/io/__init__.py"]
+        io_init_45679f89("__init__.py")
+        io_init_mesh_to_xdmf_f2feef7c("mesh_to_xdmf()<br/><small>src/io/__init__.py</small>")
+        io_init_read_xdmf_mesh_6c4d91cc("read_xdmf_mesh()<br/><small>src/io/__init__.py</small>")
+    end
+    subgraph analysis_clustering_HANDOFF_md_ffb895ba["HANDOFF.md"]
+        handoff_cluster_handoff_e8b684b2("Cluster Testing Handoff (CFD + Eigenfre...<br/><small>HANDOFF.md</small>")
+        handoff_de_framework_reference_6093c2d1("de_framework reference optimization (or...<br/><small>HANDOFF.md</small>")
+    end
+    cluster_submit_94fd6517 -->|defines| cluster_submit_fenicsx_sif_c9facb82
+    cluster_submit_94fd6517 -->|defines| cluster_submit_foam_sigfpe_d15ab212
+    cluster_submit_94fd6517 -->|defines| cluster_submit_oslo_lock_path_6d1b0132
+    handoff_cluster_handoff_e8b684b2 -->|references| documentation_project_doc_ee938077
+    handoff_cluster_handoff_e8b684b2 -->|references| env_notes_cluster_env_2ebaaebe
+    handoff_cluster_handoff_e8b684b2 -->|references| handoff_de_framework_reference_6093c2d1
+    handoff_de_framework_reference_6093c2d1 -->|references| documentation_project_doc_ee938077
+    handoff_de_framework_reference_6093c2d1 -->|references| documentation_tanh_scalarization_ef14e55d
+    env_notes_cluster_env_2ebaaebe -->|references| env_notes_dtoo_openfoam_stack_28854001
+    env_notes_cluster_env_2ebaaebe -->|references| env_notes_fenicsx_dolfinx_stack_045ec660
+    documentation_project_doc_ee938077 -->|references| documentation_added_mass_wet_modes_ec224700
+    documentation_project_doc_ee938077 -->|references| documentation_blade_passing_excitation_9dece708
+    documentation_project_doc_ee938077 -->|references| documentation_fsi_helmholtz_1f9a80ab
+    documentation_project_doc_ee938077 -->|references| documentation_tanh_scalarization_ef14e55d
+    documentation_added_mass_wet_modes_ec224700 -->|relates| documentation_fsi_helmholtz_1f9a80ab
+    cluster_submit_94fd6517 -->|contains| root_repos_eigenfrequencies_cluster_submit_sh_en_0ae1eaec
+    io_init_45679f89 -->|contains| io_init_mesh_to_xdmf_f2feef7c
+    io_init_45679f89 -->|contains| io_init_read_xdmf_mesh_6c4d91cc
+    %% Omitted for readability: 12 nodes, 0 edges
+    class cluster_submit_94fd6517 function;
+    class cluster_submit_fenicsx_sif_c9facb82 klass;
+    class cluster_submit_foam_sigfpe_d15ab212 klass;
+    class cluster_submit_oslo_lock_path_6d1b0132 klass;
+    class root_repos_eigenfrequencies_cluster_submit_sh_en_0ae1eaec function;
+    class documentation_project_doc_ee938077 concept;
+    class documentation_tanh_scalarization_ef14e55d function;
+    class documentation_added_mass_wet_modes_ec224700 klass;
+    class documentation_blade_passing_excitation_9dece708 klass;
+    class documentation_fsi_helmholtz_1f9a80ab klass;
+    class env_notes_cluster_env_2ebaaebe concept;
+    class env_notes_dtoo_openfoam_stack_28854001 function;
+    class env_notes_fenicsx_dolfinx_stack_045ec660 klass;
+    class io_init_45679f89 module;
+    class io_init_mesh_to_xdmf_f2feef7c function;
+    class io_init_read_xdmf_mesh_6c4d91cc function;
+    class handoff_cluster_handoff_e8b684b2 concept;
+    class handoff_de_framework_reference_6093c2d1 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>Cluster Testing Handoff (CFD + Eigenfrequency Runner)</code><br><small style="color:var(--muted)">HANDOFF.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Cluster Testing Handoff (CFD + Eigenfrequency Runner).</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>cfd-eigenfreq-multiobjective branch</code><br><small style="color:var(--muted)">HANDOFF.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing cfd-eigenfreq-multiobjective branch.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>RUNNER_BACKEND env switch (docker vs native/apptainer)</code><br><small style="color:var(--muted)">HANDOFF.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for RUNNER_BACKEND env switch (docker vs native/apptainer).</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>Physical validation checklist</code><br><small style="color:var(--muted)">HANDOFF.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Physical validation checklist.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>de_framework reference optimization (origin/bwCl)</code><br><small style="color:var(--muted)">HANDOFF.md</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>de_framework reference optimization (origin/bwCl) node in HANDOFF.md.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>bwUniCluster 3.0 Environment Notes</code><br><small style="color:var(--muted)">cluster/env_notes.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing bwUniCluster 3.0 Environment Notes.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>dtOO + OpenFOAM stack</code><br><small style="color:var(--muted)">cluster/env_notes.md</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>dtOO + OpenFOAM stack node in cluster/env_notes.md.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>FEniCSx / dolfinx stack (apptainer)</code><br><small style="color:var(--muted)">cluster/env_notes.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>FEniCSx / dolfinx stack (apptainer) node in cluster/env_notes.md.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>Two disjoint software stacks per evaluation</code><br><small style="color:var(--muted)">cluster/env_notes.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Two disjoint software stacks per evaluation.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>Pyro5 nameserver distribution pattern (de_framework)</code><br><small style="color:var(--muted)">cluster/env_notes.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Pyro5 nameserver distribution pattern (de_framework) node in cluster/env_notes.md.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>Project Documentation — Eigenfrequency Shape-Optimization Objective</code><br><small style="color:var(--muted)">documentation.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Project Documentation — Eigenfrequency Shape-Optimization Objective.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>Added mass / wet modes (20-40% frequency drop)</code><br><small style="color:var(--muted)">documentation.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Added mass / wet modes (20-40% frequency drop) node in documentation.md.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>Resonance penalty as constraint objective</code><br><small style="color:var(--muted)">documentation.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Resonance penalty as constraint objective.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Kinematic blade-passing excitation (Z_guidevanes·n)</code><br><small style="color:var(--muted)">documentation.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Kinematic blade-passing excitation (Z_guidevanes·n) node in documentation.md.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>FSI Helmholtz-acoustic ↔ elasticity coupling (deferred)</code><br><small style="color:var(--muted)">documentation.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>FSI Helmholtz-acoustic ↔ elasticity coupling (deferred) node in documentation.md.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>tanh scalarized combined objective</code><br><small style="color:var(--muted)">documentation.md</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>tanh scalarized combined objective node in documentation.md.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>BCConfig hub clamp / axis discovery</code><br><small style="color:var(--muted)">turbine_runner/README.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for BCConfig hub clamp / axis discovery.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>__init__.py</code><br><small style="color:var(--muted)">src/io/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in src/io/__init__.py.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>mesh_to_xdmf()</code><br><small style="color:var(--muted)">src/io/__init__.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>mesh_to_xdmf() node in src/io/__init__.py.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>read_xdmf_mesh()</code><br><small style="color:var(--muted)">src/io/__init__.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>read_xdmf_mesh() node in src/io/__init__.py.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>write_results_xdmf()</code><br><small style="color:var(--muted)">src/io/__init__.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>write_results_xdmf() node in src/io/__init__.py.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>XDMF IO utilities for mesh and results handling.</code><br><small style="color:var(--muted)">src/io/__init__.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for XDMF IO utilities for mesh and results handling..</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>Convert mesh file to XDMF format.      Args:         mesh_file: Path to mesh fil</code><br><small style="color:var(--muted)">src/io/__init__.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Convert mesh file to XDMF format.      Args:         mesh_file: Path to mesh fil.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>Read mesh from XDMF file using dolfinx.      Args:         xdmf_file: Path to XD</code><br><small style="color:var(--muted)">src/io/__init__.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Read mesh from XDMF file using dolfinx.      Args:         xdmf_file: Path to XD.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>Write modal analysis results to XDMF file.      Args:         frequencies: Array</code><br><small style="color:var(--muted)">src/io/__init__.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Write modal analysis results to XDMF file.      Args:         frequencies: Array.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>submit.sh</code><br><small style="color:var(--muted)">cluster/submit.sh</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>submit.sh node in cluster/submit.sh.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>submit.sh script</code><br><small style="color:var(--muted)">cluster/submit.sh</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>submit.sh script node in cluster/submit.sh.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>OSLO_LOCK_PATH</code><br><small style="color:var(--muted)">cluster/submit.sh</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>OSLO_LOCK_PATH node in cluster/submit.sh.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>FOAM_SIGFPE</code><br><small style="color:var(--muted)">cluster/submit.sh</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>FOAM_SIGFPE node in cluster/submit.sh.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>FENICSX_SIF</code><br><small style="color:var(--muted)">cluster/submit.sh</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>FENICSX_SIF node in cluster/submit.sh.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/io/__init__.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>documentation.md</code></td><td>6 nodes</td></tr>
+<tr><td><code>HANDOFF.md</code></td><td>5 nodes</td></tr>
+<tr><td><code>cluster/env_notes.md</code></td><td>5 nodes</td></tr>
+<tr><td><code>cluster/submit.sh</code></td><td>5 nodes</td></tr>
+<tr><td><code>turbine_runner/README.md</code></td><td>1 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: references x16, explains x6, contains x4, relates x4. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 4. CLI & Skill Installers ====== -->
+<h2 id="cli-skills">4. CLI &amp; Skill Installers</h2>
+<p>CLI &amp; Skill Installers groups implementation around beam, runner, turbine, demo, mostly in turbine_runner/mesh_prep.py, demo/beam/beam_fem_validation.py, demo/beam/euler_analytical.py. This section covers 69 nodes and 89 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: CLI &amp; Skill Installers (69 nodes, 89 edges)
+    subgraph cli_skills_turbine_runner_mesh_prep_py_c1d4a3ba["turbine_runner/mesh_prep.py"]
+        turbine_runner_mesh_prep_read_msh_8e0bb309("_read_msh()<br/><small>turbine_runner/mesh_prep.py</small>")
+        turbine_runner_mesh_prep_inspect_mesh_2b035344("inspect_mesh()<br/><small>turbine_runner/mesh_prep.py</small>")
+        turbine_runner_mesh_prep_load_and_prepare_mesh_28bf732d("load_and_prepare_mesh()<br/><small>turbine_runner/mesh_prep.py</small>")
+        turbine_runner_mesh_prep_volume_mesh_from_cad_8211a22e("_volume_mesh_from_cad()<br/><small>turbine_runner/mesh_prep.py</small>")
+        turbine_runner_mesh_prep_volume_mesh_from_surfac_e79f2e65("_volume_mesh_from_surface()<br/><small>turbine_runner/mesh_prep.py</small>")
+    end
+    subgraph cli_skills_demo_beam_beam_fem_validation_py_38692b52["demo/beam/beam_fem_validation.py"]
+        beam_beam_fem_validation_classify_mode_6fc81570("classify_mode()<br/><small>demo/beam/beam_fem_validation.py</small>")
+        beam_beam_fem_validation_plotly_dashboard_2c77ba31("plotly_dashboard()<br/><small>demo/beam/beam_fem_validation.py</small>")
+        beam_beam_fem_validation_main_663c3dd1("main()<br/><small>demo/beam/beam_fem_validation.py</small>")
+    end
+    subgraph cli_skills_demo_beam_geometry_py_430b6df6["demo/beam/geometry.py"]
+        beam_geometry_create_rectangular_beam_5ca100c1("create_rectangular_beam()<br/><small>demo/beam/geometry.py</small>")
+        beam_geometry_generate_mesh_8984d16e("generate_mesh()<br/><small>demo/beam/geometry.py</small>")
+        beam_geometry_beam_to_xdmf_b8b559cc("beam_to_xdmf()<br/><small>demo/beam/geometry.py</small>")
+    end
+    subgraph cli_skills_turbine_runner_main_py_a0307ae7["turbine_runner/main.py"]
+        turbine_runner_main_e448fdd8("main.py")
+        turbine_runner_main_main_fa4c7e80("main()<br/><small>turbine_runner/main.py</small>")
+        turbine_runner_main_write_results_7b9a5d5c("_write_results()<br/><small>turbine_runner/main.py</small>")
+    end
+    subgraph cli_skills_demo_beam_euler_analytical_py_a1021feb["demo/beam/euler_analytical.py"]
+        beam_euler_analytical_compute_alpha_values_ce6d1431("compute_alpha_values()<br/><small>demo/beam/euler_analytical.py</small>")
+        beam_euler_analytical_analytical_frequencies_can_44721967("analytical frequencies cantilever()<br/><small>demo/beam/euler_analytical.py</small>")
+    end
+    subgraph cli_skills_turbine_runner_dtoo_export_py_ea435c68["turbine_runner/dtoo_export.py"]
+        turbine_runner_dtoo_export_load_design_82df7f0e("_load_design()<br/><small>turbine_runner/dtoo_export.py</small>")
+        turbine_runner_dtoo_export_main_7f4cec60("main()<br/><small>turbine_runner/dtoo_export.py</small>")
+    end
+    beam_beam_fem_validation_classify_mode_6fc81570 -->|calls| beam_beam_fem_validation_main_663c3dd1
+    beam_beam_fem_validation_plotly_dashboard_2c77ba31 -->|calls| beam_beam_fem_validation_main_663c3dd1
+    beam_euler_analytical_compute_alpha_values_ce6d1431 -->|calls| beam_euler_analytical_analytical_frequencies_can_44721967
+    beam_geometry_create_rectangular_beam_5ca100c1 -->|calls| beam_geometry_generate_mesh_8984d16e
+    beam_geometry_generate_mesh_8984d16e -->|calls| beam_geometry_beam_to_xdmf_b8b559cc
+    turbine_runner_dtoo_export_load_design_82df7f0e -->|calls| turbine_runner_dtoo_export_main_7f4cec60
+    turbine_runner_main_main_fa4c7e80 -->|calls| turbine_runner_main_write_results_7b9a5d5c
+    turbine_runner_mesh_prep_read_msh_8e0bb309 -->|calls| turbine_runner_mesh_prep_inspect_mesh_2b035344
+    turbine_runner_mesh_prep_read_msh_8e0bb309 -->|calls| turbine_runner_mesh_prep_load_and_prepare_mesh_28bf732d
+    turbine_runner_mesh_prep_volume_mesh_from_cad_8211a22e -->|calls| turbine_runner_mesh_prep_load_and_prepare_mesh_28bf732d
+    turbine_runner_mesh_prep_volume_mesh_from_surfac_e79f2e65 -->|calls| turbine_runner_mesh_prep_load_and_prepare_mesh_28bf732d
+    %% Omitted for readability: 51 nodes, 0 edges
+    class turbine_runner_mesh_prep_read_msh_8e0bb309 function;
+    class turbine_runner_mesh_prep_inspect_mesh_2b035344 function;
+    class turbine_runner_mesh_prep_load_and_prepare_mesh_28bf732d function;
+    class turbine_runner_mesh_prep_volume_mesh_from_cad_8211a22e function;
+    class turbine_runner_mesh_prep_volume_mesh_from_surfac_e79f2e65 function;
+    class beam_beam_fem_validation_classify_mode_6fc81570 function;
+    class beam_beam_fem_validation_plotly_dashboard_2c77ba31 function;
+    class beam_beam_fem_validation_main_663c3dd1 function;
+    class beam_geometry_create_rectangular_beam_5ca100c1 function;
+    class beam_geometry_generate_mesh_8984d16e function;
+    class beam_geometry_beam_to_xdmf_b8b559cc function;
+    class turbine_runner_main_e448fdd8 module;
+    class turbine_runner_main_main_fa4c7e80 function;
+    class turbine_runner_main_write_results_7b9a5d5c function;
+    class beam_euler_analytical_compute_alpha_values_ce6d1431 function;
+    class beam_euler_analytical_analytical_frequencies_can_44721967 function;
+    class turbine_runner_dtoo_export_load_design_82df7f0e function;
+    class turbine_runner_dtoo_export_main_7f4cec60 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>MaterialConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>evaluate()</code><br><small style="color:var(--muted)">turbine_runner/evaluate.py</small><br><code>main()</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>BCConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>evaluate()</code><br><small style="color:var(--muted)">turbine_runner/evaluate.py</small><br><code>main()</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>MeshConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>evaluate()</code><br><small style="color:var(--muted)">turbine_runner/evaluate.py</small><br><code>main()</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>Runner material properties.      Defaults are structural steel. Unlike the beam</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Runner material properties.      Defaults are structural steel. Unlike the beam.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>Coordinate-region clamp at the runner hub.      The runner is fixed where it con</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Coordinate-region clamp at the runner hub.      The runner is fixed where it con.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>Mesh input and volume-meshing fallback options.      Attributes:         msh_pat</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Mesh input and volume-meshing fallback options.      Attributes:         msh_pat.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>dtoo_export.py</code><br><small style="color:var(--muted)">turbine_runner/dtoo_export.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>optimize.py</code><br><small style="color:var(--muted)">turbine_runner/optimize.py</small></td>
+  <td>Module file in turbine_runner/dtoo_export.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>_load_design()</code><br><small style="color:var(--muted)">turbine_runner/dtoo_export.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>main()</code><br><small style="color:var(--muted)">turbine_runner/dtoo_export.py</small></td>
+  <td>_load_design() node in turbine_runner/dtoo_export.py.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>main()</code><br><small style="color:var(--muted)">turbine_runner/dtoo_export.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_load_design()</code><br><small style="color:var(--muted)">turbine_runner/dtoo_export.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>main() node in turbine_runner/dtoo_export.py.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>Read the {label: value} design dict, or {} for the baseline geometry.</code><br><small style="color:var(--muted)">turbine_runner/dtoo_export.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Read the {label: value} design dict, or {} for the baseline geometry..</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>evaluate.py</code><br><small style="color:var(--muted)">turbine_runner/evaluate.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in turbine_runner/evaluate.py.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>evaluate()</code><br><small style="color:var(--muted)">turbine_runner/evaluate.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>BCConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br><code>MaterialConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br><code>MeshConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><code>load_and_prepare_mesh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td>evaluate() node in turbine_runner/evaluate.py.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>Headless frequency evaluation for the optimizer (runs in the fenicsx container).</code><br><small style="color:var(--muted)">turbine_runner/evaluate.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Headless frequency evaluation for the optimizer (runs in the fenicsx container)..</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>main.py</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>mesh_prep.py</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small><br><code>optimize.py</code><br><small style="color:var(--muted)">turbine_runner/optimize.py</small></td>
+  <td>Module file in turbine_runner/main.py.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>main()</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>BCConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br><code>MaterialConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br><code>MeshConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><code>_write_results()</code><br><small style="color:var(--muted)">turbine_runner/main.py</small><br><code>load_and_prepare_mesh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td>main() node in turbine_runner/main.py.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>_write_results()</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>main()</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>_write_results() node in turbine_runner/main.py.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>STAGE 2: compute turbine runner eigenfrequencies from a dtOO mesh.  Wires mesh_p</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for STAGE 2: compute turbine runner eigenfrequencies from a dtOO mesh.  Wires mesh_p.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>Write mesh + mode shapes to XDMF and VTK for ParaView inspection.      Both form</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Write mesh + mode shapes to XDMF and VTK for ParaView inspection.      Both form.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>mesh_prep.py</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>main.py</code><br><small style="color:var(--muted)">turbine_runner/main.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>Module file in turbine_runner/mesh_prep.py.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>_read_msh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>inspect_mesh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small><br><code>load_and_prepare_mesh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td>_read_msh() node in turbine_runner/mesh_prep.py.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>_has_volume_entities()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>_has_volume_entities() node in turbine_runner/mesh_prep.py.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>_volume_mesh_from_cad()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>load_and_prepare_mesh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td>_volume_mesh_from_cad() node in turbine_runner/mesh_prep.py.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>_volume_mesh_from_surface()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>load_and_prepare_mesh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td>_volume_mesh_from_surface() node in turbine_runner/mesh_prep.py.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>load_and_prepare_mesh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_read_msh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small><br><code>_volume_mesh_from_cad()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small><br><code>_volume_mesh_from_surface()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small><br>+2 more</td>
+  <td>No direct outbound edge</td>
+  <td>load_and_prepare_mesh() node in turbine_runner/mesh_prep.py.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>inspect_mesh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_read_msh()</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>inspect_mesh() node in turbine_runner/mesh_prep.py.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>STAGE 2a: load the dtOO mesh, verify it is a 3-D volume, fallback if not.  Runs</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for STAGE 2a: load the dtOO mesh, verify it is a 3-D volume, fallback if not.  Runs.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>Read a gmsh .msh into a dolfinx mesh (beam pattern, solver.py:31-34).</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Read a gmsh .msh into a dolfinx mesh (beam pattern, solver.py:31-34)..</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>Check via gmsh whether the file actually contains 3-D entities.</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Check via gmsh whether the file actually contains 3-D entities..</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>Fallback A: mesh a 3-D volume from a STEP/BREP CAD file (gmsh OCC).      Mirrors</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Fallback A: mesh a 3-D volume from a STEP/BREP CAD file (gmsh OCC).      Mirrors.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>Fallback B: build a volume from a closed surface mesh.      Loads the surface, w</code><br><small style="color:var(--muted)">turbine_runner/mesh_prep.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Fallback B: build a volume from a closed surface mesh.      Loads the surface, w.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>turbine_runner/mesh_prep.py</code></td><td>14 nodes</td></tr>
+<tr><td><code>demo/beam/beam_fem_validation.py</code></td><td>10 nodes</td></tr>
+<tr><td><code>demo/beam/euler_analytical.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>demo/beam/geometry.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>turbine_runner/config.py</code></td><td>6 nodes</td></tr>
+<tr><td><code>turbine_runner/main.py</code></td><td>5 nodes</td></tr>
+<tr><td><code>demo/beam/main.py</code></td><td>4 nodes</td></tr>
+<tr><td><code>turbine_runner/dtoo_export.py</code></td><td>4 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x29, contains x24, calls x14, references x9. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 5. Serving API ====== -->
+<h2 id="serve-api">5. Serving API</h2>
+<p>Serving API groups implementation around docs, source, beam, theory, mostly in source/theory/eigenvalues.md, demo/beam/geometry.md, .github/workflows/ci.yml. This section covers 24 nodes and 29 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Serving API (24 nodes, 29 edges)
+    subgraph serve_api_demo_beam_geometry_md_a02f2199["demo/beam/geometry.md"]
+        geometry_create_rectangular_beam_a64257bc("create_rectangular_beam()<br/><small>demo/beam/geometry.md</small>")
+        geometry_set_mesh_resolution_eaa89730("set_mesh_resolution()<br/><small>demo/beam/geometry.md</small>")
+        geometry_generate_mesh_f0482095("generate_mesh()<br/><small>demo/beam/geometry.md</small>")
+        geometry_beam_to_xdmf_57866486("beam_to_xdmf()<br/><small>demo/beam/geometry.md</small>")
+        beam_geometry_doc_d0682bad("Beam Geometry Documentation<br/><small>demo/beam/geometry.md</small>")
+        geometry_mesh_refinement_strategy_e2ed0a9a("End-refinement mesh strategy (stress co...<br/><small>demo/beam/geometry.md</small>")
+    end
+    subgraph serve_api_source_theory_eigenvalues_md_606ba777["source/theory/eigenvalues.md"]
+        theory_eigenvalues_euler_bernoulli_62cf8d25("Euler-Bernoulli beam theory<br/><small>source/theory/eigenvalues.md</small>")
+        theory_eigenvalues_generalized_eigenproblem_07b86c69("Generalized eigenvalue problem K u = la...<br/><small>source/theory/eigenvalues.md</small>")
+        theory_eigenvalues_mass_matrix_870909cc("Mass matrix M<br/><small>source/theory/eigenvalues.md</small>")
+        theory_eigenvalues_shape_functions_56f35e96("Shape functions N_i<br/><small>source/theory/eigenvalues.md</small>")
+        theory_eigenvalues_stiffness_matrix_c57c3b6c("Stiffness matrix K<br/><small>source/theory/eigenvalues.md</small>")
+        theory_eigenvalues_weak_formulation_9c30e2fb("Weak formulation<br/><small>source/theory/eigenvalues.md</small>")
+    end
+    subgraph serve_api_github_workflows_ci_yml_2704442f[".github/workflows/ci.yml"]
+        workflows_ci_pipeline_e996b4b8("CI Pipeline (GitHub Actions)<br/><small>.github/workflows/ci.yml</small>")
+        workflows_ci_docker_build_job_dafc0911("CI docker-build job (fenicsx.Dockerfile)<br/><small>.github/workflows/ci.yml</small>")
+        workflows_ci_docs_job_906263b7("CI docs job (Sphinx, GitHub Pages)<br/><small>.github/workflows/ci.yml</small>")
+        workflows_ci_lint_job_c71b9de3("CI lint job (ruff)<br/><small>.github/workflows/ci.yml</small>")
+    end
+    source_plan_technology_stack_73dc30d0("Technology stack (gmsh, FEniCSx+SLEPc,...<br/><small>docs/source/plan.md</small>")
+    turbine_runner_solver_973d89d3("solver.py")
+    geometry_create_rectangular_beam_a64257bc -->|calls| geometry_generate_mesh_f0482095
+    geometry_set_mesh_resolution_eaa89730 -->|calls| geometry_generate_mesh_f0482095
+    %% Omitted for readability: 6 nodes, 0 edges
+    class geometry_create_rectangular_beam_a64257bc function;
+    class geometry_set_mesh_resolution_eaa89730 function;
+    class geometry_generate_mesh_f0482095 function;
+    class geometry_beam_to_xdmf_57866486 function;
+    class beam_geometry_doc_d0682bad concept;
+    class geometry_mesh_refinement_strategy_e2ed0a9a concept;
+    class theory_eigenvalues_euler_bernoulli_62cf8d25 klass;
+    class theory_eigenvalues_generalized_eigenproblem_07b86c69 klass;
+    class theory_eigenvalues_mass_matrix_870909cc klass;
+    class theory_eigenvalues_shape_functions_56f35e96 klass;
+    class theory_eigenvalues_stiffness_matrix_c57c3b6c klass;
+    class theory_eigenvalues_weak_formulation_9c30e2fb klass;
+    class workflows_ci_pipeline_e996b4b8 concept;
+    class workflows_ci_docker_build_job_dafc0911 concept;
+    class workflows_ci_docs_job_906263b7 concept;
+    class workflows_ci_lint_job_c71b9de3 concept;
+    class source_plan_technology_stack_73dc30d0 klass;
+    class turbine_runner_solver_973d89d3 module;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>solver.py</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in turbine_runner/solver.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>STAGE 2b: structural modal solver for the turbine runner.  Self-contained adapta</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for STAGE 2b: structural modal solver for the turbine runner.  Self-contained adapta.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>CI Pipeline (GitHub Actions)</code><br><small style="color:var(--muted)">.github/workflows/ci.yml</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing CI Pipeline (GitHub Actions).</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>CI lint job (ruff)</code><br><small style="color:var(--muted)">.github/workflows/ci.yml</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing CI lint job (ruff).</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>CI docs job (Sphinx, GitHub Pages)</code><br><small style="color:var(--muted)">.github/workflows/ci.yml</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing CI docs job (Sphinx, GitHub Pages).</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>CI docker-build job (fenicsx.Dockerfile)</code><br><small style="color:var(--muted)">.github/workflows/ci.yml</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing CI docker-build job (fenicsx.Dockerfile).</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>Beam Geometry Documentation</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Beam Geometry Documentation.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>create_rectangular_beam()</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>generate_mesh()</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td>create_rectangular_beam() node in demo/beam/geometry.md.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>set_mesh_resolution()</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>generate_mesh()</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td>set_mesh_resolution() node in demo/beam/geometry.md.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>generate_mesh()</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>create_rectangular_beam()</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small><br><code>set_mesh_resolution()</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td>No direct outbound edge</td>
+  <td>generate_mesh() node in demo/beam/geometry.md.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>beam_to_xdmf()</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>beam_to_xdmf() node in demo/beam/geometry.md.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>End-refinement mesh strategy (stress concentration)</code><br><small style="color:var(--muted)">demo/beam/geometry.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for End-refinement mesh strategy (stress concentration).</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>ModalSolver API doc</code><br><small style="color:var(--muted)">source/api/solver.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing ModalSolver API doc.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Eigenfrequencies Framework docs index</code><br><small style="color:var(--muted)">docs/source/index.rst</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Eigenfrequencies Framework docs index.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>Project Plan (5 phases)</code><br><small style="color:var(--muted)">docs/source/plan.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Project Plan (5 phases).</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>Technology stack (gmsh, FEniCSx+SLEPc, pygmo, Sphinx)</code><br><small style="color:var(--muted)">docs/source/plan.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Technology stack (gmsh, FEniCSx+SLEPc, pygmo, Sphinx) node in docs/source/plan.md.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>Quickstart guide</code><br><small style="color:var(--muted)">docs/source/quickstart.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Quickstart guide.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>Eigenvalue Theory</code><br><small style="color:var(--muted)">source/theory/eigenvalues.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Eigenvalue Theory.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>Generalized eigenvalue problem K u = lambda M u</code><br><small style="color:var(--muted)">source/theory/eigenvalues.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Generalized eigenvalue problem K u = lambda M u node in source/theory/eigenvalues.md.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>Stiffness matrix K</code><br><small style="color:var(--muted)">source/theory/eigenvalues.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Stiffness matrix K node in source/theory/eigenvalues.md.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>Mass matrix M</code><br><small style="color:var(--muted)">source/theory/eigenvalues.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Mass matrix M node in source/theory/eigenvalues.md.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>Shape functions N_i</code><br><small style="color:var(--muted)">source/theory/eigenvalues.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Shape functions N_i node in source/theory/eigenvalues.md.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>Weak formulation</code><br><small style="color:var(--muted)">source/theory/eigenvalues.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Weak formulation node in source/theory/eigenvalues.md.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>Euler-Bernoulli beam theory</code><br><small style="color:var(--muted)">source/theory/eigenvalues.md</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Euler-Bernoulli beam theory node in source/theory/eigenvalues.md.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>source/theory/eigenvalues.md</code></td><td>7 nodes</td></tr>
+<tr><td><code>demo/beam/geometry.md</code></td><td>6 nodes</td></tr>
+<tr><td><code>.github/workflows/ci.yml</code></td><td>4 nodes</td></tr>
+<tr><td><code>docs/source/plan.md</code></td><td>2 nodes</td></tr>
+<tr><td><code>turbine_runner/solver.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>source/api/solver.md</code></td><td>1 nodes</td></tr>
+<tr><td><code>docs/source/index.rst</code></td><td>1 nodes</td></tr>
+<tr><td><code>docs/source/quickstart.md</code></td><td>1 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: references x20, relates x3, calls x2, explains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 6. Beam Spline Optimization ====== -->
+<h2 id="beam-spline-optimization">6. Beam Spline Optimization</h2>
+<p>Beam Spline Optimization groups implementation around beam, demo, spline, optimizationpy, mostly in demo/beam/optimization.py, demo/beam/geometry_spline.py, demo/beam/config.py. This section covers 36 nodes and 57 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Beam Spline Optimization (36 nodes, 57 edges)
+    subgraph beam_spline_optimization_demo_beam_config_py_3a205573["demo/beam/config.py"]
+        beam_config_beamconfig_ef7973cc("BeamConfig<br/><small>demo/beam/config.py</small>")
+        beam_config_beamconfig_cross_section_area_8dd021d7("cross_section_area()<br/><small>demo/beam/config.py</small>")
+        beam_config_beamconfig_moment_of_inertia_y_9489d9e8("moment_of_inertia_y()<br/><small>demo/beam/config.py</small>")
+        beam_config_beamconfig_moment_of_inertia_z_fcadca10("moment_of_inertia_z()<br/><small>demo/beam/config.py</small>")
+        beam_config_splineconfig_a189b1aa("SplineConfig<br/><small>demo/beam/config.py</small>")
+    end
+    subgraph beam_spline_optimization_External_generated_6bebf671["External / generated"]
+        optimizationconfig_921cf19d("OptimizationConfig")
+        outputconfig_437ace82("OutputConfig")
+        solverconfig_369b66fd("SolverConfig")
+        ndarray_848c1baf("ndarray")
+    end
+    subgraph beam_spline_optimization_demo_beam_geometry_spli_a933eac6["demo/beam/geometry_spline.py"]
+        beam_geometry_spline_create_spline_beam_06a4ebf9("create_spline_beam()<br/><small>demo/beam/geometry_spline.py</small>")
+        beam_geometry_spline_generate_spline_mesh_13874976("generate_spline_mesh()<br/><small>demo/beam/geometry_spline.py</small>")
+        beam_geometry_spline_spline_beam_to_xdmf_ae7d32e0("spline_beam_to_xdmf()<br/><small>demo/beam/geometry_spline.py</small>")
+        beam_geometry_spline_eceb3659("geometry_spline.py")
+    end
+    subgraph beam_spline_optimization_demo_beam_optimization_df60e6bc["demo/beam/optimization.py"]
+        beam_optimization_compute_penalty_a7e9ecbb("compute_penalty()<br/><small>demo/beam/optimization.py</small>")
+        beam_optimization_evaluate_objective_2cdbe875("evaluate_objective()<br/><small>demo/beam/optimization.py</small>")
+        beam_optimization_32341eb2("optimization.py")
+    end
+    subgraph beam_spline_optimization_demo_beam_beam_spline_o_640229ee["demo/beam/beam_spline_optimization.py"]
+        beam_beam_spline_optimization_2b5caf65("beam_spline_optimization.py")
+        beam_beam_spline_optimization_main_d90aa1b7("main()<br/><small>demo/beam/beam_spline_optimization.py</small>")
+    end
+    beam_config_beamconfig_ef7973cc -->|method| beam_config_beamconfig_cross_section_area_8dd021d7
+    beam_config_beamconfig_ef7973cc -->|method| beam_config_beamconfig_moment_of_inertia_y_9489d9e8
+    beam_config_beamconfig_ef7973cc -->|method| beam_config_beamconfig_moment_of_inertia_z_fcadca10
+    beam_geometry_spline_create_spline_beam_06a4ebf9 -->|calls| beam_geometry_spline_generate_spline_mesh_13874976
+    beam_geometry_spline_generate_spline_mesh_13874976 -->|calls| beam_geometry_spline_spline_beam_to_xdmf_ae7d32e0
+    beam_optimization_compute_penalty_a7e9ecbb -->|calls| beam_optimization_evaluate_objective_2cdbe875
+    %% Omitted for readability: 18 nodes, 0 edges
+    class beam_config_beamconfig_ef7973cc klass;
+    class beam_config_beamconfig_cross_section_area_8dd021d7 function;
+    class beam_config_beamconfig_moment_of_inertia_y_9489d9e8 function;
+    class beam_config_beamconfig_moment_of_inertia_z_fcadca10 function;
+    class beam_config_splineconfig_a189b1aa klass;
+    class optimizationconfig_921cf19d klass;
+    class outputconfig_437ace82 klass;
+    class solverconfig_369b66fd klass;
+    class ndarray_848c1baf function;
+    class beam_geometry_spline_create_spline_beam_06a4ebf9 function;
+    class beam_geometry_spline_generate_spline_mesh_13874976 function;
+    class beam_geometry_spline_spline_beam_to_xdmf_ae7d32e0 function;
+    class beam_geometry_spline_eceb3659 module;
+    class beam_optimization_compute_penalty_a7e9ecbb function;
+    class beam_optimization_evaluate_objective_2cdbe875 function;
+    class beam_optimization_32341eb2 module;
+    class beam_beam_spline_optimization_2b5caf65 module;
+    class beam_beam_spline_optimization_main_d90aa1b7 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>beam_spline_optimization.py</code><br><small style="color:var(--muted)">demo/beam/beam_spline_optimization.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in demo/beam/beam_spline_optimization.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>main()</code><br><small style="color:var(--muted)">demo/beam/beam_spline_optimization.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>BeamConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small><br><code>optimize_spline_beam()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small><br><code>plot_spline_shape()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td>main() node in demo/beam/beam_spline_optimization.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>Spline Beam Optimization Demo  Optimizes a 3-point spline beam to avoid a forbid</code><br><small style="color:var(--muted)">demo/beam/beam_spline_optimization.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Spline Beam Optimization Demo  Optimizes a 3-point spline beam to avoid a forbid.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>Run spline beam optimization demo.</code><br><small style="color:var(--muted)">demo/beam/beam_spline_optimization.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Run spline beam optimization demo..</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>BeamConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>main()</code><br><small style="color:var(--muted)">demo/beam/beam_spline_optimization.py</small></td>
+  <td><code>cross_section_area()</code><br><small style="color:var(--muted)">demo/beam/config.py</small><br><code>moment_of_inertia_y()</code><br><small style="color:var(--muted)">demo/beam/config.py</small><br><code>moment_of_inertia_z()</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>.cross_section_area()</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>BeamConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.cross_section_area() node in demo/beam/config.py.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>.moment_of_inertia_y()</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>BeamConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.moment_of_inertia_y() node in demo/beam/config.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>.moment_of_inertia_z()</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>BeamConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.moment_of_inertia_z() node in demo/beam/config.py.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>SplineConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>evaluate_objective()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small><br><code>optimize_spline_beam()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>Configuration for a rectangular beam.      Attributes:         length: Beam leng</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Configuration for a rectangular beam.      Attributes:         length: Beam leng.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>Configuration for spline beam control points.      Attributes:         x1: Middl</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Configuration for spline beam control points.      Attributes:         x1: Middl.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>ndarray</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ndarray node in project.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>geometry_spline.py</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in demo/beam/geometry_spline.py.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>create_spline_beam()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>generate_spline_mesh()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td>create_spline_beam() node in demo/beam/geometry_spline.py.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>generate_spline_mesh()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>create_spline_beam()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><code>evaluate_objective()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small><br><code>optimize_spline_beam()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small><br><code>spline_beam_to_xdmf()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td>generate_spline_mesh() node in demo/beam/geometry_spline.py.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>spline_beam_to_xdmf()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>generate_spline_mesh()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>spline_beam_to_xdmf() node in demo/beam/geometry_spline.py.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>Spline beam geometry generation using gmsh.</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Spline beam geometry generation using gmsh..</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>Create a spline beam geometry with B-spline spine.          The beam follows a 3</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Create a spline beam geometry with B-spline spine.          The beam follows a 3.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>Generate spline beam mesh and save to .msh format.          Args:         beam_c</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Generate spline beam mesh and save to .msh format.          Args:         beam_c.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>Convert spline beam mesh to XDMF format.          Args:         beam_config: Bea</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Convert spline beam mesh to XDMF format.          Args:         beam_config: Bea.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>optimization.py</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in demo/beam/optimization.py.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>compute_penalty()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>evaluate_objective()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td>compute_penalty() node in demo/beam/optimization.py.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>OptimizationConfig</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>evaluate_objective()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>compute_penalty()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small><br><code>generate_spline_mesh()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small><br><code>SplineConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>evaluate_objective() node in demo/beam/optimization.py.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>SolverConfig</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>OutputConfig</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>optimize_spline_beam()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>generate_spline_mesh()</code><br><small style="color:var(--muted)">demo/beam/geometry_spline.py</small><br><code>main()</code><br><small style="color:var(--muted)">demo/beam/beam_spline_optimization.py</small><br><code>SplineConfig</code><br><small style="color:var(--muted)">demo/beam/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>optimize_spline_beam() node in demo/beam/optimization.py.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>plot_optimization_history()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>plot_optimization_history() node in demo/beam/optimization.py.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>plot_spline_shape()</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>main()</code><br><small style="color:var(--muted)">demo/beam/beam_spline_optimization.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>plot_spline_shape() node in demo/beam/optimization.py.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>Spline beam optimization for frequency avoidance.</code><br><small style="color:var(--muted)">demo/beam/optimization.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Spline beam optimization for frequency avoidance..</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>demo/beam/optimization.py</code></td><td>12 nodes</td></tr>
+<tr><td><code>demo/beam/geometry_spline.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>demo/beam/config.py</code></td><td>7 nodes</td></tr>
+<tr><td><code>demo/beam/beam_spline_optimization.py</code></td><td>4 nodes</td></tr>
+<tr><td><code>demo/beam/solver.py</code></td><td>1 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: references x21, explains x14, contains x9, method x3. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 7. Runner Config & Multi-Objective ====== -->
+<h2 id="runner-config-multi-objective">7. Runner Config &amp; Multi-Objective</h2>
+<p>Runner Config &amp; Multi-Objective groups implementation around turbine, runner, configpy, settings, mostly in turbine_runner/config.py, turbine_runner/optimize_multi.py. This section covers 23 nodes and 24 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Runner Config &amp; Multi-Objective (23 nodes, 24 edges)
+    subgraph runner_config_multi_objective_turbine_runner_con_0ba9fa89["turbine_runner/config.py"]
+        turbine_runner_config_designconfig_26b49d50("DesignConfig<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_designconfig_bounds_a5c4014c("bounds()<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_designconfig_labels_5568c1f3("labels()<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_designconfig_post_init_90a7b054("__post_init__()<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_designconfig_x0_cc8e5ea3("x0()<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_cfdconfig_802d3710("CFDConfig<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_objectiveconfig_11706dd2("ObjectiveConfig<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_optimizationconfig_c10919fd("OptimizationConfig<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_outputconfig_6b65e9bb("OutputConfig<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_solverconfig_b4fec941("SolverConfig<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_wetmodeconfig_89754a15("WetModeConfig<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_d909303b("config.py")
+        turbine_runner_config_rationale_52_91be58bc("NOTE: smoke-test defaults for the T2_...<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_rationale_217_c59a6f1c("Added-mass / wet-mode settings (DEFERRE...<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_rationale_1_e2552d28("Configuration for hydraulic turbine run...<br/><small>turbine_runner/config.py</small>")
+        turbine_runner_config_rationale_85_f424fc46("Modal solver settings. freq_min / freq_...<br/><small>turbine_runner/config.py</small>")
+    end
+    subgraph runner_config_multi_objective_turbine_runner_opt_c418d66a["turbine_runner/optimize_multi.py"]
+        turbine_runner_optimize_multi_main_240afa14("main()<br/><small>turbine_runner/optimize_multi.py</small>")
+        turbine_runner_optimize_multi_796bdb52("optimize_multi.py")
+    end
+    turbine_runner_config_designconfig_26b49d50 -->|method| turbine_runner_config_designconfig_bounds_a5c4014c
+    turbine_runner_config_designconfig_26b49d50 -->|method| turbine_runner_config_designconfig_labels_5568c1f3
+    turbine_runner_config_designconfig_26b49d50 -->|method| turbine_runner_config_designconfig_post_init_90a7b054
+    turbine_runner_config_designconfig_26b49d50 -->|method| turbine_runner_config_designconfig_x0_cc8e5ea3
+    %% Omitted for readability: 5 nodes, 0 edges
+    class turbine_runner_config_designconfig_26b49d50 klass;
+    class turbine_runner_config_designconfig_bounds_a5c4014c function;
+    class turbine_runner_config_designconfig_labels_5568c1f3 function;
+    class turbine_runner_config_designconfig_post_init_90a7b054 function;
+    class turbine_runner_config_designconfig_x0_cc8e5ea3 function;
+    class turbine_runner_config_cfdconfig_802d3710 klass;
+    class turbine_runner_config_objectiveconfig_11706dd2 klass;
+    class turbine_runner_config_optimizationconfig_c10919fd klass;
+    class turbine_runner_config_outputconfig_6b65e9bb klass;
+    class turbine_runner_config_solverconfig_b4fec941 klass;
+    class turbine_runner_config_wetmodeconfig_89754a15 klass;
+    class turbine_runner_config_d909303b module;
+    class turbine_runner_config_rationale_52_91be58bc concept;
+    class turbine_runner_config_rationale_217_c59a6f1c concept;
+    class turbine_runner_config_rationale_1_e2552d28 concept;
+    class turbine_runner_config_rationale_85_f424fc46 concept;
+    class turbine_runner_optimize_multi_main_240afa14 function;
+    class turbine_runner_optimize_multi_796bdb52 module;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>config.py</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in turbine_runner/config.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>SolverConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>DesignConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>__post_init__()</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br><code>bounds()</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br><code>labels()</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br>+2 more</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>.__post_init__()</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>DesignConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.__post_init__() node in turbine_runner/config.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>.labels()</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>DesignConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.labels() node in turbine_runner/config.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>.x0()</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>DesignConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.x0() node in turbine_runner/config.py.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>.bounds()</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>DesignConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.bounds() node in turbine_runner/config.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>OptimizationConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>CFDConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>main()</code><br><small style="color:var(--muted)">turbine_runner/optimize_multi.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>ObjectiveConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>main()</code><br><small style="color:var(--muted)">turbine_runner/optimize_multi.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>WetModeConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>OutputConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>Configuration for hydraulic turbine runner modal analysis.  Mirrors the dataclas</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Configuration for hydraulic turbine runner modal analysis.  Mirrors the dataclas.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Modal solver settings.      freq_min / freq_max are carried for reporting only i</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Modal solver settings.      freq_min / freq_max are carried for reporting only i.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>dtOO design parameters exposed to the optimizer.      `params` maps a dtOO const</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for dtOO design parameters exposed to the optimizer.      `params` maps a dtOO const.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>Resonance-avoidance optimization settings.      Penalty pushes every eigenfreque</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Resonance-avoidance optimization settings.      Penalty pushes every eigenfreque.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>Steady-CFD operating point and result-extraction settings.      The classic hydr</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Steady-CFD operating point and result-extraction settings.      The classic hydr.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>Weights for the combined CFD + resonance objective.      Scalarized (single-obje</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Weights for the combined CFD + resonance objective.      Scalarized (single-obje.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>Added-mass / wet-mode settings (DEFERRED — interface only).      Dry modes are c</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Added-mass / wet-mode settings (DEFERRED — interface only).      Dry modes are c.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>Output options.      Attributes:         output_dir: Directory for results</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Output options.      Attributes:         output_dir: Directory for results.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code># NOTE: smoke-test defaults for the T2_7461 mech mesh (bbox z in [0, 2.5]).</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for # NOTE: smoke-test defaults for the T2_7461 mech mesh (bbox z in [0, 2.5])..</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>optimize_multi.py</code><br><small style="color:var(--muted)">turbine_runner/optimize_multi.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in turbine_runner/optimize_multi.py.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>main()</code><br><small style="color:var(--muted)">turbine_runner/optimize_multi.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>CFDConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br><code>DesignConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small><br><code>ObjectiveConfig</code><br><small style="color:var(--muted)">turbine_runner/config.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>main() node in turbine_runner/optimize_multi.py.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>turbine_runner/config.py</code></td><td>21 nodes</td></tr>
+<tr><td><code>turbine_runner/optimize_multi.py</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x9, contains x8, method x4. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 8. Runner Modal Solver ====== -->
+<h2 id="runner-modal-solver">8. Runner Modal Solver</h2>
+<p>Runner Modal Solver groups implementation around runner, turbine, solverpy, clamp, mostly in turbine_runner/solver.py. This section covers 14 nodes and 18 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Runner Modal Solver (14 nodes, 18 edges)
+    turbine_runner_solver_runnermodalsolver_d3265466("RunnerModalSolver<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_runnermodalsolver_bc_predi_8d359d7e("_bc_predicate()<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_runnermodalsolver_apply_bc_13ac4246("apply_bc()<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_runnermodalsolver_compute_005b87e9("compute_frequencies()<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_runnermodalsolver_rigid_bo_a8147af1("_rigid_body_check()<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_runnermodalsolver_solve_84138eac("solve()<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_runnermodalsolver_wet_comp_d2f19673("wet_compare()<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_rationale_98_811361be("Assemble and solve the generalized eige...<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_rationale_43_91f0203b("Build the hub-clamp coordinate predicat...<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_rationale_70_35bdb5de("Clamp the hub region; verify a non-empt...<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_rationale_166_80de5520("Convert eigenvalues to frequencies in Hz.<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_rationale_170_7866ca0e("Dry-vs-wet (added-mass) frequency compa...<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_rationale_27_5d0fe617("Modal analysis of a runner volume mesh...<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_rationale_157_df21ac7b("Warn if the lowest modes look like rigi...<br/><small>turbine_runner/solver.py</small>")
+    turbine_runner_solver_runnermodalsolver_d3265466 -->|method| turbine_runner_solver_runnermodalsolver_apply_bc_13ac4246
+    turbine_runner_solver_runnermodalsolver_d3265466 -->|method| turbine_runner_solver_runnermodalsolver_bc_predi_8d359d7e
+    turbine_runner_solver_runnermodalsolver_d3265466 -->|method| turbine_runner_solver_runnermodalsolver_compute_005b87e9
+    turbine_runner_solver_runnermodalsolver_d3265466 -->|method| turbine_runner_solver_runnermodalsolver_rigid_bo_a8147af1
+    turbine_runner_solver_runnermodalsolver_d3265466 -->|method| turbine_runner_solver_runnermodalsolver_solve_84138eac
+    turbine_runner_solver_runnermodalsolver_d3265466 -->|method| turbine_runner_solver_runnermodalsolver_wet_comp_d2f19673
+    turbine_runner_solver_runnermodalsolver_bc_predi_8d359d7e -->|calls| turbine_runner_solver_runnermodalsolver_apply_bc_13ac4246
+    turbine_runner_solver_runnermodalsolver_apply_bc_13ac4246 -->|calls| turbine_runner_solver_runnermodalsolver_solve_84138eac
+    turbine_runner_solver_runnermodalsolver_solve_84138eac -->|calls| turbine_runner_solver_runnermodalsolver_rigid_bo_a8147af1
+    turbine_runner_solver_runnermodalsolver_rigid_bo_a8147af1 -->|calls| turbine_runner_solver_runnermodalsolver_compute_005b87e9
+    turbine_runner_solver_runnermodalsolver_compute_005b87e9 -->|calls| turbine_runner_solver_runnermodalsolver_wet_comp_d2f19673
+    class turbine_runner_solver_runnermodalsolver_d3265466 klass;
+    class turbine_runner_solver_runnermodalsolver_bc_predi_8d359d7e function;
+    class turbine_runner_solver_runnermodalsolver_apply_bc_13ac4246 function;
+    class turbine_runner_solver_runnermodalsolver_compute_005b87e9 function;
+    class turbine_runner_solver_runnermodalsolver_rigid_bo_a8147af1 function;
+    class turbine_runner_solver_runnermodalsolver_solve_84138eac function;
+    class turbine_runner_solver_runnermodalsolver_wet_comp_d2f19673 function;
+    class turbine_runner_solver_rationale_98_811361be concept;
+    class turbine_runner_solver_rationale_43_91f0203b concept;
+    class turbine_runner_solver_rationale_70_35bdb5de concept;
+    class turbine_runner_solver_rationale_166_80de5520 concept;
+    class turbine_runner_solver_rationale_170_7866ca0e concept;
+    class turbine_runner_solver_rationale_27_5d0fe617 concept;
+    class turbine_runner_solver_rationale_157_df21ac7b concept;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>RunnerModalSolver</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>_bc_predicate()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small><br><code>_rigid_body_check()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small><br><code>apply_bc()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small><br>+3 more</td>
+  <td>RunnerModalSolver node in turbine_runner/solver.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>._bc_predicate()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>RunnerModalSolver</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><code>apply_bc()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td>._bc_predicate() node in turbine_runner/solver.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>.apply_bc()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_bc_predicate()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small><br><code>RunnerModalSolver</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><code>solve()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td>.apply_bc() node in turbine_runner/solver.py.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>.solve()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>apply_bc()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small><br><code>RunnerModalSolver</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><code>_rigid_body_check()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td>.solve() node in turbine_runner/solver.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>._rigid_body_check()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>RunnerModalSolver</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small><br><code>solve()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><code>compute_frequencies()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td>._rigid_body_check() node in turbine_runner/solver.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>.compute_frequencies()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_rigid_body_check()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small><br><code>RunnerModalSolver</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><code>wet_compare()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td>.compute_frequencies() node in turbine_runner/solver.py.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>.wet_compare()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>compute_frequencies()</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small><br><code>RunnerModalSolver</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.wet_compare() node in turbine_runner/solver.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>Modal analysis of a runner volume mesh with a hub clamp.</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Modal analysis of a runner volume mesh with a hub clamp..</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>Build the hub-clamp coordinate predicate from BCConfig.</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Build the hub-clamp coordinate predicate from BCConfig..</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>Clamp the hub region; verify a non-empty, plausible clamp.</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Clamp the hub region; verify a non-empty, plausible clamp..</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>Assemble and solve the generalized eigenproblem (sparse throughout).</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Assemble and solve the generalized eigenproblem (sparse throughout)..</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>Warn if the lowest modes look like rigid-body modes (failed clamp).</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Warn if the lowest modes look like rigid-body modes (failed clamp)..</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>Convert eigenvalues to frequencies in Hz.</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Convert eigenvalues to frequencies in Hz..</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Dry-vs-wet (added-mass) frequency comparison (decision (b), DEFERRED).</code><br><small style="color:var(--muted)">turbine_runner/solver.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Dry-vs-wet (added-mass) frequency comparison (decision (b), DEFERRED)..</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>turbine_runner/solver.py</code></td><td>14 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x7, method x6, calls x5. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 9. Added Mass / Wet Modes ====== -->
+<h2 id="added-mass-wet-modes">9. Added Mass / Wet Modes</h2>
+<p>Added Mass / Wet Modes groups implementation around added, masspy, turbine, runner, mostly in turbine_runner/added_mass.py. This section covers 10 nodes and 12 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Added Mass / Wet Modes (10 nodes, 12 edges)
+    turbine_runner_added_mass_placeholder_ratios_b660d273("placeholder_ratios()<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_rayleigh_ratios_962f76cd("rayleigh_ratios()<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_wet_from_ratios_1ab020a2("wet_from_ratios()<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_compare_f50df623("compare()<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_d278751a("added_mass.py")
+    turbine_runner_added_mass_rationale_56_cfc2426b("Per-mode added-mass ratio via the level...<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_rationale_71_f23e0f86("Return dry and wet frequencies side by...<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_rationale_44_f328169d("Stand-in added-mass ratios until the La...<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_rationale_1_de1d18e8("Wet (added-mass) eigenfrequencies — DEF...<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_rationale_30_1311864a("Wet frequencies from dry frequencies an...<br/><small>turbine_runner/added_mass.py</small>")
+    turbine_runner_added_mass_wet_from_ratios_1ab020a2 -->|calls| turbine_runner_added_mass_compare_f50df623
+    turbine_runner_added_mass_placeholder_ratios_b660d273 -->|calls| turbine_runner_added_mass_compare_f50df623
+    turbine_runner_added_mass_rayleigh_ratios_962f76cd -->|calls| turbine_runner_added_mass_compare_f50df623
+    class turbine_runner_added_mass_placeholder_ratios_b660d273 function;
+    class turbine_runner_added_mass_rayleigh_ratios_962f76cd function;
+    class turbine_runner_added_mass_wet_from_ratios_1ab020a2 function;
+    class turbine_runner_added_mass_compare_f50df623 function;
+    class turbine_runner_added_mass_d278751a module;
+    class turbine_runner_added_mass_rationale_56_cfc2426b concept;
+    class turbine_runner_added_mass_rationale_71_f23e0f86 concept;
+    class turbine_runner_added_mass_rationale_44_f328169d concept;
+    class turbine_runner_added_mass_rationale_1_de1d18e8 concept;
+    class turbine_runner_added_mass_rationale_30_1311864a concept;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>added_mass.py</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in turbine_runner/added_mass.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>wet_from_ratios()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>compare()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td>wet_from_ratios() node in turbine_runner/added_mass.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>placeholder_ratios()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>compare()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td>placeholder_ratios() node in turbine_runner/added_mass.py.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>rayleigh_ratios()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>compare()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td>rayleigh_ratios() node in turbine_runner/added_mass.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>compare()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>placeholder_ratios()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small><br><code>rayleigh_ratios()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small><br><code>wet_from_ratios()</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>compare() node in turbine_runner/added_mass.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>Wet (added-mass) eigenfrequencies — DEFERRED extension, interface + level-1 mode</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Wet (added-mass) eigenfrequencies — DEFERRED extension, interface + level-1 mode.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>Wet frequencies from dry frequencies and per-mode added-mass ratios m_a/m_s.</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Wet frequencies from dry frequencies and per-mode added-mass ratios m_a/m_s..</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>Stand-in added-mass ratios until the Laplace solve lands.      Uses a single con</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Stand-in added-mass ratios until the Laplace solve lands.      Uses a single con.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>Per-mode added-mass ratio via the level-1 Laplace solve. NOT YET IMPLEMENTED.</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Per-mode added-mass ratio via the level-1 Laplace solve. NOT YET IMPLEMENTED..</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>Return dry and wet frequencies side by side (decision (b) comparison).      Fall</code><br><small style="color:var(--muted)">turbine_runner/added_mass.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Return dry and wet frequencies side by side (decision (b) comparison).      Fall.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>turbine_runner/added_mass.py</code></td><td>10 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x5, contains x4, calls x3. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 10. CFD Evaluation ====== -->
+<h2 id="cfd-evaluation">10. CFD Evaluation</h2>
+<p>CFD Evaluation groups implementation around cfd, evalpy, turbine, runner, mostly in turbine_runner/cfd_eval.py. This section covers 8 nodes and 10 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: CFD Evaluation (8 nodes, 10 edges)
+    turbine_runner_cfd_eval_last_data_row_8068ea07("_last_data_row()<br/><small>turbine_runner/cfd_eval.py</small>")
+    turbine_runner_cfd_eval_scalar_95b428db("_scalar()<br/><small>turbine_runner/cfd_eval.py</small>")
+    turbine_runner_cfd_eval_evaluate_cfd_dd14591e("evaluate_cfd()<br/><small>turbine_runner/cfd_eval.py</small>")
+    turbine_runner_cfd_eval_e1217ce5("cfd_eval.py")
+    turbine_runner_cfd_eval_rationale_58_d47c79a7("Compute eta, vcav, dH, P, Q, ok from...<br/><small>turbine_runner/cfd_eval.py</small>")
+    turbine_runner_cfd_eval_rationale_43_ca282817("Read a single scalar functionObject res...<br/><small>turbine_runner/cfd_eval.py</small>")
+    turbine_runner_cfd_eval_rationale_1_87cd858c("Read steady-CFD hydraulic objectives fr...<br/><small>turbine_runner/cfd_eval.py</small>")
+    turbine_runner_cfd_eval_rationale_25_18b3e3b6("Return the numeric fields of the last n...<br/><small>turbine_runner/cfd_eval.py</small>")
+    turbine_runner_cfd_eval_last_data_row_8068ea07 -->|calls| turbine_runner_cfd_eval_evaluate_cfd_dd14591e
+    turbine_runner_cfd_eval_last_data_row_8068ea07 -->|calls| turbine_runner_cfd_eval_scalar_95b428db
+    turbine_runner_cfd_eval_scalar_95b428db -->|calls| turbine_runner_cfd_eval_evaluate_cfd_dd14591e
+    class turbine_runner_cfd_eval_last_data_row_8068ea07 function;
+    class turbine_runner_cfd_eval_scalar_95b428db function;
+    class turbine_runner_cfd_eval_evaluate_cfd_dd14591e function;
+    class turbine_runner_cfd_eval_e1217ce5 module;
+    class turbine_runner_cfd_eval_rationale_58_d47c79a7 concept;
+    class turbine_runner_cfd_eval_rationale_43_ca282817 concept;
+    class turbine_runner_cfd_eval_rationale_1_87cd858c concept;
+    class turbine_runner_cfd_eval_rationale_25_18b3e3b6 concept;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>cfd_eval.py</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in turbine_runner/cfd_eval.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>_last_data_row()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>_scalar()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small><br><code>evaluate_cfd()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td>_last_data_row() node in turbine_runner/cfd_eval.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>_scalar()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_last_data_row()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><code>evaluate_cfd()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td>_scalar() node in turbine_runner/cfd_eval.py.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>evaluate_cfd()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_last_data_row()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small><br><code>_scalar()</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>evaluate_cfd() node in turbine_runner/cfd_eval.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>Read steady-CFD hydraulic objectives from an OpenFOAM case (efficiency, cavitati</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Read steady-CFD hydraulic objectives from an OpenFOAM case (efficiency, cavitati.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>Return the numeric fields of the last non-comment line of an OpenFOAM .dat.</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Return the numeric fields of the last non-comment line of an OpenFOAM .dat..</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>Read a single scalar functionObject result (time in col 0, value in col).</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Read a single scalar functionObject result (time in col 0, value in col)..</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>Compute {eta, vcav, dH, P, Q, ok} from an OpenFOAM postProcessing tree.      Arg</code><br><small style="color:var(--muted)">turbine_runner/cfd_eval.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Compute {eta, vcav, dH, P, Q, ok} from an OpenFOAM postProcessing tree.      Arg.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>turbine_runner/cfd_eval.py</code></td><td>8 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x4, contains x3, calls x3. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 11. Container Run Script ====== -->
+<h2 id="container-run-script">11. Container Run Script</h2>
+<p>Container Run Script groups implementation around run, containersh, scripts, script, mostly in scripts/run_container.sh. This section covers 2 nodes and 1 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Container Run Script (2 nodes, 1 edges)
+    scripts_run_container_ab376155("run_container.sh")
+    root_repos_eigenfrequencies_scripts_run_containe_9c71ae85("run_container.sh script<br/><small>scripts/run_container.sh</small>")
+    scripts_run_container_ab376155 -->|contains| root_repos_eigenfrequencies_scripts_run_containe_9c71ae85
+    class scripts_run_container_ab376155 function;
+    class root_repos_eigenfrequencies_scripts_run_containe_9c71ae85 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>run_container.sh</code><br><small style="color:var(--muted)">scripts/run_container.sh</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>run_container.sh node in scripts/run_container.sh.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>run_container.sh script</code><br><small style="color:var(--muted)">scripts/run_container.sh</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>run_container.sh script node in scripts/run_container.sh.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>scripts/run_container.sh</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 12. Src Package Init ====== -->
+<h2 id="src-package-init">12. Src Package Init</h2>
+<p>Src Package Init groups implementation around eigenfrequencies, package, mostly in src/__init__.py. This section covers 2 nodes and 1 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Src Package Init (2 nodes, 1 edges)
+    src_init_a96b0270("__init__.py")
+    src_init_rationale_1_7a41ad73("Eigenfrequencies package.<br/><small>src/__init__.py</small>")
+    src_init_a96b0270 -->|explains| src_init_rationale_1_7a41ad73
+    class src_init_a96b0270 module;
+    class src_init_rationale_1_7a41ad73 concept;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>__init__.py</code><br><small style="color:var(--muted)">src/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in src/__init__.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>Eigenfrequencies package.</code><br><small style="color:var(--muted)">src/__init__.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Eigenfrequencies package..</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/__init__.py</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 13. Geometry Package ====== -->
+<h2 id="geometry-package">13. Geometry Package</h2>
+<p>Geometry Package groups implementation around geometry, mostly in src/geometry/__init__.py. This section covers 1 nodes and 0 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Geometry Package (1 nodes, 0 edges)
+    geometry_init_32a49cb7("__init__.py")
+    class geometry_init_32a49cb7 module;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>__init__.py</code><br><small style="color:var(--muted)">src/geometry/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in src/geometry/__init__.py.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/geometry/__init__.py</code></td><td>1 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: No high-confidence call edges detected. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 14. Optimization Package ====== -->
+<h2 id="optimization-package">14. Optimization Package</h2>
+<p>Optimization Package groups implementation around optimization, mostly in src/optimization/__init__.py. This section covers 1 nodes and 0 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Optimization Package (1 nodes, 0 edges)
+    optimization_init_266717f9("__init__.py")
+    class optimization_init_266717f9 module;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>__init__.py</code><br><small style="color:var(--muted)">src/optimization/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in src/optimization/__init__.py.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/optimization/__init__.py</code></td><td>1 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: No high-confidence call edges detected. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 15. Eigenfrequencies Package ====== -->
+<h2 id="eigenfrequencies-package">15. Eigenfrequencies Package</h2>
+<p>Eigenfrequencies Package groups implementation around eigenfrequencies, pyprojecttoml, mostly in pyproject.toml. This section covers 1 nodes and 0 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Eigenfrequencies Package (1 nodes, 0 edges)
+    pkg_eigenfrequencies_58010da2("eigenfrequencies<br/><small>pyproject.toml</small>")
+    class pkg_eigenfrequencies_58010da2 module;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>eigenfrequencies</code><br><small style="color:var(--muted)">pyproject.toml</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>eigenfrequencies node in pyproject.toml.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>pyproject.toml</code></td><td>1 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: No high-confidence call edges detected. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 16. Other ====== -->
+<h2 id="other">16. Other</h2>
+<p>Other groups implementation around confpy, solver, docs, source, mostly in src/solver/__init__.py, docs/source/conf.py. This section covers 2 nodes and 0 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Other (2 nodes, 0 edges)
+    source_conf_97f65c4c("conf.py")
+    solver_init_993221dd("__init__.py")
+    class source_conf_97f65c4c module;
+    class solver_init_993221dd module;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>__init__.py</code><br><small style="color:var(--muted)">src/solver/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in src/solver/__init__.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>conf.py</code><br><small style="color:var(--muted)">docs/source/conf.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in docs/source/conf.py.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>docs/source/conf.py</code></td><td>1 nodes</td></tr>
+<tr><td><code>src/solver/__init__.py</code></td><td>1 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: No high-confidence call edges detected. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<h2 id="hyperedges">Group Relationships (Hyperedges)</h2>
+<div class="grid">
+
+  <div class="card">
+    <h4>dtOO geometry to eigenfrequency optimization pipeline</h4>
+    <p><code>participate_in</code> — 5 participants</p>
+    <ul>
+      <li><code>turbine_runner_dtoo_export</code></li>
+      <li><code>turbine_runner_mesh_prep</code></li>
+      <li><code>turbine_runner_solver</code></li>
+      <li><code>turbine_runner_main</code></li>
+      <li><code>turbine_runner_optimize</code></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>FEM generalized eigenvalue formulation (K, M, shape functions, weak form)</h4>
+    <p><code>form</code> — 5 participants</p>
+    <ul>
+      <li><code>theory_eigenvalues_generalized_eigenproblem</code></li>
+      <li><code>theory_eigenvalues_stiffness_matrix</code></li>
+      <li><code>theory_eigenvalues_mass_matrix</code></li>
+      <li><code>theory_eigenvalues_shape_functions</code></li>
+      <li><code>theory_eigenvalues_weak_formulation</code></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Two-stack cluster integration (dtOO+OpenFOAM vs FEniCSx, backend switch)</h4>
+    <p><code>participate_in</code> — 4 participants</p>
+    <ul>
+      <li><code>env_notes_dtoo_openfoam_stack</code></li>
+      <li><code>env_notes_fenicsx_dolfinx_stack</code></li>
+      <li><code>env_notes_disjoint_stacks</code></li>
+      <li><code>handoff_runner_backend_switch</code></li>
+    </ul>
+  </div>
+</div>
+<hr>
+<h2 id="stats">Project Statistics</h2>
+
+<div class="grid">
+  <div class="card">
+    <h4>Graph</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><td>Nodes</td><td>287</td></tr>
+      <tr><td>Edges</td><td>405</td></tr>
+      <tr><td>Hyperedges</td><td>3</td></tr>
+      <tr><td>Communities</td><td>22</td></tr>
+      <tr><td>Documented Sections</td><td>15</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Edge Confidence</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><td>EXTRACTED</td><td>339</td></tr>
+      <tr><td>INFERRED</td><td>66</td></tr>
+      <tr><td>AMBIGUOUS</td><td>0</td></tr>
+    </table>
+  </div>
+</div>
+
+<div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
+  <p>eigenfrequencies — Architecture Documentation</p>
+  <p>Generated: 2026-06-24 20:57 UTC · graphify callflow-html</p>
+</div>
+
+</div><!-- .container -->
+
+<script>
+(function () {
+  const mermaidConfig = {
+    startOnLoad: false,
+    theme: 'dark',
+    securityLevel: 'loose',
+    flowchart: { htmlLabels: true, useMaxWidth: true },
+    themeVariables: {
+      primaryColor: '#1e293b',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#38bdf8',
+      secondaryColor: '#0f172a',
+      tertiaryColor: '#334155',
+      lineColor: '#64748b',
+      textColor: '#e2e8f0',
+    }
+  };
+
+  mermaid.initialize(mermaidConfig);
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function enhanceMermaidDiagrams() {
+    document.querySelectorAll('.mermaid').forEach((container) => {
+      if (container.dataset.zoomReady === 'true') return;
+      const svg = container.querySelector('svg');
+      if (!svg) return;
+
+      container.dataset.zoomReady = 'true';
+      container.classList.add('is-enhanced');
+
+      const viewport = document.createElement('div');
+      viewport.className = 'mermaid-viewport';
+      svg.parentNode.insertBefore(viewport, svg);
+      viewport.appendChild(svg);
+
+      const toolbar = document.createElement('div');
+      toolbar.className = 'mermaid-toolbar';
+      toolbar.innerHTML = [
+        '<button type="button" data-action="zoom-out" title="Zoom out">-</button>',
+        '<span class="zoom-level" data-role="level">100%</span>',
+        '<button type="button" data-action="zoom-in" title="Zoom in">+</button>',
+        '<button type="button" data-action="fit" title="Fit width">Fit</button>',
+        '<button type="button" data-action="reset" title="Reset view">Reset</button>'
+      ].join('');
+      container.insertBefore(toolbar, viewport);
+
+      const state = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, originX: 0, originY: 0 };
+      const level = toolbar.querySelector('[data-role="level"]');
+
+      function applyTransform() {
+        svg.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
+        level.textContent = `${Math.round(state.scale * 100)}%`;
+      }
+
+      function zoomBy(delta) {
+        state.scale = clamp(state.scale + delta, 0.25, 3);
+        applyTransform();
+      }
+
+      function reset() {
+        state.scale = 1;
+        state.x = 0;
+        state.y = 0;
+        applyTransform();
+      }
+
+      function fitWidth() {
+        const rawWidth = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width
+          ? svg.viewBox.baseVal.width
+          : svg.getBoundingClientRect().width / state.scale;
+        if (!rawWidth) {
+          reset();
+          return;
+        }
+        state.scale = clamp((viewport.clientWidth - 48) / rawWidth, 0.25, 1.4);
+        state.x = 0;
+        state.y = 0;
+        applyTransform();
+      }
+
+      toolbar.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-action]');
+        if (!button) return;
+        const action = button.dataset.action;
+        if (action === 'zoom-in') zoomBy(0.15);
+        if (action === 'zoom-out') zoomBy(-0.15);
+        if (action === 'fit') fitWidth();
+        if (action === 'reset') reset();
+      });
+
+      viewport.addEventListener('wheel', (event) => {
+        if (!event.ctrlKey && !event.metaKey) return;
+        event.preventDefault();
+        zoomBy(event.deltaY < 0 ? 0.1 : -0.1);
+      }, { passive: false });
+
+      viewport.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0) return;
+        state.dragging = true;
+        state.startX = event.clientX;
+        state.startY = event.clientY;
+        state.originX = state.x;
+        state.originY = state.y;
+        viewport.classList.add('is-dragging');
+        viewport.setPointerCapture(event.pointerId);
+      });
+
+      viewport.addEventListener('pointermove', (event) => {
+        if (!state.dragging) return;
+        state.x = state.originX + event.clientX - state.startX;
+        state.y = state.originY + event.clientY - state.startY;
+        applyTransform();
+      });
+
+      function endDrag(event) {
+        if (!state.dragging) return;
+        state.dragging = false;
+        viewport.classList.remove('is-dragging');
+        if (viewport.hasPointerCapture(event.pointerId)) {
+          viewport.releasePointerCapture(event.pointerId);
+        }
+      }
+
+      viewport.addEventListener('pointerup', endDrag);
+      viewport.addEventListener('pointercancel', endDrag);
+      applyTransform();
+    });
+  }
+
+  function renderMermaid() {
+    const result = mermaid.run
+      ? mermaid.run({ querySelector: '.mermaid' })
+      : Promise.resolve();
+    Promise.resolve(result)
+      .then(enhanceMermaidDiagrams)
+      .catch((error) => {
+        console.error('Mermaid render failed:', error);
+        enhanceMermaidDiagrams();
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderMermaid);
+  } else {
+    renderMermaid();
+  }
+})();
+</script>
+
+</body>
+</html>

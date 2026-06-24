@@ -1,0 +1,242 @@
+{
+  ".claude/settings.local.json": {
+    "mtime": 1781551123.475875,
+    "ast_hash": "5acc1bc5065cbcb2fd44a05832ece54c",
+    "semantic_hash": "5acc1bc5065cbcb2fd44a05832ece54c"
+  },
+  ".opencode/opencode.json": {
+    "mtime": 1782314004.2016504,
+    "ast_hash": "abcc8b9dcd80bca5f9dde6d9f0c3ae79",
+    "semantic_hash": "abcc8b9dcd80bca5f9dde6d9f0c3ae79"
+  },
+  ".opencode/plugins/graphify.js": {
+    "mtime": 1782314004.2016504,
+    "ast_hash": "d12d57c380c6f01a0a3c3d480824d09f",
+    "semantic_hash": "d12d57c380c6f01a0a3c3d480824d09f"
+  },
+  "cluster/submit.sh": {
+    "mtime": 1782244663.3377426,
+    "ast_hash": "20fbcead7ef8f907c0cc1c80d396e417",
+    "semantic_hash": "20fbcead7ef8f907c0cc1c80d396e417"
+  },
+  "demo/beam/beam_fem_validation.py": {
+    "mtime": 1781294886.0117295,
+    "ast_hash": "0e5cb3d9c00d0f304ef8138599192c5f",
+    "semantic_hash": "0e5cb3d9c00d0f304ef8138599192c5f"
+  },
+  "demo/beam/beam_spline_optimization.py": {
+    "mtime": 1781297296.3260913,
+    "ast_hash": "7643fcb05f1f19a18766e13de736de1d",
+    "semantic_hash": "7643fcb05f1f19a18766e13de736de1d"
+  },
+  "demo/beam/config.py": {
+    "mtime": 1781297275.5628839,
+    "ast_hash": "d6d32e07df89422abd10274650280660",
+    "semantic_hash": "d6d32e07df89422abd10274650280660"
+  },
+  "demo/beam/euler_analytical.py": {
+    "mtime": 1781206148.4193714,
+    "ast_hash": "b84050097f1c5dbd51f6061186c158de",
+    "semantic_hash": "b84050097f1c5dbd51f6061186c158de"
+  },
+  "demo/beam/geometry.py": {
+    "mtime": 1781206148.4213712,
+    "ast_hash": "a1a4bfa09c575deeb648a0dc2a3281af",
+    "semantic_hash": "a1a4bfa09c575deeb648a0dc2a3281af"
+  },
+  "demo/beam/geometry_spline.py": {
+    "mtime": 1781297282.495953,
+    "ast_hash": "6ee15a1b83bb2dc676dd0ae6bfcb6bdb",
+    "semantic_hash": "6ee15a1b83bb2dc676dd0ae6bfcb6bdb"
+  },
+  "demo/beam/main.py": {
+    "mtime": 1781293284.041227,
+    "ast_hash": "3a8e78341db62cfd17350197e8ab19b9",
+    "semantic_hash": "3a8e78341db62cfd17350197e8ab19b9"
+  },
+  "demo/beam/optimization.py": {
+    "mtime": 1781297291.5550437,
+    "ast_hash": "bd727085b8be9e294cae96b4b6ba084d",
+    "semantic_hash": "bd727085b8be9e294cae96b4b6ba084d"
+  },
+  "demo/beam/solver.py": {
+    "mtime": 1781206148.4303715,
+    "ast_hash": "774d7568f51db33f8c5dde8bd2ff14a1",
+    "semantic_hash": "774d7568f51db33f8c5dde8bd2ff14a1"
+  },
+  "demo/beam/tui.py": {
+    "mtime": 1780333850.906006,
+    "ast_hash": "05bc3007c650280c8f62dd0c36fd7c7a",
+    "semantic_hash": "05bc3007c650280c8f62dd0c36fd7c7a"
+  },
+  "docs/source/conf.py": {
+    "mtime": 1780333465.0549822,
+    "ast_hash": "83d96f16f13f16c628c52ba9be38816f",
+    "semantic_hash": "83d96f16f13f16c628c52ba9be38816f"
+  },
+  "pyproject.toml": {
+    "mtime": 1780335673.2942715,
+    "ast_hash": "5de28ead2c851586a3de0e402a699716",
+    "semantic_hash": "5de28ead2c851586a3de0e402a699716"
+  },
+  "scripts/build_container.sh": {
+    "mtime": 1780333465.055982,
+    "ast_hash": "9d188d008a8a1d767a37fbf4d29fcfcb",
+    "semantic_hash": "9d188d008a8a1d767a37fbf4d29fcfcb"
+  },
+  "scripts/run_container.sh": {
+    "mtime": 1780333465.055982,
+    "ast_hash": "d70519ab63c3f7f470dc7e0decfc05f4",
+    "semantic_hash": "d70519ab63c3f7f470dc7e0decfc05f4"
+  },
+  "src/__init__.py": {
+    "mtime": 1780333465.055982,
+    "ast_hash": "cfdad2e39ae017bc90360fc656762998",
+    "semantic_hash": "cfdad2e39ae017bc90360fc656762998"
+  },
+  "src/geometry/__init__.py": {
+    "mtime": 1780333465.055982,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "src/io/__init__.py": {
+    "mtime": 1780333465.055982,
+    "ast_hash": "55f73116afeea363c82c8a3debd6147c",
+    "semantic_hash": "55f73116afeea363c82c8a3debd6147c"
+  },
+  "src/optimization/__init__.py": {
+    "mtime": 1780333465.055982,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "src/solver/__init__.py": {
+    "mtime": 1780333465.055982,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "turbine_runner/added_mass.py": {
+    "mtime": 1782244603.827152,
+    "ast_hash": "151038b5d63d25212862cdba36f60368",
+    "semantic_hash": "151038b5d63d25212862cdba36f60368"
+  },
+  "turbine_runner/cfd_eval.py": {
+    "mtime": 1782244573.0618467,
+    "ast_hash": "fb194fe6309173dc37a4923489da7422",
+    "semantic_hash": "fb194fe6309173dc37a4923489da7422"
+  },
+  "turbine_runner/config.py": {
+    "mtime": 1782244531.1094303,
+    "ast_hash": "fd026cadadf634a9b00436d25df56fea",
+    "semantic_hash": "fd026cadadf634a9b00436d25df56fea"
+  },
+  "turbine_runner/data/design.json": {
+    "mtime": 1782247944.2854075,
+    "ast_hash": "821f57811f553ac5b356c9e003f2f205",
+    "semantic_hash": "821f57811f553ac5b356c9e003f2f205"
+  },
+  "turbine_runner/dtoo_export.py": {
+    "mtime": 1781553130.3827016,
+    "ast_hash": "768594bdf67fc2dddfdfc107c28a35ff",
+    "semantic_hash": "768594bdf67fc2dddfdfc107c28a35ff"
+  },
+  "turbine_runner/evaluate.py": {
+    "mtime": 1781553203.3505535,
+    "ast_hash": "a480832cfb51fcf649307cefb8f89f58",
+    "semantic_hash": "a480832cfb51fcf649307cefb8f89f58"
+  },
+  "turbine_runner/main.py": {
+    "mtime": 1781545390.6381443,
+    "ast_hash": "a730b6b21b605e2e0a2cf03ecf7db730",
+    "semantic_hash": "a730b6b21b605e2e0a2cf03ecf7db730"
+  },
+  "turbine_runner/mesh_prep.py": {
+    "mtime": 1781542410.8742723,
+    "ast_hash": "991da312a4cf39cdd9fbd953b1b024fa",
+    "semantic_hash": "991da312a4cf39cdd9fbd953b1b024fa"
+  },
+  "turbine_runner/objective.py": {
+    "mtime": 1782244547.0525885,
+    "ast_hash": "4f297685e24dc8fde6460604721f597f",
+    "semantic_hash": "4f297685e24dc8fde6460604721f597f"
+  },
+  "turbine_runner/optimization.py": {
+    "mtime": 1781553189.2103891,
+    "ast_hash": "de96c14b63b8ff993ca1ad983215133c",
+    "semantic_hash": "de96c14b63b8ff993ca1ad983215133c"
+  },
+  "turbine_runner/optimize.py": {
+    "mtime": 1781553334.8390722,
+    "ast_hash": "0d3287416a497060b47157f39772658e",
+    "semantic_hash": "0d3287416a497060b47157f39772658e"
+  },
+  "turbine_runner/optimize_multi.py": {
+    "mtime": 1782244646.3175738,
+    "ast_hash": "1199f475d330a275da79905d6d443460",
+    "semantic_hash": "1199f475d330a275da79905d6d443460"
+  },
+  "turbine_runner/solver.py": {
+    "mtime": 1782244615.3532665,
+    "ast_hash": "fd2126a1b2db08ce1c56bee53b9a48f7",
+    "semantic_hash": "fd2126a1b2db08ce1c56bee53b9a48f7"
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1780333465.052982,
+    "ast_hash": "9139e1dd0b627ff2183e2a0a7ee3c4d2",
+    "semantic_hash": "9139e1dd0b627ff2183e2a0a7ee3c4d2"
+  },
+  "HANDOFF.md": {
+    "mtime": 1782249285.5907195,
+    "ast_hash": "3fa114f7fc0a34a88d36f8aa656d5484",
+    "semantic_hash": "3fa114f7fc0a34a88d36f8aa656d5484"
+  },
+  "README.md": {
+    "mtime": 1780333465.052982,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "cluster/env_notes.md": {
+    "mtime": 1782249295.3228161,
+    "ast_hash": "5b1bfb44ad91e51ac8880d672aa2a3cb",
+    "semantic_hash": "5b1bfb44ad91e51ac8880d672aa2a3cb"
+  },
+  "demo/beam/geometry.md": {
+    "mtime": 1781206148.4203713,
+    "ast_hash": "1763e400e3244aac4b9a396387997012",
+    "semantic_hash": "1763e400e3244aac4b9a396387997012"
+  },
+  "docs/source/api/solver.md": {
+    "mtime": 1780333465.0549822,
+    "ast_hash": "78c40a63bbac112e6ea1c39127f64c41",
+    "semantic_hash": "78c40a63bbac112e6ea1c39127f64c41"
+  },
+  "docs/source/index.rst": {
+    "mtime": 1780333465.0549822,
+    "ast_hash": "5c9774beacdeea0cae4c4b7a47fd6afa",
+    "semantic_hash": "5c9774beacdeea0cae4c4b7a47fd6afa"
+  },
+  "docs/source/plan.md": {
+    "mtime": 1780333465.0549822,
+    "ast_hash": "505f4b8322e9125a31d94d8f332e42b3",
+    "semantic_hash": "505f4b8322e9125a31d94d8f332e42b3"
+  },
+  "docs/source/quickstart.md": {
+    "mtime": 1780333465.0549822,
+    "ast_hash": "87b9067988142797fa6ddc0ebc04190e",
+    "semantic_hash": "87b9067988142797fa6ddc0ebc04190e"
+  },
+  "docs/source/theory/eigenvalues.md": {
+    "mtime": 1781206148.4313715,
+    "ast_hash": "fdb79d047b89744c422f5c70b5f633a5",
+    "semantic_hash": "fdb79d047b89744c422f5c70b5f633a5"
+  },
+  "documentation.md": {
+    "mtime": 1782249304.1639037,
+    "ast_hash": "94c859392d2009587debc21ee2e120e5",
+    "semantic_hash": "94c859392d2009587debc21ee2e120e5"
+  },
+  "turbine_runner/README.md": {
+    "mtime": 1781553487.0838091,
+    "ast_hash": "4be37df039bf9135ce23c142d2b1bc1a",
+    "semantic_hash": "4be37df039bf9135ce23c142d2b1bc1a"
+  }
+}
