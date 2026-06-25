@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
 """STAGE 3: resonance-avoidance optimization (runs on the HOST).
 
-Orchestrates the two containers per evaluation (Option A, host orchestration):
+Orchestrates dtOO (native) + FEniCSx (enroot container) per evaluation:
 
-    design x  --(design.json)-->  [dtOO container]  -->  runner.msh
-    runner.msh                --> [fenicsx container] -->  frequencies
+    design x  --(design.json)-->  [dtOO native]     -->  runner.msh
+    runner.msh                --> [fenicsx enroot]  -->  frequencies
     frequencies               --> penalty (forbidden band)
 
 scipy.optimize.minimize drives the dtOO design parameters so that no eigenfrequency
 stays inside the forbidden band [f_min, f_max].
 
-Requirements on the host: python3 with numpy + scipy, and docker with the images
-`atismer/dtoo-opensuse:stable` and `eigenfrequencies-fenicsx:latest`.
-
-This is expensive: each evaluation runs a full dtOO geometry build + mesh + a FEM
-solve (minutes). Keep OptimizationConfig.max_iter modest.
+Requirements: python3 with numpy + scipy, source ~/pe, and enroot container
+`pyxis_fenicsx` imported from docker://dolfinx/dolfinx:stable.
 """
 
 import json
@@ -32,8 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 DATA = os.path.join(HERE, "data")
 
-DTOO_IMAGE = os.environ.get("DTOO_IMAGE", "atismer/dtoo-opensuse:stable")
-FENICSX_IMAGE = os.environ.get("FENICSX_IMAGE", "eigenfrequencies-fenicsx:latest")
+FENICSX_CONTAINER = os.environ.get("FENICSX_CONTAINER", "pyxis_fenicsx")
 
 DTOO_FAIL_PENALTY = 1e6  # returned when a design fails to build/mesh/solve
 
@@ -48,15 +44,15 @@ def _run_dtoo(design: dict) -> bool:
     if os.path.exists(msh):
         os.remove(msh)
 
+    design_json = os.path.join(DATA, "design.json")
     cmd = [
-        "docker", "run", "--rm",
-        "-v", f"{DATA}:/work",
-        "-v", f"{HERE}:/src",
-        "-w", "/dtOO/test/tistos",
-        DTOO_IMAGE,
         "bash", "-lc",
-        "export LD_LIBRARY_PATH=/dtOO-install/lib:/dtOO-install/lib64:$LD_LIBRARY_PATH "
-        "&& python3.12 /src/dtoo_export.py",
+        f"source ~/pe && "
+        f"export LD_LIBRARY_PATH=~/dtOO/install/lib:~/dtOO/install/lib64:$LD_LIBRARY_PATH && "
+        f"export DTOO_CASE_DIR=~/dtOO/build/test/tistos && "
+        f"export DTOO_OUTPUT_MSH={msh} && "
+        f"export DTOO_DESIGN_JSON={design_json} && "
+        f"python3 {os.path.join(HERE, 'dtoo_export.py')}",
     ]
     res = subprocess.run(cmd, capture_output=True, text=True)
     if res.returncode != 0 or not os.path.exists(msh):
@@ -68,11 +64,11 @@ def _run_dtoo(design: dict) -> bool:
 def _run_fenicsx() -> dict:
     """Run evaluate.py in the fenicsx container, parse the RESULT_JSON line."""
     cmd = [
-        "docker", "run", "--rm", "-e", "PYTHONUNBUFFERED=1",
-        "-v", f"{REPO}:/workspace",
-        "-w", "/workspace/turbine_runner",
-        FENICSX_IMAGE,
-        "python3", "evaluate.py", "/workspace/turbine_runner/data/runner.msh",
+        "enroot", "start",
+        "-m", f"{REPO}:/workspace",
+        FENICSX_CONTAINER,
+        "python3", "/workspace/turbine_runner/evaluate.py",
+        "/workspace/turbine_runner/data/runner.msh",
     ]
     res = subprocess.run(cmd, capture_output=True, text=True)
     for line in reversed(res.stdout.splitlines()):

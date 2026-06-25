@@ -15,40 +15,30 @@ labels are dtOO const-value names, e.g. cV_ru_bladeLength_0.5, cV_ru_alpha_1_ex_
 (see tistos/build.py in the block_structured_meshing reference). An empty/missing
 JSON just builds the template (baseline) geometry.
 
-Environment notes (discovered for atismer/dtoo-opensuse:stable):
-  * interpreter MUST be python3.12 (has numpy 2.x that OCC needs; python3.6 fails)
-  * LD_LIBRARY_PATH must include /dtOO-install/lib (OpenCASCADE) and
-    /dtOO-install/lib64 (gmsh); run under a login shell so OpenFOAM env is sourced
+Cluster usage (bwUniCluster 3.0):
+  * source ~/pe (loads Python 3.13 + modules)
+  * LD_LIBRARY_PATH must include ~/dtOO/install/lib and ~/dtOO/install/lib64
   * the working dir must be a dtOO case dir holding machine.xml + machineSave.xml
-    + xml/ (default /dtOO/test/tistos)
-
-Usage (from the repo root; data/ is the shared volume):
-
-    docker run --rm \
-        -v "$PWD/turbine_runner/data:/work" \
-        -v "$PWD/turbine_runner:/src" \
-        -w /dtOO/test/tistos \
-        atismer/dtoo-opensuse:stable \
-        bash -lc 'export LD_LIBRARY_PATH=/dtOO-install/lib:/dtOO-install/lib64:$LD_LIBRARY_PATH \
-                  && python3.12 /src/dtoo_export.py'
+    + xml/ (default ~/dtOO/build/test/tistos)
 
 Override via env vars: DTOO_CASE_DIR, DTOO_MACHINE_XML, DTOO_STATE_XML,
-DTOO_STATE, DTOO_MECH_VOLUME, DTOO_ADJUST_PLUGIN, DTOO_DESIGN_JSON, DTOO_OUTPUT_MSH.
+DTOO_STATE, DTOO_MECH_VOLUME, DTOO_ADJUST_PLUGIN, DTOO_DESIGN_JSON, DTOO_OUTPUT_MSH,
+DTOO_LOG_FILE.
 """
 
 import json
 import os
 
 
-CASE_DIR = os.environ.get("DTOO_CASE_DIR", "/dtOO/test/tistos")
+CASE_DIR = os.environ.get("DTOO_CASE_DIR", os.path.expanduser("~/dtOO/build/test/tistos"))
 MACHINE_XML = os.environ.get("DTOO_MACHINE_XML", "machine.xml")
 STATE_XML = os.environ.get("DTOO_STATE_XML", "machineSave.xml")
 STATE = os.environ.get("DTOO_STATE", "templateState")
 MECH_VOLUME = os.environ.get("DTOO_MECH_VOLUME", "ruWithRounding_mechMesh")
 ADJUST_PLUGIN = os.environ.get("DTOO_ADJUST_PLUGIN", "ru_adjustDomain")
 
-DESIGN_JSON = os.environ.get("DTOO_DESIGN_JSON", "/work/design.json")
-OUTPUT_MSH = os.environ.get("DTOO_OUTPUT_MSH", "/work/runner.msh")
+DESIGN_JSON = os.environ.get("DTOO_DESIGN_JSON", "")
+OUTPUT_MSH = os.environ.get("DTOO_OUTPUT_MSH", os.path.join(os.path.dirname(__file__), "data", "runner.msh"))
 
 
 def _load_design() -> dict:
@@ -78,7 +68,8 @@ def main() -> None:
         labeledVectorHandlingDtPlugin,
     )
 
-    logMe.initLog("/work/dtoo_build.log")
+    LOG_FILE = os.environ.get("DTOO_LOG_FILE", os.path.join(os.path.dirname(OUTPUT_MSH), "dtoo_build.log"))
+    logMe.initLog(LOG_FILE)
     parser = dtXmlParser.init(MACHINE_XML, STATE_XML).reference()
     parser.parse()
 
