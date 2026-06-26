@@ -67,8 +67,9 @@ def _run_fenicsx() -> dict:
         "enroot", "start",
         "-m", f"{REPO}:/workspace",
         FENICSX_CONTAINER,
-        "python3", "/workspace/turbine_runner/evaluate.py",
-        "/workspace/turbine_runner/data/runner.msh",
+        "bash", "-c",
+        "export HOME=/tmp; export DOLFINX_CACHE_DIR=/tmp; "
+        "python3 /workspace/turbine_runner/evaluate.py /workspace/turbine_runner/data/runner.msh",
     ]
     res = subprocess.run(cmd, capture_output=True, text=True)
     for line in reversed(res.stdout.splitlines()):
