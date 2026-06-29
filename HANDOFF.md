@@ -9,6 +9,7 @@ Audience: **context-free agent** continuing cluster testing.
 ## 1. Prerequisites (already done — verify)
 
 ### 1.1 SSH + GitHub
+
 ```bash
 # SSH key configured for GitHub
 ssh -T git@github.com
@@ -21,11 +22,13 @@ git log --oneline -1
 ```
 
 If behind, pull:
+
 ```bash
 git pull origin cfd-eigenfreq-multiobjective
 ```
 
 ### 1.2 dtOO Environment
+
 ```bash
 source ~/pe
 # Loads: Python 3.13.3, OpenFOAM v2412, modules
@@ -33,19 +36,23 @@ source ~/pe
 ```
 
 Verify dtOO imports:
+
 ```bash
 python3 -c "import dtOOPythonSWIG; print('OK')"
 # → OK (with harmless Gmsh warnings)
 ```
 
 ### 1.3 Enroot Container (FEniCSx)
+
 Built once in `~/.local/share/enroot/`:
+
 ```bash
 enroot list
 # → pyxis_fenicsx
 ```
 
 Verify:
+
 ```bash
 REPO=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies
 enroot start -m "$REPO:/workspace" pyxis_fenicsx \
@@ -170,6 +177,7 @@ cat turbine_runner/optimize_multi.log
 1. **Never run compute on login nodes.** Jobs > 1 min or > 8 GB will be killed without warning. Use `salloc` or `sbatch`.
 
 2. **Repo is on workspace, not home.** The mount path for enroot must be the workspace path:
+
    ```bash
    REPO=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies
    # NOT ~/eigenfrequencies (symlink may not work)
@@ -227,4 +235,4 @@ ws_extend myws 60
 - `cluster/apptainer_fenicsx.def` — container definition (imported via enroot)
 - `cluster/submit.sh` — SLURM batch script
 - `turbine_runner/optimize_multi.py` — main optimization loop
-- bwHPC Wiki: https://wiki.bwhpc.de/e/BwUniCluster3.0
+- bwHPC Wiki: <https://wiki.bwhpc.de/e/BwUniCluster3.0>
