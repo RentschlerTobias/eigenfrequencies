@@ -160,6 +160,29 @@ class OptimizationConfig:
 
 
 @dataclass
+class DEConfig:
+    """Differential Evolution hyperparameters.
+
+    Population-based optimizer; each generation evaluates pop_size designs
+    independently -> embarrassingly parallel over workers.
+
+    Attributes:
+        pop_size: Number of individuals per generation (match worker count)
+        mutation: Differential weight F (0..2, typically 0.5..1.0)
+        crossover: Crossover probability CR (0..1, typically 0.7..0.9)
+        max_generations: Maximum generations (total evals = pop_size * max_generations)
+        tol: Relative convergence tolerance (stops if std(objectives) < tol)
+        seed: Random seed for reproducibility (None = non-reproducible)
+    """
+    pop_size: int = 20
+    mutation: float = 0.8
+    crossover: float = 0.9
+    max_generations: int = 30
+    tol: float = 0.01
+    seed: Optional[int] = None
+
+
+@dataclass
 class CFDConfig:
     """Steady-CFD operating point and result-extraction settings.
 

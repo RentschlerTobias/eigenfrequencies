@@ -34,17 +34,25 @@ FENICSX_CONTAINER = os.environ.get("FENICSX_CONTAINER", "pyxis_fenicsx")
 DTOO_FAIL_PENALTY = 1e6  # returned when a design fails to build/mesh/solve
 
 
-def _run_dtoo(design: dict) -> bool:
+def _worker_dir(worker_id: int) -> str:
+    """Return the worker-specific working directory ($TMPDIR/worker_{id})."""
+    tmpdir = os.environ.get("TMPDIR", "/tmp")
+    return os.path.join(tmpdir, f"worker_{worker_id}")
+
+
+def _run_dtoo(design: dict, worker_id: int = 0) -> bool:
     """Write design.json and build runner.msh via the dtOO container."""
-    os.makedirs(DATA, exist_ok=True)
-    with open(os.path.join(DATA, "design.json"), "w") as fh:
+    wdir = _worker_dir(worker_id)
+    os.makedirs(wdir, exist_ok=True)
+    design_json = os.path.join(wdir, "design.json")
+    msh = os.path.join(wdir, "runner.msh")
+
+    with open(design_json, "w") as fh:
         json.dump(design, fh)
     # remove stale mesh so a failed build cannot be mistaken for success
-    msh = os.path.join(DATA, "runner.msh")
     if os.path.exists(msh):
         os.remove(msh)
 
-    design_json = os.path.join(DATA, "design.json")
     cmd = [
         "bash", "-lc",
         f"source ~/pe && "
@@ -56,26 +64,29 @@ def _run_dtoo(design: dict) -> bool:
     ]
     res = subprocess.run(cmd, capture_output=True, text=True)
     if res.returncode != 0 or not os.path.exists(msh):
-        sys.stderr.write(f"[optimize] dtOO build FAILED:\n{res.stdout[-800:]}\n{res.stderr[-800:]}\n")
+        sys.stderr.write(f"[optimize] dtOO build FAILED (worker {worker_id}):\n{res.stdout[-800:]}\n{res.stderr[-800:]}\n")
         return False
     return True
 
 
-def _run_fenicsx() -> dict:
+def _run_fenicsx(worker_id: int = 0) -> dict:
     """Run evaluate.py in the fenicsx container, parse the RESULT_JSON line."""
+    wdir = _worker_dir(worker_id)
+    msh = os.path.join(wdir, "runner.msh")
     cmd = [
         "enroot", "start",
         "-m", f"{REPO}:/workspace",
+        "-m", f"{wdir}:/worker_data",
         FENICSX_CONTAINER,
         "bash", "-c",
         "export HOME=/tmp; export DOLFINX_CACHE_DIR=/tmp; "
-        "python3 /workspace/turbine_runner/evaluate.py /workspace/turbine_runner/data/runner.msh",
+        f"python3 /workspace/turbine_runner/evaluate.py /worker_data/runner.msh",
     ]
     res = subprocess.run(cmd, capture_output=True, text=True)
     for line in reversed(res.stdout.splitlines()):
         if line.startswith("RESULT_JSON "):
             return json.loads(line[len("RESULT_JSON "):])
-    sys.stderr.write(f"[optimize] fenicsx eval FAILED:\n{res.stdout[-800:]}\n{res.stderr[-800:]}\n")
+    sys.stderr.write(f"[optimize] fenicsx eval FAILED (worker {worker_id}):\n{res.stdout[-800:]}\n{res.stderr[-800:]}\n")
     return {"frequencies_hz": [], "ok": False}
 
 
