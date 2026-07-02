@@ -156,6 +156,23 @@ graph TD
 
 ---
 
+## Physical Assumptions & Limitations
+
+> [!warning] Current model computes **dry eigenfrequencies only** — major physical effects are missing.
+
+| Effect | Impact on Frequencies | Status | Notes |
+|--------|----------------------|--------|-------|
+| **Added mass (water)** | ↓ 15–40 % (effective mass increases) | 🔴 `added_mass.py` = placeholder (15 % fixed) | Real Laplace solve needs fluid mesh + wetted-surface tagging |
+| **Centrifugal stiffening** | ↑ (rotation tensions structure) | 🔴 Not implemented | Small at 90 rpm, significant at 500 rpm |
+| **Coriolis coupling** | Modifies mode shapes, splits degenerate modes | 🔴 Not implemented | Only relevant for rotating reference frame |
+| **Structural damping** | Reduces resonance amplitude (peak flattening) | 🔴 Not implemented | Hydrodynamic damping from water is significant |
+| **Gravity / pressure prestress** | Geometric stiffening from static loads | 🔴 Not implemented | Requires nonlinear static solve first |
+| **Hydrodynamic eigenfrequencies** | Water has its own modes, couples with structure | 🔴 Not implemented | Full FSI (Helmholtz) — out of scope |
+
+**Consequence:** The optimizer currently shifts **dry modes** out of the forbidden band. Wet modes (real operating condition) will be **lower** due to added mass. A dry mode at 25.6 Hz becomes ~20–22 Hz in water — this must be accounted for when setting the forbidden band.
+
+---
+
 ## Known Problems
 
 > [!warning] Bugs & Limitations
@@ -223,13 +240,14 @@ graph TD
 
 > [!example] Iteration Log
 
-### 2026-07-02 — Pyro5 DE Parallelization
+### 2026-07-02 — Pyro5 DE Parallelization + Physical Assumptions
 - `server_de.py` created: Pyro5 server exposing `evaluate(x, labels)` → dtOO build + FEniCSx + optional CFD
 - `optimize_de.py` rewritten: Pyro5 client, DE master dispatches designs via RPC to persistent workers
 - `cluster/start_servers.sh` created: starts Name Server + N worker servers (one per core)
 - ThreadPoolExecutor deadlock diagnosed: subprocess.run(capture_output=True) with parallel threads = pipe buffer deadlock
 - Fix: rl_framework schema — persistent Pyro5 servers, subprocess runs inside server process (one at a time per worker)
 - Commit `8d43ac8`: "feat(de): Pyro5-based distributed DE (rl_framework schema)"
+- **Physical assumptions documented**: Current model is dry modes only (no water, no rotation, no damping). Added mass, centrifugal stiffening, Coriolis, damping, prestress all missing. Forbidden band [100,150] Hz is arbitrary — needs blade-passing formula (Z=18, n=90 rpm → f_bp=27 Hz).
 
 ### 2026-07-01 — Cluster Adaptation & Handoff
 - `cluster/submit.sh` adapted: `source ~/pe`, `partition=dev_cpu`, enroot `FENICSX_CONTAINER=pyxis_fenicsx`
@@ -293,5 +311,5 @@ scancel <JOBID>
 ---
 
 *Last Update: 2026-07-02*
-*Status: Pyro5 DE parallelization implemented, awaiting cluster test*
-*Next Action: `bash cluster/start_servers.sh` + `python3 turbine_runner/optimize_de.py` on cluster, verify worker .msh production*
+*Status: Pyro5 DE parallelization works. Next: physical forbidden band (Z=18, n=90 rpm) + wet modes*
+*Next Action: Update `OptimizationConfig` with blade-passing formula, add physical assumptions to docs*
