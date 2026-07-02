@@ -15,7 +15,11 @@ cd "$REPO_ROOT"
 
 # ── Source environment ──
 # NOTE: source must run in the SAME shell as the python calls below.
+# Disable errexit during sourcing because OpenFOAM init scripts return
+# non-zero in some paths which would abort the whole script.
+set +e
 source ~/pe
+set -e
 PYTHON=$(which python3)
 
 echo "[DE] Python: $PYTHON"
