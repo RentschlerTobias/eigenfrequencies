@@ -2,8 +2,8 @@
 """Differential Evolution (DE) parallel optimizer for runner design.
 
 Population-based: each generation evaluates pop_size designs independently.
-Runs embarrassingly parallel via ProcessPoolExecutor(start_method='spawn')
-to avoid enroot fork-fragility.
+Runs embarrassingly parallel via ThreadPoolExecutor (threads, not processes)
+so workers share the same Python interpreter and avoid enroot spawn issues.
 
 Supports both resonance-only (CFD_CASE_DIR="") and full CFD+resonance modes.
 """
@@ -11,8 +11,7 @@ Supports both resonance-only (CFD_CASE_DIR="") and full CFD+resonance modes.
 import json
 import os
 import sys
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from multiprocessing import get_context
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import numpy as np
 
@@ -27,20 +26,15 @@ CFD_CASE_DIR = os.environ.get("CFD_CASE_DIR", os.path.join(HERE, "data", "of_cas
 
 
 def _evaluate_design_worker(args):
-    """Picklable worker: evaluate one design in an isolated $TMPDIR.
+    """Thread worker: evaluate one design in an isolated $TMPDIR.
 
     Args:
-        args = (worker_id, x, labels, cfd_cfg_dict, opt_cfg_dict, obj_cfg_dict)
+        args = (worker_id, x, labels, cfd_cfg, opt_cfg, obj_cfg)
 
     Returns:
         (objective_value, breakdown_dict)
     """
-    worker_id, x, labels, cfd_cfg_dict, opt_cfg_dict, obj_cfg_dict = args
-
-    # Rebuild config objects from dicts (spawn-safe)
-    cfd_cfg = CFDConfig(**cfd_cfg_dict)
-    opt_cfg = OptimizationConfig(**opt_cfg_dict)
-    obj_cfg = ObjectiveConfig(**obj_cfg_dict)
+    worker_id, x, labels, cfd_cfg, opt_cfg, obj_cfg = args
 
     design = {lab: float(v) for lab, v in zip(labels, x)}
     if not _run_dtoo(design, worker_id=worker_id):
@@ -77,13 +71,6 @@ def _evaluate_design_worker(args):
     }
 
 
-def _ensure_picklable(obj):
-    """Convert a dataclass instance to a plain dict for spawn-safe passing."""
-    if hasattr(obj, "__dataclass_fields__"):
-        return {k: getattr(obj, k) for k in obj.__dataclass_fields__}
-    return obj
-
-
 def de_optimize(bounds, pop_size, F, CR, max_generations, tol, seed,
                 labels, cfd_cfg, opt_cfg, obj_cfg,
                 max_workers=None):
@@ -101,11 +88,6 @@ def de_optimize(bounds, pop_size, F, CR, max_generations, tol, seed,
     objectives = np.full(pop_size, np.inf)
     breakdowns = [None] * pop_size
 
-    # Configs as dicts for spawn-safe worker args
-    cfd_dict = _ensure_picklable(cfd_cfg)
-    opt_dict = _ensure_picklable(opt_cfg)
-    obj_dict = _ensure_picklable(obj_cfg)
-
     history = []
 
     print(f"[DE] pop_size={pop_size} F={F} CR={CR} max_gen={max_generations} tol={tol}")
@@ -114,12 +96,12 @@ def de_optimize(bounds, pop_size, F, CR, max_generations, tol, seed,
     for gen in range(max_generations):
         # --- evaluate current population in parallel ---
         worker_args = [
-            (i % pop_size, population[i], labels, cfd_dict, opt_dict, obj_dict)
+            (i % pop_size, population[i], labels, cfd_cfg, opt_cfg, obj_cfg)
             for i in range(pop_size)
         ]
         # Reuse worker_id i (same as population index) for I/O isolation
 
-        with ProcessPoolExecutor(max_workers=max_workers, mp_context=get_context("spawn")) as pool:
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
             futures = {pool.submit(_evaluate_design_worker, wa): idx
                        for idx, wa in enumerate(worker_args)}
             for future in as_completed(futures):
