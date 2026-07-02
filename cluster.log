@@ -38,3 +38,548 @@ or simply:
 +++ CUDA_MAN_DIR=/opt/bwhpc/common/devel/cuda/12.8/doc/man
 +++ export CUDA_MAN_DIR
 +++ CUDA_PATH=/opt/bwhpc/common/devel/cuda/12.8
++++ export CUDA_PATH
++++ CUDA_PKGCONFIG_DIR=/opt/bwhpc/common/devel/cuda/12.8/pkgconfig
++++ export CUDA_PKGCONFIG_DIR
++++ CUDA_ROOT=/opt/bwhpc/common/devel/cuda/12.8
++++ export CUDA_ROOT
++++ CUDA_VERSION=12.8
++++ export CUDA_VERSION
++++ CXX_INCLUDE_DIR=/opt/bwhpc/common/devel/cuda/12.8/include
++++ export CXX_INCLUDE_DIR
++++ FOAM_BPR_URL=https://wiki.bwhpc.de/e/OpenFoam
++++ export FOAM_BPR_URL
++++ FOAM_DOC_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/doc/Guides
++++ export FOAM_DOC_DIR
++++ FOAM_EXA_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/tutorials
++++ export FOAM_EXA_DIR
++++ FOAM_INIT=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/bashrc
++++ export FOAM_INIT
++++ FOAM_INST_DIR=/opt/bwhpc/common/cae/openfoam/v2412
++++ export FOAM_INST_DIR
++++ FOAM_VERSION=v2412
++++ export FOAM_VERSION
++++ GNU_BIN_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/bin
++++ export GNU_BIN_DIR
++++ GNU_HOME=/opt/bwhpc/common/compiler/gnu/14.2.0
++++ export GNU_HOME
++++ GNU_INC_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/include
++++ export GNU_INC_DIR
++++ GNU_LIB_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/lib64
++++ export GNU_LIB_DIR
++++ GNU_MAN_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/share/man
++++ export GNU_MAN_DIR
++++ GNU_VERSION=14.2.0
++++ export GNU_VERSION
++++ INCLUDE=/opt/bwhpc/common/devel/cuda/12.8/include
++++ export INCLUDE
++++ __LMOD_REF_COUNT_LD_LIBRARY_PATH='/opt/bwhpc/common/devel/cuda/12.8/lib64:1;/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:1;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:1;/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:1;/home/st/st_us-042020/st_ac136362/dtOO/install/lib:1;/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib/sys-openmpi:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/fftw-3.3.10/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:1;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:1'
++++ export __LMOD_REF_COUNT_LD_LIBRARY_PATH
++++ LD_LIBRARY_PATH=/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/fftw-3.3.10/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64
++++ export LD_LIBRARY_PATH
++++ LIBRARY_PATH=/opt/bwhpc/common/devel/cuda/12.8/lib64
++++ export LIBRARY_PATH
++++ LOADEDMODULES=devel/python/3.13.3-gnu-14.2:compiler/gnu/14.2:devel/cuda/12.8:mpi/openmpi/5.0-gnu-14.2:cae/openfoam/v2412
++++ export LOADEDMODULES
++++ __LMOD_REF_COUNT_MANPATH='/opt/bwhpc/common/devel/cuda/12.8/doc/man:1;/opt/bwhpc/common/compiler/gnu/14.2.0/share/man:1;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man:1;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/share/man:1;/usr/share/lmod/lmod/share/man:1;/usr/share/man:1;:1'
++++ export __LMOD_REF_COUNT_MANPATH
++++ MANPATH=/opt/bwhpc/common/devel/cuda/12.8/doc/man:/opt/bwhpc/common/compiler/gnu/14.2.0/share/man:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/share/man:/usr/share/lmod/lmod/share/man:/usr/share/man::
++++ export MANPATH
++++ MODULEPATH=/opt/bwhpc/st/modulefiles:/opt/bwhpc/common/modulefiles
++++ export MODULEPATH
++++ MPIDIR=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2
++++ export MPIDIR
++++ MPI_BIN_DIR=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin
++++ export MPI_BIN_DIR
++++ MPI_EXA_DIR=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/examples
++++ export MPI_EXA_DIR
++++ MPI_HOME=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2
++++ export MPI_HOME
++++ MPI_INC_DIR=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/include
++++ export MPI_INC_DIR
++++ MPI_LIB_DIR=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64
++++ export MPI_LIB_DIR
++++ MPI_MAN_DIR=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man
++++ export MPI_MAN_DIR
++++ MPI_VERSION=5.0.7-gnu-14.2
++++ export MPI_VERSION
++++ __LMOD_REF_COUNT_PATH='/opt/bwhpc/common/devel/cuda/12.8/bin:1;/opt/bwhpc/common/compiler/gnu/14.2.0/bin:1;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:1;/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin:1;/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:1;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:1;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:1;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:1;/software/all/bin:2;/home/st/st_us-042020/st_ac136362/.local/bin:1;/home/st/st_us-042020/st_ac136362/bin:1;/usr/share/Modules/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1'
++++ export __LMOD_REF_COUNT_PATH
++++ PATH=/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin:/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
++++ export PATH
++++ PKG_CONFIG_PATH=/opt/bwhpc/common/devel/cuda/12.8/pkgconfig
++++ export PKG_CONFIG_PATH
++++ _LMFILES_=/opt/bwhpc/common/modulefiles/devel/python/3.13.3-gnu-14.2.lua:/opt/bwhpc/common/modulefiles/compiler/gnu/14.2.lua:/opt/bwhpc/common/modulefiles/devel/cuda/12.8.lua:/opt/bwhpc/common/modulefiles/mpi/openmpi/5.0-gnu-14.2.lua:/opt/bwhpc/common/modulefiles/cae/openfoam/v2412.lua
++++ export _LMFILES_
++++ _ModuleTable001_=X01vZHVsZVRhYmxlXyA9IHsKTVR2ZXJzaW9uID0gMywKY19yZWJ1aWxkVGltZSA9IGZhbHNlLApjX3Nob3J0VGltZSA9IGZhbHNlLApkZXB0aFQgPSB7fSwKZmFtaWx5ID0ge30sCm1UID0gewpbImNhZS9vcGVuZm9hbSJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9jYWUvb3BlbmZvYW0vdjI0MTIubHVhIiwKZnVsbE5hbWUgPSAiY2FlL29wZW5mb2FtL3YyNDEyIiwKbG9hZE9yZGVyID0gNSwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJjYWUvb3BlbmZvYW0vdjI0MTIiLAp3ViA9ICIqdi4wMDAwMDI0MTIuKnpmaW5hbCIsCn0sClsiY29tcGlsZXIvZ251Il0gPSB7CmZuID0gIi9vcHQv
++++ export _ModuleTable001_
++++ _ModuleTable002_=YndocGMvY29tbW9uL21vZHVsZWZpbGVzL2NvbXBpbGVyL2dudS8xNC4yLmx1YSIsCmZ1bGxOYW1lID0gImNvbXBpbGVyL2dudS8xNC4yIiwKbG9hZE9yZGVyID0gMiwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDIsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJjb21waWxlci9nbnUvMTQuMiIsCndWID0gIl4wMDAwMDAxNC4wMDAwMDAwMDIuKnpmaW5hbCIsCn0sClsiZGV2ZWwvY3VkYSJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9kZXZlbC9jdWRhLzEyLjgubHVhIiwKZnVsbE5hbWUgPSAiZGV2ZWwvY3VkYS8xMi44IiwKbG9hZE9yZGVyID0gMywKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDIsCnN0YXR1cyA9ICJhY3RpdmUiLAp1
++++ export _ModuleTable002_
++++ _ModuleTable003_=c2VyTmFtZSA9ICJkZXZlbC9jdWRhLzEyLjgiLAp3ViA9ICIwMDAwMDAwMTIuMDAwMDAwMDA4Lip6ZmluYWwiLAp9LApbImRldmVsL3B5dGhvbiJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9kZXZlbC9weXRob24vMy4xMy4zLWdudS0xNC4yLmx1YSIsCmZ1bGxOYW1lID0gImRldmVsL3B5dGhvbi8zLjEzLjMtZ251LTE0LjIiLApsb2FkT3JkZXIgPSAxLApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMCwKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImRldmVsL3B5dGhvbi8zLjEzLjMtZ251LTE0LjIiLAp3ViA9ICIwMDAwMDAwMDMuMDAwMDAwMDEzLjAwMDAwMDAwMy4qZ251Lip6ZmluYWwtLjAwMDAwMDAxNC4wMDAwMDAwMDIuKnpmaW5h
++++ export _ModuleTable003_
++++ _ModuleTable004_=bCIsCn0sClsibXBpL29wZW5tcGkiXSA9IHsKZm4gPSAiL29wdC9id2hwYy9jb21tb24vbW9kdWxlZmlsZXMvbXBpL29wZW5tcGkvNS4wLWdudS0xNC4yLmx1YSIsCmZ1bGxOYW1lID0gIm1waS9vcGVubXBpLzUuMC1nbnUtMTQuMiIsCmxvYWRPcmRlciA9IDQsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAxLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAibXBpL29wZW5tcGkvNS4wLWdudS0xNC4yIiwKd1YgPSAiMDAwMDAwMDA1LipnbnUuKnpmaW5hbC0uMDAwMDAwMDE0LjAwMDAwMDAwMi4qemZpbmFsIiwKfSwKfSwKbXBhdGhBID0gewoiL29wdC9id2hwYy9zdC9tb2R1bGVmaWxlcyIsICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcyIsCn0sCnN5c3RlbUJh
++++ export _ModuleTable004_
++++ _ModuleTable005_=c2VNUEFUSCA9ICIvb3B0L2J3aHBjL3N0L21vZHVsZWZpbGVzOi9vcHQvYndocGMvY29tbW9uL21vZHVsZWZpbGVzIiwKfQo=
++++ export _ModuleTable005_
++++ _ModuleTable_Sz_=5
++++ export _ModuleTable_Sz_
++++ alias 'foamInit=source $FOAM_INIT'
+++ for i in cae/openfoam/v2412 devel/python/3.13.3-gnu-14.2
+++ module load devel/python/3.13.3-gnu-14.2
++++ /opt/bwhpc/common/admin/modules/module-wrapper/modulecmd bash load devel/python/3.13.3-gnu-14.2
+++ eval 'GNU_BIN_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/bin;' export 'GNU_BIN_DIR;' 'GNU_HOME=/opt/bwhpc/common/compiler/gnu/14.2.0;' export 'GNU_HOME;' 'GNU_INC_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/include;' export 'GNU_INC_DIR;' 'GNU_LIB_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/lib64;' export 'GNU_LIB_DIR;' 'GNU_MAN_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/share/man;' export 'GNU_MAN_DIR;' 'GNU_VERSION=14.2.0;' export 'GNU_VERSION;' 'JUPYTER_PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/share/jupyter;' export 'JUPYTER_PATH;' '__LMOD_REF_COUNT_LD_LIBRARY_PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:1\;/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:1\;/opt/bwhpc/common/devel/cuda/12.8/lib64:1\;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:1\;/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:1\;/home/st/st_us-042020/st_ac136362/dtOO/install/lib:1\;/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib:1\;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib:1\;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:1\;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:1\;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib/sys-openmpi:1\;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib:1\;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/fftw-3.3.10/lib:1\;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64:1\;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:1\;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:1\;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:1;' export '__LMOD_REF_COUNT_LD_LIBRARY_PATH;' 'LD_LIBRARY_PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/fftw-3.3.10/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy;' export 'LD_LIBRARY_PATH;' 'LOADEDMODULES=devel/cuda/12.8:mpi/openmpi/5.0-gnu-14.2:cae/openfoam/v2412:compiler/gnu/14.2:devel/python/3.13.3-gnu-14.2;' export 'LOADEDMODULES;' '__LMOD_REF_COUNT_MANPATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/share/man:1\;/opt/bwhpc/common/compiler/gnu/14.2.0/share/man:1\;/opt/bwhpc/common/devel/cuda/12.8/doc/man:1\;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man:1\;/usr/share/lmod/lmod/share/man:1\;/usr/share/man:1\;:1;' export '__LMOD_REF_COUNT_MANPATH;' 'MANPATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/share/man:/opt/bwhpc/common/compiler/gnu/14.2.0/share/man:/opt/bwhpc/common/devel/cuda/12.8/doc/man:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man:/usr/share/lmod/lmod/share/man:/usr/share/man::;' export 'MANPATH;' 'MODULEPATH=/opt/bwhpc/st/modulefiles:/opt/bwhpc/common/modulefiles;' export 'MODULEPATH;' '__LMOD_REF_COUNT_PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:1\;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:1\;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:1\;/opt/bwhpc/common/compiler/gnu/14.2.0/bin:1\;/opt/bwhpc/common/devel/cuda/12.8/bin:1\;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:1\;/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:1\;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin:1\;/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:1\;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:1\;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:1\;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:1\;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:1\;/software/all/bin:2\;/home/st/st_us-042020/st_ac136362/.local/bin:1\;/home/st/st_us-042020/st_ac136362/bin:1\;/usr/share/Modules/bin:1\;/usr/local/bin:1\;/usr/bin:1\;/usr/local/sbin:1\;/usr/sbin:1;' export '__LMOD_REF_COUNT_PATH;' 'PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin:/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin;' export 'PATH;' '__LMOD_REF_COUNT_PYTHONPATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/lib/python3.13/site-packages:1\;/home/st/st_us-042020/st_ac136362/dtOO/install/scripts/python:1\;/home/st/st_us-042020/st_ac136362/dtOO/install/tools:1;' export '__LMOD_REF_COUNT_PYTHONPATH;' 'PYTHONPATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/lib/python3.13/site-packages:/home/st/st_us-042020/st_ac136362/dtOO/install/scripts/python:/home/st/st_us-042020/st_ac136362/dtOO/install/tools;' export 'PYTHONPATH;' '_LMFILES_=/opt/bwhpc/common/modulefiles/devel/cuda/12.8.lua:/opt/bwhpc/common/modulefiles/mpi/openmpi/5.0-gnu-14.2.lua:/opt/bwhpc/common/modulefiles/cae/openfoam/v2412.lua:/opt/bwhpc/common/modulefiles/compiler/gnu/14.2.lua:/opt/bwhpc/common/modulefiles/devel/python/3.13.3-gnu-14.2.lua;' export '_LMFILES_;' '_ModuleTable001_=X01vZHVsZVRhYmxlXyA9IHsKTVR2ZXJzaW9uID0gMywKY19yZWJ1aWxkVGltZSA9IGZhbHNlLApjX3Nob3J0VGltZSA9IGZhbHNlLApkZXB0aFQgPSB7fSwKZmFtaWx5ID0ge30sCm1UID0gewpbImNhZS9vcGVuZm9hbSJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9jYWUvb3BlbmZvYW0vdjI0MTIubHVhIiwKZnVsbE5hbWUgPSAiY2FlL29wZW5mb2FtL3YyNDEyIiwKbG9hZE9yZGVyID0gMywKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJjYWUvb3BlbmZvYW0vdjI0MTIiLAp3ViA9ICIqdi4wMDAwMDI0MTIuKnpmaW5hbCIsCn0sClsiY29tcGlsZXIvZ251Il0gPSB7CmZuID0gIi9vcHQv;' export '_ModuleTable001_;' '_ModuleTable002_=YndocGMvY29tbW9uL21vZHVsZWZpbGVzL2NvbXBpbGVyL2dudS8xNC4yLmx1YSIsCmZ1bGxOYW1lID0gImNvbXBpbGVyL2dudS8xNC4yIiwKbG9hZE9yZGVyID0gNCwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDEsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJjb21waWxlci9nbnUvMTQuMiIsCndWID0gIl4wMDAwMDAxNC4wMDAwMDAwMDIuKnpmaW5hbCIsCn0sClsiZGV2ZWwvY3VkYSJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9kZXZlbC9jdWRhLzEyLjgubHVhIiwKZnVsbE5hbWUgPSAiZGV2ZWwvY3VkYS8xMi44IiwKbG9hZE9yZGVyID0gMSwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDIsCnN0YXR1cyA9ICJhY3RpdmUiLAp1;' export '_ModuleTable002_;' '_ModuleTable003_=c2VyTmFtZSA9ICJkZXZlbC9jdWRhLzEyLjgiLAp3ViA9ICIwMDAwMDAwMTIuMDAwMDAwMDA4Lip6ZmluYWwiLAp9LApbImRldmVsL3B5dGhvbiJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9kZXZlbC9weXRob24vMy4xMy4zLWdudS0xNC4yLmx1YSIsCmZ1bGxOYW1lID0gImRldmVsL3B5dGhvbi8zLjEzLjMtZ251LTE0LjIiLApsb2FkT3JkZXIgPSA1LApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMCwKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImRldmVsL3B5dGhvbi8zLjEzLjMtZ251LTE0LjIiLAp3ViA9ICIwMDAwMDAwMDMuMDAwMDAwMDEzLjAwMDAwMDAwMy4qZ251Lip6ZmluYWwtLjAwMDAwMDAxNC4wMDAwMDAwMDIuKnpmaW5h;' export '_ModuleTable003_;' '_ModuleTable004_=bCIsCn0sClsibXBpL29wZW5tcGkiXSA9IHsKZm4gPSAiL29wdC9id2hwYy9jb21tb24vbW9kdWxlZmlsZXMvbXBpL29wZW5tcGkvNS4wLWdudS0xNC4yLmx1YSIsCmZ1bGxOYW1lID0gIm1waS9vcGVubXBpLzUuMC1nbnUtMTQuMiIsCmxvYWRPcmRlciA9IDIsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAxLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAibXBpL29wZW5tcGkvNS4wLWdudS0xNC4yIiwKd1YgPSAiMDAwMDAwMDA1LipnbnUuKnpmaW5hbC0uMDAwMDAwMDE0LjAwMDAwMDAwMi4qemZpbmFsIiwKfSwKfSwKbXBhdGhBID0gewoiL29wdC9id2hwYy9zdC9tb2R1bGVmaWxlcyIsICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcyIsCn0sCnN5c3RlbUJh;' export '_ModuleTable004_;' '_ModuleTable005_=c2VNUEFUSCA9ICIvb3B0L2J3aHBjL3N0L21vZHVsZWZpbGVzOi9vcHQvYndocGMvY29tbW9uL21vZHVsZWZpbGVzIiwKfQo=;' export '_ModuleTable005_;' '_ModuleTable_Sz_=5;' export '_ModuleTable_Sz_;'
++++ GNU_BIN_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/bin
++++ export GNU_BIN_DIR
++++ GNU_HOME=/opt/bwhpc/common/compiler/gnu/14.2.0
++++ export GNU_HOME
++++ GNU_INC_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/include
++++ export GNU_INC_DIR
++++ GNU_LIB_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/lib64
++++ export GNU_LIB_DIR
++++ GNU_MAN_DIR=/opt/bwhpc/common/compiler/gnu/14.2.0/share/man
++++ export GNU_MAN_DIR
++++ GNU_VERSION=14.2.0
++++ export GNU_VERSION
++++ JUPYTER_PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/share/jupyter
++++ export JUPYTER_PATH
++++ __LMOD_REF_COUNT_LD_LIBRARY_PATH='/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:1;/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:1;/opt/bwhpc/common/devel/cuda/12.8/lib64:1;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:1;/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:1;/home/st/st_us-042020/st_ac136362/dtOO/install/lib:1;/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib/sys-openmpi:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/fftw-3.3.10/lib:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:1'
++++ export __LMOD_REF_COUNT_LD_LIBRARY_PATH
++++ LD_LIBRARY_PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/fftw-3.3.10/lib:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy
++++ export LD_LIBRARY_PATH
++++ LOADEDMODULES=devel/cuda/12.8:mpi/openmpi/5.0-gnu-14.2:cae/openfoam/v2412:compiler/gnu/14.2:devel/python/3.13.3-gnu-14.2
++++ export LOADEDMODULES
++++ __LMOD_REF_COUNT_MANPATH='/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/share/man:1;/opt/bwhpc/common/compiler/gnu/14.2.0/share/man:1;/opt/bwhpc/common/devel/cuda/12.8/doc/man:1;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man:1;/usr/share/lmod/lmod/share/man:1;/usr/share/man:1;:1'
++++ export __LMOD_REF_COUNT_MANPATH
++++ MANPATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/share/man:/opt/bwhpc/common/compiler/gnu/14.2.0/share/man:/opt/bwhpc/common/devel/cuda/12.8/doc/man:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man:/usr/share/lmod/lmod/share/man:/usr/share/man::
++++ export MANPATH
++++ MODULEPATH=/opt/bwhpc/st/modulefiles:/opt/bwhpc/common/modulefiles
++++ export MODULEPATH
++++ __LMOD_REF_COUNT_PATH='/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:1;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:1;/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:1;/opt/bwhpc/common/compiler/gnu/14.2.0/bin:1;/opt/bwhpc/common/devel/cuda/12.8/bin:1;/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:1;/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin:1;/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:1;/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:1;/software/all/bin:2;/home/st/st_us-042020/st_ac136362/.local/bin:1;/home/st/st_us-042020/st_ac136362/bin:1;/usr/share/Modules/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1'
++++ export __LMOD_REF_COUNT_PATH
++++ PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin:/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
++++ export PATH
++++ __LMOD_REF_COUNT_PYTHONPATH='/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/lib/python3.13/site-packages:1;/home/st/st_us-042020/st_ac136362/dtOO/install/scripts/python:1;/home/st/st_us-042020/st_ac136362/dtOO/install/tools:1'
++++ export __LMOD_REF_COUNT_PYTHONPATH
++++ PYTHONPATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/lib/python3.13/site-packages:/home/st/st_us-042020/st_ac136362/dtOO/install/scripts/python:/home/st/st_us-042020/st_ac136362/dtOO/install/tools
++++ export PYTHONPATH
++++ _LMFILES_=/opt/bwhpc/common/modulefiles/devel/cuda/12.8.lua:/opt/bwhpc/common/modulefiles/mpi/openmpi/5.0-gnu-14.2.lua:/opt/bwhpc/common/modulefiles/cae/openfoam/v2412.lua:/opt/bwhpc/common/modulefiles/compiler/gnu/14.2.lua:/opt/bwhpc/common/modulefiles/devel/python/3.13.3-gnu-14.2.lua
++++ export _LMFILES_
++++ _ModuleTable001_=X01vZHVsZVRhYmxlXyA9IHsKTVR2ZXJzaW9uID0gMywKY19yZWJ1aWxkVGltZSA9IGZhbHNlLApjX3Nob3J0VGltZSA9IGZhbHNlLApkZXB0aFQgPSB7fSwKZmFtaWx5ID0ge30sCm1UID0gewpbImNhZS9vcGVuZm9hbSJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9jYWUvb3BlbmZvYW0vdjI0MTIubHVhIiwKZnVsbE5hbWUgPSAiY2FlL29wZW5mb2FtL3YyNDEyIiwKbG9hZE9yZGVyID0gMywKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJjYWUvb3BlbmZvYW0vdjI0MTIiLAp3ViA9ICIqdi4wMDAwMDI0MTIuKnpmaW5hbCIsCn0sClsiY29tcGlsZXIvZ251Il0gPSB7CmZuID0gIi9vcHQv
++++ export _ModuleTable001_
++++ _ModuleTable002_=YndocGMvY29tbW9uL21vZHVsZWZpbGVzL2NvbXBpbGVyL2dudS8xNC4yLmx1YSIsCmZ1bGxOYW1lID0gImNvbXBpbGVyL2dudS8xNC4yIiwKbG9hZE9yZGVyID0gNCwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDEsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJjb21waWxlci9nbnUvMTQuMiIsCndWID0gIl4wMDAwMDAxNC4wMDAwMDAwMDIuKnpmaW5hbCIsCn0sClsiZGV2ZWwvY3VkYSJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9kZXZlbC9jdWRhLzEyLjgubHVhIiwKZnVsbE5hbWUgPSAiZGV2ZWwvY3VkYS8xMi44IiwKbG9hZE9yZGVyID0gMSwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDIsCnN0YXR1cyA9ICJhY3RpdmUiLAp1
++++ export _ModuleTable002_
++++ _ModuleTable003_=c2VyTmFtZSA9ICJkZXZlbC9jdWRhLzEyLjgiLAp3ViA9ICIwMDAwMDAwMTIuMDAwMDAwMDA4Lip6ZmluYWwiLAp9LApbImRldmVsL3B5dGhvbiJdID0gewpmbiA9ICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcy9kZXZlbC9weXRob24vMy4xMy4zLWdudS0xNC4yLmx1YSIsCmZ1bGxOYW1lID0gImRldmVsL3B5dGhvbi8zLjEzLjMtZ251LTE0LjIiLApsb2FkT3JkZXIgPSA1LApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMCwKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImRldmVsL3B5dGhvbi8zLjEzLjMtZ251LTE0LjIiLAp3ViA9ICIwMDAwMDAwMDMuMDAwMDAwMDEzLjAwMDAwMDAwMy4qZ251Lip6ZmluYWwtLjAwMDAwMDAxNC4wMDAwMDAwMDIuKnpmaW5h
++++ export _ModuleTable003_
++++ _ModuleTable004_=bCIsCn0sClsibXBpL29wZW5tcGkiXSA9IHsKZm4gPSAiL29wdC9id2hwYy9jb21tb24vbW9kdWxlZmlsZXMvbXBpL29wZW5tcGkvNS4wLWdudS0xNC4yLmx1YSIsCmZ1bGxOYW1lID0gIm1waS9vcGVubXBpLzUuMC1nbnUtMTQuMiIsCmxvYWRPcmRlciA9IDIsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAxLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAibXBpL29wZW5tcGkvNS4wLWdudS0xNC4yIiwKd1YgPSAiMDAwMDAwMDA1LipnbnUuKnpmaW5hbC0uMDAwMDAwMDE0LjAwMDAwMDAwMi4qemZpbmFsIiwKfSwKfSwKbXBhdGhBID0gewoiL29wdC9id2hwYy9zdC9tb2R1bGVmaWxlcyIsICIvb3B0L2J3aHBjL2NvbW1vbi9tb2R1bGVmaWxlcyIsCn0sCnN5c3RlbUJh
++++ export _ModuleTable004_
++++ _ModuleTable005_=c2VNUEFUSCA9ICIvb3B0L2J3aHBjL3N0L21vZHVsZWZpbGVzOi9vcHQvYndocGMvY29tbW9uL21vZHVsZWZpbGVzIiwKfQo=
++++ export _ModuleTable005_
++++ _ModuleTable_Sz_=5
++++ export _ModuleTable_Sz_
+++ export WM_PROJECT_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412
+++ WM_PROJECT_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412
+++ source /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/bashrc
++++ export WM_PROJECT_VERSION=v2412
++++ WM_PROJECT_VERSION=v2412
++++ export WM_COMPILER_TYPE=system
++++ WM_COMPILER_TYPE=system
++++ export WM_COMPILER=Gcc
++++ WM_COMPILER=Gcc
++++ export WM_PRECISION_OPTION=DP
++++ WM_PRECISION_OPTION=DP
++++ export WM_LABEL_SIZE=32
++++ WM_LABEL_SIZE=32
++++ export WM_COMPILE_OPTION=Opt
++++ WM_COMPILE_OPTION=Opt
++++ export WM_MPLIB=SYSTEMOPENMPI
++++ WM_MPLIB=SYSTEMOPENMPI
++++ export WM_PROJECT=OpenFOAM
++++ WM_PROJECT=OpenFOAM
++++ projectDir=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/bashrc
++++ '[' -n /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/bashrc ']'
++++++ dirname /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/bashrc
+++++ cd /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/..
+++++ pwd -L
++++ projectDir=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412
++++ :
++++ unset FOAM_EXTRA_CFLAGS FOAM_EXTRA_CXXFLAGS FOAM_EXTRA_LDFLAGS
++++ foamOldDirs='/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412 /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412     /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362 /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib      /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib      '
++++ export WM_PROJECT_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412
++++ WM_PROJECT_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412
++++ export WM_PROJECT_USER_DIR=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412
++++ WM_PROJECT_USER_DIR=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412
++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412 ']'
++++ '[' -n '' ']'
++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/setup
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -show-api
+++++ export FOAM_API=2412
+++++ FOAM_API=2412
+++++ _foamPrefixDir=/opt/bwhpc/common/cae/openfoam/v2412
+++++ unset WM_SHELL_FUNCTIONS
+++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/functions
++++++ '[' -z '' ']'
++++++ WM_SHELL_FUNCTIONS=loaded
++++++ foamClean=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamCleanPath
+++++++ uname -s
++++++ _foam_uname_s=Linux
++++++ unset -f _foamClean
++++++ unset -f _foamEcho
++++++ unset -f _foamEtc
++++++ '[' -n '' ']'
++++++ unset -f _foamAddPath
++++++ unset -f _foamAddMan
++++++ unset -f _foamAddLib
++++++ '[' Linux = Darwin ']'
++++++ unset -f _foamAddLibAuto
++++++ unset MPI_ARCH_PATH
++++++ unset ADIOS_ARCH_PATH
++++++ unset ADIOS1_ARCH_PATH
++++++ unset ADIOS2_ARCH_PATH
++++++ unset BOOST_ARCH_PATH
++++++ unset CCMIO_ARCH_PATH
++++++ unset CGAL_ARCH_PATH
++++++ unset FFTW_ARCH_PATH
++++++ unset GPERFTOOLS_ARCH_PATH
++++++ unset GMP_ARCH_PATH
++++++ unset MPFR_ARCH_PATH
++++++ unset LLVM_ARCH_PATH
++++++ unset MESA_ARCH_PATH
++++++ unset METIS_ARCH_PATH
++++++ unset SCOTCH_ARCH_PATH
+++++ export WM_THIRD_PARTY_DIR=
+++++ WM_THIRD_PARTY_DIR=
+++++ '[' -e /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/ThirdParty ']'
+++++ _foamEcho 'Locating ThirdParty directory'
+++++ true
+++++ for _foamFoundDir in "$_foamPrefixDir/ThirdParty-$WM_PROJECT_VERSION" "$_foamPrefixDir/ThirdParty-v$FOAM_API" "$_foamPrefixDir/ThirdParty-$FOAM_API" "$_foamPrefixDir/ThirdParty-common"
+++++ _foamEcho '... /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412'
+++++ true
+++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412 ']'
+++++ '[' -f /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/Allwmake ']'
+++++ WM_THIRD_PARTY_DIR=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412
+++++ break
+++++ '[' -z /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412 ']'
+++++ _foamEcho 'ThirdParty /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412'
+++++ true
+++++ _foamEtc -mode=o prefs.sh
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -mode=o prefs.sh
+++++ eval ''
+++++ unset configMode
+++++ '[' -z '' ']'
+++++ configMode=ug
+++++ '[' -n ug ']'
+++++ _foamEtc -mode=ug prefs.sh
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -mode=ug prefs.sh
+++++ eval ''
+++++ '[' 0 -gt 0 ']'
+++++ unset FOAM_SETTINGS
+++++ unset foamVar_eval
+++++ '[' -n '' ']'
+++++ unset FOAM_CONFIG_ETC
+++++ export PATH MANPATH
+++++ '[' Linux = Darwin ']'
+++++ export LD_LIBRARY_PATH
+++++ _foamClean PATH '/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412 /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412     /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362 /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib      /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib      '
+++++ foamVar_name=PATH
+++++ shift
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamCleanPath -sh-env=PATH '/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412 /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412     /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362 /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib      /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib      '
+++++ eval 'PATH="/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin"'
++++++ PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+++++ unset foamVar_name
+++++ _foamClean MANPATH '/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412 /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412     /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362 /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib      /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib      '
+++++ foamVar_name=MANPATH
+++++ shift
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamCleanPath -sh-env=MANPATH '/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412 /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412     /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362 /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib      /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib      '
+++++ eval 'MANPATH="/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/share/man:/opt/bwhpc/common/compiler/gnu/14.2.0/share/man:/opt/bwhpc/common/devel/cuda/12.8/doc/man:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man:/usr/share/lmod/lmod/share/man:/usr/share/man"'
++++++ MANPATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/share/man:/opt/bwhpc/common/compiler/gnu/14.2.0/share/man:/opt/bwhpc/common/devel/cuda/12.8/doc/man:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/share/man:/usr/share/lmod/lmod/share/man:/usr/share/man
+++++ unset foamVar_name
+++++ _foamClean -lib '/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412 /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412     /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362 /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib      /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib      '
+++++ foamVar_name=-lib
+++++ shift
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamCleanPath -sh-env=-lib '/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412 /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412     /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362 /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib      /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib      '
+++++ eval 'LD_LIBRARY_PATH="/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy"'
++++++ LD_LIBRARY_PATH=/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy
+++++ unset foamVar_name
+++++ '[' Linux = Darwin ']'
+++++ _foamEtc -config settings
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -config settings
+++++ eval '. /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/settings '
++++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/settings
++++++++ uname -s
+++++++ export WM_ARCH=Linux
+++++++ WM_ARCH=Linux
+++++++ archOption=64
+++++++ unset WM_ARCH_OPTION
+++++++ unset WM_COMPILER_ARCH
+++++++ unset WM_COMPILER_LIB_ARCH
+++++++ case "$WM_ARCH" in
+++++++ WM_ARCH=linux
+++++++ case "$(uname -m)" in
++++++++ uname -m
+++++++ '[' 64 = 32 ']'
+++++++ WM_ARCH=linux64
+++++++ export WM_COMPILER_LIB_ARCH=64
+++++++ WM_COMPILER_LIB_ARCH=64
+++++++ export WM_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake
+++++++ WM_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake
+++++++ export WM_LABEL_OPTION=Int32
+++++++ WM_LABEL_OPTION=Int32
+++++++ export WM_OPTIONS=linux64GccDPInt32Opt
+++++++ WM_OPTIONS=linux64GccDPInt32Opt
+++++++ export FOAM_APPBIN=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin
+++++++ FOAM_APPBIN=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin
+++++++ export FOAM_LIBBIN=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ FOAM_LIBBIN=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ siteDir=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site
+++++++ '[' -d '' ']'
+++++++ unset WM_PROJECT_SITE
+++++++ export FOAM_SITE_APPBIN=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin
+++++++ FOAM_SITE_APPBIN=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin
+++++++ export FOAM_SITE_LIBBIN=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib
+++++++ FOAM_SITE_LIBBIN=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib
+++++++ export FOAM_USER_APPBIN=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin
+++++++ FOAM_USER_APPBIN=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin
+++++++ export FOAM_USER_LIBBIN=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ FOAM_USER_LIBBIN=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ _foamFoundDir=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake ']'
+++++++ _foamFoundDir=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake ']'
+++++++ PATH=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+++++++ export PATH=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+++++++ PATH=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/bin ']'
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/bin ']'
+++++++ _foamAddPath /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin
+++++++ case "$1" in
+++++++ export PATH=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+++++++ PATH=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+++++++ _foamAddLib /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy
+++++++ case "$1" in
+++++++ export LD_LIBRARY_PATH=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy
+++++++ LD_LIBRARY_PATH=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412 ']'
+++++++ export FOAM_EXT_LIBBIN=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib
+++++++ FOAM_EXT_LIBBIN=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64GccDPInt32/lib
+++++++ export FOAM_ETC=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc
+++++++ FOAM_ETC=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc
+++++++ export FOAM_APP=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/applications
+++++++ FOAM_APP=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/applications
+++++++ export FOAM_SRC=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/src
+++++++ FOAM_SRC=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/src
+++++++ export FOAM_TUTORIALS=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/tutorials
+++++++ FOAM_TUTORIALS=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/tutorials
+++++++ export FOAM_UTILITIES=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/applications/utilities
+++++++ FOAM_UTILITIES=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/applications/utilities
+++++++ export FOAM_SOLVERS=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/applications/solvers
+++++++ FOAM_SOLVERS=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/applications/solvers
+++++++ export FOAM_RUN=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/run
+++++++ FOAM_RUN=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/run
+++++++ : system
+++++++ export WM_COMPILER_TYPE
+++++++ case "$WM_COMPILER" in
+++++++ unset gcc_version gmp_version mpfr_version mpc_version clang_version
+++++++ unset GMP_ARCH_PATH MPFR_ARCH_PATH
+++++++ _foamEtc -config compiler
++++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -config compiler
+++++++ eval '. /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/compiler '
++++++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/compiler
+++++++++ case "$WM_COMPILER" in
+++++++++ case "$WM_MPLIB" in
+++++++++ case "$WM_COMPILER_TYPE" in
+++++++++ unset default_gcc_version default_clang_version
+++++++++ unset default_gmp_version default_mpfr_version default_mpc_version
+++++++ archDir=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64
+++++++ case "$WM_COMPILER_TYPE-$WM_COMPILER" in
+++++++ unset archOption archDir siteDir _foamFoundDir
+++++++ unset gcc_version gccDir
+++++++ unset gmp_version gmpDir mpfr_version mpfrDir mpc_version mpcDir
+++++++ unset clang_version clangDir
+++++ _foamEtc -config mpi
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -config mpi
+++++ eval '. /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/mpi '
++++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/mpi
+++++++ unset MPI_ARCH_PATH MPI_HOME
+++++++ export FOAM_MPI=dummy
+++++++ FOAM_MPI=dummy
+++++++ unset _foamMpiVersion
+++++++ _foamMpiPrefixDir=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc
+++++++ _foamMpiWarning='openfoam (etc/config.sh/mpi) => '
+++++++ unset -f _foamMpiEmbedVersion
+++++++ case "$WM_MPLIB" in
+++++++ _foamMpiVersion=
+++++++ _foamMpiVersion=
+++++++ export FOAM_MPI=sys-openmpi
+++++++ FOAM_MPI=sys-openmpi
+++++++ export WM_MPLIB=SYSTEMOPENMPI
+++++++ WM_MPLIB=SYSTEMOPENMPI
++++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamCleanPath -env=OPAL_PREFIX '/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412 /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412     /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362 /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin /home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/lib      /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/lib      '
+++++++ '[' -z '' ']'
+++++++ unset OPAL_PREFIX
+++++++ _foamEtc -config prefs.sys-openmpi
++++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -config prefs.sys-openmpi
+++++++ eval ''
+++++++ unset _foamFoundCmd
+++++++ '[' -d '' ']'
+++++++ unset MPI_ARCH_PATH
+++++++ '[' -z '' ']'
++++++++ command -v orte-info
+++++++ _foamFoundCmd=
+++++++ '[' -z '' ']'
++++++++ command -v mpicc
+++++++ _foamFoundCmd=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin/mpicc
++++++++ /opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin/mpicc --showme:link
++++++++ sed -e 's#.*-L\([^ ]*\).*#\1#'
+++++++ _foamFoundDir=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64
+++++++ MPI_ARCH_PATH=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2
+++++++ _foamAddLib /opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64
+++++++ case "$1" in
+++++++ export LD_LIBRARY_PATH=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy
+++++++ LD_LIBRARY_PATH=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy
+++++++ '[' -z /opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2 ']'
+++++++ '[' -z /opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2 ']'
+++++++ unset _foamFoundCmd _foamFoundDir
+++++++ : sys-openmpi
+++++++ export FOAM_MPI
+++++++ '[' -n /opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2 ']'
+++++++ export MPI_ARCH_PATH
+++++++ '[' -n '' ']'
+++++++ unset _foamMpiPrefixDir _foamMpiVersion _foamMpiWarning
+++++++ unset -f _foamMpiEmbedVersion
+++++ _foamEtc -config paraview --
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -config paraview --
+++++ eval '. /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/paraview '
++++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/paraview
+++++++ ParaView_VERSION=5.12.1
+++++++ ParaView_QT=qt-system
+++++++ pv_api=auto
+++++++ archDir=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc
++++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamCleanPath -sh-path /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ParaView- /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/qt-
+++++++ eval 'PATH="/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin"'
++++++++ PATH=/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
++++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamCleanPath -sh-lib /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ParaView- /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/qt-
+++++++ eval 'LD_LIBRARY_PATH="/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib"'
++++++++ LD_LIBRARY_PATH=/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ case "$WM_ARCH" in
+++++++ for i in "$@"
+++++++ case "$i" in
+++++++ for i in "$@"
+++++++ case "$i" in
+++++++ for i in "$@"
+++++++ case "$i" in
+++++++ case "$ParaView_VERSION" in
+++++++ unset ParaView_DIR PV_PLUGIN_PATH
+++++++ case "$ParaView_VERSION" in
++++++++ echo 5.12.1
++++++++ sed -ne 's/^[^0-9]*\([0-9][0-9]*\.[0-9][0-9]*\).*$/\1/p'
+++++++ pv_api=5.12
+++++++ export ParaView_DIR=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ParaView-5.12.1
+++++++ ParaView_DIR=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ParaView-5.12.1
+++++++ pv_plugin_dir=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/paraview-5.12
+++++++ '[' -r /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ParaView-5.12.1 ']'
+++++++ '[' -n '' ']'
+++++++ unset ParaView_DIR
+++++++ command -v _foamAddLib
+++++++ unset ParaView_VERSION ParaView_QT
+++++++ unset archDir libDir
+++++++ unset pv_api pv_plugin_dir pv_libdirs pvLibDir pvPython qtDir
+++++ _foamEtc -config vtk
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -config vtk
+++++ eval '. /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/vtk '
++++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/vtk
+++++++ vtk_version=VTK-8.2.0
+++++++ mesa_version=mesa-17.1.1
+++++++ mesa_llvm=none
+++++++ export VTK_DIR=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/VTK-8.2.0
+++++++ VTK_DIR=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/VTK-8.2.0
+++++++ export MESA_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/mesa-17.1.1
+++++++ MESA_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/mesa-17.1.1
+++++++ export LLVM_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64/none
+++++++ LLVM_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64/none
+++++++ unset ParaView_MESA_DIR
+++++++ '[' -n '' ']'
+++++++ command -v _foamAddLib
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/VTK-8.2.0 ']'
+++++++ unset VTK_DIR
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/mesa-17.1.1 ']'
+++++++ unset LLVM_ARCH_PATH
+++++++ unset MESA_ARCH_PATH
+++++++ unset vtk_version mesa_version mesa_llvm
+++++ _foamEtc -config adios2
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -config adios2
+++++ eval '. /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/adios2 '
++++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/adios2
+++++++ adios2_version=ADIOS2-2.10.1
+++++++ export ADIOS2_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1
+++++++ ADIOS2_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1
+++++++ '[' -n '' ']'
+++++++ command -v _foamAddLibAuto
+++++++ _foamAddLibAuto /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1
+++++++ foamVar_prefix=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1
+++++++ foamVar_end=2.10.1
+++++++ '[' -z /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1 ']'
+++++++ '[' 2.10.1 = none ']'
+++++++ '[' 2.10.1 = system ']'
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1 ']'
+++++++ for foamVar_end in lib$WM_COMPILER_LIB_ARCH lib
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64 ']'
+++++++ _foamAddLib /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64
+++++++ case "$1" in
+++++++ export LD_LIBRARY_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ LD_LIBRARY_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ unset foamVar_prefix foamVar_end
+++++++ return 0
+++++++ _foamAddPath /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin
+++++++ case "$1" in
+++++++ export PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin:/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+++++++ PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/bin:/home/st/st_us-042020/st_ac136362/OpenFOAM/st_ac136362-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/site/2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/wmake:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/opt/bwhpc/common/compiler/gnu/14.2.0/bin:/opt/bwhpc/common/devel/cuda/12.8/bin:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/bin:/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/bin:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+++++++ unset adios2_version
+++++ _foamEtc -config CGAL
++++++ /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/bin/foamEtcFile -sh -config CGAL
+++++ eval '. /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/CGAL '
++++++ . /opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/config.sh/CGAL
+++++++ boost_version=boost_1_74_0
+++++++ cgal_version=CGAL-4.14.3
+++++++ export BOOST_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0
+++++++ BOOST_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0
+++++++ export CGAL_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3
+++++++ CGAL_ARCH_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3
+++++++ '[' -n '' ']'
+++++++ command -v _foamAddLibAuto
+++++++ _foamAddLibAuto /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0 lib64
+++++++ foamVar_prefix=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0
+++++++ foamVar_end=v2412/platforms/linux64Gcc/boost_1_74_0
+++++++ '[' -z /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0 ']'
+++++++ '[' v2412/platforms/linux64Gcc/boost_1_74_0 = none ']'
+++++++ '[' v2412/platforms/linux64Gcc/boost_1_74_0 = system ']'
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0 ']'
+++++++ for foamVar_end in lib$WM_COMPILER_LIB_ARCH lib
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64 ']'
+++++++ _foamAddLib /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64
+++++++ case "$1" in
+++++++ export LD_LIBRARY_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ LD_LIBRARY_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ unset foamVar_prefix foamVar_end
+++++++ return 0
+++++++ _foamAddLibAuto /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3 lib64
+++++++ foamVar_prefix=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3
+++++++ foamVar_end=4.14.3
+++++++ '[' -z /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3 ']'
+++++++ '[' 4.14.3 = none ']'
+++++++ '[' 4.14.3 = system ']'
+++++++ '[' -d /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3 ']'
+++++++ foamVar_end=lib64
+++++++ '[' -n lib64 ']'
+++++++ case "$foamVar_end" in
+++++++ _foamAddLib /opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64
+++++++ case "$1" in
+++++++ export LD_LIBRARY_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ LD_LIBRARY_PATH=/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/CGAL-4.14.3/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/boost_1_74_0/lib64:/opt/bwhpc/common/cae/openfoam/v2412/ThirdParty-v2412/platforms/linux64Gcc/ADIOS2-2.10.1/lib64:/opt/bwhpc/common/mpi/openmpi/5.0.7-gnu-14.2/lib64:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/dummy:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64:/opt/bwhpc/common/compiler/gnu/14.2.0/lib64:/opt/bwhpc/common/devel/cuda/12.8/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib64:/home/st/st_us-042020/st_ac136362/dtOO/install/lib:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib/sys-openmpi:/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/lib
+++++++ unset foamVar_prefix foamVar_end
+++++++ return 0
+++++++ _foamAddLibAuto
+++++++ foamVar_prefix=
+++++++ foamVar_end=
+++++++ '[' -z '' ']'
+++++++ unset foamVar_prefix foamVar_end
+++++++ return 1
