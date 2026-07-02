@@ -4,7 +4,7 @@ status: in-progress
 priority: high
 created: 2026-07-01
 updated: 2026-07-01
-branch: cfd-eigenfreq-multiobjective
+branch: main (cfd-eigenfreq-multiobjective merged 2026-07-02)
 repo: eigenfrequencies
 ---
 
@@ -230,9 +230,9 @@ graph TD
 
 ## Git Status
 
-- **Branch:** `cfd-eigenfreq-multiobjective`
+- **Branch:** `main` (merged `cfd-eigenfreq-multiobjective` 2026-07-02)
 - **Remote:** `origin git@github.com:RentschlerTobias/eigenfrequencies.git`
-- **Last Commit:** `8d43ac8` — "feat(de): Pyro5-based distributed DE (rl_framework schema)"
+- **Last Commit:** `d55c1d3` — "docs(obsidian): update dashboard with multi-harmonic band status"
 - **Untracked:** `beam_demo.log`, `beam_demo_2.log`, `output/` (large logs, XDMF, PNG), `dtoo_export.log`, `server_logs/`
 
 ---

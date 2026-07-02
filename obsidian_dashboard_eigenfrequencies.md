@@ -8,7 +8,7 @@ view: dashboard
 # Eigenfrequencies Dashboard
 
 > [!summary] Project Status
-> **Branch:** `cfd-eigenfreq-multiobjective` | **Base:** `master`  
+> **Branch:** `main` | **Merged:** `cfd-eigenfreq-multiobjective` (2026-07-02)  
 > **Pipeline:** ✅ Scaffolded (local) | **Cluster end-to-end:** 🟡 In Progress  
 > **OF CFD case:** 🔴 Not built | **Wet (real Laplace):** 🔴 Stub  
 > **Forbidden band:** ✅ Multi-harmonic (Z=18, n=90 rpm) | **Last Commit:** `51464f1` — "feat(optimization): multi-harmonic forbidden band"
