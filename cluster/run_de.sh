@@ -9,12 +9,16 @@
 
 set -e
 
-# ── Source environment ──
-source ~/pe
-
 # ── cd to repo root ──
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
+
+# ── Source environment ──
+# NOTE: source must run in the SAME shell as the python calls below.
+source ~/pe
+PYTHON=$(which python3)
+
+echo "[DE] Python: $PYTHON"
 
 # ── Defaults ──
 POP_SIZE="${1:-4}"
@@ -48,14 +52,14 @@ sleep 3
 # ── Start workers ──
 echo "[DE] Starting $POP_SIZE workers..."
 for i in $(seq 0 $((POP_SIZE-1))); do
-    python3 turbine_runner/server_de.py "$i" "$NS_HOST" > "$LOG_DIR/worker_${i}.log" 2>&1 &
+    $PYTHON turbine_runner/server_de.py "$i" "$NS_HOST" > "$LOG_DIR/worker_${i}.log" 2>&1 &
 done
 
 sleep 2
 
 # ── Run DE client ──
 echo "[DE] Running DE client..."
-python3 turbine_runner/optimize_de.py
+$PYTHON turbine_runner/optimize_de.py
 
 # ── Cleanup hint ──
 echo ""
