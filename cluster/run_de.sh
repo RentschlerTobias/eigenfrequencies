@@ -45,9 +45,16 @@ echo "========================================"
 
 # ── Start Name Server ──
 echo "[DE] Starting Name Server..."
-pyro5-ns -n "$NS_HOST" > "$LOG_DIR/nameserver.log" 2>&1 &
+$PYTHON -m Pyro5.nameserver -n "$NS_HOST" > "$LOG_DIR/nameserver.log" 2>&1 &
 NS_PID=$!
 sleep 3
+
+# Quick health check
+if ! ps -p $NS_PID > /dev/null; then
+    echo "[DE] ERROR: Name Server failed to start!"
+    cat "$LOG_DIR/nameserver.log" 2>/dev/null || true
+    exit 1
+fi
 
 # ── Start workers ──
 echo "[DE] Starting $POP_SIZE workers..."
