@@ -11,7 +11,7 @@ import json
 import socket
 
 import Pyro5.api
-import Pyro5.config
+# Pyro5.config is implicitly available after Pyro5.api import
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
