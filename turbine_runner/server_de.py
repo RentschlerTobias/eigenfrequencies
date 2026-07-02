@@ -24,6 +24,8 @@ host = socket.gethostname()
 worker_id = int(sys.argv[1]) if len(sys.argv) > 1 else 0
 ns_host = sys.argv[2] if len(sys.argv) > 2 else host
 
+Pyro5.config.HOST = host
+
 name = f"{host}_worker_{worker_id}"
 
 CFD_CASE_DIR = os.environ.get("CFD_CASE_DIR", "")
@@ -86,10 +88,10 @@ class Evaluator(object):
         }
 
 
-Pyro5.config.HOST = host
 daemon = Pyro5.server.Daemon(host)
 ns = Pyro5.api.locate_ns(host=ns_host)
 uri = daemon.register(Evaluator)
 ns.register(name, uri)
-print(f"Server {name} ready on {host}.")
+print(f"Server {name} ready on {host}.", flush=True)
+sys.stdout.flush()
 daemon.requestLoop()

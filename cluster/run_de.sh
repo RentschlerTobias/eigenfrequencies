@@ -7,19 +7,15 @@
 # Defaults: POP_SIZE=4, MAX_GEN=2, SEED=42 (quick smoke test)
 # For full DE: bash cluster/run_de.sh 20 30
 
-set -e
+# NOTE: rl_framework/start.sh does NOT use set -e because source ~/pe
+# (OpenFOAM module init) returns non-zero in some paths.
 
 # ── cd to repo root ──
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
 # ── Source environment ──
-# NOTE: source must run in the SAME shell as the python calls below.
-# Disable errexit during sourcing because OpenFOAM init scripts return
-# non-zero in some paths which would abort the whole script.
-set +e
 source ~/pe
-set -e
 PYTHON=$(which python3)
 
 echo "[DE] Python: $PYTHON"
@@ -63,7 +59,7 @@ fi
 # ── Start workers ──
 echo "[DE] Starting $POP_SIZE workers..."
 for i in $(seq 0 $((POP_SIZE-1))); do
-    $PYTHON turbine_runner/server_de.py "$i" "$NS_HOST" > "$LOG_DIR/worker_${i}.log" 2>&1 &
+    $PYTHON -u turbine_runner/server_de.py "$i" "$NS_HOST" > "$LOG_DIR/worker_${i}.log" 2>&1 &
 done
 
 sleep 2
