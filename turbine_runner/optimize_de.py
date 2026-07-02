@@ -12,6 +12,7 @@ import json
 import os
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from multiprocessing import get_context
 
 import numpy as np
 
@@ -118,7 +119,7 @@ def de_optimize(bounds, pop_size, F, CR, max_generations, tol, seed,
         ]
         # Reuse worker_id i (same as population index) for I/O isolation
 
-        with ProcessPoolExecutor(max_workers=max_workers, mp_context="spawn") as pool:
+        with ProcessPoolExecutor(max_workers=max_workers, mp_context=get_context("spawn")) as pool:
             futures = {pool.submit(_evaluate_design_worker, wa): idx
                        for idx, wa in enumerate(worker_args)}
             for future in as_completed(futures):
