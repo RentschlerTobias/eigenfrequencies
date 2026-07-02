@@ -11,10 +11,14 @@ set -e
 
 source ~/pe
 
+# Ensure we are in the repo root regardless of where the script is invoked
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$REPO_ROOT"
+
 NS_HOST=$(hostname)
 N_WORKERS=${1:-20}
 
-LOG_DIR="$PWD/server_logs"
+LOG_DIR="$REPO_ROOT/server_logs"
 mkdir -p "$LOG_DIR"
 
 echo "[DE] Starting Name Server on $NS_HOST..."
