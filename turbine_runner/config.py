@@ -141,20 +141,25 @@ class DesignConfig:
 class OptimizationConfig:
     """Resonance-avoidance optimization settings.
 
-    Penalty pushes every eigenfrequency out of the forbidden band [f_min, f_max].
+    The forbidden band is computed from the blade-passing frequency
+    f_bp = Z_guidevanes * n_rpm / 60 and its harmonics (1× to max_harmonic).
 
     Attributes:
-        f_min: Lower bound of the forbidden frequency band in Hz
-        f_max: Upper bound of the forbidden frequency band in Hz
+        Z_guidevanes: Number of guide vanes (determines blade-passing frequency)
+        n_rpm: Runner rotational speed in rpm
+        max_harmonic: Highest harmonic to check (e.g., 6 covers up to 6×f_bp)
+        margin_hz: Minimum half-width of forbidden interval around each harmonic (Hz)
+        margin_fraction: Proportional half-width (e.g., 0.05 = 5% of center freq)
         penalty_k: Penalty weight
-        margin: Extra safety margin (Hz) added around the band
         max_iter: Maximum optimizer iterations
         method: scipy.optimize.minimize method (gradient-free recommended)
     """
-    f_min: float = 100.0
-    f_max: float = 150.0
+    Z_guidevanes: int = 18
+    n_rpm: float = 90.0
+    max_harmonic: int = 6
+    margin_hz: float = 5.0
+    margin_fraction: float = 0.05
     penalty_k: float = 1.0
-    margin: float = 0.0
     max_iter: int = 40
     method: str = "Nelder-Mead"
 
