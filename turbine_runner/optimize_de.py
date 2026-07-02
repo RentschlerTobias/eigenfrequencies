@@ -45,9 +45,13 @@ def _discover_servers(ns_host: str = None) -> list[str]:
 # Remote evaluation
 # ────────────────────────────────
 
-def _evaluate_remote(proxy, design, labels):
-    """Call remote server synchronously (blocks on network I/O only)."""
-    return proxy.evaluate(design.tolist(), labels)
+def _evaluate_remote(server_name, design, labels):
+    """Call remote server synchronously (blocks on network I/O only).
+    
+    Creates a fresh proxy inside this thread to avoid Pyro5 ownership issues.
+    """
+    with Pyro5.api.Proxy(f"PYRONAME:{server_name}") as proxy:
+        return proxy.evaluate(design.tolist(), labels)
 
 
 # ────────────────────────────────
@@ -70,8 +74,8 @@ def main():
         print("       bash cluster/start_servers.sh")
         sys.exit(1)
 
-    # Create proxy pool (one per server)
-    proxies = [Pyro5.api.Proxy(f"PYRONAME:{s}") for s in servers]
+    # Server name list (proxies created fresh inside each worker thread)
+    server_names = servers
 
     dim = len(labels)
     bounds = np.array(design_cfg.bounds)
@@ -101,7 +105,7 @@ def main():
 
     with ThreadPoolExecutor(max_workers=n_workers) as pool:
         futures = {
-            pool.submit(_evaluate_remote, proxies[i], population[i], labels): i
+            pool.submit(_evaluate_remote, server_names[i], population[i], labels): i
             for i in range(pop_size)
         }
         for future in as_completed(futures):
@@ -141,7 +145,7 @@ def main():
         with ThreadPoolExecutor(max_workers=n_workers) as pool:
             futures = {
                 pool.submit(
-                    _evaluate_remote, proxies[i % n_workers], trial_pop[i], labels
+                    _evaluate_remote, server_names[i % n_workers], trial_pop[i], labels
                 ): i
                 for i in range(pop_size)
             }
@@ -159,7 +163,8 @@ def main():
         improved = trial_obj < objectives
         population[improved] = trial_pop[improved]
         objectives[improved] = trial_obj[improved]
-        breakdowns[improved] = trial_brk[improved]
+        for idx in np.where(improved)[0]:
+            breakdowns[idx] = trial_brk[idx]
 
         if objectives.min() < best_obj:
             best_idx = int(objectives.argmin())
