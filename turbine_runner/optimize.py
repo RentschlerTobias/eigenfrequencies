@@ -62,9 +62,13 @@ def _run_dtoo(design: dict, worker_id: int = 0) -> bool:
         f"export DTOO_DESIGN_JSON={design_json} && "
         f"python3 {os.path.join(HERE, 'dtoo_export.py')}",
     ]
-    res = subprocess.run(cmd, capture_output=True, text=True)
+    log_path = os.path.join(wdir, "dtoo.log")
+    with open(log_path, "w") as log_fh:
+        res = subprocess.run(cmd, stdout=log_fh, stderr=subprocess.STDOUT)
     if res.returncode != 0 or not os.path.exists(msh):
-        sys.stderr.write(f"[optimize] dtOO build FAILED (worker {worker_id}):\n{res.stdout[-800:]}\n{res.stderr[-800:]}\n")
+        with open(log_path) as log_fh:
+            tail = log_fh.read()[-1600:]
+        sys.stderr.write(f"[optimize] dtOO build FAILED (worker {worker_id}):\n{tail}\n")
         return False
     return True
 
@@ -82,11 +86,15 @@ def _run_fenicsx(worker_id: int = 0) -> dict:
         "export HOME=/tmp; export DOLFINX_CACHE_DIR=/tmp; "
         f"python3 /workspace/turbine_runner/evaluate.py /worker_data/runner.msh",
     ]
-    res = subprocess.run(cmd, capture_output=True, text=True)
-    for line in reversed(res.stdout.splitlines()):
+    log_path = os.path.join(wdir, "fenicsx.log")
+    with open(log_path, "w") as log_fh:
+        res = subprocess.run(cmd, stdout=log_fh, stderr=subprocess.STDOUT)
+    with open(log_path) as log_fh:
+        log_lines = log_fh.read().splitlines()
+    for line in reversed(log_lines):
         if line.startswith("RESULT_JSON "):
             return json.loads(line[len("RESULT_JSON "):])
-    sys.stderr.write(f"[optimize] fenicsx eval FAILED (worker {worker_id}):\n{res.stdout[-800:]}\n{res.stderr[-800:]}\n")
+    sys.stderr.write(f"[optimize] fenicsx eval FAILED (worker {worker_id}):\n{log_lines[-40:]}\n")
     return {"frequencies_hz": [], "ok": False}
 
 
