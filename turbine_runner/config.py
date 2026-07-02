@@ -183,7 +183,7 @@ class DEConfig:
     mutation: float = 0.8
     crossover: float = 0.9
     max_generations: int = 30
-    tol: float = 0.01
+    tol: float = 0.001
     seed: Optional[int] = None
 
 
