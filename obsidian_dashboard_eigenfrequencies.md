@@ -9,9 +9,9 @@ view: dashboard
 
 > [!summary] Project Status
 > **Branch:** `cfd-eigenfreq-multiobjective` | **Base:** `master`  
-> **Pipeline:** ✅ Scaffolded (local) | **Cluster end-to-end:** 🔴 Pending  
+> **Pipeline:** ✅ Scaffolded (local) | **Cluster end-to-end:** 🟡 In Progress  
 > **OF CFD case:** 🔴 Not built | **Wet (real Laplace):** 🔴 Stub  
-> **Last Commit:** `396282f` — "handoff to track current prograss"
+> **Forbidden band:** ✅ Multi-harmonic (Z=18, n=90 rpm) | **Last Commit:** `51464f1` — "feat(optimization): multi-harmonic forbidden band"
 
 ---
 
@@ -19,12 +19,12 @@ view: dashboard
 
 | Goal | Status | Blocker | Next Step |
 |------|--------|---------|-----------|
-| Cluster end-to-end test | 🔴 Not started | Need cluster login / salloc | `sbatch cluster/submit.sh` with `CFD_CASE_DIR=""` |
+| Cluster end-to-end test | 🟡 In progress | DE works, need batch job | `sbatch cluster/submit_de.sh` with `CFD_CASE_DIR=""` |
+| Multi-harmonic forbidden band | ✅ Done | Implemented | Test with cluster batch |
 | OF CFD case build | 🔴 Blocked | Port `CreateMeshes` from de_framework | Extend `dtoo_export.py` to emit OF case dir |
 | `cfd_eval` validation | 🔴 Blocked | No real `postProcessing/` output yet | Run `simpleFoam` on cluster, compare column indices |
 | `rayleigh_ratios` (wet) | 🟡 Open | Laplace solve needs fluid mesh + wetted-surface tagging | Implement dolfinx fluid-domain solve in `added_mass.py` |
 | Mesh units calibration | 🟡 Open | Physical runner dimensions not measured | Run `mesh_prep.py` axis-discovery, compute scale factor |
-| Kinematic blade-passing band | 🟢 Open | Needs `Z_guidevanes` and `n` from design data | Update `OptimizationConfig` dynamically |
 
 ---
 
@@ -55,7 +55,7 @@ WHERE !completed AND priority = "critical"
 
 **Manual fallback (if Dataview not installed):**
 
-- [ ] Pyro5 DE parallelization test `priority::critical`
+- [x] Pyro5 DE parallelization test `priority::critical` ✅ 2026-07-02
 - [ ] Cluster end-to-end test `priority::critical`
 - [ ] `cfd_eval` column validation `priority::critical`
 - [ ] OF CFD case build `priority::critical`

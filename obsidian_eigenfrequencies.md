@@ -25,8 +25,9 @@ repo: eigenfrequencies
 | FEniCSx container (cluster) | ✅ Built | 2026-07-01 | `enroot` → `pyxis_fenicsx`, dolfinx 0.11.0.post0 |
 | Resonance-only optimize (local) | ✅ Done | 2026-06-24 | 7 evals, penalty 35.99 → 34.30, `output/optimization.json` |
 | Multi-objective scaffold | ✅ Done | 2026-06-24 | `optimize_multi.py` + `objective.py` + `cfd_eval.py` wired |
-| **Pyro5 DE parallelization** | 🟡 **In Progress** | — | `server_de.py` + `optimize_de.py` implemented, awaiting cluster test |
-| **Cluster end-to-end** | 🔴 **Open** | — | **NEXT STEP** — `sbatch cluster/submit.sh` |
+| **Pyro5 DE parallelization** | ✅ **Done** | — | `server_de.py` + `optimize_de.py` + `run_de.sh` works on cluster |
+| **Multi-harmonic forbidden band** | ✅ **Done** | Z=18, n=90 rpm | `optimization.py` now computes blade-passing + 6 harmonics |
+| **Cluster end-to-end** | 🔴 **Open** | — | **NEXT STEP** — `sbatch cluster/submit_de.sh` |
 | OF CFD case build | 🔴 Open | — | Port `createStatesAndMeshes.CreateMeshes` from de_framework |
 | `cfd_eval` validation | 🔴 Open | — | Column indices unvalidated against real `postProcessing/` |
 | Wet added-mass (real Laplace) | 🔴 Open | — | `rayleigh_ratios` NotImplementedError stub |
@@ -181,7 +182,7 @@ graph TD
 2. **Cluster pipeline not yet run** — dtOO native + enroot tested individually on cluster, full `optimize_multi.py` loop not yet executed. HANDOFF.md is the test script.
 3. **OF case dir empty** — CFD step in `optimize_multi.py` degrades to resonance-only because OpenFOAM case has not been built from dtOO state.
 4. **`cfd_eval` column indices unvalidated** — `Q_ru_in`, `ptot_ru_in`, `ptot_ru_out`, `forces.dat` column layout matches de_framework reference but not confirmed against real cluster output.
-5. **Mesh units unknown** — dtOO coords are scaled (~2.5 bbox). Every Hz and the band [100,150] Hz may need rescaling. Physical runner dimensions not yet measured.
+5. **Mesh units unknown** — dtOO coords are scaled (~2.5 bbox). Frequencies and band positions may need rescaling once physical dimensions are known. Band formula (Z·n/60) is correct, but absolute Hz values depend on mesh scale.
 6. **P2 OOM risk** — `SolverConfig.element_degree=2` ~1M DOFs on cluster node may exceed memory if `dev_cpu` node is small.
 7. **No near-zero rigid-body modes locally** — clamp passes locally; physicality confirmation (ParaView) still TODO.
 
@@ -240,14 +241,15 @@ graph TD
 
 > [!example] Iteration Log
 
-### 2026-07-02 — Pyro5 DE Parallelization + Physical Assumptions
+### 2026-07-02 — Pyro5 DE Parallelization + Multi-harmonic Band
 - `server_de.py` created: Pyro5 server exposing `evaluate(x, labels)` → dtOO build + FEniCSx + optional CFD
 - `optimize_de.py` rewritten: Pyro5 client, DE master dispatches designs via RPC to persistent workers
-- `cluster/start_servers.sh` created: starts Name Server + N worker servers (one per core)
+- `cluster/start_servers.sh` + `run_de.sh` created: starts Name Server + N worker servers (one per core)
 - ThreadPoolExecutor deadlock diagnosed: subprocess.run(capture_output=True) with parallel threads = pipe buffer deadlock
 - Fix: rl_framework schema — persistent Pyro5 servers, subprocess runs inside server process (one at a time per worker)
 - Commit `8d43ac8`: "feat(de): Pyro5-based distributed DE (rl_framework schema)"
-- **Physical assumptions documented**: Current model is dry modes only (no water, no rotation, no damping). Added mass, centrifugal stiffening, Coriolis, damping, prestress all missing. Forbidden band [100,150] Hz is arbitrary — needs blade-passing formula (Z=18, n=90 rpm → f_bp=27 Hz).
+- **Multi-harmonic forbidden band**: Replaced arbitrary [100,150] Hz with blade-passing + 6 harmonics (Z=18, n=90 rpm → f_bp=27 Hz). Proportional margin max(5Hz, 5%). Penalty drops from 36.7 to 14.25.
+- **Physical assumptions documented**: Current model is dry modes only. Added mass, centrifugal stiffening, Coriolis, damping, prestress all missing. Wet modes will be 15-40% lower.
 
 ### 2026-07-01 — Cluster Adaptation & Handoff
 - `cluster/submit.sh` adapted: `source ~/pe`, `partition=dev_cpu`, enroot `FENICSX_CONTAINER=pyxis_fenicsx`
@@ -311,5 +313,5 @@ scancel <JOBID>
 ---
 
 *Last Update: 2026-07-02*
-*Status: Pyro5 DE parallelization works. Next: physical forbidden band (Z=18, n=90 rpm) + wet modes*
-*Next Action: Update `OptimizationConfig` with blade-passing formula, add physical assumptions to docs*
+*Status: Pyro5 DE parallelization works. Multi-harmonic forbidden band implemented. Next: wet modes (added mass) + cluster batch test*
+*Next Action: `sbatch cluster/submit_de.sh` on cluster, verify optimization with new band*
