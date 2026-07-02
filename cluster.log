@@ -14,39 +14,24 @@ or simply:
 [DE] CFD_CASE_DIR=
 ========================================
 [DE] Starting Name Server...
-[DE] ERROR: Name Server failed to start!
+[DE] Starting 4 workers...
+[DE] Running DE client...
+[DE] Discovered 4 servers: ['uc2n602.localdomain_worker_0', 'uc2n602.localdomain_worker_1', 'uc2n602.localdomain_worker_2', 'uc2n602.localdomain_worker_3']
+[DE] population=4 dim=3 mutation=0.8 crossover=0.9 max_gen=30 tol=0.01 seed=None workers=4
+[DE] Worker error for individual 2: the calling thread is not the owner of this proxy, create a new proxy in this thread or transfer ownership.
+[DE] Worker error for individual 0: the calling thread is not the owner of this proxy, create a new proxy in this thread or transfer ownership.
+[DE] Worker error for individual 1: the calling thread is not the owner of this proxy, create a new proxy in this thread or transfer ownership.
+[DE] Worker error for individual 3: the calling thread is not the owner of this proxy, create a new proxy in this thread or transfer ownership.
+[DE] Generation 0 best=1000000.000000
+[DE] Worker error for trial 2: the calling thread is not the owner of this proxy, create a new proxy in this thread or transfer ownership.
+[DE] Worker error for trial 1: the calling thread is not the owner of this proxy, create a new proxy in this thread or transfer ownership.
+[DE] Worker error for trial 0: the calling thread is not the owner of this proxy, create a new proxy in this thread or transfer ownership.
+[DE] Worker error for trial 3: the calling thread is not the owner of this proxy, create a new proxy in this thread or transfer ownership.
 Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/lib/python3.13/site-packages/Pyro5/nameserver.py", line 768, in <module>
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/optimize_de.py", line 189, in <module>
     main()
     ~~~~^^
-  File "/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/lib/python3.13/site-packages/Pyro5/nameserver.py", line 762, in main
-    start_ns_loop(options.host, options.port, enableBroadcast=options.enablebc,
-    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                  bchost=options.bchost, bcport=options.bcport, unixsocket=options.unixsocket,
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                  nathost=options.nathost, natport=options.natport, storage=options.storage)
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/lib/python3.13/site-packages/Pyro5/nameserver.py", line 650, in start_ns_loop
-    daemon = NameServerDaemon(host, port, unixsocket, nathost=nathost, natport=natport, storage=storage)
-  File "/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/lib/python3.13/site-packages/Pyro5/nameserver.py", line 464, in __init__
-    super(NameServerDaemon, self).__init__(host, port, unixsocket, nathost=nathost, natport=natport)
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/lib/python3.13/site-packages/Pyro5/server.py", line 237, in __init__
-    self.transportServer.init(self, host, port, unixsocket)
-    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/lib/python3.13/site-packages/Pyro5/svr_threads.py", line 124, in init
-    self.sock = socketutil.create_socket(bind=bind_location,
-                ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
-                                         reuseaddr=config.SOCK_REUSE,
-                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<2 lines>...
-                                         nodelay=config.SOCK_NODELAY,
-                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                                         sslContext=sslContext)
-                                         ^^^^^^^^^^^^^^^^^^^^^^
-  File "/pfs/data6/home/st/st_us-042020/st_ac136362/py313-dtoo/lib/python3.13/site-packages/Pyro5/socketutil.py", line 278, in create_socket
-    sock.bind(bind)
-    ~~~~~~~~~^^^^^^
-OSError: [Errno 98] Address already in use
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/optimize_de.py", line 162, in main
+    breakdowns[improved] = trial_brk[improved]
+                           ~~~~~~~~~^^^^^^^^^^
+TypeError: only integer scalar arrays can be converted to a scalar index
