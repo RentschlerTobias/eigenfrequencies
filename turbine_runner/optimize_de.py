@@ -29,23 +29,26 @@ from optimize import DTOO_FAIL_PENALTY
 # Worker discovery
 # ────────────────────────────────
 
-def _discover_servers(ns_host: str = None, timeout: int = 30) -> list[str]:
+def _discover_servers(ns_host: str = None,
+                      expected_count: int = 1,
+                      timeout: int = 120) -> list[str]:
     """Discover worker servers via Pyro5 Name Server.
 
-    Polls until workers appear because each worker must import dtOO/FEniCSx
-    before it can register. This can take several seconds in parallel starts.
+    Polls until expected_count workers appear because each process must import
+    dtOO/FEniCSx before registering. Heavy parallel imports can take minutes.
     """
     if ns_host is None:
         import socket
         ns_host = socket.gethostname()
     deadline = time.time() + timeout
     last_error = None
+    servers = []
     while True:
         try:
             ns = Pyro5.api.locate_ns(host=ns_host)
             items = ns.list()
             servers = sorted([k for k in items.keys() if "_worker_" in k])
-            if servers:
+            if len(servers) >= expected_count:
                 print(f"[DE] Discovered {len(servers)} servers: {servers}")
                 return servers
         except Exception as e:
@@ -53,8 +56,9 @@ def _discover_servers(ns_host: str = None, timeout: int = 30) -> list[str]:
         if time.time() > deadline:
             break
         time.sleep(2)
-    print(f"[DE] Discovered 0 servers after {timeout}s (last_error: {last_error})")
-    return []
+    print(f"[DE] Discovered {len(servers)} servers after {timeout}s "
+          f"(expected {expected_count}, last_error: {last_error})")
+    return servers
 
 
 # ────────────────────────────────
@@ -83,7 +87,7 @@ def main():
 
     # Discover servers
     ns_host = os.environ.get("PYRO_NS_HOST", None)
-    servers = _discover_servers(ns_host)
+    servers = _discover_servers(ns_host, expected_count=de_cfg.pop_size)
     n_workers = len(servers)
     if n_workers == 0:
         print("[DE] ERROR: No worker servers found. Start servers first:")
@@ -121,7 +125,7 @@ def main():
 
     with ThreadPoolExecutor(max_workers=n_workers) as pool:
         futures = {
-            pool.submit(_evaluate_remote, server_names[i], population[i], labels): i
+            pool.submit(_evaluate_remote, server_names[i % n_workers], population[i], labels): i
             for i in range(pop_size)
         }
         for future in as_completed(futures):

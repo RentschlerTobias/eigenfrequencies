@@ -171,6 +171,9 @@ class DEConfig:
     Population-based optimizer; each generation evaluates pop_size designs
     independently -> embarrassingly parallel over workers.
 
+    Environment variables override dataclass defaults (used by run_de.sh):
+        DE_POP_SIZE, DE_MAX_GEN, DE_SEED, DE_MUTATION, DE_CROSSOVER, DE_TOL
+
     Attributes:
         pop_size: Number of individuals per generation (match worker count)
         mutation: Differential weight F (0..2, typically 0.5..1.0)
@@ -185,6 +188,15 @@ class DEConfig:
     max_generations: int = 30
     tol: float = 0.01
     seed: Optional[int] = None
+
+    def __post_init__(self):
+        self.pop_size = int(os.environ.get("DE_POP_SIZE", self.pop_size))
+        self.max_generations = int(os.environ.get("DE_MAX_GEN", self.max_generations))
+        if "DE_SEED" in os.environ:
+            self.seed = int(os.environ["DE_SEED"])
+        self.mutation = float(os.environ.get("DE_MUTATION", self.mutation))
+        self.crossover = float(os.environ.get("DE_CROSSOVER", self.crossover))
+        self.tol = float(os.environ.get("DE_TOL", self.tol))
 
 
 @dataclass
