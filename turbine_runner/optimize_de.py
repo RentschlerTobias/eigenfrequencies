@@ -29,16 +29,32 @@ from optimize import DTOO_FAIL_PENALTY
 # Worker discovery
 # ────────────────────────────────
 
-def _discover_servers(ns_host: str = None) -> list[str]:
-    """Discover worker servers via Pyro5 Name Server."""
+def _discover_servers(ns_host: str = None, timeout: int = 30) -> list[str]:
+    """Discover worker servers via Pyro5 Name Server.
+
+    Polls until workers appear because each worker must import dtOO/FEniCSx
+    before it can register. This can take several seconds in parallel starts.
+    """
     if ns_host is None:
         import socket
         ns_host = socket.gethostname()
-    ns = Pyro5.api.locate_ns(host=ns_host)
-    items = ns.list()
-    servers = sorted([k for k in items.keys() if "_worker_" in k])
-    print(f"[DE] Discovered {len(servers)} servers: {servers}")
-    return servers
+    deadline = time.time() + timeout
+    last_error = None
+    while True:
+        try:
+            ns = Pyro5.api.locate_ns(host=ns_host)
+            items = ns.list()
+            servers = sorted([k for k in items.keys() if "_worker_" in k])
+            if servers:
+                print(f"[DE] Discovered {len(servers)} servers: {servers}")
+                return servers
+        except Exception as e:
+            last_error = e
+        if time.time() > deadline:
+            break
+        time.sleep(2)
+    print(f"[DE] Discovered 0 servers after {timeout}s (last_error: {last_error})")
+    return []
 
 
 # ────────────────────────────────
