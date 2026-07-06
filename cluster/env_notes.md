@@ -1,50 +1,78 @@
 # Cluster environment notes — bwUniCluster 3.0
 
-Two disjoint software stacks are needed per design evaluation. They do **not** live
-in one environment; that is the central integration fact.
+Two software stacks cooperate per design evaluation. They **do not** live in one
+environment; that is the central integration fact.
 
-## 1. dtOO + OpenFOAM (geometry build + CFD objectives)
+## 1. dtOO + OpenFOAM (geometrie + CFD objective)
 
-- Provided by the de_framework-style env: `source ~/de`, or a module such as
-  `. dtoo of_v2406_15.6` (dtOO + OpenFOAM v2406).
-- Exports needed (from de_framework `start_server.sh`):
+- Bereitgestellt durch das `de_framework`-artige Env: `source ~/pe`
+  (modulisiert zu `py313-dtoo` in `~/py313-dtoo/`, der einzige Python mit
+  `dtOOPythonSWIG` und `pyDtOO`).
+- Exports aus `de_framework start_server.sh`:
   - `export OSLO_LOCK_PATH=/tmp`
   - `export FOAM_SIGFPE=0`
-- Provides: `dtOOPythonSWIG` / `pyDtOO`, and `simpleFoam`, `decomposePar`,
-  `reconstructPar`, `checkMesh`.
-- Used by: `turbine_runner/dtoo_export.py` (mech mesh + OF case) and the
-  `simpleFoam` run whose `postProcessing/` is read by `turbine_runner/cfd_eval.py`.
+- Provides: `simpleFoam`, `decomposePar`, `reconstructPar`, `checkMesh`.
+- Used by: `turbine_runner/server_de.py:_run_dtoo()` (geometrisches Build pro Worker).
 
 ## 2. FEniCSx / dolfinx (modal eigenfrequency solve)
 
-- **Not set up on the cluster yet** — provision via apptainer:
-  `apptainer build eigenfrequencies-fenicsx.sif cluster/apptainer_fenicsx.def`,
-  copy the `.sif` to the cluster, point `FENICSX_SIF` at it (see `submit.sh`).
-- Used by: `turbine_runner/solver.py` + `evaluate.py` (and later `added_mass.py`).
+- **Auf dem Cluster aktiv via enroot/Pyxis**:
+  Container `pyxis_fenicsx` (importiert aus `docker://dolfinx/dolfinx:stable`).
+- `_run_fenicsx()` ruft:
+  ```
+  enroot start -m "$REPO:/workspace" \
+      -m "$wdir:/worker_data" pyxis_fenicsx \
+      bash -c 'export HOME=/tmp; export DOLFINX_CACHE_DIR=/tmp; \
+               python3 /workspace/turbine_runner/evaluate.py /worker_data/runner.msh'
+  ```
+- Fallback für Cluster ohne enroot/Pyxis: `cluster/apptainer_fenicsx.def`
+  baut ein Singularity-Image (`eigenfrequencies-fenicsx.sif`) für den modal solve.
 
-## Wiring the modal solve through apptainer
+## 3. Pyro5 (RPC distribution)
 
-`turbine_runner/optimize.py:_run_fenicsx()` currently calls `docker run …`. On the
-cluster, replace the docker invocation with apptainer, e.g.:
+- Persistent daemon-server ohne subprocess.pipe-Deadlocks
+  (enroot + ThreadPoolExecutor inkompatibel → beobachtetes Hängen).
+- Schema (rl_framework/start.sh):
+  1. `python3 -m Pyro5.nameserver -n $(hostname)` auf Head-Node,
+  2. pro Worker (srun-step) `python3 turbine_runner/server_de.py $worker_id $ns_host`,
+  3. `srun -n 1 -N 1 ...` pro Worker → SLURM verteilt über Nodes,
+  4. Client (`optimize_de.py`) dispatcht designs per RPC, polled bis genug
+     Worker registriert sind (Default 120 s).
+- Head-Node = Worker 0 = gleichzeitiger Client-Node (SLURM_RANK_0).
 
-```bash
-apptainer exec --bind "$REPO:/workspace" "$FENICSX_SIF" \
-    python3 /workspace/turbine_runner/evaluate.py \
-    /workspace/turbine_runner/data/runner.msh
+## Distribution pattern (current, `rl_framework/start.sh`-derived)
+
+Eine SLURM-Allokation; Pyro5 Name Server auf dem Head-Node; ein Pyro5-Daemon
+pro `srun -n 1 -N 1`; jeder Worker ruft `_run_dtoo()` + `_run_fenicsx()` lokal
+in seiner Working-Directory. `cluster/submit_de.sh` orchestriert Nodes 1..N.
+
+### Quickstart (single-node dev)
+
+```
+salloc -p dev_cpu_il -N 1 --ntasks-per-node=8 -t 00:30:00
+cd /home/st/st_us-042020/st_ac136362/eigen/eigenfrequencies
+git pull
+bash cluster/run_de.sh 8 2     # 8 worker, 2 generations
 ```
 
-Set `FENICSX_IMAGE`/the helper accordingly, or add an `apptainer` branch keyed on
-an env flag (`RUNNER_BACKEND=apptainer`). Keep the `RESULT_JSON` stdout contract.
+### Quickstart (multi-node smoke)
 
-Likewise `optimize.py:_run_dtoo()` wraps dtOO in `docker run atismer/...` — wrong on
-the cluster, where dtOO is **native** (`dtOOPythonSWIG` under `source ~/de`). Run
-`python3.12 dtoo_export.py` directly with `DTOO_DESIGN_JSON`, `DTOO_OUTPUT_MSH`,
-`DTOO_CASE_DIR` set to the staged paths; no docker. The same `RUNNER_BACKEND` switch
-should select native dtOO vs the local docker image.
+```
+sbatch --partition=dev_cpu_il --nodes=2 --ntasks-per-node=8 \
+       --time=00:10:00 cluster/submit_de.sh
+```
 
-## Distribution pattern (reference, de_framework `start.sh`)
+For full CFD + resonance target runs, override partition/time/nodes per the
+header comment in `cluster/submit_de.sh`.
 
-One SLURM allocation; a Pyro5 nameserver (`pyro5-ns`) on the batch node; one worker
-per `SLURM_NTASKS`; each design RPCs a co-located worker that runs dtOO + `mpiexec
-simpleFoam -parallel` in `$TMPDIR`. `cluster/submit.sh` is the simplified single-loop
-starting point; scale to the Pyro/archipelago pattern if parallel evals are needed.
+## Partition reference (bwUniCluster 3.0)
+
+| Partition | Nodes | Cores/Node | RAM/Node | Time | Notes |
+|-----------|-------|------------|----------|------|-------|
+| `dev_cpu_il` | 8 | 64 | 256 GiB | 30 min | Smoke-Test (priority) |
+| `dev_cpu` | 1 | 96 | 384 GiB | 30 min | AMD-only dev |
+| `cpu_il` | 272 | 64 | 256 GiB | 72 h | Ice Lake production |
+| `cpu` | 20 | 96 | 384 GiB | 72 h | AMD production |
+| `highmem` | 5 | 96 | 2304 GiB | 72 h | High-RAM |
+
+Lokale NVMe SSD auf `cpu`/`cpu_il` für `$TMPDIR` (3.84 / 1.8 TB pro Node).

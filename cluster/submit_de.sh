@@ -6,6 +6,7 @@
 #SBATCH --ntasks-per-node=8
 #SBATCH --cpus-per-task=1
 #SBATCH --hint=nomultithread
+#SBATCH --cpu-bind=cores
 #SBATCH --partition=dev_cpu_il
 #SBATCH --dependency=singleton
 
@@ -20,8 +21,10 @@
 
 source ~/pe
 
-REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$REPO_ROOT"
+# CRITICAL: $0 is rewritten by SLURM to /var/spool/slurmd/jobXXXX/slurm_script,
+# so use $SLURM_SUBMIT_DIR instead of computing from $0.
+REPO_ROOT="$SLURM_SUBMIT_DIR"
+cd "$REPO_ROOT" || exit 1
 
 POP_SIZE="${DE_POP_SIZE:-64}"
 MAX_GEN="${DE_MAX_GEN:-4}"
@@ -75,6 +78,7 @@ python3 turbine_runner/optimize_de.py
 
 # ── Cleanup ──
 echo "[DE] Done. Logs: $LOG_DIR"
-echo "[DE] Kill Name Server locally, scancel for the rest: scancel $SLURM_JOB_ID"
+echo "[DE] Kill Name Server locally (workers exit when their daemon terminates)"
 kill "$NS_PID" 2>/dev/null || true
-scancel "$SLURM_JOB_ID" 2>/dev/null || true
+# NOTE: scancel $SLURM_JOB_ID would cancel the job wrapping this script itself,
+# causing a CANCELLED state instead of COMPLETED. Skip scancel here.
