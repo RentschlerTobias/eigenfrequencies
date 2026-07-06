@@ -29,7 +29,7 @@ cd "$REPO_ROOT" || exit 1
 POP_SIZE="${DE_POP_SIZE:-$((SLURM_NNODES * SLURM_NTASKS_PER_NODE))}"
 MAX_GEN="${DE_MAX_GEN:-20}"
 SEED="${DE_SEED:-42}"
-NS_HOST=$(hostname)
+NS_HOST=$(hostname -I | awk '{print $1}')
 
 export PYRO_NS_HOST="$NS_HOST"
 export CFD_CASE_DIR="${CFD_CASE_DIR:-}"
