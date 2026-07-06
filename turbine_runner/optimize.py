@@ -83,7 +83,11 @@ def _run_fenicsx(worker_id: int = 0) -> dict:
         "-m", f"{wdir}:/worker_data",
         FENICSX_CONTAINER,
         "bash", "-c",
+        # XDG_RUNTIME_DIR/TMPDIR -> container /tmp so PMIx/MPI (DOLFINx) does not
+        # fall back to /run/user/$UID, which is unwritable in the batch context
+        # of the head node (uc2n601) and made all its workers fail modal solve.
         "export HOME=/tmp; export DOLFINX_CACHE_DIR=/tmp; "
+        "export XDG_RUNTIME_DIR=/tmp; export TMPDIR=/tmp; "
         f"python3 /workspace/turbine_runner/evaluate.py /worker_data/runner.msh",
     ]
     log_path = os.path.join(wdir, "fenicsx.log")
