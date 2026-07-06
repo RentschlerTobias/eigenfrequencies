@@ -36,6 +36,9 @@ def _discover_servers(ns_host: str = None,
 
     Polls until expected_count workers appear because each process must import
     dtOO/FEniCSx before registering. Heavy parallel imports can take minutes.
+
+    Mirrors de_framework: use locate_ns(host=ns_host) which falls back to
+    broadcast discovery if the direct hostname lookup fails.
     """
     if ns_host is None:
         import socket
@@ -45,7 +48,9 @@ def _discover_servers(ns_host: str = None,
     servers = []
     while True:
         try:
-            ns = Pyro5.api.locate_ns(host=ns_host)
+            # broadcast=True lets Pyro5 discover the NS even if direct host
+            # resolution fails across SLURM nodes.
+            ns = Pyro5.api.locate_ns(host=ns_host, broadcast=True)
             items = ns.list()
             servers = sorted([k for k in items.keys() if "_worker_" in k])
             if len(servers) >= expected_count:

@@ -29,15 +29,8 @@ cd "$REPO_ROOT" || exit 1
 POP_SIZE="${DE_POP_SIZE:-$((SLURM_NNODES * SLURM_NTASKS_PER_NODE))}"
 MAX_GEN="${DE_MAX_GEN:-10}"
 SEED="${DE_SEED:-42}"
-# Use IP address instead of hostname/FQDN for cross-node Pyro5.
-# Hostnames like uc2n603 are not resolvable from other SLURM nodes.
-NS_HOST=$(python3 -c "
-import socket
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.connect(('10.255.255.255', 1))
-print(s.getsockname()[0])
-s.close()
-")
+# Use the short hostname (SLURMD_NODENAME) for Pyro5, as de_framework/start.sh does.
+NS_HOST="${SLURMD_NODENAME:-$(hostname)}"
 
 export PYRO_NS_HOST="$NS_HOST"
 export CFD_CASE_DIR="${CFD_CASE_DIR:-$TMPDIR}"
@@ -65,7 +58,9 @@ srun -N "$SLURM_NNODES" -n "$SLURM_NNODES" \
 
 # ── Start Name Server on head node ──
 echo "[DE] Starting Name Server..."
-python3 -m Pyro5.nameserver -n "$NS_HOST" > "$LOG_DIR/nameserver.log" 2>&1 &
+# Kill any stale pyro5-ns from previous runs of this user on this node.
+pkill -u "$USER" -9 -f "pyro5-ns" 2>/dev/null || true
+pyro5-ns -n "$NS_HOST" > "$LOG_DIR/nameserver.log" 2>&1 &
 NS_PID=$!
 sleep 3
 
