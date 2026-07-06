@@ -6,7 +6,6 @@
 #SBATCH --ntasks-per-node=32
 #SBATCH --cpus-per-task=2
 #SBATCH --hint=nomultithread
-#SBATCH --cpu-bind=cores
 #SBATCH --partition=dev_cpu_il
 #SBATCH --dependency=singleton
 
@@ -26,8 +25,9 @@ source ~/pe
 REPO_ROOT="$SLURM_SUBMIT_DIR"
 cd "$REPO_ROOT" || exit 1
 
-POP_SIZE="${DE_POP_SIZE:-64}"
-MAX_GEN="${DE_MAX_GEN:-4}"
+# Auto-calculate POP_SIZE from SLURM allocation (override with DE_POP_SIZE env var)
+POP_SIZE="${DE_POP_SIZE:-$((SLURM_NNODES * SLURM_NTASKS_PER_NODE))}"
+MAX_GEN="${DE_MAX_GEN:-20}"
 SEED="${DE_SEED:-42}"
 NS_HOST=$(hostname)
 
