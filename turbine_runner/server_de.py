@@ -57,7 +57,8 @@ class Evaluator(object):
         freqs = fre["frequencies_hz"]
 
         # Optional CFD
-        if CFD_CASE_DIR and os.path.isdir(CFD_CASE_DIR):
+        CFD_ENABLED = os.environ.get("CFD_ENABLED", "0") == "1"
+        if CFD_ENABLED and CFD_CASE_DIR and os.path.isdir(CFD_CASE_DIR):
             worker_cfd_dir = os.path.join(CFD_CASE_DIR, f"worker_{worker_id}")
             if os.path.isdir(worker_cfd_dir):
                 from cfd_eval import evaluate_cfd

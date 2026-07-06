@@ -3,8 +3,8 @@
 #SBATCH --output=de_opti_%j.out
 #SBATCH --time=00:30:00
 #SBATCH --nodes=8
-#SBATCH --ntasks-per-node=8
-#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=32
+#SBATCH --cpus-per-task=2
 #SBATCH --hint=nomultithread
 #SBATCH --cpu-bind=cores
 #SBATCH --partition=dev_cpu_il
@@ -36,6 +36,8 @@ export CFD_CASE_DIR="${CFD_CASE_DIR:-}"
 export DE_POP_SIZE="$POP_SIZE"
 export DE_MAX_GEN="$MAX_GEN"
 export DE_SEED="$SEED"
+export W_RESONANCE="${W_RESONANCE:-1.0}"
+export CFD_ENABLED="${CFD_ENABLED:-1}"
 
 LOG_DIR="$REPO_ROOT/server_logs"
 rm -rf "$LOG_DIR"

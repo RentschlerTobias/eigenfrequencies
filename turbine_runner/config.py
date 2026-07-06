@@ -247,7 +247,7 @@ class ObjectiveConfig:
     w_eta: float = 1.0
     w_cav: float = 1.0
     w_head: float = 1.0
-    w_resonance: float = 1.0
+    w_resonance: float = float(os.environ.get("W_RESONANCE", 1.0))
     mode: str = "penalty"
     hard_penalty: float = 1e6
 
