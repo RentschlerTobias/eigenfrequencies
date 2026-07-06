@@ -197,9 +197,13 @@ def main():
 
         print(f"[DE] Generation {g} best={best_obj:.6f} mean={objectives.mean():.6f}")
 
-        # Early stopping
-        if span.std() < tol:
-            print("[DE] Converged (population std < tol).")
+        # Early stopping: converge on the spread of *successful* objectives.
+        # Failed designs sit at DTOO_FAIL_PENALTY (1e6); including them would
+        # keep std huge forever, so they are excluded. (Previously this checked
+        # span.std(), the constant bounds width, which never changed.)
+        finite = objectives[objectives < DTOO_FAIL_PENALTY]
+        if finite.size > 1 and finite.std() < tol:
+            print(f"[DE] Converged (std(objectives)={finite.std():.4g} < tol={tol}).")
             break
 
     # ── Final output ──
