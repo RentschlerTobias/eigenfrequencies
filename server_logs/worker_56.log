@@ -1,1 +1,5 @@
-Worker 56 ready on uc2n602.localdomain: PYRO:obj_a9e593cb20c241e59afd3796187ccd67@uc2n602.localdomain:46853
+Worker 56 ready on uc2n601.localdomain: PYRO:obj_ec14d5ae6e1c42ab9d3f0f040bd05937@uc2n601.localdomain:44007
+[optimize] fenicsx eval FAILED (worker 56):
+['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
+[optimize] fenicsx eval FAILED (worker 56):
+['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
