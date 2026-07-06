@@ -22,14 +22,17 @@ from optimize import _run_dtoo, _run_fenicsx, DTOO_FAIL_PENALTY
 
 host = socket.gethostname()
 worker_id = int(sys.argv[1]) if len(sys.argv) > 1 else 0
-ns_host = sys.argv[2] if len(sys.argv) > 2 else host
+
+# A2 discovery: no Name Server. Each worker writes its own Pyro5 URI to a file
+# on the shared filesystem; the client reads them. This bypasses the NS
+# broadcast / hostname discovery that fails across bwUniCluster nodes.
+DEFAULT_URI_DIR = os.path.join(os.path.dirname(HERE), "server_logs", "uris")
+URI_DIR = os.environ.get("DE_URI_DIR", DEFAULT_URI_DIR)
 
 # Bind and advertise by the FQDN of this node, as de_framework/server.py does.
-# locate_ns(host=SLURMD_NODENAME) on the client side uses Pyro5 broadcast
-# discovery to find the actual Name Server port.
+# de_framework proves that cross-node RPC to an FQDN resolves fine — only NS
+# *discovery* was broken, which A2 removes entirely.
 Pyro5.config.HOST = host
-
-name = f"{host}_worker_{worker_id}"
 
 CFD_CASE_DIR = os.environ.get("CFD_CASE_DIR", "")
 
@@ -92,10 +95,18 @@ class Evaluator(object):
         }
 
 
+os.makedirs(URI_DIR, exist_ok=True)
 daemon = Pyro5.server.Daemon(host)
-ns = Pyro5.api.locate_ns(host=ns_host)
-uri = daemon.register(Evaluator)
-ns.register(name, uri)
-print(f"Server {name} ready on {host}.", flush=True)
+uri = str(daemon.register(Evaluator))
+
+# Atomic publish: write to a temp file then rename, so the client never reads
+# a partially written URI.
+uri_path = os.path.join(URI_DIR, f"worker_{worker_id}.uri")
+tmp_path = uri_path + ".tmp"
+with open(tmp_path, "w") as fh:
+    fh.write(uri)
+os.replace(tmp_path, uri_path)
+
+print(f"Worker {worker_id} ready on {host}: {uri}", flush=True)
 sys.stdout.flush()
 daemon.requestLoop()

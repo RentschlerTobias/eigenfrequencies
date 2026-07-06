@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Differential Evolution (DE) parallel optimizer via Pyro5 RPC.
 
-Follows the rl_framework schema: persistent worker servers (one per core)
-registered with a Pyro5 Name Server. The client dispatches designs via RPC
-and blocks on network I/O (no subprocess.pipe deadlocks).
+Persistent worker servers (one per core) publish their Pyro5 URIs to a shared
+filesystem directory; the client reads them and dispatches designs via RPC,
+blocking on network I/O only (no subprocess.pipe deadlocks, no Name Server).
 
 Supports both resonance-only (CFD_CASE_DIR="") and full CFD+resonance modes.
 """
@@ -29,53 +29,56 @@ from optimize import DTOO_FAIL_PENALTY
 # Worker discovery
 # ────────────────────────────────
 
-def _discover_servers(ns_host: str = None,
-                      expected_count: int = 1,
+def _discover_servers(expected_count: int = 1,
                       timeout: int = 120) -> list[str]:
-    """Discover worker servers via Pyro5 Name Server.
+    """Discover worker URIs from the shared-filesystem URI directory (A2).
 
-    Polls until expected_count workers appear because each process must import
-    dtOO/FEniCSx before registering. Heavy parallel imports can take minutes.
+    Each worker writes worker_<id>.uri once its Pyro5 daemon is registered.
+    Poll until expected_count files appear because every process must import
+    dtOO/FEniCSx before publishing — heavy parallel imports take minutes.
 
-    Mirrors de_framework: use locate_ns(host=ns_host) which falls back to
-    broadcast discovery if the direct hostname lookup fails.
+    No Name Server, no broadcast, no hostname discovery: workers on any node
+    become reachable as soon as their URI file lands on the shared filesystem.
     """
-    if ns_host is None:
-        import socket
-        ns_host = socket.gethostname()
+    here = os.path.dirname(os.path.abspath(__file__))
+    default_dir = os.path.join(os.path.dirname(here), "server_logs", "uris")
+    uri_dir = os.environ.get("DE_URI_DIR", default_dir)
     deadline = time.time() + timeout
-    last_error = None
-    servers = []
+    uris: list[str] = []
     while True:
-        try:
-            # broadcast=True lets Pyro5 discover the NS even if direct host
-            # resolution fails across SLURM nodes.
-            ns = Pyro5.api.locate_ns(host=ns_host, broadcast=True)
-            items = ns.list()
-            servers = sorted([k for k in items.keys() if "_worker_" in k])
-            if len(servers) >= expected_count:
-                print(f"[DE] Discovered {len(servers)} servers: {servers}")
-                return servers
-        except Exception as e:
-            last_error = e
+        if os.path.isdir(uri_dir):
+            uris = []
+            for f in sorted(os.listdir(uri_dir)):
+                if not f.endswith(".uri"):
+                    continue
+                try:
+                    with open(os.path.join(uri_dir, f)) as fh:
+                        u = fh.read().strip()
+                except OSError:
+                    continue
+                if u.startswith("PYRO:"):
+                    uris.append(u)
+            if len(uris) >= expected_count:
+                print(f"[DE] Discovered {len(uris)} workers from {uri_dir}")
+                return uris
         if time.time() > deadline:
             break
         time.sleep(2)
-    print(f"[DE] Discovered {len(servers)} servers after {timeout}s "
-          f"(expected {expected_count}, last_error: {last_error})")
-    return servers
+    print(f"[DE] Discovered {len(uris)} workers after {timeout}s "
+          f"(expected {expected_count}) in {uri_dir}")
+    return uris
 
 
 # ────────────────────────────────
 # Remote evaluation
 # ────────────────────────────────
 
-def _evaluate_remote(server_name, design, labels):
-    """Call remote server synchronously (blocks on network I/O only).
-    
+def _evaluate_remote(server_uri, design, labels):
+    """Call remote worker synchronously via its direct Pyro5 URI.
+
     Creates a fresh proxy inside this thread to avoid Pyro5 ownership issues.
     """
-    with Pyro5.api.Proxy(f"PYRONAME:{server_name}") as proxy:
+    with Pyro5.api.Proxy(server_uri) as proxy:
         return proxy.evaluate(design.tolist(), labels)
 
 
@@ -90,17 +93,13 @@ def main():
     design_cfg = DesignConfig()
     labels = design_cfg.labels
 
-    # Discover servers
-    ns_host = os.environ.get("PYRO_NS_HOST", None)
-    servers = _discover_servers(ns_host, expected_count=de_cfg.pop_size)
-    n_workers = len(servers)
+    # Discover worker URIs from the shared-filesystem URI directory
+    server_uris = _discover_servers(expected_count=de_cfg.pop_size)
+    n_workers = len(server_uris)
     if n_workers == 0:
         print("[DE] ERROR: No worker servers found. Start servers first:")
         print("       bash cluster/start_servers.sh")
         sys.exit(1)
-
-    # Server name list (proxies created fresh inside each worker thread)
-    server_names = servers
 
     dim = len(labels)
     bounds = np.array(design_cfg.bounds)
@@ -130,7 +129,7 @@ def main():
 
     with ThreadPoolExecutor(max_workers=n_workers) as pool:
         futures = {
-            pool.submit(_evaluate_remote, server_names[i % n_workers], population[i], labels): i
+            pool.submit(_evaluate_remote, server_uris[i % n_workers], population[i], labels): i
             for i in range(pop_size)
         }
         for future in as_completed(futures):
@@ -170,7 +169,7 @@ def main():
         with ThreadPoolExecutor(max_workers=n_workers) as pool:
             futures = {
                 pool.submit(
-                    _evaluate_remote, server_names[i % n_workers], trial_pop[i], labels
+                    _evaluate_remote, server_uris[i % n_workers], trial_pop[i], labels
                 ): i
                 for i in range(pop_size)
             }

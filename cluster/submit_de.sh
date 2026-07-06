@@ -29,10 +29,7 @@ cd "$REPO_ROOT" || exit 1
 POP_SIZE="${DE_POP_SIZE:-$((SLURM_NNODES * SLURM_NTASKS_PER_NODE))}"
 MAX_GEN="${DE_MAX_GEN:-10}"
 SEED="${DE_SEED:-42}"
-# Use the short hostname (SLURMD_NODENAME) for Pyro5, as de_framework/start.sh does.
-NS_HOST="${SLURMD_NODENAME:-$(hostname)}"
 
-export PYRO_NS_HOST="$NS_HOST"
 export CFD_CASE_DIR="${CFD_CASE_DIR:-$TMPDIR}"
 export DE_POP_SIZE="$POP_SIZE"
 export DE_MAX_GEN="$MAX_GEN"
@@ -43,9 +40,13 @@ export CFD_ENABLED="${CFD_ENABLED:-1}"
 LOG_DIR="$REPO_ROOT/server_logs"
 rm -rf "$LOG_DIR"
 mkdir -p "$LOG_DIR"
+# A2 discovery: workers publish their Pyro5 URIs here (shared filesystem,
+# visible on all compute nodes). Wiped above so no stale URIs survive.
+export DE_URI_DIR="$LOG_DIR/uris"
+mkdir -p "$DE_URI_DIR"
 
 echo "========================================"
-echo "[DE] Pyro5 DE multi-node on $NS_HOST"
+echo "[DE] Pyro5 DE multi-node (file-based URI discovery) on $(hostname)"
 echo "[DE] POP_SIZE=$POP_SIZE  MAX_GEN=$MAX_GEN  SEED=$SEED"
 echo "[DE] SLURM: $SLURM_NNODES nodes x $SLURM_NTASKS_PER_NODE tasks/node"
 echo "[DE] Partition=${SLURM_JOB_PARTITION:-dev_cpu_il}"
@@ -56,24 +57,12 @@ echo "========================================"
 srun -N "$SLURM_NNODES" -n "$SLURM_NNODES" \
     cp -r "$REPO_ROOT/turbine_runner/data" "$TMPDIR/" 2>/dev/null || true
 
-# ── Start Name Server on head node ──
-echo "[DE] Starting Name Server..."
-# Kill any stale pyro5-ns from previous runs of this user on this node.
-pkill -u "$USER" -9 -f "pyro5-ns" 2>/dev/null || true
-pyro5-ns -n "$NS_HOST" > "$LOG_DIR/nameserver.log" 2>&1 &
-NS_PID=$!
-sleep 3
-
-if ! ps -p $NS_PID > /dev/null; then
-    echo "[DE] ERROR: Name Server failed to start!"
-    cat "$LOG_DIR/nameserver.log"
-    exit 1
-fi
-
 # ── Start workers via srun (one task per worker, distributed across nodes) ──
+# No Name Server: each worker writes its own URI into $DE_URI_DIR and the
+# client below reads them. Removes the cross-node NS discovery failure.
 echo "[DE] Starting $POP_SIZE workers via srun (distributed across $SLURM_NNODES nodes)..."
 for i in $(seq 0 $((POP_SIZE-1))); do
-    srun -n 1 -N 1 python3 -u turbine_runner/server_de.py "$i" "$NS_HOST" \
+    srun -n 1 -N 1 python3 -u turbine_runner/server_de.py "$i" \
         > "$LOG_DIR/worker_${i}.log" 2>&1 &
 done
 
@@ -83,7 +72,6 @@ python3 turbine_runner/optimize_de.py
 
 # ── Cleanup ──
 echo "[DE] Done. Logs: $LOG_DIR"
-echo "[DE] Kill Name Server locally (workers exit when their daemon terminates)"
-kill "$NS_PID" 2>/dev/null || true
+# Workers are backgrounded srun steps; they terminate when this job ends.
 # NOTE: scancel $SLURM_JOB_ID would cancel the job wrapping this script itself,
 # causing a CANCELLED state instead of COMPLETED. Skip scancel here.
