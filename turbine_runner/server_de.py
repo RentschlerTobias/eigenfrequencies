@@ -24,8 +24,8 @@ host = socket.gethostname()
 worker_id = int(sys.argv[1]) if len(sys.argv) > 1 else 0
 ns_host = sys.argv[2] if len(sys.argv) > 2 else host
 
-# Use IP address if provided (for multi-node SLURM), fallback to hostname
-Pyro5.config.HOST = ns_host if '.' in ns_host else host
+# Use short hostname for SLURM multi-node (uc2n601 instead of uc2n601.localdomain)
+Pyro5.config.HOST = host.split('.')[0]
 
 name = f"{host}_worker_{worker_id}"
 

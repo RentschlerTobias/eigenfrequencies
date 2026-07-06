@@ -27,12 +27,14 @@ cd "$REPO_ROOT" || exit 1
 
 # Auto-calculate POP_SIZE from SLURM allocation (override with DE_POP_SIZE env var)
 POP_SIZE="${DE_POP_SIZE:-$((SLURM_NNODES * SLURM_NTASKS_PER_NODE))}"
-MAX_GEN="${DE_MAX_GEN:-20}"
+MAX_GEN="${DE_MAX_GEN:-10}"
 SEED="${DE_SEED:-42}"
-NS_HOST=$(hostname -I | awk '{print $1}')
+# Use SLURMD_NODENAME (short hostname) instead of hostname/FQDN
+# This ensures other nodes can resolve the Name Server
+NS_HOST="${SLURMD_NODENAME:-$(hostname)}"
 
 export PYRO_NS_HOST="$NS_HOST"
-export CFD_CASE_DIR="${CFD_CASE_DIR:-}"
+export CFD_CASE_DIR="${CFD_CASE_DIR:-$TMPDIR}"
 export DE_POP_SIZE="$POP_SIZE"
 export DE_MAX_GEN="$MAX_GEN"
 export DE_SEED="$SEED"
