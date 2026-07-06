@@ -29,9 +29,15 @@ cd "$REPO_ROOT" || exit 1
 POP_SIZE="${DE_POP_SIZE:-$((SLURM_NNODES * SLURM_NTASKS_PER_NODE))}"
 MAX_GEN="${DE_MAX_GEN:-10}"
 SEED="${DE_SEED:-42}"
-# Use SLURMD_NODENAME (short hostname) instead of hostname/FQDN
-# This ensures other nodes can resolve the Name Server
-NS_HOST="${SLURMD_NODENAME:-$(hostname)}"
+# Use IP address instead of hostname/FQDN for cross-node Pyro5.
+# Hostnames like uc2n603 are not resolvable from other SLURM nodes.
+NS_HOST=$(python3 -c "
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(('10.255.255.255', 1))
+print(s.getsockname()[0])
+s.close()
+")
 
 export PYRO_NS_HOST="$NS_HOST"
 export CFD_CASE_DIR="${CFD_CASE_DIR:-$TMPDIR}"

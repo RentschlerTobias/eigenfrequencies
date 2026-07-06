@@ -20,14 +20,24 @@ from config import OptimizationConfig, ObjectiveConfig, CFDConfig
 from objective import combined_objective, resonance_term
 from optimize import _run_dtoo, _run_fenicsx, DTOO_FAIL_PENALTY
 
-host = socket.gethostname()
+def _get_ip():
+    """Return this node's non-loopback IPv4 address."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('10.255.255.255', 1))
+        return s.getsockname()[0]
+    finally:
+        s.close()
+
+
+host_ip = _get_ip()
 worker_id = int(sys.argv[1]) if len(sys.argv) > 1 else 0
-ns_host = sys.argv[2] if len(sys.argv) > 2 else host
+ns_host = sys.argv[2] if len(sys.argv) > 2 else host_ip
 
-# Use short hostname for SLURM multi-node (uc2n601 instead of uc2n601.localdomain)
-Pyro5.config.HOST = host.split('.')[0]
+# Bind and advertise by IP address — hostnames are not resolvable across nodes.
+Pyro5.config.HOST = host_ip
 
-name = f"{host}_worker_{worker_id}"
+name = f"worker_{worker_id}_{host_ip}"
 
 CFD_CASE_DIR = os.environ.get("CFD_CASE_DIR", "")
 
@@ -90,10 +100,10 @@ class Evaluator(object):
         }
 
 
-daemon = Pyro5.server.Daemon(host)
+daemon = Pyro5.server.Daemon(host_ip)
 ns = Pyro5.api.locate_ns(host=ns_host)
 uri = daemon.register(Evaluator)
 ns.register(name, uri)
-print(f"Server {name} ready on {host}.", flush=True)
+print(f"Server {name} ready on {host_ip}.", flush=True)
 sys.stdout.flush()
 daemon.requestLoop()
