@@ -1,0 +1,48 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+========================================
+[DE] Pyro5 DE multi-node (file-based URI discovery) on uc2n601.localdomain
+[DE] POP_SIZE=128  MAX_GEN=10  SEED=42
+[DE] SLURM: 4 nodes x 32 tasks/node
+[DE] Partition=dev_cpu_il
+[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_5824226
+========================================
+[DE] Starting 128 workers via srun (distributed across 4 nodes)...
+[DE] Running DE client (polls up to 120s for all 128 workers)...
+[DE] Discovered 128 workers from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/uris
+[DE] population=128 dim=3 mutation=0.8 crossover=0.9 max_gen=10 tol=0.01 seed=42 workers=128
+[DE] Generation 0 best=1000000.000000
+[DE] Generation 1 best=1000000.000000 mean=1000000.000000
+[DE] Converged (population std < tol).
+
+============================================================
+[DE] BEST  objective = 1000000.000000
+[DE] BEST  design    = {'cV_ru_t_le_a_0.5': 0.04756758267057798, 'cV_ru_t_mid_a_0.5': 0.02913831418636288, 'cV_ru_t_te_a_0.5': 0.052222885595126035}
+[DE] BREAKDOWN      = {
+  "error": "cfd_failed",
+  "worker_id": 0
+}
+============================================================
+[DE] Done. Logs: /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[601-604]
+Job ID: 5824226
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: COMPLETED (exit code 0)
+Nodes: 4
+Cores per node: 128
+CPU Utilized: 00:00:03
+CPU Efficiency: 0.00% of 3-20:43:44 core-walltime
+Job Wall-clock time: 00:10:52
+Memory Utilized: 1.26 GB
+Memory Efficiency: 0.25% of 500.00 GB (1000.00 MB/core)
