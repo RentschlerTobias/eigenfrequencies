@@ -2,7 +2,7 @@
 #SBATCH --job-name=de_opti
 #SBATCH --output=de_opti_%j.out
 #SBATCH --time=00:30:00
-#SBATCH --nodes=8
+#SBATCH --nodes=6
 #SBATCH --ntasks-per-node=32
 #SBATCH --cpus-per-task=2
 #SBATCH --hint=nomultithread
