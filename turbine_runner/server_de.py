@@ -18,7 +18,7 @@ sys.path.insert(0, HERE)
 
 from config import OptimizationConfig, ObjectiveConfig, CFDConfig
 from objective import combined_objective, resonance_term
-from optimize import _run_dtoo, _run_fenicsx, DTOO_FAIL_PENALTY
+from optimize import _run_dtoo, _run_fenicsx, _run_cfd, DTOO_FAIL_PENALTY
 
 host = socket.gethostname()
 worker_id = int(sys.argv[1]) if len(sys.argv) > 1 else 0
@@ -62,24 +62,29 @@ class Evaluator(object):
             }
         freqs = fre["frequencies_hz"]
 
-        # Optional CFD
+        # Optional CFD: build the OpenFOAM case for this design and solve it.
         CFD_ENABLED = os.environ.get("CFD_ENABLED", "0") == "1"
-        if CFD_ENABLED and CFD_CASE_DIR and os.path.isdir(CFD_CASE_DIR):
-            worker_cfd_dir = os.path.join(CFD_CASE_DIR, f"worker_{worker_id}")
-            if os.path.isdir(worker_cfd_dir):
-                from cfd_eval import evaluate_cfd
-                cfd_cfg = CFDConfig()
-                cfd = evaluate_cfd(worker_cfd_dir, cfd_cfg)
-                if not cfd.get("ok"):
-                    return float(DTOO_FAIL_PENALTY), {
-                        "error": "cfd_failed",
-                        "worker_id": worker_id,
-                    }
-                opt_cfg = OptimizationConfig()
-                obj_cfg = ObjectiveConfig()
-                total, breakdown = combined_objective(cfd, freqs, cfd_cfg, opt_cfg, obj_cfg)
-                breakdown["worker_id"] = worker_id
-                return float(total), breakdown
+        if CFD_ENABLED:
+            case_dir = _run_cfd(x, worker_id=worker_id)
+            if not case_dir:
+                return float(DTOO_FAIL_PENALTY), {
+                    "error": "cfd_failed",
+                    "worker_id": worker_id,
+                }
+            from cfd_eval import evaluate_cfd
+            cfd_cfg = CFDConfig()
+            cfd = evaluate_cfd(case_dir, cfd_cfg)
+            if not cfd.get("ok"):
+                return float(DTOO_FAIL_PENALTY), {
+                    "error": "cfd_read_failed",
+                    "detail": cfd.get("error"),
+                    "worker_id": worker_id,
+                }
+            opt_cfg = OptimizationConfig()
+            obj_cfg = ObjectiveConfig()
+            total, breakdown = combined_objective(cfd, freqs, cfd_cfg, opt_cfg, obj_cfg)
+            breakdown["worker_id"] = worker_id
+            return float(total), breakdown
 
         # Fallback: resonance only
         opt_cfg = OptimizationConfig()

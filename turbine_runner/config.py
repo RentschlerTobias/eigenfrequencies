@@ -222,6 +222,10 @@ class CFDConfig:
     design_head: float = -2.4
     operating_point: str = "n"
     end_time: int = 500
+    # postProcessing/<fo>/<post_folder>: the turbulent restart writes into the
+    # folder named by its start time (laminar endTime = 100), so results live in
+    # "100" and the last row is the turbulent endTime. Matches de_framework.
+    post_folder: str = "100"
 
 
 @dataclass

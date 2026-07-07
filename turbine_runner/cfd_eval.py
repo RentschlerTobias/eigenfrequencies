@@ -54,27 +54,45 @@ def _scalar(case_dir: str, name: str, time: str, col: int = 1) -> float:
     return _last_data_row(path)[col]
 
 
+def _moment_z(case_dir: str, folder: str) -> float:
+    """Axial (z) runner torque from the forces functionObject.
+
+    de_framework reads moment.dat and takes the z-component of the *total*
+    moment. After stripping parentheses the row is
+    [time, total_x, total_y, total_z, pressure_x..., viscous_x...], so total_z
+    is index 3. Falls back to the combined forces.dat if moment.dat is absent.
+    """
+    base = os.path.join(case_dir, "postProcessing", "forces", folder)
+    for fname in ("moment.dat", "moment_ru_blade.dat"):
+        p = os.path.join(base, fname)
+        if os.path.isfile(p):
+            return _last_data_row(p)[3]
+    # combined forces.dat: [time, force(3), moment(3), ...] -> moment_z at index 6
+    p = os.path.join(base, "forces.dat")
+    if os.path.isfile(p):
+        return _last_data_row(p)[6]
+    raise FileNotFoundError(os.path.join(base, "moment.dat"))
+
+
 def evaluate_cfd(case_dir: str, cfd_cfg) -> dict:
     """Compute {eta, vcav, dH, P, Q, ok} from an OpenFOAM postProcessing tree.
 
     Args:
         case_dir: OpenFOAM case directory (contains postProcessing/)
-        cfd_cfg: CFDConfig (omega, rho, g, design_head, operating_point, end_time)
+        cfd_cfg: CFDConfig (omega, rho, g, design_head, operating_point,
+                 post_folder). Results are read from postProcessing/<name>/<post_folder>;
+                 the turbulent restart writes into the folder named by its start
+                 time (de_framework uses "100"), and the last row is the endTime.
 
     Returns dict with ok=False (+ "error") on any read/validity failure so the
     optimizer can apply a failure penalty rather than crash.
     """
-    t = str(cfd_cfg.end_time)
+    t = str(getattr(cfd_cfg, "post_folder", "100"))
     try:
         Q = abs(_scalar(case_dir, "Q_ru_in", t))
         ptot_in = _scalar(case_dir, "ptot_ru_in", t)
         ptot_out = _scalar(case_dir, "ptot_ru_out", t)
-        # forces function object: moment is the last 3 of the flattened row;
-        # take the axial (z) component as the runner torque.
-        forces_row = _last_data_row(
-            os.path.join(case_dir, "postProcessing", "forces", t, "forces.dat")
-        )
-        moment_z = forces_row[-1]
+        moment_z = _moment_z(case_dir, t)
         vcav = abs(_scalar(case_dir, "V_CAV", t))
 
         P = moment_z * cfd_cfg.omega

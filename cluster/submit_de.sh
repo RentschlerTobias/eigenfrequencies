@@ -17,6 +17,14 @@
 # Override at submission time:
 #   sbatch --partition=cpu --nodes=4 --ntasks-per-node=16 \
 #          --time=02:00:00 cluster/submit_de.sh
+#
+# CFD runs (CFD_ENABLED=1, default): each worker runs a full simpleFoam solve
+# (~minutes), so use a production partition with real walltime and more cores
+# per worker for the MPI solve (SLURM_CPUS_PER_TASK), and fewer workers:
+#   sbatch --partition=cpu_il --nodes=4 --ntasks-per-node=4 --cpus-per-task=16 \
+#          --time=08:00:00 cluster/submit_de.sh
+# Checkpoint/resume (de_state.json) makes multi-hour runs safe to resubmit.
+# Smoke-test the CFD wiring first: DE_POP_SIZE=4 DE_MAX_GEN=1.
 
 source ~/pe
 
@@ -36,6 +44,10 @@ export DE_MAX_GEN="$MAX_GEN"
 export DE_SEED="$SEED"
 export W_RESONANCE="${W_RESONANCE:-1.0}"
 export CFD_ENABLED="${CFD_ENABLED:-1}"
+# dtOO + OpenFOAM stack (from de_framework start_server.sh): avoid FPE aborts in
+# simpleFoam and give OSLO a writable lock dir.
+export FOAM_SIGFPE="${FOAM_SIGFPE:-0}"
+export OSLO_LOCK_PATH="${OSLO_LOCK_PATH:-/tmp}"
 
 LOG_DIR="$REPO_ROOT/server_logs"
 rm -rf "$LOG_DIR"

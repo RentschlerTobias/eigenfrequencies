@@ -16,6 +16,7 @@ Requirements: python3 with numpy + scipy, source ~/pe, and enroot container
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 
@@ -100,6 +101,77 @@ def _run_fenicsx(worker_id: int = 0) -> dict:
             return json.loads(line[len("RESULT_JSON "):])
     sys.stderr.write(f"[optimize] fenicsx eval FAILED (worker {worker_id}):\n{log_lines[-40:]}\n")
     return {"frequencies_hz": [], "ok": False}
+
+
+CFD_STAGE = os.path.join(HERE, "cfd")            # staged tistos_files/ + xml/
+CFD_BUILD = os.path.join(HERE, "dtoo_cfd_build.py")
+CFD_SBATCH = os.path.join(CFD_STAGE, "tistos_files", "sbatch.tistos_ru_of.sh")
+
+
+def _run_cfd(design: dict, worker_id: int = 0):
+    """Build the OpenFOAM case with dtOO and run the steady simpleFoam solve.
+
+    Mirrors de_framework's tistos.pre()+mesh()+run(): dtoo_cfd_build.py produces
+    the case dir (tistos_ru_of_n_<state>), then sbatch.tistos_ru_of.sh runs
+    checkMesh + decomposePar + simpleFoam (laminar then turbulent) + reconstructPar.
+
+    Returns the OpenFOAM case dir (with postProcessing/) on success, else None.
+    """
+    wdir = _worker_dir(worker_id)
+    os.makedirs(wdir, exist_ok=True)
+    design_json = os.path.join(wdir, "design.json")
+    with open(design_json, "w") as fh:
+        json.dump(design, fh)
+
+    # Stage the tistos case (tistos_files/ + xml/ as siblings) into the worker
+    # dir, because createStatesAndMeshes loads "tistos_files/machine.xml" and
+    # machine.xml includes "./xml/..." — both resolved relative to CWD.
+    for sub in ("tistos_files", "xml"):
+        dst = os.path.join(wdir, sub)
+        if not os.path.isdir(dst):
+            shutil.copytree(os.path.join(CFD_STAGE, sub), dst)
+
+    state = f"DE_w{worker_id}"
+    procs = os.environ.get("SLURM_CPUS_PER_TASK", "1")
+
+    # ── Build OF case (dtOO env) ──
+    build_cmd = [
+        "bash", "-lc",
+        "source ~/pe && "
+        "export LD_LIBRARY_PATH=~/dtOO/install/lib:~/dtOO/install/lib64:$LD_LIBRARY_PATH && "
+        f"cd {wdir} && "
+        f"python3 {CFD_BUILD} {design_json} {state}",
+    ]
+    build_log = os.path.join(wdir, "cfd_build.log")
+    with open(build_log, "w") as log_fh:
+        res = subprocess.run(build_cmd, stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT, text=True)
+        log_fh.write(res.stdout)
+    case_dir = None
+    for line in res.stdout.splitlines():
+        if line.startswith("CFD_CASE_DIR "):
+            case_dir = line[len("CFD_CASE_DIR "):].strip()
+    if res.returncode != 0 or not case_dir or not os.path.isdir(case_dir):
+        sys.stderr.write(f"[optimize] CFD build FAILED (worker {worker_id}):\n"
+                         f"{res.stdout[-1600:]}\n")
+        return None
+
+    # ── Run simpleFoam (de_framework OF script) ──
+    of_cmd = ["sh", "-e", CFD_SBATCH, case_dir, str(procs)]
+    of_log = os.path.join(wdir, "cfd_solve.log")
+    try:
+        with open(of_log, "w") as log_fh:
+            res = subprocess.run(of_cmd, stdout=log_fh, stderr=subprocess.STDOUT,
+                                 timeout=int(os.environ.get("CFD_TIMEOUT", "1800")))
+    except subprocess.TimeoutExpired:
+        sys.stderr.write(f"[optimize] CFD solve TIMEOUT (worker {worker_id})\n")
+        return None
+    if res.returncode != 0:
+        with open(of_log) as log_fh:
+            tail = log_fh.read()[-1600:]
+        sys.stderr.write(f"[optimize] CFD solve FAILED (worker {worker_id}):\n{tail}\n")
+        return None
+    return case_dir
 
 
 def main() -> None:

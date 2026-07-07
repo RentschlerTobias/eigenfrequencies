@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<machine>
+ <state label="Init">
+  <constValue name="sliderFloatParam" max="100" value="90" min="0" label="cV_n"/>
+  <constValue name="constrainedFloatParam" max="100" value="2.*_pi/60.*#cV_n#" min="0" label="cV_omega"/>
+  <constValue name="sliderFloatParam" max="1" value="0.05" min="0" label="cV_I"/>
+  <constValue name="sliderFloatParam" max="100" value="4" min="0" label="cV_U"/>
+  <constValue name="sliderFloatParam" max="1" value="0.09" min="0" label="cV_Cmu"/>
+  <constValue name="constrainedFloatParam" max="10" value="2*(#cV_r_shroud#-#cV_r_hub#)*#cV_Cmu#^(-1/4)" min="0" label="cV_L"/>
+  <constValue name="sliderFloatParam" max="1.5" value="0.25" min="0.1" label="cV_r_hub"/>
+  <constValue name="sliderFloatParam" max="4.5" value="2" min="0.1" label="cV_r_shroud"/>
+  <constValue name="sliderFloatParam" max="4.5" value="2.5" min="0.5" label="cV_l_ru"/>
+  <constValue name="intParam" value="4" label="cV_ru_nBlades"/>
+  <constValue name="sliderFloatParam" max="1" value="0" min="0" label="cV_ru_mplane_0"/>
+  <constValue name="sliderFloatParam" max="1" value="0.1" min="0" label="cV_ru_mplane_100"/>
+  <constValue name="sliderFloatParam" max="1" value="0.25" min="0" label="cV_ru_mplane_250"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5" min="0" label="cV_ru_mplane_500"/>
+  <constValue name="sliderFloatParam" max="1" value="0.75" min="0" label="cV_ru_mplane_750"/>
+  <constValue name="sliderFloatParam" max="1" value="0.9" min="0" label="cV_ru_mplane_900"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0" label="cV_ru_mplane_1000"/>
+  <constValue name="intParam" value="4" label="cV_ru_nBlades"/>
+  <constValue name="sliderFloatParam" max="10" value="0" min="-5" label="cV_ru_alpha_1_ex_0.0"/>
+  <constValue name="sliderFloatParam" max="5" value="0" min="-5" label="cV_ru_alpha_2_ex_0.0"/>
+  <constValue name="sliderFloatParam" max="4.5" value="1.25" min="0" label="cV_ru_offsetM_ex_0.0"/>
+  <constValue name="sliderFloatParam" max="0.2" value="0.2" min="-0.2" label="cV_ru_M_ex_0.0"/>
+  <constValue name="sliderFloatParam" max="0.15" value="0" min="-0.15" label="cV_ru_offsetPhiR_ex_0.0"/>
+  <constValue name="sliderFloatParam" max="0.6" value="0.5" min="0.4" label="cV_ru_ratio_0.0"/>
+  <constValue name="sliderFloatParam" max="2" value="0.7" min="0.1" label="cV_ru_bladeLength_0.0"/>
+  <constValue name="sliderFloatParam" max="10" value="0" min="-5" label="cV_ru_alpha_1_ex_0.5"/>
+  <constValue name="sliderFloatParam" max="5" value="0" min="-5" label="cV_ru_alpha_2_ex_0.5"/>
+  <constValue name="sliderFloatParam" max="4.5" value="1.25" min="0" label="cV_ru_offsetM_ex_0.5"/>
+  <constValue name="sliderFloatParam" max="0.2" value="0.2" min="-0.2" label="cV_ru_M_ex_0.5"/>
+  <constValue name="sliderFloatParam" max="0.15" value="0" min="-0.15" label="cV_ru_offsetPhiR_ex_0.5"/>
+  <constValue name="sliderFloatParam" max="0.6" value="0.5" min="0.4" label="cV_ru_ratio_0.5"/>
+  <constValue name="sliderFloatParam" max="2" value="0.7" min="0.1" label="cV_ru_bladeLength_0.5"/>
+  <constValue name="sliderFloatParam" max="10" value="0" min="-5" label="cV_ru_alpha_1_ex_1.0"/>
+  <constValue name="sliderFloatParam" max="5" value="0" min="-5" label="cV_ru_alpha_2_ex_1.0"/>
+  <constValue name="sliderFloatParam" max="4.5" value="1.25" min="0" label="cV_ru_offsetM_ex_1.0"/>
+  <constValue name="sliderFloatParam" max="0.2" value="0.2" min="-0.2" label="cV_ru_M_ex_1.0"/>
+  <constValue name="sliderFloatParam" max="0.15" value="0" min="-0.15" label="cV_ru_offsetPhiR_ex_1.0"/>
+  <constValue name="sliderFloatParam" max="0.6" value="0.5" min="0.4" label="cV_ru_ratio_1.0"/>
+  <constValue name="sliderFloatParam" max="2" value="0.7" min="0.1" label="cV_ru_bladeLength_1.0"/>
+  <constValue name="sliderFloatParam" max="0.08" value="0.035" min="0.001" label="cV_ru_t_le_a_0"/>
+  <constValue name="sliderFloatParam" max="0.1" value="0" min="0" label="cV_ru_u_le_a_0"/>
+  <constValue name="sliderFloatParam" max="0.08" value="0.042" min="0.001" label="cV_ru_t_mid_a_0"/>
+  <constValue name="sliderFloatParam" max="0.7" value="0.5" min="0.3" label="cV_ru_u_mid_a_0"/>
+  <constValue name="sliderFloatParam" max="0.08" value="0.007" min="0.001" label="cV_ru_t_te_a_0"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0.9" label="cV_ru_u_te_a_0"/>
+  <constValue name="sliderFloatParam" max="0.08" value="0.035" min="0.001" label="cV_ru_t_le_b_0"/>
+  <constValue name="sliderFloatParam" max="0.1" value="0" min="0" label="cV_ru_u_le_b_0"/>
+  <constValue name="sliderFloatParam" max="0.08" value="0.042" min="0.001" label="cV_ru_t_mid_b_0"/>
+  <constValue name="sliderFloatParam" max="0.7" value="0.5" min="0.3" label="cV_ru_u_mid_b_0"/>
+  <constValue name="sliderFloatParam" max="0.08" value="0.007" min="0.001" label="cV_ru_t_te_b_0"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0.9" label="cV_ru_u_te_b_0"/>
+  <constValue name="sliderFloatParam" max="0.02" value="0.0083" min="0.001" label="cV_ru_t_le_a_1"/>
+  <constValue name="sliderFloatParam" max="0.1" value="0" min="0" label="cV_ru_u_le_a_1"/>
+  <constValue name="sliderFloatParam" max="0.02" value="0.009900000000000001" min="0.002" label="cV_ru_t_mid_a_1"/>
+  <constValue name="sliderFloatParam" max="0.7" value="0.5" min="0.3" label="cV_ru_u_mid_a_1"/>
+  <constValue name="sliderFloatParam" max="0.02" value="0.002" min="0.001" label="cV_ru_t_te_a_1"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0.9" label="cV_ru_u_te_a_1"/>
+  <constValue name="sliderFloatParam" max="0.02" value="0.0083" min="0.001" label="cV_ru_t_le_b_1"/>
+  <constValue name="sliderFloatParam" max="0.1" value="0" min="0" label="cV_ru_u_le_b_1"/>
+  <constValue name="sliderFloatParam" max="0.02" value="0.009900000000000001" min="0.002" label="cV_ru_t_mid_b_1"/>
+  <constValue name="sliderFloatParam" max="0.7" value="0.5" min="0.3" label="cV_ru_u_mid_b_1"/>
+  <constValue name="sliderFloatParam" max="0.02" value="0.002" min="0.001" label="cV_ru_t_te_b_1"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0.9" label="cV_ru_u_te_b_1"/>
+  <constValue name="sliderFloatParam" max="10" value="0.15" min="0.001" label="cV_ru_t_rounding"/>
+  <constValue name="sliderFloatParam" max="10" value="0.01" min="0.001" label="cV_ru_meshBlockThickness"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_meshBlockThickness#" min="0.001" label="cV_ruWithRoundingBlade_meshBlockThickness"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_meshBlockThickness#" min="0.001" label="cV_ruWithRoundingRounding_meshBlockThickness"/>
+  <constValue name="sliderFloatParam" max="0.49" value="0.485" min="0.1" label="cV_ru_divideInternalMeshBlock_0_0"/>
+  <constValue name="sliderFloatParam" max="0.49" value="0.485" min="0.1" label="cV_ru_divideInternalMeshBlock_0_1"/>
+  <constValue name="sliderFloatParam" max="0.9" value="0.515" min="0.51" label="cV_ru_divideInternalMeshBlock_1_0"/>
+  <constValue name="sliderFloatParam" max="0.9" value="0.515" min="0.51" label="cV_ru_divideInternalMeshBlock_1_1"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_divideInternalMeshBlock_0_0#" min="0.001" label="cV_ruWithRoundingBlade_divideInternalMeshBlock_0_0"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_divideInternalMeshBlock_0_1#" min="0.001" label="cV_ruWithRoundingBlade_divideInternalMeshBlock_0_1"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_divideInternalMeshBlock_1_0#" min="0.001" label="cV_ruWithRoundingBlade_divideInternalMeshBlock_1_0"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_divideInternalMeshBlock_1_1#" min="0.001" label="cV_ruWithRoundingBlade_divideInternalMeshBlock_1_1"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_divideInternalMeshBlock_0_0#" min="0.001" label="cV_ruWithRoundingRounding_divideInternalMeshBlock_0_0"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_divideInternalMeshBlock_0_1#" min="0.001" label="cV_ruWithRoundingRounding_divideInternalMeshBlock_0_1"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_divideInternalMeshBlock_1_0#" min="0.001" label="cV_ruWithRoundingRounding_divideInternalMeshBlock_1_0"/>
+  <constValue name="constrainedFloatParam" max="10" value="#cV_ru_divideInternalMeshBlock_1_1#" min="0.001" label="cV_ruWithRoundingRounding_divideInternalMeshBlock_1_1"/>
+  <constValue name="sliderFloatParam" max="1" value="0" min="0" label="cV_ru_in"/>
+  <constValue name="sliderFloatParam" max="1" value="0.3" min="0" label="cV_ru_le"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5" min="0" label="cV_ru_le>te"/>
+  <constValue name="sliderFloatParam" max="1" value="0.6" min="0" label="cV_ru_te"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0" label="cV_ru_out"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5" min="0" label="cV_ru_gridChannel_in_u_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0" min="0" label="cV_ru_gridChannel_in_v_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5" min="0" label="cV_ru_gridChannel_in_u_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0" min="0" label="cV_ru_gridChannel_in_v_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5" min="0" label="cV_ru_gridChannel_in_u_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0" min="0" label="cV_ru_gridChannel_in_v_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.3770751" min="0" label="cV_ru_gridChannel_le_u_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.38606316" min="0" label="cV_ru_gridChannel_le_v_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.29460531" min="0" label="cV_ru_gridChannel_le_u_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0.43556927" min="0" label="cV_ru_gridChannel_le_v_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0.27740752" min="0" label="cV_ru_gridChannel_le_u_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.4708499" min="0" label="cV_ru_gridChannel_le_v_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.25716731" min="0" label="cV_ru_gridChannel_le>te_u_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.49441977" min="0" label="cV_ru_gridChannel_le>te_v_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.25165078" min="0" label="cV_ru_gridChannel_le>te_u_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0.49772377" min="0" label="cV_ru_gridChannel_le>te_v_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0.25007369" min="0" label="cV_ru_gridChannel_le>te_u_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.49992185" min="0" label="cV_ru_gridChannel_le>te_v_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.10061153" min="0" label="cV_ru_gridChannel_te_u_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.60277642" min="0" label="cV_ru_gridChannel_te_v_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.20459389" min="0" label="cV_ru_gridChannel_te_u_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0.55987829" min="0" label="cV_ru_gridChannel_te_v_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0.22258592" min="0" label="cV_ru_gridChannel_te_u_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5289938" min="0" label="cV_ru_gridChannel_te_v_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5" min="0" label="cV_ru_gridChannel_out_u_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0" label="cV_ru_gridChannel_out_v_w0.00"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5" min="0" label="cV_ru_gridChannel_out_u_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0" label="cV_ru_gridChannel_out_v_w0.50"/>
+  <constValue name="sliderFloatParam" max="1" value="0.5" min="0" label="cV_ru_gridChannel_out_u_w1.00"/>
+  <constValue name="sliderFloatParam" max="1" value="1" min="0" label="cV_ru_gridChannel_out_v_w1.00"/>
+  <constValue name="sliderFloatParam" max="5" value="1" min="0" label="cV_ru_gridChannel_out_u_ext"/>
+  <constValue name="sliderFloatParam" max="5" value="1" min="0" label="cV_ru_gridChannel_out_v_ext"/>
+  <constValue name="intParam" value="40" label="cV_ru_nElemTangentialBlade"/>
+  <constValue name="intParam" value="8" label="cV_ru_nElemTangentialTip"/>
+  <constValue name="intParam" value="6" label="cV_ru_nElemNormalBlade"/>
+  <constValue name="intParam" value="40" label="cV_ru_nElemSpanwiseBlade"/>
+  <constValue name="intParam" value="4" label="cV_ru_nElemTrailingBlade"/>
+  <constValue name="intParam" value="11" label="cV_ru_nBoundaryLayers"/>
+  <constValue name="sliderFloatParam" max="1" value="0.003" min="0.0001" label="cV_ru_firstElementSize"/>
+  <constValue name="sliderFloatParam" max="100" value="3.25" min="0.001" label="cV_ru_gridDoubleGrading"/>
+  <constValue name="sliderFloatParam" max="100" value="2.7" min="0.001" label="cV_ru_gridSingleGrading"/>
+  <constValue name="sliderFloatParam" max="0.1" value="0.01" min="0.0001" label="cV_ru_lcIntPrec"/>
+  <constValue name="sliderFloatParam" max="10" value="0.025" min="0.0005" label="cV_ru_charLMin"/>
+  <constValue name="sliderFloatParam" max="10" value="3" min="4" label="cV_ru_charCLMax"/>
+  <constValue name="sliderFloatParam" max="2.5" value="0" min="-2.5" label="cV_ruMech_z_hub_0"/>
+  <constValue name="sliderFloatParam" max="4" value="2.5" min="0" label="cV_ruMech_z_hub_1"/>
+  <constValue name="sliderFloatParam" max="0.1" value="0.01" min="0.0001" label="cV_ruMech_lcIntPrec"/>
+  <constValue name="sliderFloatParam" max="10" value="0.1" min="0.0005" label="cV_ruMech_charLMin"/>
+  <constValue name="sliderFloatParam" max="10" value="0.0125" min="0.0005" label="cV_ruMech_charLMinB"/>
+  <constValue name="sliderFloatParam" max="10" value="0.025" min="0.0005" label="cV_ruMech_charLMinHB"/>
+  <constValue name="sliderFloatParam" max="10" value="0.1" min="0.0005" label="cV_ruMech_charLMax"/>
+  <constValue name="sliderFloatParam" max="0.1" value="0.03" min="0.001" label="cV_ruMech_distMinB"/>
+  <constValue name="sliderFloatParam" max="0.5" value="0.12" min="0.01" label="cV_ruMech_distMaxB"/>
+  <constValue name="sliderFloatParam" max="0.1" value="0.03" min="0.001" label="cV_ruMech_distMinHB"/>
+  <constValue name="sliderFloatParam" max="0.5" value="0.12" min="0.01" label="cV_ruMech_distMaxHB"/>
+ </state>
+</machine>
