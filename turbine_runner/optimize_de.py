@@ -160,10 +160,45 @@ def _history_path() -> str:
     return os.environ.get("DE_HISTORY_FILE", default)
 
 
-def _append_history(path, gen, best_obj, mean_obj, n_ok, n, t_gen):
+_METRIC_KEYS = ("f_resonance", "f_cfd", "eta", "vcav", "dH")
+
+
+def _fmt_metrics(brk):
+    """One-line fitness summary of the best individual's breakdown."""
+    if not isinstance(brk, dict):
+        return "n/a"
+    parts = []
+    for k in _METRIC_KEYS:
+        v = brk.get(k)
+        if isinstance(v, (int, float)):
+            parts.append(f"{k}={v:.4g}")
+    freqs = brk.get("freqs")
+    if isinstance(freqs, list) and freqs:
+        parts.append("freqs=[" + ",".join(f"{f:.1f}" for f in freqs[:4]) + "...]")
+    if brk.get("error"):
+        parts.append(f"error={brk['error']}")
+    return " ".join(parts) if parts else "n/a"
+
+
+def _metrics_dict(brk):
+    """Numeric fitness fields from a breakdown, for the history log."""
+    out = {}
+    if isinstance(brk, dict):
+        for k in _METRIC_KEYS:
+            v = brk.get(k)
+            if isinstance(v, (int, float)):
+                out[k] = float(v)
+        freqs = brk.get("freqs")
+        if isinstance(freqs, list) and freqs:
+            out["f1"] = float(freqs[0])
+    return out
+
+
+def _append_history(path, gen, best_obj, mean_obj, n_ok, n, t_gen, brk=None):
     """Append one compact JSON line per generation (cheap, plot-friendly)."""
     rec = {"gen": int(gen), "best": float(best_obj), "mean": float(mean_obj),
            "ok": int(n_ok), "n": int(n), "t_gen_s": round(float(t_gen), 1)}
+    rec.update(_metrics_dict(brk))
     with open(path, "a") as fh:
         fh.write(json.dumps(rec) + "\n")
 
@@ -296,10 +331,11 @@ def main():
         n_ok = int(np.sum(objectives < DTOO_FAIL_PENALTY))
         print(f"[DE] Generation 0 best={best_obj:.6f} mean={objectives.mean():.6f} "
               f"ok={n_ok}/{pop_size}")
+        print(f"[DE]   best fitness: {_fmt_metrics(breakdowns[best_idx])}")
         _save_checkpoint(state_path, 0, population, objectives, breakdowns,
                          best_vec, best_obj, labels, bounds, rng)
         _append_history(history_path, 0, best_obj, objectives.mean(),
-                        n_ok, pop_size, time.time() - t0)
+                        n_ok, pop_size, time.time() - t0, breakdowns[best_idx])
         start_gen = 1
 
     # ── Generations start_gen..max_gen ──
@@ -337,8 +373,9 @@ def main():
         n_ok = int(np.sum(objectives < DTOO_FAIL_PENALTY))
         print(f"[DE] Generation {g} best={best_obj:.6f} mean={objectives.mean():.6f} "
               f"ok={n_ok}/{pop_size}")
+        print(f"[DE]   best fitness: {_fmt_metrics(breakdowns[best_idx])}")
         _append_history(history_path, g, best_obj, objectives.mean(),
-                        n_ok, pop_size, time.time() - t0)
+                        n_ok, pop_size, time.time() - t0, breakdowns[best_idx])
         _save_checkpoint(state_path, g, population, objectives, breakdowns,
                          best_vec, best_obj, labels, bounds, rng)
 
