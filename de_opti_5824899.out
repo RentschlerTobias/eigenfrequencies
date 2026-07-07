@@ -1,0 +1,34 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+========================================
+[DE] Pyro5 DE multi-node (file-based URI discovery) on uc2n601.localdomain
+[DE] POP_SIZE=128  MAX_GEN=10  SEED=42
+[DE] SLURM: 4 nodes x 32 tasks/node
+[DE] Partition=dev_cpu_il
+[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_5824899
+========================================
+[DE] Starting 128 workers via srun (distributed across 4 nodes)...
+[DE] Running DE client (polls up to 120s for all 128 workers)...
+[2026-07-07T00:47:24.715] error: *** JOB 5824899 ON uc2n601 CANCELLED AT 2026-07-07T00:47:24 DUE TO TIME LIMIT ***
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[601-604]
+Job ID: 5824899
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: TIMEOUT (exit code 0)
+Nodes: 4
+Cores per node: 128
+CPU Utilized: 00:00:01
+CPU Efficiency: 0.00% of 10-19:24:48 core-walltime
+Job Wall-clock time: 00:30:24
+Memory Utilized: 1.25 GB
+Memory Efficiency: 0.25% of 500.00 GB (1000.00 MB/core)

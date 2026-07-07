@@ -1,5 +1,3 @@
-Worker 21 ready on uc2n601.localdomain: PYRO:obj_062186f53fab4bf5996ac8ee4baa9bd5@uc2n601.localdomain:33255
-[optimize] fenicsx eval FAILED (worker 21):
-['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
-[optimize] fenicsx eval FAILED (worker 21):
-['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
+Worker 21 ready on uc2n603.localdomain: PYRO:obj_d87f87aa27d8420f8f26e0e6ee0e69ac@uc2n603.localdomain:36065
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+[2026-07-07T00:47:24.732] error: *** STEP 5824899.27 ON uc2n603 CANCELLED AT 2026-07-07T00:47:24 DUE TO TIME LIMIT ***
