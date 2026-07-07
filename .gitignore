@@ -49,3 +49,6 @@ output/
 demo/beam/demo/
 .cache/
 .fltk/
+
+# Claude Code personal settings (not shared)
+.claude/settings.local.json

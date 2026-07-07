@@ -19,6 +19,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import numpy as np
 import Pyro5.api
 
+try:
+    from tqdm import tqdm
+    _HAVE_TQDM = True
+except ImportError:  # tqdm optional — fall back to plain per-generation logs
+    _HAVE_TQDM = False
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import OptimizationConfig, ObjectiveConfig, CFDConfig, DEConfig, DesignConfig
@@ -146,6 +152,68 @@ def _load_checkpoint(path, labels, pop_size, bounds):
 
 
 # ────────────────────────────────
+# Live view (progress bar + history)
+# ────────────────────────────────
+
+def _history_path() -> str:
+    default = os.path.join(os.path.dirname(os.path.abspath(__file__)), "de_history.jsonl")
+    return os.environ.get("DE_HISTORY_FILE", default)
+
+
+def _append_history(path, gen, best_obj, mean_obj, n_ok, n, t_gen):
+    """Append one compact JSON line per generation (cheap, plot-friendly)."""
+    rec = {"gen": int(gen), "best": float(best_obj), "mean": float(mean_obj),
+           "ok": int(n_ok), "n": int(n), "t_gen_s": round(float(t_gen), 1)}
+    with open(path, "a") as fh:
+        fh.write(json.dumps(rec) + "\n")
+
+
+def _make_bar(total, desc):
+    """tqdm bar throttled so the shared-FS .out is not hammered (DE_TQDM_INTERVAL,
+    default 10s). Returns None if tqdm is unavailable."""
+    if not _HAVE_TQDM:
+        return None
+    return tqdm(total=total, desc=desc, file=sys.stdout,
+                mininterval=float(os.environ.get("DE_TQDM_INTERVAL", "10")),
+                dynamic_ncols=True, leave=True)
+
+
+def _evaluate_population(server_uris, pop, labels, n_workers, desc):
+    """Evaluate every individual in parallel via the workers, with a live bar.
+
+    Returns (objectives, breakdowns). Failed/errored evals get
+    DTOO_FAIL_PENALTY. Shared by generation 0 and the trial generations.
+    """
+    n = len(pop)
+    objectives = np.full(n, float(DTOO_FAIL_PENALTY))
+    breakdowns = [None] * n
+    n_ok = 0
+    bar = _make_bar(n, desc)
+    with ThreadPoolExecutor(max_workers=n_workers) as pool:
+        futures = {
+            pool.submit(_evaluate_remote, server_uris[i % n_workers], pop[i], labels): i
+            for i in range(n)
+        }
+        for future in as_completed(futures):
+            i = futures[future]
+            try:
+                obj, brk = future.result(timeout=900)
+                objectives[i] = obj
+                breakdowns[i] = brk
+                if obj < DTOO_FAIL_PENALTY:
+                    n_ok += 1
+            except Exception as e:
+                print(f"[DE] Worker error for individual {i}: {e}")
+                objectives[i] = DTOO_FAIL_PENALTY
+            if bar is not None:
+                bar.set_postfix_str(f"ok={n_ok}/{n} best={float(np.min(objectives)):.4g}")
+                bar.update(1)
+    if bar is not None:
+        bar.close()
+    return objectives, breakdowns
+
+
+# ────────────────────────────────
 # DE main loop
 # ────────────────────────────────
 
@@ -181,6 +249,7 @@ def main():
     seed = de_cfg.seed
     rng = np.random.default_rng(seed)
     state_path = _state_path()
+    history_path = _history_path()
 
     print(f"[DE] population={pop_size} dim={dim} mutation={mutation} "
           f"crossover={crossover} max_gen={max_gen} tol={tol} seed={seed} "
@@ -207,38 +276,26 @@ def main():
         ])
 
         # ── Generation 0 ──
-        objectives = np.full(pop_size, 1e9)
-        breakdowns = [None] * pop_size
-
-        with ThreadPoolExecutor(max_workers=n_workers) as pool:
-            futures = {
-                pool.submit(_evaluate_remote, server_uris[i % n_workers], population[i], labels): i
-                for i in range(pop_size)
-            }
-            for future in as_completed(futures):
-                i = futures[future]
-                try:
-                    obj, brk = future.result(timeout=900)
-                    objectives[i] = obj
-                    breakdowns[i] = brk
-                except Exception as e:
-                    print(f"[DE] Worker error for individual {i}: {e}")
-                    objectives[i] = DTOO_FAIL_PENALTY
-
-        print(f"[DE] Generation 0 best={objectives.min():.6f}")
+        t0 = time.time()
+        objectives, breakdowns = _evaluate_population(
+            server_uris, population, labels, n_workers, "gen 0")
 
         best_idx = int(objectives.argmin())
         best_vec = population[best_idx].copy()
         best_obj = objectives[best_idx]
+        n_ok = int(np.sum(objectives < DTOO_FAIL_PENALTY))
+        print(f"[DE] Generation 0 best={best_obj:.6f} mean={objectives.mean():.6f} "
+              f"ok={n_ok}/{pop_size}")
         _save_checkpoint(state_path, 0, population, objectives, breakdowns,
                          best_vec, best_obj, labels, bounds, rng)
+        _append_history(history_path, 0, best_obj, objectives.mean(),
+                        n_ok, pop_size, time.time() - t0)
         start_gen = 1
 
     # ── Generations start_gen..max_gen ──
     for g in range(start_gen, max_gen + 1):
+        t0 = time.time()
         trial_pop = population.copy()
-        trial_obj = objectives.copy()
-        trial_brk = breakdowns.copy()
 
         for i in range(pop_size):
             a, b, c = rng.choice(pop_size, size=3, replace=False)
@@ -251,23 +308,9 @@ def main():
             trial = np.where(cross, mutant, population[i])
             trial_pop[i] = trial
 
-        # Evaluate trial population in parallel
-        with ThreadPoolExecutor(max_workers=n_workers) as pool:
-            futures = {
-                pool.submit(
-                    _evaluate_remote, server_uris[i % n_workers], trial_pop[i], labels
-                ): i
-                for i in range(pop_size)
-            }
-            for future in as_completed(futures):
-                i = futures[future]
-                try:
-                    obj, brk = future.result(timeout=900)
-                    trial_obj[i] = obj
-                    trial_brk[i] = brk
-                except Exception as e:
-                    print(f"[DE] Worker error for trial {i}: {e}")
-                    trial_obj[i] = DTOO_FAIL_PENALTY
+        # Evaluate trial population in parallel (with live progress bar)
+        trial_obj, trial_brk = _evaluate_population(
+            server_uris, trial_pop, labels, n_workers, f"gen {g}")
 
         # Selection (greedy)
         improved = trial_obj < objectives
@@ -281,7 +324,11 @@ def main():
             best_vec = population[best_idx].copy()
             best_obj = objectives[best_idx]
 
-        print(f"[DE] Generation {g} best={best_obj:.6f} mean={objectives.mean():.6f}")
+        n_ok = int(np.sum(objectives < DTOO_FAIL_PENALTY))
+        print(f"[DE] Generation {g} best={best_obj:.6f} mean={objectives.mean():.6f} "
+              f"ok={n_ok}/{pop_size}")
+        _append_history(history_path, g, best_obj, objectives.mean(),
+                        n_ok, pop_size, time.time() - t0)
         _save_checkpoint(state_path, g, population, objectives, breakdowns,
                          best_vec, best_obj, labels, bounds, rng)
 
