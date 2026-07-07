@@ -169,13 +169,18 @@ def _append_history(path, gen, best_obj, mean_obj, n_ok, n, t_gen):
 
 
 def _make_bar(total, desc):
-    """tqdm bar throttled so the shared-FS .out is not hammered (DE_TQDM_INTERVAL,
-    default 10s). Returns None if tqdm is unavailable."""
+    """tqdm bar throttled so the shared-FS .out is not hammered.
+
+    The .out is a file (not a tty), so every redraw is a whole line. We redraw
+    at most every DE_TQDM_INTERVAL seconds (default 15) via update()'s
+    mininterval; postfix updates use refresh=False so they never force a redraw.
+    Returns None if tqdm is unavailable.
+    """
     if not _HAVE_TQDM:
         return None
-    return tqdm(total=total, desc=desc, file=sys.stdout,
-                mininterval=float(os.environ.get("DE_TQDM_INTERVAL", "10")),
-                dynamic_ncols=True, leave=True)
+    interval = float(os.environ.get("DE_TQDM_INTERVAL", "15"))
+    return tqdm(total=total, desc=desc, file=sys.stdout, ncols=80,
+                mininterval=interval, maxinterval=interval, leave=True)
 
 
 def _evaluate_population(server_uris, pop, labels, n_workers, desc):
@@ -206,7 +211,12 @@ def _evaluate_population(server_uris, pop, labels, n_workers, desc):
                 print(f"[DE] Worker error for individual {i}: {e}")
                 objectives[i] = DTOO_FAIL_PENALTY
             if bar is not None:
-                bar.set_postfix_str(f"ok={n_ok}/{n} best={float(np.min(objectives)):.4g}")
+                # refresh=False: don't force a redraw here, let update()'s
+                # mininterval throttle it (postfix would otherwise redraw every
+                # individual and spam the .out file).
+                bar.set_postfix_str(
+                    f"ok={n_ok}/{n} best={float(np.min(objectives)):.4g}",
+                    refresh=False)
                 bar.update(1)
     if bar is not None:
         bar.close()
