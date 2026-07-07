@@ -83,10 +83,77 @@ def _evaluate_remote(server_uri, design, labels):
 
 
 # ────────────────────────────────
+# Checkpoint / resume
+# ────────────────────────────────
+
+def _state_path() -> str:
+    """Path of the DE checkpoint file (survives across jobs).
+
+    Lives outside server_logs/ (which submit_de.sh wipes per job) so a killed
+    run can be resumed by simply resubmitting.
+    """
+    default = os.path.join(os.path.dirname(os.path.abspath(__file__)), "de_state.json")
+    return os.environ.get("DE_STATE_FILE", default)
+
+
+def _save_checkpoint(path, gen, population, objectives, breakdowns,
+                     best_vec, best_obj, labels, bounds, rng):
+    """Atomically write the DE state so a cancelled run keeps its results.
+
+    Analogous to de_framework's archi_save.json, but for our hand-rolled loop.
+    """
+    state = {
+        "gen": int(gen),
+        "population": population.tolist(),
+        "objectives": objectives.tolist(),
+        "breakdowns": breakdowns,
+        "best_vec": best_vec.tolist(),
+        "best_obj": float(best_obj),
+        "labels": list(labels),
+        "pop_size": int(population.shape[0]),
+        "bounds": np.asarray(bounds).tolist(),
+        "rng_state": rng.bit_generator.state,
+    }
+    tmp = path + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(state, fh)
+    os.replace(tmp, path)
+
+
+def _load_checkpoint(path, labels, pop_size, bounds):
+    """Return a compatible checkpoint dict, or None for a fresh run.
+
+    Skips resume if DE_FRESH=1, the file is missing, or the saved
+    labels/pop_size/bounds do not match the current config (guards against
+    silently resuming a different experiment).
+    """
+    if os.environ.get("DE_FRESH") == "1" or not os.path.isfile(path):
+        return None
+    try:
+        with open(path) as fh:
+            state = json.load(fh)
+    except (OSError, ValueError) as e:
+        print(f"[DE] Ignoring unreadable checkpoint {path}: {e}")
+        return None
+
+    if (list(state.get("labels", [])) != list(labels)
+            or state.get("pop_size") != pop_size
+            or state.get("bounds") != np.asarray(bounds).tolist()):
+        print(f"[DE] Checkpoint {path} incompatible with current config "
+              f"(labels/pop_size/bounds) — starting fresh. Set DE_FRESH=1 to silence.")
+        return None
+    return state
+
+
+# ────────────────────────────────
 # DE main loop
 # ────────────────────────────────
 
 def main():
+    # Line-buffer stdout so progress lands in the .out even if SLURM kills the
+    # job mid-run (default block buffering would lose it on SIGKILL).
+    sys.stdout.reconfigure(line_buffering=True)
+
     de_cfg = DEConfig()
     opt_cfg = OptimizationConfig()
     obj_cfg = ObjectiveConfig()
@@ -113,43 +180,62 @@ def main():
     tol = de_cfg.tol
     seed = de_cfg.seed
     rng = np.random.default_rng(seed)
-
-    # Initialize population uniformly in bounds
-    population = np.array([
-        low + rng.random(dim) * span for _ in range(pop_size)
-    ])
+    state_path = _state_path()
 
     print(f"[DE] population={pop_size} dim={dim} mutation={mutation} "
           f"crossover={crossover} max_gen={max_gen} tol={tol} seed={seed} "
           f"workers={n_workers}")
 
-    # ── Generation 0 ──
-    objectives = np.full(pop_size, 1e9)
-    breakdowns = [None] * pop_size
+    # ── Resume from checkpoint if compatible, else run fresh Generation 0 ──
+    state = _load_checkpoint(state_path, labels, pop_size, bounds)
+    if state is not None:
+        population = np.array(state["population"])
+        objectives = np.array(state["objectives"])
+        breakdowns = state["breakdowns"]
+        best_vec = np.array(state["best_vec"])
+        best_obj = state["best_obj"]
+        rng.bit_generator.state = state["rng_state"]
+        # Greedy selection keeps the best in the population, so best == argmin.
+        best_idx = int(np.argmin(objectives))
+        start_gen = state["gen"] + 1
+        print(f"[DE] Resuming from {state_path} at generation {start_gen} "
+              f"(best={best_obj:.6f}).")
+    else:
+        # Initialize population uniformly in bounds
+        population = np.array([
+            low + rng.random(dim) * span for _ in range(pop_size)
+        ])
 
-    with ThreadPoolExecutor(max_workers=n_workers) as pool:
-        futures = {
-            pool.submit(_evaluate_remote, server_uris[i % n_workers], population[i], labels): i
-            for i in range(pop_size)
-        }
-        for future in as_completed(futures):
-            i = futures[future]
-            try:
-                obj, brk = future.result(timeout=900)
-                objectives[i] = obj
-                breakdowns[i] = brk
-            except Exception as e:
-                print(f"[DE] Worker error for individual {i}: {e}")
-                objectives[i] = DTOO_FAIL_PENALTY
+        # ── Generation 0 ──
+        objectives = np.full(pop_size, 1e9)
+        breakdowns = [None] * pop_size
 
-    print(f"[DE] Generation 0 best={objectives.min():.6f}")
+        with ThreadPoolExecutor(max_workers=n_workers) as pool:
+            futures = {
+                pool.submit(_evaluate_remote, server_uris[i % n_workers], population[i], labels): i
+                for i in range(pop_size)
+            }
+            for future in as_completed(futures):
+                i = futures[future]
+                try:
+                    obj, brk = future.result(timeout=900)
+                    objectives[i] = obj
+                    breakdowns[i] = brk
+                except Exception as e:
+                    print(f"[DE] Worker error for individual {i}: {e}")
+                    objectives[i] = DTOO_FAIL_PENALTY
 
-    best_idx = int(objectives.argmin())
-    best_vec = population[best_idx].copy()
-    best_obj = objectives[best_idx]
+        print(f"[DE] Generation 0 best={objectives.min():.6f}")
 
-    # ── Generations 1..max_gen ──
-    for g in range(1, max_gen + 1):
+        best_idx = int(objectives.argmin())
+        best_vec = population[best_idx].copy()
+        best_obj = objectives[best_idx]
+        _save_checkpoint(state_path, 0, population, objectives, breakdowns,
+                         best_vec, best_obj, labels, bounds, rng)
+        start_gen = 1
+
+    # ── Generations start_gen..max_gen ──
+    for g in range(start_gen, max_gen + 1):
         trial_pop = population.copy()
         trial_obj = objectives.copy()
         trial_brk = breakdowns.copy()
@@ -196,6 +282,8 @@ def main():
             best_obj = objectives[best_idx]
 
         print(f"[DE] Generation {g} best={best_obj:.6f} mean={objectives.mean():.6f}")
+        _save_checkpoint(state_path, g, population, objectives, breakdowns,
+                         best_vec, best_obj, labels, bounds, rng)
 
         # Early stopping: converge on the spread of *successful* objectives.
         # Failed designs sit at DTOO_FAIL_PENALTY (1e6); including them would
