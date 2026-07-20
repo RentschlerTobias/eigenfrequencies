@@ -45,7 +45,9 @@ class BCConfig:
         hub_radius: Clamp nodes whose radial distance from the axis <= this
         axial_min: Optional lower bound of the axial clamp band
         axial_max: Optional upper bound of the axial clamp band
-        mode: "radius_band" (radius + optional axial band) or "axial_plane"
+        mode: "radius_band" (radius + optional axial band), "axial_plane",
+            or "free" (no clamp at all; free-free vibration for experimental
+            validation -- the 6 rigid-body modes are expected and discarded)
         plane_value: Axial coordinate of the clamp plane (mode="axial_plane")
         plane_tol: Tolerance for the axial-plane match
     """
@@ -92,14 +94,21 @@ class SolverConfig:
         tolerance: Eigensolver tolerance
         freq_min: Lower frequency of interest in Hz (reporting only)
         freq_max: Upper frequency of interest in Hz (reporting only)
+        element_degree: Displacement element degree. P1 (=1) keeps the runner
+            mesh (~80k nodes -> ~240k DOFs) within memory but overestimates
+            bending-dominated eigenfrequencies ~15-20% on thin structures
+            (measured against experiment on the test-case disc); use 2
+            (quadratic, ~1M DOFs, needs ~8 GB+) for validation-grade runs.
+        solver_backend: "scipy" (eigsh on CSR slices, suited to clamped BCs)
+            or "slepc" (PETSc/SLEPc shift-invert + MUMPS factorization;
+            free-free mode only, scales past ~1M DOFs).
     """
     num_eigenvalues: int = 10
     tolerance: float = 1e-6
     freq_min: float = 0.0
     freq_max: float = 2000.0
-    # Displacement element degree. P1 (=1) keeps the runner mesh (~80k nodes ->
-    # ~240k DOFs) within memory; P2 (=2) is ~1M DOFs and OOMs on <8 GB hosts.
     element_degree: int = 1
+    solver_backend: str = "scipy"
 
 
 @dataclass

@@ -42,6 +42,8 @@ class RunnerModalSolver:
     def _bc_predicate(self):
         """Build the hub-clamp coordinate predicate from BCConfig."""
         cfg = self.bc
+        if cfg.mode == "free":
+            return None
         if cfg.axis not in _AXIS_INDEX:
             raise ValueError(f"BCConfig.axis must be x/y/z, got {cfg.axis!r}")
         ai = _AXIS_INDEX[cfg.axis]
@@ -67,7 +69,14 @@ class RunnerModalSolver:
         raise ValueError(f"BCConfig.mode must be 'radius_band' or 'axial_plane', got {cfg.mode!r}")
 
     def apply_bc(self, V):
-        """Clamp the hub region; verify a non-empty, plausible clamp."""
+        """Clamp the hub region; verify a non-empty, plausible clamp.
+
+        mode="free" (experimental validation, free-free suspension): no clamp at
+        all; returns (None, empty) so solve() skips the DOF restriction.
+        """
+        if self.bc.mode == "free":
+            print("[solver] free-free BC: no DOFs clamped (rigid modes expected)")
+            return None, np.array([], dtype=np.int32)
         tdim = self.domain.topology.dim
         facets = dmesh.locate_entities_boundary(self.domain, tdim - 1, self._bc_predicate())
         dofs = fem.locate_dofs_topological(V, tdim - 1, facets)
@@ -120,7 +129,25 @@ class RunnerModalSolver:
         b_form = fem.form(rho * ufl.dot(u, v) * ufl.dx)
 
         bc, bc_dofs = self.apply_bc(V)
-        A_scipy = fem.assemble_matrix(a_form, bcs=[bc]).to_scipy().tocsr()
+
+        if self.solver.solver_backend == "slepc":
+            if self.bc.mode != "free":
+                raise ValueError(
+                    "solver_backend='slepc' supports mode='free' only; "
+                    "use 'scipy' for clamped BCs"
+                )
+            self.backend_used = "slepc"
+            eigenvalues, full_vectors = self._solve_slepc(a_form, b_form)
+            self._rigid_body_check(eigenvalues)
+            return eigenvalues, full_vectors
+        if self.solver.solver_backend != "scipy":
+            raise ValueError(
+                "SolverConfig.solver_backend must be 'scipy' or 'slepc', "
+                f"got {self.solver.solver_backend!r}"
+            )
+        self.backend_used = "scipy"
+
+        A_scipy = fem.assemble_matrix(a_form, bcs=[bc] if bc is not None else []).to_scipy().tocsr()
         B_scipy = fem.assemble_matrix(b_form).to_scipy().tocsr()
 
         n = A_scipy.shape[0]
@@ -131,14 +158,24 @@ class RunnerModalSolver:
         print(f"[solver] system DOFs={n}, free DOFs={free.size}")
 
         k = min(self.solver.num_eigenvalues, A_red.shape[0] - 1)
-        try:
+        if self.bc.mode == "free":
+            # Free-free K is singular (6 rigid modes at 0). A small negative
+            # shift makes K - sigma*M = K + |sigma|*M positive definite, so
+            # shift-invert stays well-conditioned and returns the zeros plus
+            # the lowest elastic modes. sigma=0 would fail; which="SM" (the
+            # clamped fallback) is prohibitively slow at this size.
             eigenvalues, eigenvectors = eigsh(
-                A_red, k=k, M=B_red, sigma=0.0, which="LM", tol=self.solver.tolerance
+                A_red, k=k, M=B_red, sigma=-1.0, which="LM", tol=self.solver.tolerance
             )
-        except Exception:
-            eigenvalues, eigenvectors = eigsh(
-                A_red, k=k, M=B_red, which="SM", tol=self.solver.tolerance
-            )
+        else:
+            try:
+                eigenvalues, eigenvectors = eigsh(
+                    A_red, k=k, M=B_red, sigma=0.0, which="LM", tol=self.solver.tolerance
+                )
+            except Exception:
+                eigenvalues, eigenvectors = eigsh(
+                    A_red, k=k, M=B_red, which="SM", tol=self.solver.tolerance
+                )
 
         order = np.argsort(eigenvalues)
         eigenvalues = eigenvalues[order]
@@ -150,13 +187,111 @@ class RunnerModalSolver:
             full[free] = eigenvectors[:, i]
             full_vectors.append(full)
 
+        eigenvalues = self._rayleigh_refine(A_scipy, B_scipy, eigenvalues, full_vectors)
+
         self._rigid_body_check(eigenvalues)
         return eigenvalues, full_vectors
 
+    def _solve_slepc(self, a_form, b_form) -> tuple:
+        """Free-free eigenproblem via SLEPc shift-invert (scales past ~1M DOFs).
+
+        Same shifted operator as the scipy branch: with sigma=-1 the matrix
+        K - sigma*M = K + M is SPD (K PSD, M SPD), so a direct MUMPS
+        factorization is well-posed and the lowest eigenvalues (rigid modes
+        first, then elastic) map to the largest transformed ones. Falls back
+        to CG+GAMG if the direct factorization fails (e.g. OOM); the shifted
+        operator is SPD, so no rigid-body nullspace is attached.
+        """
+        from petsc4py import PETSc
+        from slepc4py import SLEPc
+        from dolfinx.fem import petsc as fem_petsc
+
+        K = fem_petsc.assemble_matrix(a_form, bcs=[])
+        K.assemble()
+        M = fem_petsc.assemble_matrix(b_form, bcs=[])
+        M.assemble()
+        n = K.getSize()[0]
+        k = min(self.solver.num_eigenvalues, n - 1)
+        print(f"[solver] system DOFs={n} (SLEPc, no DOF restriction)")
+
+        eps = SLEPc.EPS().create()
+        eps.setOperators(K, M)
+        eps.setProblemType(SLEPc.EPS.ProblemType.GHEP)
+        eps.setWhichEigenpairs(SLEPc.EPS.Which.TARGET_MAGNITUDE)
+        eps.setDimensions(nev=k, ncv=max(2 * k + 1, k + 16))
+        eps.setTolerances(tol=self.solver.tolerance, max_it=200)
+        st = eps.getST()
+        st.setType(SLEPc.ST.Type.SINVERT)
+        eps.setTarget(-1.0)
+        st.setShift(-1.0)
+
+        ksp = st.getKSP()
+        ksp.setType(PETSc.KSP.Type.PREONLY)
+        pc = ksp.getPC()
+        pc.setType(PETSc.PC.Type.LU)
+        pc.setFactorSolverType("mumps")
+
+        try:
+            eps.solve()
+        except PETSc.Error as err:
+            print(f"[solver] direct factorization failed ({err}); "
+                  "retrying with CG+GAMG")
+            ksp.setType(PETSc.KSP.Type.CG)
+            pc.setType(PETSc.PC.Type.GAMG)
+            eps.solve()
+
+        nconv = eps.getConverged()
+        print(f"[solver] SLEPc converged eigenpairs: {nconv}/{k}")
+        if nconv == 0:
+            raise RuntimeError("SLEPc found no converged eigenpairs")
+
+        xr, xi = K.createVecs()
+        kv, mv = K.createVecs()
+        pairs = []
+        for i in range(min(k, nconv)):
+            lam = float(np.real(eps.getEigenpair(i, xr, xi)))
+            K.mult(xr, kv)
+            M.mult(xr, mv)
+            denom = float(np.real(xr.dot(mv)))
+            rq = float(np.real(xr.dot(kv))) / denom if denom > 0 else lam
+            pairs.append((rq, xr.getArray().copy()))
+        kv.destroy()
+        mv.destroy()
+        xr.destroy()
+        xi.destroy()
+        eps.destroy()
+        K.destroy()
+        M.destroy()
+
+        pairs.sort(key=lambda p: p[0])
+        eigenvalues = np.array([p[0] for p in pairs])
+        full_vectors = [p[1] for p in pairs]
+        return eigenvalues, full_vectors
+
+    @staticmethod
+    def _rayleigh_refine(A, B, eigenvalues, vectors) -> np.ndarray:
+        """Rayleigh-quotient refinement: lambda <- v^T A v / v^T B v.
+
+        Both backends use shift-invert, whose back-transform from the
+        transformed eigenvalue theta amplifies its error by (lambda-sigma)^2;
+        the pencil Rayleigh quotient of the returned eigenvector is the
+        variationally optimal eigenvalue for that vector (error quadratic in
+        the eigenvector error) and restores dense-reference accuracy.
+        """
+        refined = []
+        for lam, vec in zip(eigenvalues, vectors):
+            denom = float(vec @ (B @ vec))
+            refined.append(float(vec @ (A @ vec)) / denom if denom > 0 else lam)
+        return np.array(refined)
+
     def _rigid_body_check(self, eigenvalues: np.ndarray) -> None:
-        """Warn if the lowest modes look like rigid-body modes (failed clamp)."""
+        """Check rigid-body modes: expected (6) in free mode, failure when clamped."""
         freqs = self.compute_frequencies(eigenvalues)
         near_zero = int(np.sum(freqs < 1e-3))
+        if self.bc.mode == "free":
+            print(f"[solver] {near_zero} rigid-body modes (6 expected for one "
+                  "connected body; more suggests disconnected parts in the mesh)")
+            return
         if near_zero > 0:
             print(f"[solver] WARNING: {near_zero} near-zero frequencies detected. "
                   "A properly clamped runner has none; the hub clamp may be ineffective.")
