@@ -91,6 +91,51 @@ It prints the coordinate bbox and per-axis spans. Use them to set `BCConfig` in
 - `axial_min` / `axial_max` — restrict the clamp to the hub bore band
 - or `mode="axial_plane"` + `plane_value` to clamp a single plane
 
+## Test-case validation (free-free, vs experiment)
+
+`validate_testcase.py` runs the same modal pipeline on `../TestCaseGeomertyMesh.stl`
+(ANSYS-exported bronze test disc) under a **free-free** boundary condition and
+compares against measured natural frequencies. Material: bronze
+(E = 75.854 GPa, rho = 8910 kg/m3, nu = 0.34).
+
+```bash
+docker run --rm -i -e PYTHONUNBUFFERED=1 \
+  -v "$PWD:/workspace" -w /workspace/turbine_runner \
+  eigenfrequencies-fenicsx:latest \
+  python3 validate_testcase.py
+```
+
+The script auto-meshes the STL to a quadratic (tet10) volume mesh
+(`stl_to_msh.py` → `data/testcase_volume.msh`) if missing. Env overrides:
+`TESTCASE_STL`, `TESTCASE_MSH`, `TESTCASE_ELEMENT_SIZE` (default 0.004; the
+validated mesh used 0.006), `TESTCASE_ORDER` (default 2),
+`TESTCASE_FORCE_REMESH=1`, `TESTCASE_NUM_EIG` (18), `TESTCASE_TOL` (1e-8),
+`TESTCASE_ELEMENT_DEGREE` (2), `TESTCASE_BACKEND` (`slepc`; `scipy` for small
+problems). Full write-up: [VALIDATION.md](VALIDATION.md).
+
+Why P2 + SLEPc: linear tet4 elements over-stiffen the bending-dominated
+nodal-diameter modes (+14-20% vs experiment here). Quadratic tets fix the
+physics (~1.96M vector DOFs), which is beyond scipy's dense factorization, so
+free-free solves use SLEPc shift-invert (sigma = -1, MUMPS LU; CG+GAMG
+fallback) selected via `SolverConfig.solver_backend`. Both backends apply a
+Rayleigh-quotient refinement to the returned eigenvalues.
+
+Validated result (654,958 P2 nodes, 325,067 tet10, 6 rigid modes removed):
+
+| Mode | Computed (Hz) | Experiment (Hz) | Error |
+|------|---------------|-----------------|-------|
+| 1ND  | 192.45        | 192.8           | -0.18% |
+| 2ND  | 290.16        | 299.125         | -3.00% |
+| 3ND  | 693.92        | 712.0           | -2.54% |
+| 4ND  | 1291.50       | 1320.0          | -2.16% |
+
+Peak RAM ~28.6 GB (30 GB host); wall-clock ~3 min. Output →
+`output/testcase/testcase_frequencies.json` + `modes.xdmf` (12 elastic modes).
+Solver unit tests (dense-reference block, both backends, free BC):
+`python3 -m pytest test_free_mode.py` inside the container. The full
+validation as a repo test (heavyweight, opt-in):
+`RUN_TESTCASE_VALIDATION=1 python3 -m pytest test_testcase_validation.py`.
+
 ## Verification checklist
 
 1. `data/runner.msh` exists and is non-trivial in size.
@@ -110,5 +155,10 @@ It prints the coordinate bbox and per-axis spans. Use them to set `BCConfig` in
 | `config.py` | — | Material / BC / Mesh / Solver / Output dataclasses |
 | `dtoo_export.py` | 1 (dtOO) | Drive dtOO, export `runner.msh` |
 | `mesh_prep.py` | 2a (fenicsx) | Load + verify volume mesh + fallback; axis diagnostic |
-| `solver.py` | 2b (fenicsx) | `RunnerModalSolver` (sparse, config-driven hub clamp) |
+| `solver.py` | 2b (fenicsx) | `RunnerModalSolver` (scipy clamped / SLEPc free-free) |
 | `main.py` | 2 (fenicsx) | Orchestrate, print, write XDMF + JSON |
+| `stl_to_msh.py` | test | STL surface → tet volume mesh (physical group `domain`) |
+| `validate_testcase.py` | test | Free-free validation vs measured frequencies |
+| `test_free_mode.py` | test | Container pytest: free BC + both backends vs dense |
+| `test_testcase_validation.py` | test | Full validation as pytest (opt-in, heavyweight) |
+| `VALIDATION.md` | test | Validation setup, results, reproduction |
