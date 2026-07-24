@@ -1,60 +1,43 @@
-Worker 0 ready on uc2n602.localdomain: PYRO:obj_99f1a4bc7a78444f85c5a1327243de12@uc2n602.localdomain:38195
+Worker 0 ready on uc2n602.localdomain: PYRO:obj_93f3db369d1742fdbdd21ffafb9e7fc6@uc2n602.localdomain:40085
 [optimize] CFD build FAILED (worker 0):
-bash: Agent: command not found
-bash: Agent: command not found
-bash: Agent: command not found
-OpenFoam-v2412 is unloaded 
-
-Don't forget to initialize OpenFOAM with:
-
-	source $FOAM_INIT
-
-or simply:
-
-	foamInit
-
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-Warning : Gmsh has aleady been initialized
-[uc2n602:841109:0:841109] Caught signal 11 (Segmentation fault: invalid permissions for mapped object at address 0x55b065371f50)
-==== backtrace (tid: 841109) ====
- 0 0x000000000006261a ucs_callbackq_cleanup()  ???:0
- 1 0x00000000000627da ucs_callbackq_cleanup()  ???:0
- 2 0x000000000003ebf0 __GI___sigaction()  :0
+_dtXmlParser_loadStateToConst()  /home/st/st_us-042020/st_ac136362/dtOO/build/tools/libdtOOPythonSWIG/CMakeFiles/dtOOPythonSWIG.dir/dtOOPythonSWIGPYTHON_wrap.cxx:250670
+ 6 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_is_local()  /usr/include/c++/11/bits/basic_string.h:230
+ 7 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_dispose()  /usr/include/c++/11/bits/basic_string.h:239
+ 8 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()  /usr/include/c++/11/bits/basic_string.h:672
+ 9 0x000000000047eca2 _wrap_dtXmlParser_loadStateToConst()  /home/st/st_us-042020/st_ac136362/dtOO/build/tools/libdtOOPythonSWIG/CMakeFiles/dtOOPythonSWIG.dir/dtOOPythonSWIGPYTHON_wrap.cxx:250670
+10 0x00000000001aa58a cfunction_call()  ???:0
+11 0x00000000001808a0 _PyObject_MakeTpCall.localalias()  ???:0
+12 0x0000000000191591 _PyEval_EvalFrameDefault.localalias()  ???:0
+13 0x000000000021dd5c PyEval_EvalCode.localalias()  ???:0
+14 0x000000000025767c run_eval_code_obj()  ???:0
+15 0x0000000000254f16 run_mod()  ???:0
+16 0x00000000002529e5 pyrun_file()  ???:0
+17 0x0000000000251d53 _PyRun_SimpleFileObject()  ???:0
+18 0x0000000000251b6a _PyRun_AnyFileObject()  ???:0
+19 0x000000000024ff99 Py_RunMain.localalias()  ???:0
+20 0x000000000020c66b Py_BytesMain()  ???:0
+21 0x00000000000295d0 __libc_start_call_main()  ???:0
+22 0x0000000000029680 __libc_start_main_alias_2()  :0
+23 0x0000000000001095 _start()  ???:0
 =================================
 
 [optimize] CFD build FAILED (worker 0):
 :analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 11  ]     0x150357d1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x150357d1cea8]
-[ 12  ]     0x150366be258a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x150366be258a]
-[ 13  ]     0x150366bb88a0 _PyObject_MakeTpCall + 320
-[ 14  ]     0x150366bcbddd _PyEval_EvalFrameDefault + 15949
-[ 15  ]     0x150366c55d5c PyEval_EvalCode + 172
-[ 16  ]     0x150366c8f67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x150366c8f67c]
-[ 17  ]     0x150366c8cf16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x150366c8cf16]
-[ 18  ]     0x150366c8a9e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x150366c8a9e5]
-[ 19  ]     0x150366c89d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x150366c89d53]
-[ 20  ]     0x150366c89b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x150366c89b6a]
-[ 21  ]     0x150366c87f99 Py_RunMain + 985
-[ 22  ]     0x150366c4466b Py_BytesMain + 59
-[ 23  ]     0x1503668295d0 /lib64/libc.so.6(+0x295d0) [0x1503668295d0]
-[ 24  ]     0x150366829680 __libc_start_main + 128
-[ 25  ]     0x56465f11b095 _start + 37
+[ 11  ]     0x1502e331cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x1502e331cea8]
+[ 12  ]     0x1502f21dd58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x1502f21dd58a]
+[ 13  ]     0x1502f21b38a0 _PyObject_MakeTpCall + 320
+[ 14  ]     0x1502f21c6ddd _PyEval_EvalFrameDefault + 15949
+[ 15  ]     0x1502f2250d5c PyEval_EvalCode + 172
+[ 16  ]     0x1502f228a67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x1502f228a67c]
+[ 17  ]     0x1502f2287f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x1502f2287f16]
+[ 18  ]     0x1502f22859e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1502f22859e5]
+[ 19  ]     0x1502f2284d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x1502f2284d53]
+[ 20  ]     0x1502f2284b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x1502f2284b6a]
+[ 21  ]     0x1502f2282f99 Py_RunMain + 985
+[ 22  ]     0x1502f223f66b Py_BytesMain + 59
+[ 23  ]     0x1502f1e295d0 /lib64/libc.so.6(+0x295d0) [0x1502f1e295d0]
+[ 24  ]     0x1502f1e29680 __libc_start_main + 128
+[ 25  ]     0x5612144e7095 _start + 37
 
 
 Honor thy error as a hidden intention. (Brian Eno)

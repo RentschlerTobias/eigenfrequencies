@@ -1,42 +1,42 @@
-Worker 15 ready on uc2n605.localdomain: PYRO:obj_a4b21e8f41ab4aa28c8afd2589c6ebd6@uc2n605.localdomain:36229
+Worker 15 ready on uc2n603.localdomain: PYRO:obj_9cc399110eec49c1bfa8e6e5dda9a742@uc2n603.localdomain:40637
 [optimize] CFD build FAILED (worker 15):
 :analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 24  ]     0x14d90161cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x14d90161cea8]
-[ 25  ]     0x14d91050058a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x14d91050058a]
-[ 26  ]     0x14d9104d68a0 _PyObject_MakeTpCall + 320
-[ 27  ]     0x14d9104e9ddd _PyEval_EvalFrameDefault + 15949
-[ 28  ]     0x14d910573d5c PyEval_EvalCode + 172
-[ 29  ]     0x14d9105ad67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14d9105ad67c]
-[ 30  ]     0x14d9105aaf16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14d9105aaf16]
-[ 31  ]     0x14d9105a89e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14d9105a89e5]
-[ 32  ]     0x14d9105a7d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14d9105a7d53]
-[ 33  ]     0x14d9105a7b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14d9105a7b6a]
-[ 34  ]     0x14d9105a5f99 Py_RunMain + 985
-[ 35  ]     0x14d91056266b Py_BytesMain + 59
-[ 36  ]     0x14d9100295d0 /lib64/libc.so.6(+0x295d0) [0x14d9100295d0]
-[ 37  ]     0x14d910029680 __libc_start_main + 128
-[ 38  ]     0x55f3d69b4095 _start + 37
+[ 24  ]     0x14e489a1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x14e489a1cea8]
+[ 25  ]     0x14e4988ce58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x14e4988ce58a]
+[ 26  ]     0x14e4988a48a0 _PyObject_MakeTpCall + 320
+[ 27  ]     0x14e4988b7ddd _PyEval_EvalFrameDefault + 15949
+[ 28  ]     0x14e498941d5c PyEval_EvalCode + 172
+[ 29  ]     0x14e49897b67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14e49897b67c]
+[ 30  ]     0x14e498978f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14e498978f16]
+[ 31  ]     0x14e4989769e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14e4989769e5]
+[ 32  ]     0x14e498975d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14e498975d53]
+[ 33  ]     0x14e498975b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14e498975b6a]
+[ 34  ]     0x14e498973f99 Py_RunMain + 985
+[ 35  ]     0x14e49893066b Py_BytesMain + 59
+[ 36  ]     0x14e4984295d0 /lib64/libc.so.6(+0x295d0) [0x14e4984295d0]
+[ 37  ]     0x14e498429680 __libc_start_main + 128
+[ 38  ]     0x55ac864c1095 _start + 37
 
 
 Honor thy error as a hidden intention. (Brian Eno)
 
 [optimize] CFD build FAILED (worker 15):
 :analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 11  ]     0x146997a1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x146997a1cea8]
-[ 12  ]     0x1469a68a958a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x1469a68a958a]
-[ 13  ]     0x1469a687f8a0 _PyObject_MakeTpCall + 320
-[ 14  ]     0x1469a6892ddd _PyEval_EvalFrameDefault + 15949
-[ 15  ]     0x1469a691cd5c PyEval_EvalCode + 172
-[ 16  ]     0x1469a695667c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x1469a695667c]
-[ 17  ]     0x1469a6953f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x1469a6953f16]
-[ 18  ]     0x1469a69519e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1469a69519e5]
-[ 19  ]     0x1469a6950d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x1469a6950d53]
-[ 20  ]     0x1469a6950b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x1469a6950b6a]
-[ 21  ]     0x1469a694ef99 Py_RunMain + 985
-[ 22  ]     0x1469a690b66b Py_BytesMain + 59
-[ 23  ]     0x1469a64295d0 /lib64/libc.so.6(+0x295d0) [0x1469a64295d0]
-[ 24  ]     0x1469a6429680 __libc_start_main + 128
-[ 25  ]     0x5580b4881095 _start + 37
+[ 11  ]     0x150c1f01cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x150c1f01cea8]
+[ 12  ]     0x150c2df1258a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x150c2df1258a]
+[ 13  ]     0x150c2dee88a0 _PyObject_MakeTpCall + 320
+[ 14  ]     0x150c2defbddd _PyEval_EvalFrameDefault + 15949
+[ 15  ]     0x150c2df85d5c PyEval_EvalCode + 172
+[ 16  ]     0x150c2dfbf67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x150c2dfbf67c]
+[ 17  ]     0x150c2dfbcf16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x150c2dfbcf16]
+[ 18  ]     0x150c2dfba9e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x150c2dfba9e5]
+[ 19  ]     0x150c2dfb9d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x150c2dfb9d53]
+[ 20  ]     0x150c2dfb9b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x150c2dfb9b6a]
+[ 21  ]     0x150c2dfb7f99 Py_RunMain + 985
+[ 22  ]     0x150c2df7466b Py_BytesMain + 59
+[ 23  ]     0x150c2da295d0 /lib64/libc.so.6(+0x295d0) [0x150c2da295d0]
+[ 24  ]     0x150c2da29680 __libc_start_main + 128
+[ 25  ]     0x5576cf8f0095 _start + 37
 
 
 Honor thy error as a hidden intention. (Brian Eno)
