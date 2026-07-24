@@ -18,7 +18,11 @@ set -euo pipefail
 RUN_TAG="${RUN_TAG:?RUN_TAG must be set by the variant wrapper}"
 EVAL_MODE="${EVAL_MODE:?EVAL_MODE must be set by the variant wrapper}"
 
+# OpenFOAM's bashrc references unset vars (WM_THIRD_PARTY_DIR) which kills the
+# job under `set -u`; relax nounset around the vendor env setup only.
+set +u
 source ~/pe
+set -u
 
 # CRITICAL: $0 is rewritten by SLURM to /var/spool/slurmd/jobXXXX/slurm_script,
 # so use $SLURM_SUBMIT_DIR instead of computing from $0.
