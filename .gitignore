@@ -43,7 +43,7 @@ venv.bak/
 Thumbs.db
 
 # Project specific
-*.log
+
 !cluster.log
 output/
 demo/beam/demo/
