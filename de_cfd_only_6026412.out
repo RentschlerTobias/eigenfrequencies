@@ -1,0 +1,15 @@
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[602-607]
+Job ID: 6026412
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: CANCELLED (exit code 0)
+Nodes: 6
+Cores per node: 128
+CPU Utilized: 00:00:00
+CPU Efficiency: 0.00% of 00:12:48 core-walltime
+Job Wall-clock time: 00:00:01
+Memory Utilized: 0.00 MB
+Memory Efficiency: 0.00% of 750.00 GB (1000.00 MB/core)

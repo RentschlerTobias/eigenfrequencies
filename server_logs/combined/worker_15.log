@@ -1,0 +1,43 @@
+Worker 15 ready on uc2n606.localdomain: PYRO:obj_a0570ef7c6a647de9219af979bc0e30b@uc2n606.localdomain:35009
+[optimize] dtOO build FAILED (worker 15):
+:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 24  ]     0x14c8f2c1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x14c8f2c1cea8]
+[ 25  ]     0x14c901aa058a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x14c901aa058a]
+[ 26  ]     0x14c901a768a0 _PyObject_MakeTpCall + 320
+[ 27  ]     0x14c901a89ddd _PyEval_EvalFrameDefault + 15949
+[ 28  ]     0x14c901b13d5c PyEval_EvalCode + 172
+[ 29  ]     0x14c901b4d67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14c901b4d67c]
+[ 30  ]     0x14c901b4af16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14c901b4af16]
+[ 31  ]     0x14c901b489e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14c901b489e5]
+[ 32  ]     0x14c901b47d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14c901b47d53]
+[ 33  ]     0x14c901b47b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14c901b47b6a]
+[ 34  ]     0x14c901b45f99 Py_RunMain + 985
+[ 35  ]     0x14c901b0266b Py_BytesMain + 59
+[ 36  ]     0x14c9016295d0 /lib64/libc.so.6(+0x295d0) [0x14c9016295d0]
+[ 37  ]     0x14c901629680 __libc_start_main + 128
+[ 38  ]     0x55d55a0f3095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+
+[optimize] dtOO build FAILED (worker 15):
+:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 24  ]     0x14750841cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x14750841cea8]
+[ 25  ]     0x1475171dc58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x1475171dc58a]
+[ 26  ]     0x1475171b28a0 _PyObject_MakeTpCall + 320
+[ 27  ]     0x1475171c5ddd _PyEval_EvalFrameDefault + 15949
+[ 28  ]     0x14751724fd5c PyEval_EvalCode + 172
+[ 29  ]     0x14751728967c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14751728967c]
+[ 30  ]     0x147517286f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x147517286f16]
+[ 31  ]     0x1475172849e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1475172849e5]
+[ 32  ]     0x147517283d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x147517283d53]
+[ 33  ]     0x147517283b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x147517283b6a]
+[ 34  ]     0x147517281f99 Py_RunMain + 985
+[ 35  ]     0x14751723e66b Py_BytesMain + 59
+[ 36  ]     0x147516e295d0 /lib64/libc.so.6(+0x295d0) [0x147516e295d0]
+[ 37  ]     0x147516e29680 __libc_start_main + 128
+[ 38  ]     0x556a389d4095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+
