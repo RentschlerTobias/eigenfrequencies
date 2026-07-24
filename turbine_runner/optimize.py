@@ -92,18 +92,11 @@ def _run_fenicsx(worker_id: int = 0) -> dict:
         f"python3 /workspace/turbine_runner/evaluate.py /worker_data/runner.msh",
     ]
     log_path = os.path.join(wdir, "fenicsx.log")
-    # Per-worker enroot data/temp paths on node-local scratch. All workers share
-    # the user's default ENROOT_DATA_PATH otherwise, so concurrent `enroot start`
-    # calls collide on the single rootfs lock (observed: 'Could not acquire
-    # rootfs lock' in 139/256 worker logs on dev_cpu_il, 12-29% eval loss/gen).
-    # ENROOT_CACHE_PATH stays shared: `start` only reads the cached image.
     env = os.environ.copy()
     scratch = os.environ.get("TMPDIR", "/tmp")
-    for var, sub in (("ENROOT_DATA_PATH", "enroot_data"),
-                     ("ENROOT_TEMP_PATH", "enroot_tmp")):
-        path = os.path.join(scratch, sub, f"worker_{worker_id}")
-        os.makedirs(path, exist_ok=True)
-        env[var] = path
+    temp_path = os.path.join(scratch, "enroot_tmp", f"worker_{worker_id}")
+    os.makedirs(temp_path, exist_ok=True)
+    env["ENROOT_TEMP_PATH"] = temp_path
     with open(log_path, "w") as log_fh:
         res = subprocess.run(cmd, stdout=log_fh, stderr=subprocess.STDOUT, env=env)
     with open(log_path) as log_fh:
@@ -150,6 +143,9 @@ def _run_cfd(design: dict, worker_id: int = 0):
     build_cmd = [
         "bash", "-lc",
         "source ~/pe && "
+        "export UCX_TLS=sm && "
+        "export OMPI_MCA_pml=ob1 && "
+        "export OMPI_MCA_btl=self,vader,tcp && "
         "export LD_LIBRARY_PATH=~/dtOO/install/lib:~/dtOO/install/lib64:$LD_LIBRARY_PATH && "
         f"cd {wdir} && "
         f"python3 {CFD_BUILD} {design_json} {state}",
@@ -170,10 +166,15 @@ def _run_cfd(design: dict, worker_id: int = 0):
 
     # ── Run simpleFoam (de_framework OF script) ──
     of_cmd = ["sh", "-e", CFD_SBATCH, case_dir, str(procs)]
+    of_env = os.environ.copy()
+    of_env["UCX_TLS"] = "sm"
+    of_env["OMPI_MCA_pml"] = "ob1"
+    of_env["OMPI_MCA_btl"] = "self,vader,tcp"
     of_log = os.path.join(wdir, "cfd_solve.log")
     try:
         with open(of_log, "w") as log_fh:
             res = subprocess.run(of_cmd, stdout=log_fh, stderr=subprocess.STDOUT,
+                                 env=of_env,
                                  timeout=int(os.environ.get("CFD_TIMEOUT", "1800")))
     except subprocess.TimeoutExpired:
         sys.stderr.write(f"[optimize] CFD solve TIMEOUT (worker {worker_id})\n")
