@@ -1,43 +1,121 @@
-Worker 18 ready on uc2n605.localdomain: PYRO:obj_8ac9d0fbde1b4cbe963fa93575369748@uc2n605.localdomain:40509
+Worker 18 ready on uc2n607.localdomain: PYRO:obj_424812a9459b41428adf79fee25a7ac0@uc2n607.localdomain:37809
 [optimize] dtOO build FAILED (worker 18):
-:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 11  ]     0x1484c851cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x1484c851cea8]
-[ 12  ]     0x1484d735b58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x1484d735b58a]
-[ 13  ]     0x1484d73318a0 _PyObject_MakeTpCall + 320
-[ 14  ]     0x1484d7344ddd _PyEval_EvalFrameDefault + 15949
-[ 15  ]     0x1484d73ced5c PyEval_EvalCode + 172
-[ 16  ]     0x1484d740867c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x1484d740867c]
-[ 17  ]     0x1484d7405f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x1484d7405f16]
-[ 18  ]     0x1484d74039e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1484d74039e5]
-[ 19  ]     0x1484d7402d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x1484d7402d53]
-[ 20  ]     0x1484d7402b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x1484d7402b6a]
-[ 21  ]     0x1484d7400f99 Py_RunMain + 985
-[ 22  ]     0x1484d73bd66b Py_BytesMain + 59
-[ 23  ]     0x1484d6e295d0 /lib64/libc.so.6(+0x295d0) [0x1484d6e295d0]
-[ 24  ]     0x1484d6e29680 __libc_start_main + 128
-[ 25  ]     0x555cf0d7b095 _start + 37
-
-
-Honor thy error as a hidden intention. (Brian Eno)
-
-[optimize] dtOO build FAILED (worker 18):
-:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 24  ]     0x1526fef1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x1526fef1cea8]
-[ 25  ]     0x15270dcfc58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x15270dcfc58a]
-[ 26  ]     0x15270dcd28a0 _PyObject_MakeTpCall + 320
-[ 27  ]     0x15270dce5ddd _PyEval_EvalFrameDefault + 15949
-[ 28  ]     0x15270dd6fd5c PyEval_EvalCode + 172
-[ 29  ]     0x15270dda967c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x15270dda967c]
-[ 30  ]     0x15270dda6f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x15270dda6f16]
-[ 31  ]     0x15270dda49e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x15270dda49e5]
-[ 32  ]     0x15270dda3d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x15270dda3d53]
-[ 33  ]     0x15270dda3b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x15270dda3b6a]
-[ 34  ]     0x15270dda1f99 Py_RunMain + 985
-[ 35  ]     0x15270dd5e66b Py_BytesMain + 59
-[ 36  ]     0x15270d8295d0 /lib64/libc.so.6(+0x295d0) [0x15270d8295d0]
-[ 37  ]     0x15270d829680 __libc_start_main + 128
-[ 38  ]     0x55e494869095 _start + 37
-
-
-Honor thy error as a hidden intention. (Brian Eno)
+ because it intersects 348 354 on model edge 13
+Debug   : Recovering 355 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 13 13)
+Info    : 8-| Splitting those edges and trying again - level 6
+Debug   : Recovering 10 model edges
+Debug   : Edge 351 356 has to be recovered
+Debug   : edge 351 356 on model edge 13 cannot be recovered because it intersects 348 355 on model edge 13
+Debug   : Recovering 357 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 13 13)
+Info    : 8-| Splitting those edges and trying again - level 7
+Debug   : Recovering 10 model edges
+Debug   : Edge 358 356 has to be recovered
+Debug   : edge 358 356 on model edge 13 cannot be recovered because it intersects 355 357 on model edge 13
+Debug   : Recovering 359 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 13 13)
+Info    : 8-| Splitting those edges and trying again - level 8
+Debug   : Recovering 10 model edges
+Debug   : Edge 358 360 has to be recovered
+Debug   : edge 358 360 on model edge 13 cannot be recovered because it intersects 357 359 on model edge 13
+Debug   : Recovering 361 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 13 13)
+Info    : 8-| Splitting those edges and trying again - level 9
+Debug   : Recovering 10 model edges
+Debug   : Edge 358 362 has to be recovered
+Debug   : edge 358 362 on model edge 13 cannot be recovered because it intersects 357 361 on model edge 13
+Debug   : Recovering 363 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 13 13)
+Info    : 8-| Splitting those edges and trying again - level 10
+Debug   : Type 23 0 triangles generated, 0 internal nodes
+Info    : Meshing surface 7 (Parametric surface, MeshAdapt)
+Debug   : Recovering 4 model edges
+Debug   : Recovering 181 mesh edges (0 not recovered)
+Debug   : Boundary edges recovered for surface 7
+Debug   : Computing mesh size field at mesh nodes 181
+Debug   : Delaunizing the initial mesh
+Debug   : Starting to add internal nodes
+Debug   :  iter   1 minL    0.086/   0.700 maxL    6.104/   1.400 -- Small/Large/Total (   305/   872/  1979):    663 splits,    620 swaps,    123 collapses,   1575 moves
+Debug   :  iter   2 minL    0.085/   0.700 maxL    3.731/   1.400 -- Small/Large/Total (   580/   275/  2969):    883 splits,    954 swaps,    553 collapses,   3292 moves
+Debug   :  iter   3 minL    0.358/   0.700 maxL    1.685/   1.400 -- Small/Large/Total (   146/     4/  2462):    300 splits,    567 swaps,    469 collapses,   2057 moves
+Debug   :  iter   4 minL    0.500/   0.700 maxL    1.636/   1.400 -- Small/Large/Total (    90/     3/  2411):      6 splits,     15 swaps,     23 collapses,    505 moves
+Debug   :  iter   5 minL    0.526/   0.700 maxL    1.398/   1.400 -- Small/Large/Total (    81/     0/  2414):      5 splits,      5 swaps,      4 collapses,    196 moves
+Debug   :  iter   6 minL    0.526/   0.700 maxL    1.616/   1.400 -- Small/Large/Total (    78/     2/  2411):      0 splits,      0 swaps,      1 collapses,    122 moves
+Debug   :  iter   7 minL    0.526/   0.700 maxL    1.398/   1.400 -- Small/Large/Total (    80/     0/  2414):      2 splits,      1 swaps,      1 collapses,     99 moves
+Debug   :  iter   8 minL    0.526/   0.700 maxL    1.398/   1.400 -- Small/Large/Total (    79/     0/  2414):      0 splits,      0 swaps,      0 collapses,     66 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     1.06170E-02 sec (  0 %)
+Debug   :  CPU SPLIT    6.84000E-01 sec (  4 %) 
+Debug   :  CPU COLLAPS  1.82273E+00 sec ( 11 %) 
+Debug   :  CPU SMOOTH   1.36377E+01 sec ( 84 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    1.61550E+01 sec 
+Debug   :  ---------------------------------------
+Debug   :  iter   1 minL    0.526/   0.700 maxL    1.398/   1.400 -- Small/Large/Total (    79/     0/  2414):      0 splits,      0 swaps,      0 collapses,     36 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     9.82000E-04 sec (  0 %)
+Debug   :  CPU SPLIT    1.74129E-01 sec ( 15 %) 
+Debug   :  CPU COLLAPS  8.66060E-02 sec (  8 %) 
+Debug   :  CPU SMOOTH   8.91706E-01 sec ( 77 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    1.15342E+00 sec 
+Debug   :  ---------------------------------------
+Debug   : Type 23 1549 triangles generated, 685 internal nodes
+Info    : Meshing surface 8 (Parametric surface, MeshAdapt)
+Warning : Impossible to recover edge 3167 3167 (error tag -3)
+Warning : Impossible to recover edge 3173 3173 (error tag -1)
+Debug   : Recovering 4 model edges
+Debug   : Edge 90 96 has to be recovered
+Debug   : edge 90 96 on model edge 13 cannot be recovered because it intersects 85 88 on model edge 13
+Debug   : edge 90 96 on model edge 13 cannot be recovered because it intersects 93 95 on model edge 13
+Debug   : edge 90 96 on model edge 13 cannot be recovered because it intersects 80 89 on model edge 13
+Debug   : edge 90 96 on model edge 13 cannot be recovered because it intersects 78 80 on model edge 13
+Debug   : Recovering 97 mesh edges (5 not recovered)
+Info    : :-( There are 5 intersections in the 1D mesh (curves 13 13 13 13 13)
+Info    : 8-| Splitting those edges and trying again - level 0
+Warning : Impossible to recover edge 3173 3173 (error tag -1)
+Warning : Impossible to recover edge 3863 3863 (error tag -1)
+Debug   : Recovering 4 model edges
+Debug   : Edge 90 100 has to be recovered
+Debug   : edge 90 100 on model edge 13 cannot be recovered because it intersects 88 99 on model edge 13
+Debug   : Recovering 102 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 13 13)
+Info    : 8-| Splitting those edges and trying again - level 1
+Warning : Impossible to recover edge 3173 3173 (error tag -1)
+Warning : Impossible to recover edge 3863 3863 (error tag -1)
+Debug   : Recovering 4 model edges
+Debug   : Edge 103 100 has to be recovered
+Debug   : edge 103 100 on model edge 13 cannot be recovered because it intersects 77 79 on model edge 13
+Debug   : edge 103 100 on model edge 13 cannot be recovered because it intersects 17 75 on model edge 13
+Debug   : edge 103 100 on model edge 13 cannot be recovered because it intersects 17 18 on model edge 13
+Debug   : Recovering 104 mesh edges (4 not recovered)
+Info    : :-( There are 4 intersections in the 1D mesh (curves 13 13 13 13)
+Info    : 8-| Splitting those edges and trying again - level 2
+Warning : Impossible to recover edge 3167 3167 (error tag -1)
+Warning : Impossible to recover edge 3173 3173 (error tag -1)
+Warning : Impossible to recover edge 3863 3863 (error tag -1)
+Debug   : Recovering 4 model edges
+Debug   : Edge 90 103 has to be recovered
+Debug   : edge 90 103 cannot be recovered at all
+Error   : Unable to recover the edge 9009 (17/58) on curve 13 (on surface 8)
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6026481/worker_18/design.json
+[dtoo] applied 30 parameter overrides
+[dtoo] plugin ru_adjustDomain applied
+[dtoo] makeGrid on ruWithRounding_mechMesh ...
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 104, in main
+    bV.get(MECH_VOLUME).makeGrid()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 6017, in makeGrid
+    return _dtOOPythonSWIG.boundedVolume_makeGrid(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+Exception: Unable to recover the edge 9009 (17/58) on curve 13 (on surface 8)
 

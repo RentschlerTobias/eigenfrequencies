@@ -1,1 +1,45 @@
-Worker 13 ready on uc2n604.localdomain: PYRO:obj_0601f51d60a449f687946beb7d7ed68f@uc2n604.localdomain:42541
+Worker 13 ready on uc2n604.localdomain: PYRO:obj_db241218b9c0455e880b441cfa46112a@uc2n604.localdomain:41039
+[optimize] CFD build FAILED (worker 13):
+_dtXmlParser_loadStateToConst()  /home/st/st_us-042020/st_ac136362/dtOO/build/tools/libdtOOPythonSWIG/CMakeFiles/dtOOPythonSWIG.dir/dtOOPythonSWIGPYTHON_wrap.cxx:250670
+ 6 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_is_local()  /usr/include/c++/11/bits/basic_string.h:230
+ 7 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_dispose()  /usr/include/c++/11/bits/basic_string.h:239
+ 8 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()  /usr/include/c++/11/bits/basic_string.h:672
+ 9 0x000000000047eca2 _wrap_dtXmlParser_loadStateToConst()  /home/st/st_us-042020/st_ac136362/dtOO/build/tools/libdtOOPythonSWIG/CMakeFiles/dtOOPythonSWIG.dir/dtOOPythonSWIGPYTHON_wrap.cxx:250670
+10 0x00000000001aa58a cfunction_call()  ???:0
+11 0x00000000001808a0 _PyObject_MakeTpCall.localalias()  ???:0
+12 0x0000000000191591 _PyEval_EvalFrameDefault.localalias()  ???:0
+13 0x000000000021dd5c PyEval_EvalCode.localalias()  ???:0
+14 0x000000000025767c run_eval_code_obj()  ???:0
+15 0x0000000000254f16 run_mod()  ???:0
+16 0x00000000002529e5 pyrun_file()  ???:0
+17 0x0000000000251d53 _PyRun_SimpleFileObject()  ???:0
+18 0x0000000000251b6a _PyRun_AnyFileObject()  ???:0
+19 0x000000000024ff99 Py_RunMain.localalias()  ???:0
+20 0x000000000020c66b Py_BytesMain()  ???:0
+21 0x00000000000295d0 __libc_start_call_main()  ???:0
+22 0x0000000000029680 __libc_start_main_alias_2()  :0
+23 0x0000000000001095 _start()  ???:0
+=================================
+
+[optimize] CFD build FAILED (worker 13):
+d::allocator<char> > const&) + 46
+[ 3   ]     0x153293eeecde dtOO::dtXmlParser::loadStateToConst(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::labeledVectorHandling<dtOO::constValue*>&) + 1134
+[ 4   ]     0x15329486eca2 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x47eca2) [0x15329486eca2]
+[ 5   ]     0x1532a363f58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x1532a363f58a]
+[ 6   ]     0x1532a36158a0 _PyObject_MakeTpCall + 320
+[ 7   ]     0x1532a3626591 _PyEval_EvalFrameDefault + 5633
+[ 8   ]     0x1532a36b2d5c PyEval_EvalCode + 172
+[ 9   ]     0x1532a36ec67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x1532a36ec67c]
+[ 10  ]     0x1532a36e9f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x1532a36e9f16]
+[ 11  ]     0x1532a36e79e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1532a36e79e5]
+[ 12  ]     0x1532a36e6d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x1532a36e6d53]
+[ 13  ]     0x1532a36e6b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x1532a36e6b6a]
+[ 14  ]     0x1532a36e4f99 Py_RunMain + 985
+[ 15  ]     0x1532a36a166b Py_BytesMain + 59
+[ 16  ]     0x1532a32295d0 /lib64/libc.so.6(+0x295d0) [0x1532a32295d0]
+[ 17  ]     0x1532a3229680 __libc_start_main + 128
+[ 18  ]     0x55a21fbf1095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+

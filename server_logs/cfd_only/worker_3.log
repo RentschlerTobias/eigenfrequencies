@@ -1,1 +1,56 @@
-Worker 3 ready on uc2n606.localdomain: PYRO:obj_a3de5fdaa26042b6a4cefc2a334c2aed@uc2n606.localdomain:44731
+Worker 3 ready on uc2n606.localdomain: PYRO:obj_8cf3dc3e08b14f68a0887a3ab5e44583@uc2n606.localdomain:34377
+[optimize] CFD build FAILED (worker 3):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[uc2n606:559779:0:559779] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x7d017d020003)
+
+[optimize] CFD build FAILED (worker 3):
+:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 24  ]     0x1488cb11cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x1488cb11cea8]
+[ 25  ]     0x1488d9fc458a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x1488d9fc458a]
+[ 26  ]     0x1488d9f9a8a0 _PyObject_MakeTpCall + 320
+[ 27  ]     0x1488d9fadddd _PyEval_EvalFrameDefault + 15949
+[ 28  ]     0x1488da037d5c PyEval_EvalCode + 172
+[ 29  ]     0x1488da07167c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x1488da07167c]
+[ 30  ]     0x1488da06ef16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x1488da06ef16]
+[ 31  ]     0x1488da06c9e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1488da06c9e5]
+[ 32  ]     0x1488da06bd53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x1488da06bd53]
+[ 33  ]     0x1488da06bb6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x1488da06bb6a]
+[ 34  ]     0x1488da069f99 Py_RunMain + 985
+[ 35  ]     0x1488da02666b Py_BytesMain + 59
+[ 36  ]     0x1488d9a295d0 /lib64/libc.so.6(+0x295d0) [0x1488d9a295d0]
+[ 37  ]     0x1488d9a29680 __libc_start_main + 128
+[ 38  ]     0x5557ff2ef095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+

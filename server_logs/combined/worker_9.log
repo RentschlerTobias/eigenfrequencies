@@ -1,42 +1,96 @@
-Worker 9 ready on uc2n604.localdomain: PYRO:obj_f946bd8b202f4aa6bf4714aba6b6269a@uc2n604.localdomain:42597
+Worker 9 ready on uc2n607.localdomain: PYRO:obj_b6fed1428403443bb62372326c2bd413@uc2n607.localdomain:45161
 [optimize] dtOO build FAILED (worker 9):
-:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 24  ]     0x14b968c1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x14b968c1cea8]
-[ 25  ]     0x14b9779ef58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x14b9779ef58a]
-[ 26  ]     0x14b9779c58a0 _PyObject_MakeTpCall + 320
-[ 27  ]     0x14b9779d8ddd _PyEval_EvalFrameDefault + 15949
-[ 28  ]     0x14b977a62d5c PyEval_EvalCode + 172
-[ 29  ]     0x14b977a9c67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14b977a9c67c]
-[ 30  ]     0x14b977a99f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14b977a99f16]
-[ 31  ]     0x14b977a979e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14b977a979e5]
-[ 32  ]     0x14b977a96d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14b977a96d53]
-[ 33  ]     0x14b977a96b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14b977a96b6a]
-[ 34  ]     0x14b977a94f99 Py_RunMain + 985
-[ 35  ]     0x14b977a5166b Py_BytesMain + 59
-[ 36  ]     0x14b9776295d0 /lib64/libc.so.6(+0x295d0) [0x14b9776295d0]
-[ 37  ]     0x14b977629680 __libc_start_main + 128
-[ 38  ]     0x555583500095 _start + 37
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
 
+Don't forget to initialize OpenFOAM with:
 
-Honor thy error as a hidden intention. (Brian Eno)
+	source $FOAM_INIT
 
-[optimize] dtOO build FAILED (worker 9):
-:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 24  ]     0x14ee57b1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x14ee57b1cea8]
-[ 25  ]     0x14ee6691a58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x14ee6691a58a]
-[ 26  ]     0x14ee668f08a0 _PyObject_MakeTpCall + 320
-[ 27  ]     0x14ee66903ddd _PyEval_EvalFrameDefault + 15949
-[ 28  ]     0x14ee6698dd5c PyEval_EvalCode + 172
-[ 29  ]     0x14ee669c767c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14ee669c767c]
-[ 30  ]     0x14ee669c4f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14ee669c4f16]
-[ 31  ]     0x14ee669c29e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14ee669c29e5]
-[ 32  ]     0x14ee669c1d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14ee669c1d53]
-[ 33  ]     0x14ee669c1b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14ee669c1b6a]
-[ 34  ]     0x14ee669bff99 Py_RunMain + 985
-[ 35  ]     0x14ee6697c66b Py_BytesMain + 59
-[ 36  ]     0x14ee664295d0 /lib64/libc.so.6(+0x295d0) [0x14ee664295d0]
-[ 37  ]     0x14ee66429680 __libc_start_main + 128
-[ 38  ]     0x563aa3aa0095 _start + 37
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6026481/worker_9/design.json
+[dtoo] applied 30 parameter overrides
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 93, in main
+    parser.destroyAndCreate(bC, cV, aF, aG, bV, dC, dP)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 22262, in destroyAndCreate
+    return _dtOOPythonSWIG.dtXmlParser_destroyAndCreate(self, bC, cV, aF, aG, bV, dC, pL)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: [ analyticFunction::invY() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/geometryKernel/analyticFunctionHeaven/analyticFunction.cpp'
+*-> line '107'
+
+condition: !md.converged() is true.
+
+Backtrace
+[ 1   ]     0x14a1976face7 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2c5ce7) [0x14a1976face7]
+[ 2   ]     0x14a19785e346 dtOO::vec2dMultiBiLinearTwoD::invY(dtOO::aFY const&) const + 3366
+[ 3   ]     0x14a1978a2fa3 dtOO::uVw_phirMs::wV_ms(double const&, double const&) const + 51
+[ 4   ]     0x14a1978a32c2 dtOO::uVw_phirMs::apply(std::vector<CGAL::Point_3<CGAL::Epick>, std::allocator<CGAL::Point_3<CGAL::Epick> > > const*) const + 306
+[ 5   ]     0x14a197883cf2 dtOO::dtTransformer::apply(CGAL::Point_3<CGAL::Epick> const&) const + 98
+[ 6   ]     0x14a197872566 dtOO::analyticFunctionTransformed<dtOO::vec3dTransVolThreeD>::Y(dtOO::aFX const&) const + 182
+[ 7   ]     0x14a197860cf2 dtOO::vec3dFunction::YdtPoint3(dtOO::aFX const&) const + 18
+[ 8   ]     0x14a19786cb1a dtOO::vec3dThreeD::YdtPoint3(dtOO::aFX const&) const + 10
+[ 9   ]     0x14a19781e5a3 dtOO::vec3dThreeDInMap3dTo3d::getPoint(double const&, double const&, double const&) const + 131
+[ 10  ]     0x14a19781e5cc dtOO::vec3dThreeDInMap3dTo3d::getPoint(double const&, double const&, double const&) const + 172
+[ 11  ]     0x14a19781edae dtOO::map3dTo3dTransformed<dtOO::vec3dThreeDInMap3dTo3d>::getPoint(double const&, double const&, double const&) const + 30
+[ 12  ]     0x14a1978173c8 dtOO::vec3dTwoDInMap3dTo3d::getPoint(double const&, double const&) const + 152
+[ 13  ]     0x14a1978006d2 dtOO::map2dTo3d::getPoint(CGAL::Point_2<CGAL::Epick> const&) const + 18
+[ 14  ]     0x14a19781b871 dtOO::vec2dOneDInMap2dTo3d::getPoint(double const&) const + 145
+[ 15  ]     0x14a197804d4e dtOO::map1dTo3d::getPoint(double const*) const + 14
+[ 16  ]     0x14a1977e68a2 dtOO::analyticGeometry::getPointPercent(double const*) const + 194
+[ 17  ]     0x14a1977e778c dtOO::analyticGeometry::updateBoundingBox() const + 1324
+[ 18  ]     0x14a1977e7ba5 dtOO::analyticGeometry::boundingBoxValue() const + 37
+[ 19  ]     0x14a1977e7bb9 dtOO::analyticGeometry::degenerated() const + 9
+[ 20  ]     0x14a197ab5242 dtOO::dtGmshModel::addIfEdgeToGmshModel(dtOO::map1dTo3d const*, int*, int, int) + 50
+[ 21  ]     0x14a197abd671 dtOO::dtGmshModel::addIfEdgeToGmshModel(dtOO::map1dTo3d const*, int*) + 193
+[ 22  ]     0x14a197abe498 dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*) + 424
+[ 23  ]     0x14a197abebf5 dtOO::dtGmshModel::addIfRegionToGmshModel(dtOO::map3dTo3d const*, int*) + 805
+[ 24  ]     0x14a197b98d4f dtOO::map3dTo3dGmsh::jInit(dtOO::jsonPrimitive const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 191
+[ 25  ]     0x14a197b9914a dtOO::map3dTo3dGmsh::init(QDomElement const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 906
+[ 26  ]     0x14a1978e881e dtOO::dtXmlParser::createBoundedVolume(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 430
+[ 27  ]     0x14a1978e896a dtOO::dtXmlParser::createBoundedVolume(dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 234
+[ 28  ]     0x14a1978f263d dtOO::dtXmlParser::destroyAndCreate(dtOO::baseContainer&, dtOO::labeledVectorHandling<dtOO::constValue*>&, dtOO::labeledVectorHandling<dtOO::analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 29  ]     0x14a19811cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x14a19811cea8]
+[ 30  ]     0x14a1a6f4558a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x14a1a6f4558a]
+[ 31  ]     0x14a1a6f1b8a0 _PyObject_MakeTpCall + 320
+[ 32  ]     0x14a1a6f2eddd _PyEval_EvalFrameDefault + 15949
+[ 33  ]     0x14a1a6fb8d5c PyEval_EvalCode + 172
+[ 34  ]     0x14a1a6ff267c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14a1a6ff267c]
+[ 35  ]     0x14a1a6feff16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14a1a6feff16]
+[ 36  ]     0x14a1a6fed9e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14a1a6fed9e5]
+[ 37  ]     0x14a1a6fecd53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14a1a6fecd53]
+[ 38  ]     0x14a1a6fecb6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14a1a6fecb6a]
+[ 39  ]     0x14a1a6feaf99 Py_RunMain + 985
+[ 40  ]     0x14a1a6fa766b Py_BytesMain + 59
+[ 41  ]     0x14a1a6a295d0 /lib64/libc.so.6(+0x295d0) [0x14a1a6a295d0]
+[ 42  ]     0x14a1a6a29680 __libc_start_main + 128
+[ 43  ]     0x559236771095 _start + 37
 
 
 Honor thy error as a hidden intention. (Brian Eno)

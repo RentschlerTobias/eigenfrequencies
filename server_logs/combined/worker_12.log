@@ -1,42 +1,128 @@
-Worker 12 ready on uc2n602.localdomain: PYRO:obj_eda19c85aa7a4ef1944ffc21eecdf1d1@uc2n602.localdomain:38383
+Worker 12 ready on uc2n602.localdomain: PYRO:obj_6b522887df95496f88a7e05de7189201@uc2n602.localdomain:43877
 [optimize] dtOO build FAILED (worker 12):
-:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 11  ]     0x15493b01cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x15493b01cea8]
-[ 12  ]     0x154949e3f58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x154949e3f58a]
-[ 13  ]     0x154949e158a0 _PyObject_MakeTpCall + 320
-[ 14  ]     0x154949e28ddd _PyEval_EvalFrameDefault + 15949
-[ 15  ]     0x154949eb2d5c PyEval_EvalCode + 172
-[ 16  ]     0x154949eec67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x154949eec67c]
-[ 17  ]     0x154949ee9f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x154949ee9f16]
-[ 18  ]     0x154949ee79e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x154949ee79e5]
-[ 19  ]     0x154949ee6d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x154949ee6d53]
-[ 20  ]     0x154949ee6b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x154949ee6b6a]
-[ 21  ]     0x154949ee4f99 Py_RunMain + 985
-[ 22  ]     0x154949ea166b Py_BytesMain + 59
-[ 23  ]     0x154949a295d0 /lib64/libc.so.6(+0x295d0) [0x154949a295d0]
-[ 24  ]     0x154949a29680 __libc_start_main + 128
-[ 25  ]     0x55ee160e8095 _start + 37
+sec ( 15 %) 
+Debug   :  CPU SMOOTH   4.06300E-03 sec ( 52 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    7.74400E-03 sec 
+Debug   :  ---------------------------------------
+Debug   : Type 23 647 triangles generated, 295 internal nodes
+Info    : Meshing surface 6 (Parametric surface, MeshAdapt)
+Debug   : Recovering 10 model edges
+Debug   : Edge 305 306 has to be recovered
+Debug   : edge 305 306 on model edge 16 cannot be recovered because it intersects 323 324 on model edge 16
+Debug   : Recovering 382 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 0
+Debug   : Recovering 10 model edges
+Debug   : Edge 323 383 has to be recovered
+Debug   : edge 323 383 on model edge 16 cannot be recovered because it intersects 306 382 on model edge 16
+Debug   : Recovering 384 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 1
+Debug   : Recovering 10 model edges
+Debug   : Edge 382 384 has to be recovered
+Debug   : edge 382 384 on model edge 16 cannot be recovered because it intersects 383 385 on model edge 16
+Debug   : Recovering 386 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 2
+Debug   : Recovering 10 model edges
+Debug   : Edge 386 384 has to be recovered
+Debug   : edge 386 384 on model edge 16 cannot be recovered because it intersects 385 387 on model edge 16
+Debug   : Recovering 388 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 3
+Debug   : Recovering 10 model edges
+Debug   : Edge 386 388 has to be recovered
+Debug   : edge 386 388 on model edge 16 cannot be recovered because it intersects 385 389 on model edge 16
+Debug   : Recovering 390 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 4
+Debug   : Recovering 10 model edges
+Debug   : Edge 385 390 has to be recovered
+Debug   : edge 385 390 on model edge 16 cannot be recovered because it intersects 388 391 on model edge 16
+Debug   : Recovering 392 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 5
+Debug   : Recovering 10 model edges
+Debug   : Edge 385 392 has to be recovered
+Debug   : edge 385 392 on model edge 16 cannot be recovered because it intersects 391 393 on model edge 16
+Debug   : Recovering 394 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 6
+Debug   : Recovering 10 model edges
+Debug   : Edge 385 394 has to be recovered
+Debug   : edge 385 394 on model edge 16 cannot be recovered because it intersects 391 395 on model edge 16
+Debug   : Recovering 396 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 7
+Debug   : Recovering 10 model edges
+Debug   : Edge 396 394 has to be recovered
+Debug   : edge 396 394 on model edge 16 cannot be recovered because it intersects 391 397 on model edge 16
+Debug   : Recovering 398 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 8
+Debug   : Recovering 10 model edges
+Debug   : Edge 396 399 has to be recovered
+Debug   : edge 396 399 on model edge 16 cannot be recovered because it intersects 391 398 on model edge 16
+Debug   : Recovering 400 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 9
+Debug   : Recovering 10 model edges
+Debug   : Edge 401 399 has to be recovered
+Debug   : edge 401 399 on model edge 16 cannot be recovered because it intersects 391 400 on model edge 16
+Debug   : Recovering 402 mesh edges (2 not recovered)
+Info    : :-( There are 2 intersections in the 1D mesh (curves 16 16)
+Info    : 8-| Splitting those edges and trying again - level 10
+Debug   : Type 23 0 triangles generated, 0 internal nodes
+Info    : Meshing surface 7 (Parametric surface, MeshAdapt)
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6026481/worker_12/design.json
+[dtoo] applied 30 parameter overrides
+[dtoo] plugin ru_adjustDomain applied
+[dtoo] makeGrid on ruWithRounding_mechMesh ...
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 104, in main
+    bV.get(MECH_VOLUME).makeGrid()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 6017, in makeGrid
+    return _dtOOPythonSWIG.boundedVolume_makeGrid(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+Exception: [ map2dTo3d::reparamOnFace() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/geometryKernel/analyticGeometryHeaven/map2dTo3d.cpp'
+*-> line '250'
 
+condition: !md.converged() is true.
 
-Honor thy error as a hidden intention. (Brian Eno)
-
-[optimize] dtOO build FAILED (worker 12):
-:analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 29  ]     0x152bafd1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x152bafd1cea8]
-[ 30  ]     0x152bbeb6f58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x152bbeb6f58a]
-[ 31  ]     0x152bbeb458a0 _PyObject_MakeTpCall + 320
-[ 32  ]     0x152bbeb58ddd _PyEval_EvalFrameDefault + 15949
-[ 33  ]     0x152bbebe2d5c PyEval_EvalCode + 172
-[ 34  ]     0x152bbec1c67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x152bbec1c67c]
-[ 35  ]     0x152bbec19f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x152bbec19f16]
-[ 36  ]     0x152bbec179e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x152bbec179e5]
-[ 37  ]     0x152bbec16d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x152bbec16d53]
-[ 38  ]     0x152bbec16b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x152bbec16b6a]
-[ 39  ]     0x152bbec14f99 Py_RunMain + 985
-[ 40  ]     0x152bbebd166b Py_BytesMain + 59
-[ 41  ]     0x152bbe6295d0 /lib64/libc.so.6(+0x295d0) [0x152bbe6295d0]
-[ 42  ]     0x152bbe629680 __libc_start_main + 128
-[ 43  ]     0x56474cb60095 _start + 37
+Backtrace
+[ 1   ]     0x1521364ee654 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2b9654) [0x1521364ee654]
+[ 2   ]     0x1521368a332a dtOO::dtGmshFace::reparamOnFace(CGAL::Point_3<CGAL::Epick>) const + 26
+[ 3   ]     0x1521368a338b dtOO::dtGmshFace::parFromPoint(SPoint3 const&, bool, bool) const + 59
+[ 4   ]     0x15213579b2dd GEdge::reparamOnFace(GFace const*, double, int) const + 125
+[ 5   ]     0x1521359656fe reparamMeshVertexOnFace(MVertex const*, GFace const*, SPoint2&, bool, bool, int) + 590
+[ 6   ]     0x1521359e8d51 /home/st/st_us-042020/st_ac136362/dtOO/install/lib64/libgmsh.so.4.14(+0x729d51) [0x1521359e8d51]
+[ 7   ]     0x1521359f7817 meshGFace::operator()(GFace*, bool) + 775
+[ 8   ]     0x1521368cd718 dtOO::dtMeshGFace::operator()(dtOO::dtGmshFace*) + 24
+[ 9   ]     0x15213695c042 dtOO::bVOMeshRule::preUpdate() + 5650
+[ 10  ]     0x1521369422d5 dtOO::bVOSubject::preNotify() + 53
+[ 11  ]     0x1521369a957e dtOO::gmshBoundedVolume::makePreGrid() + 6110
+[ 12  ]     0x1521369a4d47 dtOO::gmshBoundedVolume::makeGrid() + 23
+[ 13  ]     0x152136f2d14d /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x33d14d) [0x152136f2d14d]
+[ 14  ]     0x152145cfabda /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1a9bda) [0x152145cfabda]
+[ 15  ]     0x152145cd3723 PyObject_Vectorcall + 83
+[ 16  ]     0x152145ce4ddd _PyEval_EvalFrameDefault + 15949
+[ 17  ]     0x152145d6ed5c PyEval_EvalCode + 172
+[ 18  ]     0x152145da867c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x152145da867c]
+[ 19  ]     0x152145da5f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x152145da5f16]
+[ 20  ]     0x152145da39e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x152145da39e5]
+[ 21  ]     0x152145da2d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x152145da2d53]
+[ 22  ]     0x152145da2b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x152145da2b6a]
+[ 23  ]     0x152145da0f99 Py_RunMain + 985
+[ 24  ]     0x152145d5d66b Py_BytesMain + 59
+[ 25  ]     0x1521458295d0 /lib64/libc.so.6(+0x295d0) [0x1521458295d0]
+[ 26  ]     0x152145829680 __libc_start_main + 128
+[ 27  ]     0x55db7910d095 _start + 37
 
 
 Honor thy error as a hidden intention. (Brian Eno)

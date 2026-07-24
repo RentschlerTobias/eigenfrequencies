@@ -1,0 +1,31 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+========================================
+[DE] variant=combined eval_mode=combined on uc2n602.localdomain
+[DE] POP_SIZE=24  MAX_GEN=1  SEED=42
+[DE] W_RESONANCE=0.5  CFD_ENABLED=1
+[DE] SLURM: 6 nodes x 4 tasks/node, job 6026481
+[DE] state=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json
+[DE] history=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_combined.jsonl
+[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_6026481
+========================================
+[DE] Starting 24 workers via srun (distributed across 6 nodes)...
+[DE] Running DE client...
+[DE] main() entered pid=851595 cwd=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies
+[DE] configs loaded pop_size=24 max_gen=1 eval_mode=combined w_resonance=0.5 labels=['cV_ru_alpha_1_ex_0.0', 'cV_ru_alpha_2_ex_0.0', 'cV_ru_M_ex_0.0', 'cV_ru_offsetM_ex_0.0', 'cV_ru_offsetPhiR_ex_0.0', 'cV_ru_ratio_0.0', 'cV_ru_bladeLength_0.0', 'cV_ru_alpha_1_ex_0.5', 'cV_ru_alpha_2_ex_0.5', 'cV_ru_M_ex_0.5', 'cV_ru_offsetM_ex_0.5', 'cV_ru_offsetPhiR_ex_0.5', 'cV_ru_ratio_0.5', 'cV_ru_bladeLength_0.5', 'cV_ru_alpha_1_ex_1.0', 'cV_ru_alpha_2_ex_1.0', 'cV_ru_M_ex_1.0', 'cV_ru_offsetM_ex_1.0', 'cV_ru_offsetPhiR_ex_1.0', 'cV_ru_ratio_1.0', 'cV_ru_bladeLength_1.0', 'cV_ru_t_le_a_0', 'cV_ru_t_mid_a_0', 'cV_ru_t_te_a_0', 'cV_ru_t_le_a_0.5', 'cV_ru_t_mid_a_0.5', 'cV_ru_t_te_a_0.5', 'cV_ru_t_le_a_1', 'cV_ru_t_mid_a_1', 'cV_ru_t_te_a_1']
+[DE] discovery: uri_dir=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/combined/uris expected=24 timeout=600s
+[DE] discovery: 4/24 URIs after 0s
+[DE] Discovered 24 workers from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/combined/uris
+[DE] discovery done n_workers=24 elapsed=2.2s
+[DE] population=24 dim=30 mutation=0.8 crossover=0.9 max_gen=1 tol=0.01 seed=42 workers=24
+[DE] state_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json history_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_combined.jsonl
+[DE] no checkpoint found at /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json — starting fresh gen 0
+[DE] gen 0: dispatching 24 evals to 24 workers
+gen 0:   0%|                                             | 0/24 [00:00<?, ?it/s]gen 0:  67%|██████████▋     | 16/24 [00:32<00:16,  2.05s/it, ok=0/24 best=1e+06]gen 0:  67%|██████████▋     | 16/24 [00:49<00:16,  2.05s/it, ok=0/24 best=1e+06]gen 0:  71%|███████████▎    | 17/24 [00:55<00:26,  3.74s/it, ok=0/24 best=1e+06]gen 0:  75%|████████████    | 18/24 [01:14<00:32,  5.35s/it, ok=0/24 best=1e+06]gen 0:  79%|████████████▋   | 19/24 [03:15<01:41, 20.38s/it, ok=0/24 best=1e+06]
