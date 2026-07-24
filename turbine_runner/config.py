@@ -111,14 +111,59 @@ class SolverConfig:
     solver_backend: str = "scipy"
 
 
+_DESIGN_PRESETS = {
+    # mid-span blade thickness at LE/mid/TE: most direct lever on stiffness+mass
+    # and therefore eigenfrequencies. Cheap smoke-test dimensionality.
+    "t_midspan3": {
+        "cV_ru_t_le_a_0.5": (0.005, 0.06, 0.03),
+        "cV_ru_t_mid_a_0.5": (0.005, 0.06, 0.03),
+        "cV_ru_t_te_a_0.5": (0.005, 0.06, 0.03),
+    },
+    # Classic runner set: 10 geometry params x 3 span sections (hub/mid/shroud).
+    # Bounds/initials from tistos templateState.xml slider ranges.
+    "full30": {
+        "cV_ru_alpha_1_ex_0.0": (-5.0, 10.0, 0.004872982423868022),
+        "cV_ru_alpha_2_ex_0.0": (-5.0, 5.0, 0.03402273030531863),
+        "cV_ru_M_ex_0.0": (-0.2, 0.2, 0.20000000298023224),
+        "cV_ru_offsetM_ex_0.0": (0.0, 4.5, 1.4337715415968637),
+        "cV_ru_offsetPhiR_ex_0.0": (-0.15, 0.15, 0.04571841251056208),
+        "cV_ru_ratio_0.0": (0.4, 0.6, 0.5155095255375718),
+        "cV_ru_bladeLength_0.0": (0.1, 2.0, 0.40400214390547823),
+        "cV_ru_alpha_1_ex_0.5": (-5.0, 10.0, -0.11506513546824179),
+        "cV_ru_alpha_2_ex_0.5": (-5.0, 5.0, 0.03875801072398795),
+        "cV_ru_M_ex_0.5": (-0.2, 0.2, 0.20000000298023224),
+        "cV_ru_offsetM_ex_0.5": (0.0, 4.5, 1.3086522283750657),
+        "cV_ru_offsetPhiR_ex_0.5": (-0.15, 0.15, -0.0026510870865109615),
+        "cV_ru_ratio_0.5": (0.4, 0.6, 0.40202440411861723),
+        "cV_ru_bladeLength_0.5": (0.1, 2.0, 0.6833682636796429),
+        "cV_ru_alpha_1_ex_1.0": (-5.0, 10.0, -0.015079716192407971),
+        "cV_ru_alpha_2_ex_1.0": (-5.0, 5.0, -0.06818810955839917),
+        "cV_ru_M_ex_1.0": (-0.2, 0.2, 0.20000000298023224),
+        "cV_ru_offsetM_ex_1.0": (0.0, 4.5, 1.3286597825110331),
+        "cV_ru_offsetPhiR_ex_1.0": (-0.15, 0.15, 0.04602043523346666),
+        "cV_ru_ratio_1.0": (0.4, 0.6, 0.5354515688199649),
+        "cV_ru_bladeLength_1.0": (0.1, 2.0, 1.098288373885862),
+        "cV_ru_t_le_a_0": (0.001, 0.08, 0.04333963143275606),
+        "cV_ru_t_mid_a_0": (0.001, 0.08, 0.014698095985221829),
+        "cV_ru_t_te_a_0": (0.001, 0.08, 0.01577708084197574),
+        "cV_ru_t_le_a_0.5": (0.001, 0.02, 0.05970486035898813),
+        "cV_ru_t_mid_a_0.5": (0.002, 0.02, 0.028962957830934426),
+        "cV_ru_t_te_a_0.5": (0.001, 0.02, 0.01945021940488333),
+        "cV_ru_t_le_a_1": (0.001, 0.02, 0.027243502852337103),
+        "cV_ru_t_mid_a_1": (0.002, 0.02, 0.04796504902806092),
+        "cV_ru_t_te_a_1": (0.001, 0.02, 0.009023193367017956),
+    },
+}
+
+
 @dataclass
 class DesignConfig:
     """dtOO design parameters exposed to the optimizer.
 
     `params` maps a dtOO const-value label to (min, max, initial). The labels are
     the cV_* names from the tistos case (see block_structured_meshing/tistos/
-    build.py). Default = mid-span blade thickness at LE/mid/TE, which is the most
-    direct lever on stiffness+mass and therefore eigenfrequencies.
+    build.py). Preset selectable via env DESIGN_PRESET (default "full30",
+    alternative "t_midspan3"); see _DESIGN_PRESETS.
 
     Attributes:
         params: {label: (min, max, initial)}
@@ -127,11 +172,12 @@ class DesignConfig:
 
     def __post_init__(self):
         if self.params is None:
-            self.params = {
-                "cV_ru_t_le_a_0.5": (0.005, 0.06, 0.03),
-                "cV_ru_t_mid_a_0.5": (0.005, 0.06, 0.03),
-                "cV_ru_t_te_a_0.5": (0.005, 0.06, 0.03),
-            }
+            preset = os.environ.get("DESIGN_PRESET", "full30")
+            if preset not in _DESIGN_PRESETS:
+                raise ValueError(
+                    f"DESIGN_PRESET must be one of {tuple(_DESIGN_PRESETS)}, got {preset!r}"
+                )
+            self.params = dict(_DESIGN_PRESETS[preset])
 
     @property
     def labels(self):
@@ -239,7 +285,7 @@ class CFDConfig:
 
 @dataclass
 class ObjectiveConfig:
-    """Weights for the combined CFD + resonance objective.
+    """Weights + evaluation mode for the CFD + resonance objective.
 
     Scalarized (single-objective) to match the de_framework Differential-Evolution
     setup. The resonance term enters as a constraint/penalty (decision (a)):
@@ -252,17 +298,32 @@ class ObjectiveConfig:
     forbidden band, so it acts as a soft constraint that only bites on violation.
 
     Attributes:
+        eval_mode: Which physics runs per evaluation. One of
+            - "combined"     : dtOO + CFD (simpleFoam) + dtOO + FEniCSx modal,
+                               objective = cfd_scalar + w_resonance*resonance_term
+            - "cfd_only"     : dtOO + CFD only, objective = cfd_scalar
+            - "resonance_only": dtOO + FEniCSx only, objective = resonance_term
+          Env override: EVAL_MODE.
         w_eta, w_cav, w_head: weights on the three hydraulic objectives
         w_resonance: weight on the resonance penalty (the constraint term)
         mode: "penalty" (soft, additive) or "hard" (large multiplier on violation)
         hard_penalty: multiplier used when mode == "hard"
     """
+    eval_mode: str = "combined"
     w_eta: float = 1.0
     w_cav: float = 1.0
     w_head: float = 1.0
     w_resonance: float = float(os.environ.get("W_RESONANCE", 1.0))
     mode: str = "penalty"
     hard_penalty: float = 1e6
+
+    def __post_init__(self):
+        self.eval_mode = os.environ.get("EVAL_MODE", self.eval_mode)
+        valid = ("combined", "cfd_only", "resonance_only")
+        if self.eval_mode not in valid:
+            raise ValueError(
+                f"EVAL_MODE must be one of {valid}, got {self.eval_mode!r}"
+            )
 
 
 @dataclass

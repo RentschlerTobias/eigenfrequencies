@@ -36,7 +36,8 @@ from optimize import DTOO_FAIL_PENALTY
 # ────────────────────────────────
 
 def _discover_servers(expected_count: int = 1,
-                      timeout: int = 120) -> list[str]:
+                      timeout: int = 600,
+                      poll_log_every: int = 15) -> list[str]:
     """Discover worker URIs from the shared-filesystem URI directory (A2).
 
     Each worker writes worker_<id>.uri once its Pyro5 daemon is registered.
@@ -45,12 +46,18 @@ def _discover_servers(expected_count: int = 1,
 
     No Name Server, no broadcast, no hostname discovery: workers on any node
     become reachable as soon as their URI file lands on the shared filesystem.
+
+    Poll progress is logged every poll_log_every seconds so a silent hang in
+    this phase is diagnosable from the .out file (job 5824899 debug).
     """
     here = os.path.dirname(os.path.abspath(__file__))
     default_dir = os.path.join(os.path.dirname(here), "server_logs", "uris")
     uri_dir = os.environ.get("DE_URI_DIR", default_dir)
     deadline = time.time() + timeout
+    next_log = time.time()
     uris: list[str] = []
+    print(f"[DE] discovery: uri_dir={uri_dir} expected={expected_count} "
+          f"timeout={timeout}s", flush=True)
     while True:
         if os.path.isdir(uri_dir):
             uris = []
@@ -65,13 +72,29 @@ def _discover_servers(expected_count: int = 1,
                 if u.startswith("PYRO:"):
                     uris.append(u)
             if len(uris) >= expected_count:
-                print(f"[DE] Discovered {len(uris)} workers from {uri_dir}")
+                print(f"[DE] Discovered {len(uris)} workers from {uri_dir}",
+                      flush=True)
                 return uris
+        else:
+            if time.time() >= next_log:
+                print(f"[DE] discovery: {uri_dir} does not exist yet "
+                      f"(t+{int(timeout - (deadline - time.time()))}s)",
+                      flush=True)
+                next_log = time.time() + poll_log_every
+            if time.time() > deadline:
+                break
+            time.sleep(2)
+            continue
+        if time.time() >= next_log:
+            elapsed = int(timeout - (deadline - time.time()))
+            print(f"[DE] discovery: {len(uris)}/{expected_count} URIs "
+                  f"after {elapsed}s", flush=True)
+            next_log = time.time() + poll_log_every
         if time.time() > deadline:
             break
         time.sleep(2)
     print(f"[DE] Discovered {len(uris)} workers after {timeout}s "
-          f"(expected {expected_count}) in {uri_dir}")
+          f"(expected {expected_count}) in {uri_dir}", flush=True)
     return uris
 
 
@@ -266,16 +289,24 @@ def main():
     # Line-buffer stdout so progress lands in the .out even if SLURM kills the
     # job mid-run (default block buffering would lose it on SIGKILL).
     sys.stdout.reconfigure(line_buffering=True)
+    t_start = time.time()
+    print(f"[DE] main() entered pid={os.getpid()} cwd={os.getcwd()}",
+          flush=True)
 
     de_cfg = DEConfig()
     opt_cfg = OptimizationConfig()
     obj_cfg = ObjectiveConfig()
     design_cfg = DesignConfig()
     labels = design_cfg.labels
+    print(f"[DE] configs loaded pop_size={de_cfg.pop_size} "
+          f"max_gen={de_cfg.max_generations} eval_mode={obj_cfg.eval_mode} "
+          f"w_resonance={obj_cfg.w_resonance} labels={labels}", flush=True)
 
     # Discover worker URIs from the shared-filesystem URI directory
     server_uris = _discover_servers(expected_count=de_cfg.pop_size)
     n_workers = len(server_uris)
+    print(f"[DE] discovery done n_workers={n_workers} "
+          f"elapsed={time.time()-t_start:.1f}s", flush=True)
     if n_workers == 0:
         print("[DE] ERROR: No worker servers found. Start servers first:")
         print("       bash cluster/start_servers.sh")
@@ -298,7 +329,9 @@ def main():
 
     print(f"[DE] population={pop_size} dim={dim} mutation={mutation} "
           f"crossover={crossover} max_gen={max_gen} tol={tol} seed={seed} "
-          f"workers={n_workers}")
+          f"workers={n_workers}", flush=True)
+    print(f"[DE] state_file={state_path} history_file={history_path}",
+          flush=True)
 
     # ── Resume from checkpoint if compatible, else run fresh Generation 0 ──
     state = _load_checkpoint(state_path, labels, pop_size, bounds)
@@ -313,8 +346,10 @@ def main():
         best_idx = int(np.argmin(objectives))
         start_gen = state["gen"] + 1
         print(f"[DE] Resuming from {state_path} at generation {start_gen} "
-              f"(best={best_obj:.6f}).")
+              f"(best={best_obj:.6f}).", flush=True)
     else:
+        print(f"[DE] no checkpoint found at {state_path} — starting fresh gen 0",
+              flush=True)
         # Initialize population uniformly in bounds
         population = np.array([
             low + rng.random(dim) * span for _ in range(pop_size)
@@ -322,6 +357,8 @@ def main():
 
         # ── Generation 0 ──
         t0 = time.time()
+        print(f"[DE] gen 0: dispatching {pop_size} evals to {n_workers} workers",
+              flush=True)
         objectives, breakdowns = _evaluate_population(
             server_uris, population, labels, n_workers, "gen 0")
 
@@ -341,6 +378,8 @@ def main():
     # ── Generations start_gen..max_gen ──
     for g in range(start_gen, max_gen + 1):
         t0 = time.time()
+        print(f"[DE] gen {g}: dispatching {pop_size} trial evals to "
+              f"{n_workers} workers", flush=True)
         trial_pop = population.copy()
 
         for i in range(pop_size):

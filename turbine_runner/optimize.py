@@ -92,8 +92,20 @@ def _run_fenicsx(worker_id: int = 0) -> dict:
         f"python3 /workspace/turbine_runner/evaluate.py /worker_data/runner.msh",
     ]
     log_path = os.path.join(wdir, "fenicsx.log")
+    # Per-worker enroot data/temp paths on node-local scratch. All workers share
+    # the user's default ENROOT_DATA_PATH otherwise, so concurrent `enroot start`
+    # calls collide on the single rootfs lock (observed: 'Could not acquire
+    # rootfs lock' in 139/256 worker logs on dev_cpu_il, 12-29% eval loss/gen).
+    # ENROOT_CACHE_PATH stays shared: `start` only reads the cached image.
+    env = os.environ.copy()
+    scratch = os.environ.get("TMPDIR", "/tmp")
+    for var, sub in (("ENROOT_DATA_PATH", "enroot_data"),
+                     ("ENROOT_TEMP_PATH", "enroot_tmp")):
+        path = os.path.join(scratch, sub, f"worker_{worker_id}")
+        os.makedirs(path, exist_ok=True)
+        env[var] = path
     with open(log_path, "w") as log_fh:
-        res = subprocess.run(cmd, stdout=log_fh, stderr=subprocess.STDOUT)
+        res = subprocess.run(cmd, stdout=log_fh, stderr=subprocess.STDOUT, env=env)
     with open(log_path) as log_fh:
         log_lines = log_fh.read().splitlines()
     for line in reversed(log_lines):

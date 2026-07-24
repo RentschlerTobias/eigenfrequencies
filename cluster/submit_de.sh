@@ -9,81 +9,27 @@
 #SBATCH --partition=dev_cpu_il
 #SBATCH --dependency=singleton
 
-# Differential Evolution (DE) batch job — multi-node Pyro5 workers.
-# Follows rl_framework/start.sh: srun per worker, Name Server on head node.
-# Distributes workers across SLURM nodes to avoid per-node OOM
-# (e.g. 64 workers on dev_cpu_il = 1 node x 256 GiB is too tight).
-#
-# Override at submission time:
-#   sbatch --partition=cpu --nodes=4 --ntasks-per-node=16 \
-#          --time=02:00:00 cluster/submit_de.sh
+# Legacy DE entry point — kept for backward compatibility. Prefer
+# cluster/submit_de_cfd_only.sh or cluster/submit_de_combined.sh for new work;
+# they namespace state/history/logs per variant and can run concurrently.
+# This wrapper behaves like the old monolith: EVAL_MODE=combined,
+# W_RESONANCE=1.0, POP_SIZE=nnodes*ntasks.
 #
 # CFD runs (CFD_ENABLED=1, default): each worker runs a full simpleFoam solve
 # (~minutes), so use a production partition with real walltime and more cores
-# per worker for the MPI solve (SLURM_CPUS_PER_TASK), and fewer workers:
+# per worker for the MPI solve, and fewer workers:
 #   sbatch --partition=cpu_il --nodes=4 --ntasks-per-node=4 --cpus-per-task=16 \
 #          --time=08:00:00 cluster/submit_de.sh
-# Checkpoint/resume (de_state.json) makes multi-hour runs safe to resubmit.
-# Smoke-test the CFD wiring first: DE_POP_SIZE=4 DE_MAX_GEN=1.
+# Checkpoint/resume (turbine_runner/de_state_legacy.json) makes multi-hour
+# runs safe to resubmit. Smoke-test the CFD wiring first: DE_POP_SIZE=4
+# DE_MAX_GEN=1.
 
-source ~/pe
+set -euo pipefail
 
-# CRITICAL: $0 is rewritten by SLURM to /var/spool/slurmd/jobXXXX/slurm_script,
-# so use $SLURM_SUBMIT_DIR instead of computing from $0.
-REPO_ROOT="$SLURM_SUBMIT_DIR"
-cd "$REPO_ROOT" || exit 1
-
-# Auto-calculate POP_SIZE from SLURM allocation (override with DE_POP_SIZE env var)
-POP_SIZE="${DE_POP_SIZE:-$((SLURM_NNODES * SLURM_NTASKS_PER_NODE))}"
-MAX_GEN="${DE_MAX_GEN:-10}"
-SEED="${DE_SEED:-42}"
-
-export CFD_CASE_DIR="${CFD_CASE_DIR:-$TMPDIR}"
-export DE_POP_SIZE="$POP_SIZE"
-export DE_MAX_GEN="$MAX_GEN"
-export DE_SEED="$SEED"
+export RUN_TAG="legacy"
+export EVAL_MODE="combined"
 export W_RESONANCE="${W_RESONANCE:-1.0}"
-export CFD_ENABLED="${CFD_ENABLED:-1}"
-# dtOO + OpenFOAM stack (from de_framework start_server.sh): avoid FPE aborts in
-# simpleFoam and give OSLO a writable lock dir.
-export FOAM_SIGFPE="${FOAM_SIGFPE:-0}"
-export OSLO_LOCK_PATH="${OSLO_LOCK_PATH:-/tmp}"
 
-LOG_DIR="$REPO_ROOT/server_logs"
-rm -rf "$LOG_DIR"
-mkdir -p "$LOG_DIR"
-# A2 discovery: workers publish their Pyro5 URIs here (shared filesystem,
-# visible on all compute nodes). Wiped above so no stale URIs survive.
-export DE_URI_DIR="$LOG_DIR/uris"
-mkdir -p "$DE_URI_DIR"
-
-echo "========================================"
-echo "[DE] Pyro5 DE multi-node (file-based URI discovery) on $(hostname)"
-echo "[DE] POP_SIZE=$POP_SIZE  MAX_GEN=$MAX_GEN  SEED=$SEED"
-echo "[DE] SLURM: $SLURM_NNODES nodes x $SLURM_NTASKS_PER_NODE tasks/node"
-echo "[DE] Partition=${SLURM_JOB_PARTITION:-dev_cpu_il}"
-echo "[DE] CFD_CASE_DIR=$CFD_CASE_DIR"
-echo "========================================"
-
-# ── Copy shared data to local NVMe on all nodes ──
-srun -N "$SLURM_NNODES" -n "$SLURM_NNODES" \
-    cp -r "$REPO_ROOT/turbine_runner/data" "$TMPDIR/" 2>/dev/null || true
-
-# ── Start workers via srun (one task per worker, distributed across nodes) ──
-# No Name Server: each worker writes its own URI into $DE_URI_DIR and the
-# client below reads them. Removes the cross-node NS discovery failure.
-echo "[DE] Starting $POP_SIZE workers via srun (distributed across $SLURM_NNODES nodes)..."
-for i in $(seq 0 $((POP_SIZE-1))); do
-    srun -n 1 -N 1 python3 -u turbine_runner/server_de.py "$i" \
-        > "$LOG_DIR/worker_${i}.log" 2>&1 &
-done
-
-# ── Run DE client — waits for POP_SIZE workers via _discover_servers polling ──
-echo "[DE] Running DE client (polls up to 120s for all $POP_SIZE workers)..."
-python3 turbine_runner/optimize_de.py
-
-# ── Cleanup ──
-echo "[DE] Done. Logs: $LOG_DIR"
-# Workers are backgrounded srun steps; they terminate when this job ends.
-# NOTE: scancel $SLURM_JOB_ID would cancel the job wrapping this script itself,
-# causing a CANCELLED state instead of COMPLETED. Skip scancel here.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+COMMON_DIR="${SLURM_SUBMIT_DIR:-$SCRIPT_DIR}/cluster"
+source "$COMMON_DIR/_submit_de_common.sh"
