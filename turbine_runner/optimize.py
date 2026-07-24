@@ -139,21 +139,18 @@ def _run_cfd(design: dict, worker_id: int = 0):
     state = f"DE_w{worker_id}"
     procs = os.environ.get("SLURM_CPUS_PER_TASK", "1")
 
-    # ── Build OF case (dtOO env) ──
-    build_cmd = [
-        "bash", "-lc",
-        "source ~/pe && "
-        "export UCX_TLS=sm && "
-        "export OMPI_MCA_pml=ob1 && "
-        "export OMPI_MCA_btl=self,vader,tcp && "
-        "export LD_LIBRARY_PATH=~/dtOO/install/lib:~/dtOO/install/lib64:$LD_LIBRARY_PATH && "
-        f"cd {wdir} && "
-        f"python3 {CFD_BUILD} {design_json} {state}",
-    ]
+    # ── Build OF case — bare python3 subprocess, env inherited (no re-source, no UCX) ──
+    build_env = os.environ.copy()
+    dtoo_lib = (
+        os.path.expanduser("~/dtOO/install/lib")
+        + ":" + os.path.expanduser("~/dtOO/install/lib64")
+    )
+    build_env["LD_LIBRARY_PATH"] = dtoo_lib + ":" + build_env.get("LD_LIBRARY_PATH", "")
+    build_cmd = [sys.executable, CFD_BUILD, design_json, state]
     build_log = os.path.join(wdir, "cfd_build.log")
+    res = subprocess.run(build_cmd, cwd=wdir, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT, text=True, env=build_env)
     with open(build_log, "w") as log_fh:
-        res = subprocess.run(build_cmd, stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT, text=True)
         log_fh.write(res.stdout)
     case_dir = None
     for line in res.stdout.splitlines():
@@ -161,20 +158,15 @@ def _run_cfd(design: dict, worker_id: int = 0):
             case_dir = line[len("CFD_CASE_DIR "):].strip()
     if res.returncode != 0 or not case_dir or not os.path.isdir(case_dir):
         sys.stderr.write(f"[optimize] CFD build FAILED (worker {worker_id}):\n"
-                         f"{res.stdout[-1600:]}\n")
+                         f"{res.stdout[-8000:]}\n")
         return None
 
     # ── Run simpleFoam (de_framework OF script) ──
     of_cmd = ["sh", "-e", CFD_SBATCH, case_dir, str(procs)]
-    of_env = os.environ.copy()
-    of_env["UCX_TLS"] = "sm"
-    of_env["OMPI_MCA_pml"] = "ob1"
-    of_env["OMPI_MCA_btl"] = "self,vader,tcp"
     of_log = os.path.join(wdir, "cfd_solve.log")
     try:
         with open(of_log, "w") as log_fh:
             res = subprocess.run(of_cmd, stdout=log_fh, stderr=subprocess.STDOUT,
-                                 env=of_env,
                                  timeout=int(os.environ.get("CFD_TIMEOUT", "1800")))
     except subprocess.TimeoutExpired:
         sys.stderr.write(f"[optimize] CFD solve TIMEOUT (worker {worker_id})\n")
