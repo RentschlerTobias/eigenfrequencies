@@ -1,0 +1,24 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[601-606]
+Job ID: 6026405
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: FAILED (exit code 1)
+Nodes: 6
+Cores per node: 128
+CPU Utilized: 00:00:01
+CPU Efficiency: 0.01% of 02:20:48 core-walltime
+Job Wall-clock time: 00:00:11
+Memory Utilized: 34.85 MB
+Memory Efficiency: 0.00% of 750.00 GB (1000.00 MB/core)
