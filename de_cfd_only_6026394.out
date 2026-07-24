@@ -1,0 +1,25 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/etc/bashrc: line 177: WM_THIRD_PARTY_DIR: unbound variable
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[602-607]
+Job ID: 6026394
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: FAILED (exit code 1)
+Nodes: 6
+Cores per node: 128
+CPU Utilized: 00:00:00
+CPU Efficiency: 0.00% of 02:08:00 core-walltime
+Job Wall-clock time: 00:00:10
+Memory Utilized: 34.85 MB
+Memory Efficiency: 0.00% of 750.00 GB (1000.00 MB/core)
