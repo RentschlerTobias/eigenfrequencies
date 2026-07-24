@@ -350,10 +350,14 @@ def main():
     else:
         print(f"[DE] no checkpoint found at {state_path} — starting fresh gen 0",
               flush=True)
-        # Initialize population uniformly in bounds
-        population = np.array([
-            low + rng.random(dim) * span for _ in range(pop_size)
-        ])
+        # Uniform-box init yields ~100% invalid geometries; sample around template.
+        x0 = np.array(design_cfg.x0)
+        init_spread = float(os.environ.get("DE_INIT_SPREAD", "0.05"))
+        population = np.clip(
+            x0 + rng.normal(0.0, init_spread, size=(pop_size, dim)) * span,
+            low, high,
+        )
+        population[0] = x0
 
         # ── Generation 0 ──
         t0 = time.time()

@@ -68,7 +68,7 @@ def _run_dtoo(design: dict, worker_id: int = 0) -> bool:
         res = subprocess.run(cmd, stdout=log_fh, stderr=subprocess.STDOUT)
     if res.returncode != 0 or not os.path.exists(msh):
         with open(log_path) as log_fh:
-            tail = log_fh.read()[-1600:]
+            tail = log_fh.read()[-8000:]
         sys.stderr.write(f"[optimize] dtOO build FAILED (worker {worker_id}):\n{tail}\n")
         return False
     return True
@@ -180,7 +180,7 @@ def _run_cfd(design: dict, worker_id: int = 0):
         return None
     if res.returncode != 0:
         with open(of_log) as log_fh:
-            tail = log_fh.read()[-1600:]
+            tail = log_fh.read()[-8000:]
         sys.stderr.write(f"[optimize] CFD solve FAILED (worker {worker_id}):\n{tail}\n")
         return None
     return case_dir
