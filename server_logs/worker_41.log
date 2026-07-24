@@ -1,3 +1,7 @@
-Worker 41 ready on uc2n602.localdomain: PYRO:obj_232233853a394784bf08ef867b6f0212@uc2n602.localdomain:32857
+Worker 41 ready on uc2n602.localdomain: PYRO:obj_3eeff045f65e46c9bdef659a9cb425a2@uc2n602.localdomain:39521
+[optimize] fenicsx eval FAILED (worker 41):
+['[ERROR] Could not acquire rootfs lock']
+[optimize] fenicsx eval FAILED (worker 41):
+['[ERROR] Could not acquire rootfs lock']
 srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
-[2026-07-07T00:47:24.722] error: *** STEP 5824899.46 ON uc2n602 CANCELLED AT 2026-07-07T00:47:24 DUE TO TIME LIMIT ***
+[2026-07-07T05:13:28.272] error: *** STEP 5827863.50 ON uc2n602 CANCELLED AT 2026-07-07T05:13:28 DUE TO TIME LIMIT ***
