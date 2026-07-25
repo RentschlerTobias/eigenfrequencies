@@ -56,3 +56,19 @@ or simply:
 gen 0: 100%|████████████████| 24/24 [01:03<00:00,  2.64s/it, ok=0/24 best=1e+06]
 [DE] Generation 0 best=1000000.000000 mean=1000000.000000 ok=0/24
 [DE]   best fitness: n/a
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[601-606]
+Job ID: 6038681
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: CANCELLED (exit code 0)
+Nodes: 6
+Cores per node: 128
+CPU Utilized: 00:00:01
+CPU Efficiency: 0.00% of 16:25:36 core-walltime
+Job Wall-clock time: 00:01:17
+Memory Utilized: 257.49 MB
+Memory Efficiency: 0.03% of 750.00 GB (1000.00 MB/core)
+The task which had the largest memory consumption differs by 100.04% from the average task max memory consumption

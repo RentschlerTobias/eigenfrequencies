@@ -1,4 +1,151 @@
-Worker 11 ready on uc2n601.localdomain: PYRO:obj_320b56ef58574ea2bf53f756e6d0af50@uc2n601.localdomain:45783
+Worker 11 ready on uc2n605.localdomain: PYRO:obj_0da733723fee48b6b9f4ca6ce5ff5c5b@uc2n605.localdomain:45815
+[optimize] CFD build FAILED (worker 11):
+l face index 5  (permutation = 0)
+Debug   : Surface 9: L = 40  H = 40
+Debug   : Found canonical face index 0  (permutation = 0)
+Debug   : Surface 10: L = 40  H = 40
+Debug   : Found canonical face index 2  (permutation = 0)
+Debug   : Surface 11: L = 10  H = 40
+Debug   : Found canonical face index 3  (permutation = 0)
+Debug   : Surface 12: L = 10  H = 40
+Debug   : Found canonical face index 1  (permutation = 0)
+Info    : Meshing volume 3 (Transfinite)
+Debug   : Surface 13: L = 16  H = 10
+Debug   : Found canonical face index 4  (permutation = 0)
+Debug   : Surface 14: L = 16  H = 10
+Debug   : Found canonical face index 5  (permutation = 0)
+Debug   : Surface 15: L = 16  H = 40
+Debug   : Found canonical face index 0  (permutation = 0)
+Debug   : Surface 16: L = 16  H = 40
+Debug   : Found canonical face index 2  (permutation = 0)
+Debug   : Surface 12: L = 10  H = 40
+Debug   : Found canonical face index 3  (permutation = 0)
+Debug   : Surface 17: L = 10  H = 40
+Debug   : Found canonical face index 1  (permutation = 0)
+Info    : Meshing volume 4 (Transfinite)
+Debug   : Surface 18: L = 40  H = 10
+Debug   : Found canonical face index 4  (permutation = 0)
+Debug   : Surface 19: L = 40  H = 10
+Debug   : Found canonical face index 5  (permutation = 0)
+Debug   : Surface 20: L = 40  H = 40
+Debug   : Found canonical face index 0  (permutation = 0)
+Debug   : Surface 21: L = 40  H = 40
+Debug   : Found canonical face index 2  (permutation = 0)
+Debug   : Surface 17: L = 10  H = 40
+Debug   : Found canonical face index 3  (permutation = 0)
+Debug   : Surface 22: L = 10  H = 40
+Debug   : Found canonical face index 1  (permutation = 0)
+Info    : Meshing volume 5 (Transfinite)
+Debug   : Surface 23: L = 8  H = 10
+Debug   : Found canonical face index 4  (permutation = 0)
+Debug   : Surface 24: L = 8  H = 10
+Debug   : Found canonical face index 5  (permutation = 0)
+Debug   : Surface 25: L = 8  H = 40
+Debug   : Found canonical face index 0  (permutation = 0)
+Debug   : Surface 26: L = 8  H = 40
+Debug   : Found canonical face index 2  (permutation = 0)
+Debug   : Surface 22: L = 10  H = 40
+Debug   : Found canonical face index 3  (permutation = 0)
+Debug   : Surface 27: L = 10  H = 40
+Debug   : Found canonical face index 1  (permutation = 0)
+Info    : Meshing volume 6 (Transfinite)
+Debug   : Surface 28: L = 8  H = 10
+Debug   : Found canonical face index 4  (permutation = 0)
+Debug   : Surface 29: L = 8  H = 10
+Debug   : Found canonical face index 5  (permutation = 0)
+Debug   : Surface 30: L = 8  H = 40
+Debug   : Found canonical face index 0  (permutation = 0)
+Debug   : Surface 31: L = 8  H = 40
+Debug   : Found canonical face index 2  (permutation = 0)
+Debug   : Surface 27: L = 10  H = 40
+Debug   : Found canonical face index 3  (permutation = 0)
+Debug   : Surface 11: L = 10  H = 40
+Debug   : Found canonical face index 1  (permutation = 0)
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _8dbc61e11c-20241220 OPENFOAM=2412 version=v2412
+Arch   : "LSB;label=32;scalar=64"
+Exec   : tistos_ru_of_n -case /scratch/slurm_tmpdir/job_6038699/worker_11/tistos_ru_of_n_DE_w11
+Date   : Jul 25 2026
+Time   : 18:54:38
+Host   : uc2n605.localdomain
+PID    : 616785
+I/O    : uncollated
+Case   : /scratch/slurm_tmpdir/job_6038699/worker_11/tistos_ru_of_n_DE_w11
+nProcs : 1
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+--> FOAM Warning : 
+    From Foam::polyMesh::polyMesh(const Foam::IOobject&, Foam::pointField&&, const Foam::cellShapeList&, const Foam::faceListList&, const Foam::wordList&, const Foam::wordList&, const Foam::word&, const Foam::word&, const Foam::wordList&, bool)
+    in file meshes/polyMesh/polyMeshFromShapeMesh.C at line 640
+    Found 24922 undefined faces in mesh; adding to default patch defaultFaces
+MappedFieldFixedValue: Copy data from "/scratch/slurm_tmpdir/job_6038699/worker_11/tistos_ru_of_n_DE_w11/../boundaryData_RU_INLET/n/boundaryData" to "/scratch/slurm_tmpdir/job_6038699/worker_11/tistos_ru_of_n_DE_w11/constant"
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : 2 ill-shaped tets are still in the mesh
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateMeshes('DE_w11', 'tistos_ru_of')
+                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/slurm_tmpdir/job_6038699/worker_11/tistos_files/createStatesAndMeshes.py", line 45, in CreateMeshes
+    dC.get(caseName + i).runCurrentState()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 11811, in runCurrentState
+    return _dtOOPythonSWIG.dtCase_runCurrentState(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+Exception: [ ofOpenFOAMCase::runCurrentState() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/solverKernel/ofOpenFOAMCase/ofOpenFOAMCase.cpp'
+*-> line '554'
+
+Instance of ::Foam::error thrown.
+err.what() = std::exception
+err.message() = Need at least 3 non-collinear points for planar interpolation, but only had 0 points
+
+
+Backtrace
+[ 1   ]     0x15387b6a481e /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x36f81e) [0x15387b6a481e]
+[ 2   ]     0x15387c020f8d /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x330f8d) [0x15387c020f8d]
+[ 3   ]     0x15388ad79bda /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1a9bda) [0x15388ad79bda]
+[ 4   ]     0x15388ad52723 PyObject_Vectorcall + 83
+[ 5   ]     0x15388ad63ddd _PyEval_EvalFrameDefault + 15949
+[ 6   ]     0x15388adedd5c PyEval_EvalCode + 172
+[ 7   ]     0x15388ae2767c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x15388ae2767c]
+[ 8   ]     0x15388ae24f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x15388ae24f16]
+[ 9   ]     0x15388ae20d5a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x250d5a) [0x15388ae20d5a]
+[ 10  ]     0x15388ae209be /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2509be) [0x15388ae209be]
+[ 11  ]     0x15388ae20071 Py_RunMain + 1201
+[ 12  ]     0x15388addc66b Py_BytesMain + 59
+[ 13  ]     0x15388a8295d0 /lib64/libc.so.6(+0x295d0) [0x15388a8295d0]
+[ 14  ]     0x15388a829680 __libc_start_main + 128
+[ 15  ]     0x556a57a7c095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+[cfd] CreateMeshes FAILED (exit 1)
+
 [optimize] CFD build FAILED (worker 11):
 bash: Agent: command not found
 bash: Agent: command not found
@@ -31,48 +178,6 @@ Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
-[uc2n601:3308830:0:3308830] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x33007000610075)
-==== backtrace (tid:3308830) ====
- 0 0x000000000006261a ucs_callbackq_cleanup()  ???:0
- 1 0x00000000000627da ucs_callbackq_cleanup()  ???:0
- 2 0x000000000003ebf0 __GI___sigaction()  :0
- 3 0x000000000058a78b dtOO::lVHOstateHandler::makeState()  /home/st/st_us-042020/st_ac136362/dtOO/src/generalKernel/interfaceHeaven/lVHOstateHandler.cpp:88
- 4 0x00000000004b9cde dtOO::dtXmlParser::loadStateToConst()  /home/st/st_us-042020/st_ac136362/dtOO/src/generalKernel/xmlHeaven/dtXmlParser.cpp:370
- 5 0x000000000047eca2 _wrap_dtXmlParser_loadStateToConst()  /home/st/st_us-042020/st_ac136362/dtOO/build/tools/libdtOOPythonSWIG/CMakeFiles/dtOOPythonSWIG.dir/dtOOPythonSWIGPYTHON_wrap.cxx:250670
- 6 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_is_local()  /usr/include/c++/11/bits/basic_string.h:230
- 7 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_dispose()  /usr/include/c++/11/bits/basic_string.h:239
- 8 0x000000000047eca2 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()  /usr/include/c++/11/bits/basic_string.h:672
- 9 0x000000000047eca2 _wrap_dtXmlParser_loadStateToConst()  /home/st/st_us-042020/st_ac136362/dtOO/build/tools/libdtOOPythonSWIG/CMakeFiles/dtOOPythonSWIG.dir/dtOOPythonSWIGPYTHON_wrap.cxx:250670
-10 0x00000000001aa58a cfunction_call()  ???:0
-11 0x00000000001808a0 _PyObject_MakeTpCall.localalias()  ???:0
-12 0x0000000000191591 _PyEval_EvalFrameDefault.localalias()  ???:0
-13 0x000000000021dd5c PyEval_EvalCode.localalias()  ???:0
-14 0x000000000025767c run_eval_code_obj()  ???:0
-15 0x0000000000254f16 run_mod()  ???:0
-16 0x00000000002529e5 pyrun_file()  ???:0
-17 0x0000000000251d53 _PyRun_SimpleFileObject()  ???:0
-18 0x0000000000251b6a _PyRun_AnyFileObject()  ???:0
-19 0x000000000024ff99 Py_RunMain.localalias()  ???:0
-20 0x000000000020c66b Py_BytesMain()  ???:0
-21 0x00000000000295d0 __libc_start_call_main()  ???:0
-22 0x0000000000029680 __libc_start_main_alias_2()  :0
-23 0x0000000000001095 _start()  ???:0
-=================================
-
-[optimize] CFD build FAILED (worker 11):
-bash: Agent: command not found
-bash: Agent: command not found
-bash: Agent: command not found
-OpenFoam-v2412 is unloaded 
-
-Don't forget to initialize OpenFOAM with:
-
-	source $FOAM_INIT
-
-or simply:
-
-	foamInit
-
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
@@ -91,5 +196,8 @@ Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
-[uc2n601:3311798:0:3311798] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x51)
+[cfd] ERROR: OpenFOAM case not complete at /scratch/slurm_tmpdir/job_6038699/worker_11/tistos_ru_of_n_DE_w11
+[cfd] wrote DE_w11.xml with 30 design parameters
+[cfd] CreateStates done for DE_w11
+[cfd] CreateMeshes done (tistos_ru_of_n)
 

@@ -29,46 +29,25 @@ Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[cfd] ERROR: OpenFOAM case not complete at /scratch/slurm_tmpdir/job_6038699/worker_19/tistos_ru_of_n_DE_w19
 [cfd] wrote DE_w19.xml with 30 design parameters
 [cfd] CreateStates done for DE_w19
-Traceback (most recent call last):
-  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_cfd_build.py", line 91, in <module>
-    main()
-    ~~~~^^
-  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_cfd_build.py", line 76, in main
-    csm.CreateMeshes(state, case_name)   # runCurrentState() on <case>_n
-    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
-  File "/scratch/slurm_tmpdir/job_6038680/worker_19/tistos_files/createStatesAndMeshes.py", line 40, in CreateMeshes
-    parser.loadStateToConst(state, cV)
-    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
-  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 22174, in loadStateToConst
-    return _dtOOPythonSWIG.dtXmlParser_loadStateToConst(self, stateName, cValRef)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
-Exception: [ labeledVectorHandling::dt__mustCast ]
-*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/generalKernel/interfaceHeaven/labeledVectorHandling.h'
-*-> line '314'
-
-dynamic_cast of this->at(ii) to labelHandling fails
-
-Backtrace
-[ 1   ]     0x14a3c3beb743 dtOO::labeledVectorHandling<dtOO::constValue*>::internalStdVector() + 451
-[ 2   ]     0x14a3c30bf78e dtOO::lVHOstateHandler::makeState(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 46
-[ 3   ]     0x14a3c2feecde dtOO::dtXmlParser::loadStateToConst(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::labeledVectorHandling<dtOO::constValue*>&) + 1134
-[ 4   ]     0x14a3c396eca2 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x47eca2) [0x14a3c396eca2]
-[ 5   ]     0x14a3d26c558a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x14a3d26c558a]
-[ 6   ]     0x14a3d269b8a0 _PyObject_MakeTpCall + 320
-[ 7   ]     0x14a3d26ac591 _PyEval_EvalFrameDefault + 5633
-[ 8   ]     0x14a3d2738d5c PyEval_EvalCode + 172
-[ 9   ]     0x14a3d277267c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14a3d277267c]
-[ 10  ]     0x14a3d276ff16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14a3d276ff16]
-[ 11  ]     0x14a3d276d9e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14a3d276d9e5]
-[ 12  ]     0x14a3d276cd53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14a3d276cd53]
-[ 13  ]     0x14a3d276cb6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14a3d276cb6a]
-[ 14  ]     0x14a3d276af99 Py_RunMain + 985
-[ 15  ]     0x14a3d272766b Py_BytesMain + 59
-[ 16  ]     0x14a3d22295d0 /lib64/libc.so.6(+0x295d0) [0x14a3d22295d0]
-[ 17  ]     0x14a3d2229680 __libc_start_main + 128
-[ 18  ]     0x5644da562095 _start + 37
-
-
-Honor thy error as a hidden intention. (Brian Eno)
+[cfd] CreateMeshes done (tistos_ru_of_n)

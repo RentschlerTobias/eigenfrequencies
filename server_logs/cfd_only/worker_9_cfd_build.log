@@ -29,9 +29,25 @@ Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
-[uc2n605:600014:0:600014] Caught signal 11 (Segmentation fault: invalid permissions for mapped object at address 0x55e2fa806810)
-==== backtrace (tid: 600014) ====
- 0 0x000000000006261a ucs_callbackq_cleanup()  ???:0
- 1 0x00000000000627da ucs_callbackq_cleanup()  ???:0
- 2 0x000000000003ebf0 __GI___sigaction()  :0
-=================================
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[cfd] ERROR: OpenFOAM case not complete at /scratch/slurm_tmpdir/job_6038699/worker_9/tistos_ru_of_n_DE_w9
+[cfd] wrote DE_w9.xml with 30 design parameters
+[cfd] CreateStates done for DE_w9
+[cfd] CreateMeshes done (tistos_ru_of_n)

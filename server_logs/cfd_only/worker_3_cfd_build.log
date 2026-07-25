@@ -29,4 +29,25 @@ Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
-[uc2n602:970554:0:970554] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x55a300000001)
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[cfd] ERROR: OpenFOAM case not complete at /scratch/slurm_tmpdir/job_6038699/worker_3/tistos_ru_of_n_DE_w3
+[cfd] wrote DE_w3.xml with 30 design parameters
+[cfd] CreateStates done for DE_w3
+[cfd] CreateMeshes done (tistos_ru_of_n)
