@@ -52,3 +52,6 @@ demo/beam/demo/
 
 # Claude Code personal settings (not shared)
 .claude/settings.local.json
+
+# Knowledge graph artifacts (regenerated locally by graphify)
+graphify-out/
