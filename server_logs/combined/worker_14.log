@@ -1,3 +1,117 @@
-Worker 14 ready on uc2n603.localdomain: PYRO:obj_89d87ed972f245cb8a7faf7fa0e8cbf8@uc2n603.localdomain:36649
-srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
-[2026-07-25T18:41:58.888] error: *** STEP 6038681.15 ON uc2n603 CANCELLED AT 2026-07-25T18:41:58 DUE to SIGNAL Terminated ***
+Worker 14 ready on uc2n601.localdomain: PYRO:obj_63ebcd42cd564c318fdc1dd20ea03b6e@uc2n601.localdomain:36235
+[optimize] dtOO build FAILED (worker 14):
+axL    2.792/   1.400 -- Small/Large/Total (   121/    83/  2080):    558 splits,    716 swaps,    396 collapses,   2184 moves
+Debug   :  iter   3 minL    0.402/   0.700 maxL    1.519/   1.400 -- Small/Large/Total (    77/     5/  2200):     95 splits,     59 swaps,     55 collapses,    908 moves
+Debug   :  iter   4 minL    0.428/   0.700 maxL    1.471/   1.400 -- Small/Large/Total (    64/     3/  2200):      6 splits,      8 swaps,      6 collapses,    286 moves
+Debug   :  iter   5 minL    0.428/   0.700 maxL    1.366/   1.400 -- Small/Large/Total (    71/     0/  2209):      4 splits,      4 swaps,      1 collapses,    153 moves
+Debug   :  iter   6 minL    0.428/   0.700 maxL    1.366/   1.400 -- Small/Large/Total (    68/     0/  2206):      0 splits,      0 swaps,      1 collapses,     66 moves
+Debug   :  iter   7 minL    0.428/   0.700 maxL    1.366/   1.400 -- Small/Large/Total (    68/     0/  2206):      0 splits,      0 swaps,      0 collapses,     24 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     8.08300E-03 sec (  0 %)
+Debug   :  CPU SPLIT    5.03629E-01 sec (  5 %) 
+Debug   :  CPU COLLAPS  1.09807E+00 sec ( 11 %) 
+Debug   :  CPU SMOOTH   8.61945E+00 sec ( 84 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    1.02292E+01 sec 
+Debug   :  ---------------------------------------
+Debug   :  iter   1 minL    0.428/   0.700 maxL    1.366/   1.400 -- Small/Large/Total (    68/     0/  2206):      0 splits,      0 swaps,      0 collapses,     20 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     8.94000E-04 sec (  0 %)
+Debug   :  CPU SPLIT    1.60112E-01 sec ( 17 %) 
+Debug   :  CPU COLLAPS  8.00440E-02 sec (  8 %) 
+Debug   :  CPU SMOOTH   7.18861E-01 sec ( 75 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    9.59911E-01 sec 
+Debug   :  ---------------------------------------
+Debug   : Type 23 1420 triangles generated, 635 internal nodes
+Info    : Meshing surface 14 (Parametric surface, MeshAdapt)
+Debug   : Recovering 4 model edges
+Debug   : Recovering 89 mesh edges (0 not recovered)
+Debug   : Boundary edges recovered for surface 14
+Debug   : Computing mesh size field at mesh nodes 89
+Debug   : Delaunizing the initial mesh
+Debug   : Starting to add internal nodes
+Debug   :  iter   1 minL    0.176/   0.700 maxL    5.269/   1.400 -- Small/Large/Total (    75/   265/   862):    305 splits,    305 swaps,     76 collapses,    809 moves
+Debug   :  iter   2 minL    0.240/   0.700 maxL    2.218/   1.400 -- Small/Large/Total (   149/    90/  1333):    269 splits,    198 swaps,    112 collapses,   1202 moves
+Debug   :  iter   3 minL    0.470/   0.700 maxL    1.403/   1.400 -- Small/Large/Total (    49/     1/  1318):    100 splits,     90 swaps,    105 collapses,    873 moves
+Debug   :  iter   4 minL    0.473/   0.700 maxL    1.384/   1.400 -- Small/Large/Total (    43/     0/  1315):      1 splits,      2 swaps,      2 collapses,    340 moves
+Debug   :  iter   5 minL    0.473/   0.700 maxL    1.384/   1.400 -- Small/Large/Total (    42/     0/  1315):      0 splits,      1 swaps,      0 collapses,    135 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     3.39200E-03 sec (  0 %)
+Debug   :  CPU SPLIT    2.08595E-01 sec (  5 %) 
+Debug   :  CPU COLLAPS  5.33845E-01 sec ( 14 %) 
+Debug   :  CPU SMOOTH   3.20113E+00 sec ( 81 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    3.94697E+00 sec 
+Debug   :  ---------------------------------------
+Debug   :  iter   1 minL    0.473/   0.700 maxL    1.384/   1.400 -- Small/Large/Total (    42/     0/  1315):      0 splits,      0 swaps,      0 collapses,     86 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     5.46000E-04 sec (  0 %)
+Debug   :  CPU SPLIT    9.72070E-02 sec ( 16 %) 
+Debug   :  CPU COLLAPS  4.87170E-02 sec (  8 %) 
+Debug   :  CPU SMOOTH   4.49680E-01 sec ( 75 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    5.96150E-01 sec 
+Debug   :  ---------------------------------------
+Debug   : Type 23 847 triangles generated, 380 internal nodes
+Info    : Meshing surface 15 (Parametric surface, MeshAdapt)
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6039055/worker_14/design.json
+[dtoo] applied 30 parameter overrides
+[dtoo] plugin ru_adjustDomain applied
+[dtoo] makeGrid on ruWithRounding_mechMesh ...
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 104, in main
+    bV.get(MECH_VOLUME).makeGrid()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 6017, in makeGrid
+    return _dtOOPythonSWIG.boundedVolume_makeGrid(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+Exception: [ map2dTo3d::reparamOnFace() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/geometryKernel/analyticGeometryHeaven/map2dTo3d.cpp'
+*-> line '250'
+
+condition: !md.converged() is true.
+
+Backtrace
+[ 1   ]     0x14edae9ee654 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2b9654) [0x14edae9ee654]
+[ 2   ]     0x14edaeda332a dtOO::dtGmshFace::reparamOnFace(CGAL::Point_3<CGAL::Epick>) const + 26
+[ 3   ]     0x14edaeda338b dtOO::dtGmshFace::parFromPoint(SPoint3 const&, bool, bool) const + 59
+[ 4   ]     0x14edadc9b2dd GEdge::reparamOnFace(GFace const*, double, int) const + 125
+[ 5   ]     0x14edade656fe reparamMeshVertexOnFace(MVertex const*, GFace const*, SPoint2&, bool, bool, int) + 590
+[ 6   ]     0x14edadee8d51 /home/st/st_us-042020/st_ac136362/dtOO/install/lib64/libgmsh.so.4.14(+0x729d51) [0x14edadee8d51]
+[ 7   ]     0x14edadef7817 meshGFace::operator()(GFace*, bool) + 775
+[ 8   ]     0x14edaedcd718 dtOO::dtMeshGFace::operator()(dtOO::dtGmshFace*) + 24
+[ 9   ]     0x14edaee5c042 dtOO::bVOMeshRule::preUpdate() + 5650
+[ 10  ]     0x14edaee422d5 dtOO::bVOSubject::preNotify() + 53
+[ 11  ]     0x14edaeea957e dtOO::gmshBoundedVolume::makePreGrid() + 6110
+[ 12  ]     0x14edaeea4d47 dtOO::gmshBoundedVolume::makeGrid() + 23
+[ 13  ]     0x14edaf42d14d /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x33d14d) [0x14edaf42d14d]
+[ 14  ]     0x14edbe1d1bda /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1a9bda) [0x14edbe1d1bda]
+[ 15  ]     0x14edbe1aa723 PyObject_Vectorcall + 83
+[ 16  ]     0x14edbe1bbddd _PyEval_EvalFrameDefault + 15949
+[ 17  ]     0x14edbe245d5c PyEval_EvalCode + 172
+[ 18  ]     0x14edbe27f67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14edbe27f67c]
+[ 19  ]     0x14edbe27cf16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14edbe27cf16]
+[ 20  ]     0x14edbe27a9e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14edbe27a9e5]
+[ 21  ]     0x14edbe279d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14edbe279d53]
+[ 22  ]     0x14edbe279b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14edbe279b6a]
+[ 23  ]     0x14edbe277f99 Py_RunMain + 985
+[ 24  ]     0x14edbe23466b Py_BytesMain + 59
+[ 25  ]     0x14edbde295d0 /lib64/libc.so.6(+0x295d0) [0x14edbde295d0]
+[ 26  ]     0x14edbde29680 __libc_start_main + 128
+[ 27  ]     0x55bb312e2095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+

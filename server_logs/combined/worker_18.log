@@ -1,3 +1,1 @@
-Worker 18 ready on uc2n601.localdomain: PYRO:obj_4a1bd268d83b489cb61a95729a8fd52d@uc2n601.localdomain:35853
-srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
-[2026-07-25T18:41:58.890] error: *** STEP 6038681.19 ON uc2n601 CANCELLED AT 2026-07-25T18:41:58 DUE to SIGNAL Terminated ***
+Worker 18 ready on uc2n605.localdomain: PYRO:obj_c50d2b85644e47dbb42d0d6420cbb532@uc2n605.localdomain:35911

@@ -1,0 +1,53 @@
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[cfd] wrote DE_w6.xml with 30 design parameters
+[cfd] CreateStates done for DE_w6
+[cfd] CreateMeshes done (tistos_ru_of_n)
+CFD_CASE_DIR /scratch/slurm_tmpdir/job_6039055/worker_6/tistos_ru_of_n_DE_w6

@@ -1,0 +1,137 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+========================================
+[DE] variant=combined eval_mode=combined on uc2n601.localdomain
+[DE] POP_SIZE=32  MAX_GEN=10  SEED=42
+[DE] W_RESONANCE=0.5  CFD_ENABLED=1
+[DE] SLURM: 8 nodes x 4 tasks/node, job 6039022
+[DE] state=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json
+[DE] history=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_combined.jsonl
+[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_6039022
+========================================
+[DE] Starting 32 workers via srun (distributed across 8 nodes)...
+[DE] Running DE client...
+[DE] main() entered pid=3381278 cwd=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies
+[DE] configs loaded pop_size=32 max_gen=10 eval_mode=combined w_resonance=0.5 labels=['cV_ru_alpha_1_ex_0.0', 'cV_ru_alpha_1_ex_0.5', 'cV_ru_alpha_1_ex_1.0', 'cV_ru_alpha_2_ex_0.0', 'cV_ru_alpha_2_ex_0.5', 'cV_ru_alpha_2_ex_1.0', 'cV_ru_offsetM_ex_0.0', 'cV_ru_offsetM_ex_0.5', 'cV_ru_offsetM_ex_1.0', 'cV_ru_ratio_0.0', 'cV_ru_ratio_0.5', 'cV_ru_ratio_1.0', 'cV_ru_offsetPhiR_ex_0.0', 'cV_ru_offsetPhiR_ex_0.5', 'cV_ru_offsetPhiR_ex_1.0', 'cV_ru_bladeLength_0.0', 'cV_ru_bladeLength_0.5', 'cV_ru_bladeLength_1.0', 'cV_ru_t_le_a_0', 'cV_ru_t_le_a_0.5', 'cV_ru_t_le_a_1', 'cV_ru_t_mid_a_0', 'cV_ru_t_mid_a_0.5', 'cV_ru_t_mid_a_1', 'cV_ru_t_te_a_0', 'cV_ru_t_te_a_0.5', 'cV_ru_t_te_a_1', 'cV_ru_u_mid_a_0', 'cV_ru_u_mid_a_0.5', 'cV_ru_u_mid_a_1']
+[DE] discovery: uri_dir=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/combined/uris expected=32 timeout=600s
+[DE] discovery: 0/32 URIs after 0s
+[DE] Discovered 32 workers from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/combined/uris
+[DE] discovery done n_workers=32 elapsed=2.3s
+[DE] population=32 dim=30 mutation=0.8 crossover=0.9 max_gen=10 tol=0.01 seed=42 workers=32
+[DE] state_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json history_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_combined.jsonl
+[DE] Resuming from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json at generation 2 (best=6.391431).
+[DE] gen 2: dispatching 32 trial evals to 32 workers
+gen 2:   0%|                                             | 0/32 [00:00<?, ?it/s]gen 2:   3%|▍             | 1/32 [02:33<1:19:14, 153.39s/it, ok=0/32 best=1e+06]gen 2:   6%|▉             | 2/32 [06:12<1:35:58, 191.95s/it, ok=1/32 best=7.539]gen 2:  19%|███▏             | 6/32 [06:36<21:03, 48.61s/it, ok=5/32 best=6.891]gen 2:  59%|████████▉      | 19/32 [06:51<02:29, 11.52s/it, ok=18/32 best=6.891]gen 2: 100%|███████████████| 32/32 [07:00<00:00, 13.15s/it, ok=31/32 best=6.352]
+[DE] Generation 2 best=6.352273 mean=8.210885 ok=32/32
+[DE]   best fitness: f_resonance=3.849 f_cfd=2.503 eta=0.9222 vcav=0.002119 dH=-1.788
+[DE] gen 3: dispatching 32 trial evals to 32 workers
+gen 3:   0%|                                             | 0/32 [00:00<?, ?it/s]gen 3:   3%|▍             | 1/32 [03:33<1:50:28, 213.82s/it, ok=1/32 best=9.991]gen 3:  28%|█████             | 9/32 [03:51<07:21, 19.19s/it, ok=9/32 best=5.34]gen 3:  66%|██████████▌     | 21/32 [04:07<01:21,  7.36s/it, ok=21/32 best=5.34]gen 3:  91%|██████████████▌ | 29/32 [04:29<00:22,  7.36s/it, ok=29/32 best=5.34]gen 3:  94%|███████████████ | 30/32 [04:40<00:11,  5.82s/it, ok=30/32 best=5.34]gen 3:  97%|███████████████▌| 31/32 [04:59<00:05,  5.82s/it, ok=31/32 best=5.34]gen 3: 100%|████████████████| 32/32 [06:31<00:00, 11.61s/it, ok=32/32 best=5.34]gen 3: 100%|████████████████| 32/32 [06:31<00:00, 12.23s/it, ok=32/32 best=5.34]
+[DE] Generation 3 best=5.339876 mean=7.603759 ok=32/32
+[DE]   best fitness: f_resonance=3.225 f_cfd=2.115 eta=0.9261 vcav=0.00375 dH=-2.242
+[DE] gen 4: dispatching 32 trial evals to 32 workers
+gen 4:   0%|                                             | 0/32 [00:00<?, ?it/s]gen 4:   3%|▍             | 1/32 [03:31<1:49:09, 211.28s/it, ok=1/32 best=8.417]gen 4:  12%|██▏              | 4/32 [03:47<20:39, 44.26s/it, ok=4/32 best=5.283]gen 4:  59%|████████▉      | 19/32 [04:05<01:38,  7.57s/it, ok=19/32 best=5.283]gen 4:  94%|██████████████ | 30/32 [04:27<00:15,  7.57s/it, ok=30/32 best=5.283]gen 4:  97%|██████████████▌| 31/32 [04:28<00:04,  4.78s/it, ok=31/32 best=5.283]gen 4: 100%|███████████████| 32/32 [04:41<00:00,  8.79s/it, ok=32/32 best=5.283]
+[DE] Generation 4 best=5.283164 mean=7.389153 ok=32/32
+[DE]   best fitness: f_resonance=2.647 f_cfd=2.636 eta=0.9155 vcav=0.001079 dH=-1.573
+[DE] gen 5: dispatching 32 trial evals to 32 workers
+gen 5:   0%|                                             | 0/32 [00:00<?, ?it/s]gen 5:   3%|▍             | 1/32 [02:53<1:29:41, 173.60s/it, ok=0/32 best=1e+06]gen 5:   6%|█                | 2/32 [03:32<47:10, 94.36s/it, ok=1/32 best=5.706]gen 5:  31%|█████           | 10/32 [03:49<05:09, 14.08s/it, ok=9/32 best=5.117]gen 5:  69%|██████████▎    | 22/32 [04:05<00:57,  5.79s/it, ok=21/32 best=5.117]gen 5:  97%|██████████████▌| 31/32 [04:26<00:05,  5.79s/it, ok=30/32 best=5.117]gen 5: 100%|███████████████| 32/32 [05:06<00:00,  5.90s/it, ok=31/32 best=5.117]gen 5: 100%|███████████████| 32/32 [05:06<00:00,  9.57s/it, ok=31/32 best=5.117]
+[DE] Generation 5 best=5.116784 mean=6.720881 ok=32/32
+[DE]   best fitness: f_resonance=2.849 f_cfd=2.268 eta=0.9254 vcav=0.002454 dH=-2.08
+[DE] gen 6: dispatching 32 trial evals to 32 workers
+gen 6:   0%|                                             | 0/32 [00:00<?, ?it/s]gen 6:   3%|▍             | 1/32 [03:28<1:47:49, 208.70s/it, ok=1/32 best=8.892]gen 6:  22%|███▋             | 7/32 [03:43<10:01, 24.08s/it, ok=7/32 best=5.461]gen 6:  53%|█████████        | 17/32 [04:00<06:01, 24.08s/it, ok=17/32 best=4.8]gen 6:  56%|█████████▌       | 18/32 [04:01<01:56,  8.33s/it, ok=18/32 best=4.8]gen 6:  81%|████████████▏  | 26/32 [04:20<00:49,  8.33s/it, ok=26/32 best=4.793]gen 6:  84%|████████████▋  | 27/32 [04:23<00:28,  5.69s/it, ok=27/32 best=4.793]gen 6:  97%|██████████████▌| 31/32 [04:40<00:05,  5.69s/it, ok=31/32 best=4.793]gen 6: 100%|███████████████| 32/32 [04:41<00:00,  5.11s/it, ok=32/32 best=4.793]gen 6: 100%|███████████████| 32/32 [04:41<00:00,  8.79s/it, ok=32/32 best=4.793]
+[DE] Generation 6 best=4.793442 mean=6.494067 ok=32/32
+[DE]   best fitness: f_resonance=2.679 f_cfd=2.115 eta=0.9261 vcav=0.00375 dH=-2.242
+[DE] gen 7: dispatching 32 trial evals to 32 workers
+gen 7:   0%|                                             | 0/32 [00:00<?, ?it/s][2026-07-25T20:39:10.034] error: *** JOB 6039022 ON uc2n601 CANCELLED AT 2026-07-25T20:39:10 DUE TO TIME LIMIT ***
+[DE] Worker error for individual 30: receiving: not enough data
+gen 7:   3%|▍             | 1/32 [02:09<1:06:50, 129.39s/it, ok=0/32 best=1e+06][DE] Worker error for individual 11: receiving: not enough data
+[DE] Worker error for individual 13: receiving: not enough data
+[DE] Worker error for individual 23: receiving: not enough data
+[DE] Worker error for individual 24: receiving: not enough data
+[DE] Worker error for individual 8: receiving: not enough data
+[DE] Worker error for individual 6: receiving: not enough data
+[DE] Worker error for individual 22: receiving: not enough data
+[DE] Worker error for individual 21: receiving: not enough data
+[DE] Worker error for individual 31: receiving: not enough data
+[DE] Worker error for individual 27: receiving: not enough data
+[DE] Worker error for individual 12: receiving: not enough data
+[DE] Worker error for individual 26: receiving: not enough data
+[DE] Worker error for individual 7: receiving: not enough data
+[DE] Worker error for individual 16: receiving: not enough data
+[DE] Worker error for individual 0: receiving: not enough data
+[DE] Worker error for individual 15: receiving: not enough data
+[DE] Worker error for individual 1: receiving: not enough data
+[DE] Worker error for individual 19: receiving: not enough data
+[DE] Worker error for individual 25: receiving: not enough data
+[DE] Worker error for individual 4: receiving: not enough data
+[DE] Worker error for individual 10: receiving: not enough data
+[DE] Worker error for individual 3: receiving: not enough data
+[DE] Worker error for individual 20: receiving: not enough data
+[DE] Worker error for individual 5: receiving: not enough data
+[DE] Worker error for individual 29: receiving: not enough data
+[DE] Worker error for individual 14: receiving: not enough data
+[DE] Worker error for individual 2: receiving: not enough data
+[DE] Worker error for individual 9: receiving: not enough data
+[DE] Worker error for individual 17: receiving: not enough data
+[DE] Worker error for individual 18: receiving: not enough data
+[DE] Worker error for individual 28: receiving: not enough data
+gen 7: 100%|████████████████| 32/32 [02:09<00:00,  4.04s/it, ok=0/32 best=1e+06]
+[DE] Generation 7 best=4.793442 mean=6.494067 ok=32/32
+[DE]   best fitness: f_resonance=2.679 f_cfd=2.115 eta=0.9261 vcav=0.00375 dH=-2.242
+[DE] gen 8: dispatching 32 trial evals to 32 workers
+gen 8:   0%|                                             | 0/32 [00:00<?, ?it/s][DE] Worker error for individual 12: cannot connect to ('uc2n607.localdomain', 34069): [Errno 111] Connection refused
+[DE] Worker error for individual 8: cannot connect to ('uc2n601.localdomain', 38733): [Errno 111] Connection refused
+[DE] Worker error for individual 3: cannot connect to ('uc2n605.localdomain', 35093): [Errno 111] Connection refused
+[DE] Worker error for individual 20: cannot connect to ('uc2n606.localdomain', 35365): [Errno 111] Connection refused
+[DE] Worker error for individual 11: cannot connect to ('uc2n605.localdomain', 36419): [Errno 111] Connection refused
+[DE] Worker error for individual 16: cannot connect to ('uc2n601.localdomain', 34897): [Errno 111] Connection refused
+[DE] Worker error for individual 7: cannot connect to ('uc2n602.localdomain', 36637): [Errno 111] Connection refused
+[DE] Worker error for individual 2: cannot connect to ('uc2n604.localdomain', 37797): [Errno 111] Connection refused
+[DE] Worker error for individual 15: cannot connect to ('uc2n606.localdomain', 37349): [Errno 111] Connection refused
+[DE] Worker error for individual 6: cannot connect to ('uc2n607.localdomain', 41573): [Errno 111] Connection refused
+[DE] Worker error for individual 1: cannot connect to ('uc2n608.localdomain', 46101): [Errno 111] Connection refused
+[DE] Worker error for individual 19: cannot connect to ('uc2n602.localdomain', 46221): [Errno 111] Connection refused
+[DE] Worker error for individual 14: cannot connect to ('uc2n607.localdomain', 41703): [Errno 111] Connection refused
+[DE] Worker error for individual 18: cannot connect to ('uc2n608.localdomain', 37813): [Errno 111] Connection refused
+[DE] Worker error for individual 10: cannot connect to ('uc2n603.localdomain', 37887): [Errno 111] Connection refused
+[DE] Worker error for individual 0: cannot connect to ('uc2n601.localdomain', 40637): [Errno 111] Connection refused
+[DE] Worker error for individual 5: cannot connect to ('uc2n608.localdomain', 40371): [Errno 111] Connection refused
+[DE] Worker error for individual 9: cannot connect to ('uc2n604.localdomain', 45009): [Errno 111] Connection refused
+[DE] Worker error for individual 13: cannot connect to ('uc2n602.localdomain', 44685): [Errno 111] Connection refused
+[DE] Worker error for individual 4: cannot connect to ('uc2n606.localdomain', 38623): [Errno 111] Connection refused
+[DE] Worker error for individual 22: cannot connect to ('uc2n604.localdomain', 34693): [Errno 111] Connection refused
+[DE] Worker error for individual 23: cannot connect to ('uc2n602.localdomain', 41357): [Errno 111] Connection refused
+[DE] Worker error for individual 17: cannot connect to ('uc2n603.localdomain', 34449): [Errno 111] Connection refused
+[DE] Worker error for individual 27: cannot connect to ('uc2n606.localdomain', 32875): [Errno 111] Connection refused
+[DE] Worker error for individual 21: cannot connect to ('uc2n605.localdomain', 38383): [Errno 111] Connection refused
+[DE] Worker error for individual 26: cannot connect to ('uc2n605.localdomain', 39667): [Errno 111] Connection refused
+[DE] Worker error for individual 25: cannot connect to ('uc2n608.localdomain', 33323): [Errno 111] Connection refused
+[DE] Worker error for individual 28: cannot connect to ('uc2n603.localdomain', 37641): [Errno 111] Connection refused
+[DE] Worker error for individual 24: cannot connect to ('uc2n607.localdomain', 45309): [Errno 111] Connection refused
+[DE] Worker error for individual 31: cannot connect to ('uc2n603.localdomain', 44125): [Errno 111] Connection refused
+[DE] Worker error for individual 30: cannot connect to ('uc2n601.localdomain', 42519): [Errno 111] Connection refused
+[DE] Worker error for individual 29: cannot connect to ('uc2n604.localdomain', 45397): [Errno 111] Connection refused
+gen 8: 100%|██████████████| 32/32 [00:00<00:00, 2815.44it/s, ok=0/32 best=1e+06]
+[DE] Generation 8 best=4.793442 mean=6.494067 ok=32/32
+[DE]   best fitness: f_resonance=2.679 f_cfd=2.115 eta=0.9261 vcav=0.00375 dH=-2.242
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[601-608]
+Job ID: 6039022
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: TIMEOUT (exit code 0)
+Nodes: 8
+Cores per node: 128
+CPU Utilized: 00:00:01
+CPU Efficiency: 0.00% of 21-15:57:52 core-walltime
+Job Wall-clock time: 00:30:28
+Memory Utilized: 2.25 GB
+Memory Efficiency: 0.23% of 1000.00 GB (1000.00 MB/core)

@@ -2,7 +2,7 @@
 #SBATCH --job-name=de_combined
 #SBATCH --output=de_combined_%j.out
 #SBATCH --time=00:30:00
-#SBATCH --nodes=6
+#SBATCH --nodes=8
 #SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=16
 #SBATCH --hint=nomultithread
@@ -24,7 +24,7 @@ set -euo pipefail
 export RUN_TAG="combined"
 export EVAL_MODE="combined"
 export W_RESONANCE="${W_RESONANCE:-0.5}"
-export DE_MAX_GEN="${DE_MAX_GEN:-1}"
+export DE_MAX_GEN="${DE_MAX_GEN:-10}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # $BASH_SOURCE resolves to the spooled copy under SLURM; cluster/ sits next to it
