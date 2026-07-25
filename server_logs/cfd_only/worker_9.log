@@ -1,1 +1,79 @@
-Worker 9 ready on uc2n605.localdomain: PYRO:obj_7fb5c035cf2f4231ab6f7e399946f721@uc2n605.localdomain:35647
+Worker 9 ready on uc2n605.localdomain: PYRO:obj_35b66aaecf9b46e5aca66ab71a4354f4@uc2n605.localdomain:36533
+[optimize] CFD build FAILED (worker 9):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[uc2n605:597169:0:597169] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid: 597169) ====
+ 0 0x000000000006261a ucs_callbackq_cleanup()  ???:0
+ 1 0x00000000000627da ucs_callbackq_cleanup()  ???:0
+ 2 0x000000000003ebf0 __GI___sigaction()  :0
+=================================
+
+[optimize] CFD build FAILED (worker 9):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[uc2n605:600014:0:600014] Caught signal 11 (Segmentation fault: invalid permissions for mapped object at address 0x55e2fa806810)
+==== backtrace (tid: 600014) ====
+ 0 0x000000000006261a ucs_callbackq_cleanup()  ???:0
+ 1 0x00000000000627da ucs_callbackq_cleanup()  ???:0
+ 2 0x000000000003ebf0 __GI___sigaction()  :0
+=================================
+

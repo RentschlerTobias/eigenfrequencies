@@ -1,1 +1,69 @@
-Worker 10 ready on uc2n606.localdomain: PYRO:obj_486f4bfd2ed5476ea23ca74b79586fef@uc2n606.localdomain:43041
+Worker 10 ready on uc2n606.localdomain: PYRO:obj_c6933a7f588b4110a5a8ceb0a42cf201@uc2n606.localdomain:46167
+[optimize] CFD build FAILED (worker 10):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[uc2n606:651550:0:651550] Caught signal 11 (Segmentation fault: address not mapped to object at address 0xffffffff00000001)
+
+[optimize] CFD build FAILED (worker 10):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[uc2n606:654468:0:654468] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x4000400000075)
+

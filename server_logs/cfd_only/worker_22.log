@@ -1,1 +1,116 @@
-Worker 22 ready on uc2n605.localdomain: PYRO:obj_f4ba1bfec522454fbdde021ef3f1c414@uc2n605.localdomain:43417
+Worker 22 ready on uc2n605.localdomain: PYRO:obj_8688a93344594b7f88c403a0af849d63@uc2n605.localdomain:37577
+[optimize] CFD build FAILED (worker 22):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[cfd] wrote DE_w22.xml with 30 design parameters
+[cfd] CreateStates done for DE_w22
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_cfd_build.py", line 91, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_cfd_build.py", line 76, in main
+    csm.CreateMeshes(state, case_name)   # runCurrentState() on <case>_n
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/scratch/slurm_tmpdir/job_6038680/worker_22/tistos_files/createStatesAndMeshes.py", line 40, in CreateMeshes
+    parser.loadStateToConst(state, cV)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 22174, in loadStateToConst
+    return _dtOOPythonSWIG.dtXmlParser_loadStateToConst(self, stateName, cValRef)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: [ labeledVectorHandling::dt__mustCast ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/generalKernel/interfaceHeaven/labeledVectorHandling.h'
+*-> line '314'
+
+dynamic_cast of this->at(ii) to labelHandling fails
+
+Backtrace
+[ 1   ]     0x1552348eb743 dtOO::labeledVectorHandling<dtOO::constValue*>::internalStdVector() + 451
+[ 2   ]     0x155233dbf78e dtOO::lVHOstateHandler::makeState(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 46
+[ 3   ]     0x155233ceecde dtOO::dtXmlParser::loadStateToConst(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::labeledVectorHandling<dtOO::constValue*>&) + 1134
+[ 4   ]     0x15523466eca2 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x47eca2) [0x15523466eca2]
+[ 5   ]     0x15524345758a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x15524345758a]
+[ 6   ]     0x15524342d8a0 _PyObject_MakeTpCall + 320
+[ 7   ]     0x15524343e591 _PyEval_EvalFrameDefault + 5633
+[ 8   ]     0x1552434cad5c PyEval_EvalCode + 172
+[ 9   ]     0x15524350467c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x15524350467c]
+[ 10  ]     0x155243501f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x155243501f16]
+[ 11  ]     0x1552434ff9e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1552434ff9e5]
+[ 12  ]     0x1552434fed53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x1552434fed53]
+[ 13  ]     0x1552434feb6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x1552434feb6a]
+[ 14  ]     0x1552434fcf99 Py_RunMain + 985
+[ 15  ]     0x1552434b966b Py_BytesMain + 59
+[ 16  ]     0x1552430295d0 /lib64/libc.so.6(+0x295d0) [0x1552430295d0]
+[ 17  ]     0x155243029680 __libc_start_main + 128
+[ 18  ]     0x555dab746095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+
+[optimize] CFD build FAILED (worker 22):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[uc2n605:600011:0:600011] Caught signal 11 (Segmentation fault: invalid permissions for mapped object at address 0x5608ba470f40)
+==== backtrace (tid: 600011) ====
+ 0 0x000000000006261a ucs_callbackq_cleanup()  ???:0
+ 1 0x00000000000627da ucs_callbackq_cleanup()  ???:0
+ 2 0x000000000003ebf0 __GI___sigaction()  :0
+=================================
+
