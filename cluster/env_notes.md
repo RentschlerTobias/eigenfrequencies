@@ -62,15 +62,17 @@ sbatch cluster/submit_de_cfd_only.sh      # EVAL_MODE=cfd_only  (reine CFD-Objec
 sbatch cluster/submit_de_combined.sh      # EVAL_MODE=combined  (CFD + Resonanz-Penalty)
 ```
 
-`submit_de_cfd_only.sh` ist Smoke-konfiguriert (dev_cpu_il, 8 Nodes × 4 Tasks × 16 CPUs,
-30 min, POP_SIZE=32, MAX_GEN=1) — Pipeline-Check. `submit_de_combined.sh` ist
-Produktions-konfiguriert (cpu_il, 16 Nodes × 4 Tasks × 16 CPUs, 8h, POP_SIZE=64,
-MAX_GEN=50, ~4-5h Laufzeit). Gemeinsamer Job-Body liegt in
-`cluster/_submit_de_common.sh`; `cluster/submit_de.sh` bleibt als Legacy-Wrapper
+`submit_de_cfd_only.sh` und `submit_de_combined.sh` sind beide Produktions-konfiguriert
+(cpu_il, 16 Nodes × 4 Tasks × 16 CPUs, 8h, POP_SIZE=64, MAX_GEN=50) — gleiche Parameter
+für direkten Vergleich; nur EVAL_MODE und W_RESONANCE unterscheiden sich (cfd_only: 0.0,
+combined: 0.5). cfd_only läuft ~2-3h (kein FEniCSx), combined ~4-5h. Gemeinsamer Job-Body
+liegt in `cluster/_submit_de_common.sh`; `cluster/submit_de.sh` bleibt als Legacy-Wrapper
 (`RUN_TAG=legacy`, EVAL_MODE=combined) erhalten.
 
-Smoke-Override für Combined:
+Smoke-Override (für Pipeline-Checks):
 ```
+sbatch --partition=dev_cpu_il --nodes=6 --time=00:30:00 \
+       --export=ALL,DE_MAX_GEN=1 cluster/submit_de_cfd_only.sh
 sbatch --partition=dev_cpu_il --nodes=8 --time=00:30:00 \
        --export=ALL,DE_MAX_GEN=1 cluster/submit_de_combined.sh
 ```
