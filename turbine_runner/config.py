@@ -4,12 +4,29 @@ Mirrors the dataclass style of ``demo/beam/config.py`` but targets an externally
 generated runner mesh (from dtOO) instead of a parametric beam.
 """
 
+import math
 import os
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def _load_n_rpm_from_template() -> float:
+    """Read cV_n (rpm) from templateState.xml — single source of truth for the CFD operating point."""
+    import xml.etree.ElementTree as ET
+
+    template_path = os.path.join(_HERE, "cfd", "tistos_files", "templateState.xml")
+    tree = ET.parse(template_path)
+    for cv in tree.iter("constValue"):
+        if cv.get("label") == "cV_n":
+            return float(cv.get("value"))
+    raise RuntimeError(f"cV_n not found in {template_path}")
+
+
+# cV_n in templateState.xml drives MRFProperties omega = 2*pi*n/60. N_RPM env overrides.
+_N_RPM_DEFAULT = float(os.environ.get("N_RPM") or _load_n_rpm_from_template())
 
 
 @dataclass
@@ -200,7 +217,8 @@ class OptimizationConfig:
 
     Attributes:
         Z_guidevanes: Number of guide vanes (determines blade-passing frequency)
-        n_rpm: Runner rotational speed in rpm
+        n_rpm: Runner rotational speed in rpm (from cV_n in templateState.xml;
+            N_RPM env overrides for parametric studies)
         max_harmonic: Highest harmonic to check (e.g., 6 covers up to 6×f_bp)
         margin_hz: Minimum half-width of forbidden interval around each harmonic (Hz)
         margin_fraction: Proportional half-width (e.g., 0.05 = 5% of center freq)
@@ -209,7 +227,7 @@ class OptimizationConfig:
         method: scipy.optimize.minimize method (gradient-free recommended)
     """
     Z_guidevanes: int = 18
-    n_rpm: float = 90.0
+    n_rpm: float = _N_RPM_DEFAULT
     max_harmonic: int = 6
     margin_hz: float = 5.0
     margin_fraction: float = 0.05
@@ -263,14 +281,15 @@ class CFDConfig:
     reference so results are comparable.
 
     Attributes:
-        omega: Runner angular velocity in rad/s (P = moment * omega)
+        omega: Runner angular velocity in rad/s (P = moment * omega);
+            derived as 2*pi*n_rpm/60 from the same cV_n source
         rho: Fluid density in kg/m^3
         g: Gravitational acceleration in m/s^2
         design_head: Target design head dH_zul in m (head objective = |dH - design_head|)
         operating_point: Postprocessing operating-point key (de_framework uses "n")
         end_time: simpleFoam turbulent-stage endTime (validity = last step == end_time)
     """
-    omega: float = 7.53982
+    omega: float = 2.0 * math.pi * _N_RPM_DEFAULT / 60.0
     rho: float = 1000.0
     g: float = 9.81
     design_head: float = -2.4
