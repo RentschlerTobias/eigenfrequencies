@@ -1,20 +1,12 @@
 #!/usr/bin/env python3
 """STAGE CFD-1: build the OpenFOAM case for a design via dtOO (tistos_ru_of).
 
-Runs INSIDE the dtOO container / ~/pe env, next to createStatesAndMeshes.py.
-Self-contained: no FEniCSx/turbine_runner.config imports.
-
-Mirrors de_framework's tistos.pre() + createStatesAndMeshes:
-  1. write <state>.xml from templateState.xml with the design const-values,
-  2. CreateStates(state)   -> apply ru_adjustDomain, extract state,
-  3. CreateMeshes(state, "tistos_ru_of") -> dC.get("tistos_ru_of_n").runCurrentState()
-     builds the OpenFOAM case dir  tistos_ru_of_n_<state>/  (system/constant/0).
-
-The actual simpleFoam solve is a SEPARATE step (tistos_files/sbatch.tistos_ru_of.sh),
-run by turbine_runner/optimize.py::_run_cfd after this script produces the case.
+Mirrors de_framework's sim_tistos.py:mesh() — CreateStates and CreateMeshes
+run in TWO SEPARATE python3 subprocesses so dtOO SWIG/Gmsh state does not
+accumulate within one process (segfault / labeledVectorHandling dt__mustCast).
 
 CWD must contain the staged tistos_files/ and xml/ (siblings), because
-createStatesAndMeshes.py loads "tistos_files/machine.xml" and machine.xml
+createStatesAndMeshes loads "tistos_files/machine.xml" and machine.xml
 includes "./xml/...". turbine_runner/optimize.py stages these per worker.
 
 Usage:  python3 dtoo_cfd_build.py <design.json> <state> [caseName]
@@ -25,6 +17,7 @@ Prints: the OpenFOAM case directory (absolute) on the last stdout line as
 import sys
 import os
 import json
+import subprocess
 import xml.etree.ElementTree as ET
 
 CASE_NAME = "tistos_ru_of"
@@ -64,16 +57,32 @@ def main() -> None:
         with open(design_json) as fh:
             design = json.load(fh)
 
-    # tistos_files/ must be importable as a package from CWD.
-    sys.path.insert(0, os.getcwd())
-
     _write_state_xml(state, design)
 
-    from tistos_files.createStatesAndMeshes import createStatesAndMeshes
-    csm = createStatesAndMeshes()
-    csm.CreateStates(state)
+    cmd_states = [
+        "python3", "-c",
+        f"from tistos_files.createStatesAndMeshes import *; "
+        f"createStatesAndMeshes().CreateStates({state!r})",
+    ]
+    r1 = subprocess.run(cmd_states, capture_output=True, text=True, timeout=300)
+    sys.stdout.write(r1.stdout)
+    sys.stderr.write(r1.stderr)
+    if r1.returncode != 0:
+        print(f"[cfd] CreateStates FAILED (exit {r1.returncode})", file=sys.stderr)
+        sys.exit(1)
     print(f"[cfd] CreateStates done for {state}")
-    csm.CreateMeshes(state, case_name)   # runCurrentState() on <case>_n
+
+    cmd_meshes = [
+        "python3", "-c",
+        f"from tistos_files.createStatesAndMeshes import *; "
+        f"createStatesAndMeshes().CreateMeshes({state!r}, {case_name!r})",
+    ]
+    r2 = subprocess.run(cmd_meshes, capture_output=True, text=True, timeout=300)
+    sys.stdout.write(r2.stdout)
+    sys.stderr.write(r2.stderr)
+    if r2.returncode != 0:
+        print(f"[cfd] CreateMeshes FAILED (exit {r2.returncode})", file=sys.stderr)
+        sys.exit(1)
     print(f"[cfd] CreateMeshes done ({case_name}_n)")
 
     case_dir = os.path.abspath(f"{case_name}_n_{state}")
