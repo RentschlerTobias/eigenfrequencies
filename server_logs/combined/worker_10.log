@@ -1,4 +1,4 @@
-Worker 10 ready on uc2n603.localdomain: PYRO:obj_a84afeb959d240648b020c92b1e17d0f@uc2n603.localdomain:36543
+Worker 10 ready on uc2n601.localdomain: PYRO:obj_48f8670aff714c6e88f70a4b24fddee2@uc2n601.localdomain:42051
 [optimize] dtOO build FAILED (worker 10):
 bash: Agent: command not found
 bash: Agent: command not found
@@ -29,7 +29,7 @@ Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
 Warning : Gmsh has aleady been initialized
-[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6026481/worker_10/design.json
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6038582/worker_10/design.json
 [dtoo] applied 30 parameter overrides
 Traceback (most recent call last):
   File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
@@ -48,32 +48,58 @@ Exception: [ map2dTo3d::reparamOnFace() ]
 condition: !md.converged() is true.
 
 Backtrace
-[ 1   ]     0x153e0cbee654 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2b9654) [0x153e0cbee654]
-[ 2   ]     0x153e0cfa4f2d dtOO::dtGmshFace::setMap2dTo3d(dtOO::map2dTo3d const*) + 285
-[ 3   ]     0x153e0cfbdffb dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*, std::__cxx11::list<GEdge*, std::allocator<GEdge*> > const&, std::vector<int, std::allocator<int> > const&) + 907
-[ 4   ]     0x153e0cfbe696 dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*) + 934
-[ 5   ]     0x153e0cfbea76 dtOO::dtGmshModel::addIfRegionToGmshModel(dtOO::map3dTo3d const*, int*) + 422
-[ 6   ]     0x153e0d098d4f dtOO::map3dTo3dGmsh::jInit(dtOO::jsonPrimitive const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 191
-[ 7   ]     0x153e0d09914a dtOO::map3dTo3dGmsh::init(QDomElement const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 906
-[ 8   ]     0x153e0cde881e dtOO::dtXmlParser::createBoundedVolume(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 430
-[ 9   ]     0x153e0cde896a dtOO::dtXmlParser::createBoundedVolume(dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 234
-[ 10  ]     0x153e0cdf263d dtOO::dtXmlParser::destroyAndCreate(dtOO::baseContainer&, dtOO::labeledVectorHandling<dtOO::constValue*>&, dtOO::labeledVectorHandling<dtOO::analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
-[ 11  ]     0x153e0d61cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x153e0d61cea8]
-[ 12  ]     0x153e1c45958a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x153e1c45958a]
-[ 13  ]     0x153e1c42f8a0 _PyObject_MakeTpCall + 320
-[ 14  ]     0x153e1c442ddd _PyEval_EvalFrameDefault + 15949
-[ 15  ]     0x153e1c4ccd5c PyEval_EvalCode + 172
-[ 16  ]     0x153e1c50667c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x153e1c50667c]
-[ 17  ]     0x153e1c503f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x153e1c503f16]
-[ 18  ]     0x153e1c5019e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x153e1c5019e5]
-[ 19  ]     0x153e1c500d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x153e1c500d53]
-[ 20  ]     0x153e1c500b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x153e1c500b6a]
-[ 21  ]     0x153e1c4fef99 Py_RunMain + 985
-[ 22  ]     0x153e1c4bb66b Py_BytesMain + 59
-[ 23  ]     0x153e1c0295d0 /lib64/libc.so.6(+0x295d0) [0x153e1c0295d0]
-[ 24  ]     0x153e1c029680 __libc_start_main + 128
-[ 25  ]     0x56524b51e095 _start + 37
+[ 1   ]     0x151c2b2ee654 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2b9654) [0x151c2b2ee654]
+[ 2   ]     0x151c2b6a4f2d dtOO::dtGmshFace::setMap2dTo3d(dtOO::map2dTo3d const*) + 285
+[ 3   ]     0x151c2b6bdffb dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*, std::__cxx11::list<GEdge*, std::allocator<GEdge*> > const&, std::vector<int, std::allocator<int> > const&) + 907
+[ 4   ]     0x151c2b6be696 dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*) + 934
+[ 5   ]     0x151c2b6bea76 dtOO::dtGmshModel::addIfRegionToGmshModel(dtOO::map3dTo3d const*, int*) + 422
+[ 6   ]     0x151c2b798d4f dtOO::map3dTo3dGmsh::jInit(dtOO::jsonPrimitive const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 191
+[ 7   ]     0x151c2b79914a dtOO::map3dTo3dGmsh::init(QDomElement const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 906
+[ 8   ]     0x151c2b4e881e dtOO::dtXmlParser::createBoundedVolume(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 430
+[ 9   ]     0x151c2b4e896a dtOO::dtXmlParser::createBoundedVolume(dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 234
+[ 10  ]     0x151c2b4f263d dtOO::dtXmlParser::destroyAndCreate(dtOO::baseContainer&, dtOO::labeledVectorHandling<dtOO::constValue*>&, dtOO::labeledVectorHandling<dtOO::analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 11  ]     0x151c2bd1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x151c2bd1cea8]
+[ 12  ]     0x151c3ab3958a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x151c3ab3958a]
+[ 13  ]     0x151c3ab0f8a0 _PyObject_MakeTpCall + 320
+[ 14  ]     0x151c3ab22ddd _PyEval_EvalFrameDefault + 15949
+[ 15  ]     0x151c3abacd5c PyEval_EvalCode + 172
+[ 16  ]     0x151c3abe667c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x151c3abe667c]
+[ 17  ]     0x151c3abe3f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x151c3abe3f16]
+[ 18  ]     0x151c3abe19e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x151c3abe19e5]
+[ 19  ]     0x151c3abe0d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x151c3abe0d53]
+[ 20  ]     0x151c3abe0b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x151c3abe0b6a]
+[ 21  ]     0x151c3abdef99 Py_RunMain + 985
+[ 22  ]     0x151c3ab9b66b Py_BytesMain + 59
+[ 23  ]     0x151c3a6295d0 /lib64/libc.so.6(+0x295d0) [0x151c3a6295d0]
+[ 24  ]     0x151c3a629680 __libc_start_main + 128
+[ 25  ]     0x55f124b8d095 _start + 37
 
 
 Honor thy error as a hidden intention. (Brian Eno)
+
+[optimize] CFD build FAILED (worker 10):
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[uc2n601:3302157:0:3302157] Caught signal 11 (Segmentation fault: invalid permissions for mapped object at address 0x556940748f50)
+==== backtrace (tid:3302157) ====
+ 0 0x000000000006261a ucs_callbackq_cleanup()  ???:0
+ 1 0x00000000000627da ucs_callbackq_cleanup()  ???:0
+ 2 0x000000000003ebf0 __GI___sigaction()  :0
+=================================
 

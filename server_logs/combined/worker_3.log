@@ -1,1 +1,193 @@
-Worker 3 ready on uc2n606.localdomain: PYRO:obj_be6f1b134c2549e28303f7b537fe96cb@uc2n606.localdomain:37571
+Worker 3 ready on uc2n604.localdomain: PYRO:obj_91e4955eecf64fc7a6ca0837420a8791@uc2n604.localdomain:43591
+[optimize] dtOO build FAILED (worker 3):
+0 maxL    1.410/   1.400 -- Small/Large/Total (    60/     1/  1047):      1 splits,      0 swaps,      1 collapses,     93 moves
+Debug   :  iter   5 minL    0.428/   0.700 maxL    1.368/   1.400 -- Small/Large/Total (    61/     0/  1047):      1 splits,      0 swaps,      1 collapses,     64 moves
+Debug   :  iter   6 minL    0.428/   0.700 maxL    1.368/   1.400 -- Small/Large/Total (    61/     0/  1047):      0 splits,      0 swaps,      0 collapses,     42 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     2.55000E-03 sec (  0 %)
+Debug   :  CPU SPLIT    2.12628E-01 sec (  3 %) 
+Debug   :  CPU COLLAPS  4.45249E-01 sec (  6 %) 
+Debug   :  CPU SMOOTH   7.01834E+00 sec ( 91 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    7.67876E+00 sec 
+Debug   :  ---------------------------------------
+Debug   :  iter   1 minL    0.428/   0.700 maxL    1.368/   1.400 -- Small/Large/Total (    61/     0/  1047):      0 splits,      0 swaps,      0 collapses,     29 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     3.97000E-04 sec (  0 %)
+Debug   :  CPU SPLIT    7.73860E-02 sec (  9 %) 
+Debug   :  CPU COLLAPS  3.85490E-02 sec (  5 %) 
+Debug   :  CPU SMOOTH   7.25464E-01 sec ( 86 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    8.41796E-01 sec 
+Debug   :  ---------------------------------------
+Debug   : Type 23 667 triangles generated, 288 internal nodes
+Info    : Meshing surface 19 (Parametric surface, MeshAdapt)
+Debug   : Recovering 6 model edges
+Debug   : Recovering 65 mesh edges (0 not recovered)
+Debug   : Boundary edges recovered for surface 19
+Debug   : Computing mesh size field at mesh nodes 65
+Debug   : Delaunizing the initial mesh
+Debug   : Starting to add internal nodes
+Debug   :  iter   1 minL    0.464/   0.700 maxL    1.422/   1.400 -- Small/Large/Total (    10/     2/   226):     68 splits,     51 swaps,     35 collapses,    158 moves
+Debug   :  iter   2 minL    0.464/   0.700 maxL    1.471/   1.400 -- Small/Large/Total (    10/     3/   232):      5 splits,      2 swaps,      3 collapses,     65 moves
+Debug   :  iter   3 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      4 splits,      2 swaps,      3 collapses,     48 moves
+Debug   :  iter   4 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,     28 moves
+Debug   :  iter   5 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,     21 moves
+Debug   :  iter   6 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,     21 moves
+Debug   :  iter   7 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,     21 moves
+Debug   :  iter   8 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,     12 moves
+Debug   :  iter   9 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter  10 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter  11 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     8.85000E-04 sec (  1 %)
+Debug   :  CPU SPLIT    1.82110E-02 sec ( 13 %) 
+Debug   :  CPU COLLAPS  2.58990E-02 sec ( 19 %) 
+Debug   :  CPU SMOOTH   9.22210E-02 sec ( 67 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    1.37216E-01 sec 
+Debug   :  ---------------------------------------
+Debug   :  iter   1 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter   2 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter   3 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter   4 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter   5 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter   6 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter   7 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter   8 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter   9 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter  10 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  iter  11 minL    0.464/   0.700 maxL    1.387/   1.400 -- Small/Large/Total (    11/     0/   235):      1 splits,      1 swaps,      1 collapses,      5 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     7.72000E-04 sec (  1 %)
+Debug   :  CPU SPLIT    1.82980E-02 sec ( 14 %) 
+Debug   :  CPU COLLAPS  1.89500E-02 sec ( 15 %) 
+Debug   :  CPU SMOOTH   8.98000E-02 sec ( 70 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    1.27820E-01 sec 
+Debug   :  ---------------------------------------
+Debug   : Type 23 135 triangles generated, 36 internal nodes
+Info    : Tetrahedrizing 16195 nodes...
+Info    : Done tetrahedrizing 16203 nodes (Wall 0.284749s, CPU 0.267874s)
+Debug   : Points have been tetrahedralized
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Debug   :   32386 (48579) subfaces (segments)
+Info    :  - Recovering boundary
+Error   : PLC Error:  A segment and a facet intersect at point
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6038582/worker_3/design.json
+[dtoo] applied 30 parameter overrides
+[dtoo] plugin ru_adjustDomain applied
+[dtoo] makeGrid on ruWithRounding_mechMesh ...
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 104, in main
+    bV.get(MECH_VOLUME).makeGrid()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 6017, in makeGrid
+    return _dtOOPythonSWIG.boundedVolume_makeGrid(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+Exception: PLC Error:  A segment and a facet intersect at point
+
+[optimize] dtOO build FAILED (worker 3):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6038582/worker_3/design.json
+[dtoo] applied 30 parameter overrides
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 93, in main
+    parser.destroyAndCreate(bC, cV, aF, aG, bV, dC, dP)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 22262, in destroyAndCreate
+    return _dtOOPythonSWIG.dtXmlParser_destroyAndCreate(self, bC, cV, aF, aG, bV, dC, pL)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: [ analyticFunction::invY() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/geometryKernel/analyticFunctionHeaven/analyticFunction.cpp'
+*-> line '107'
+
+condition: !md.converged() is true.
+
+Backtrace
+[ 1   ]     0x153dd1fface7 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2c5ce7) [0x153dd1fface7]
+[ 2   ]     0x153dd215e346 dtOO::vec2dMultiBiLinearTwoD::invY(dtOO::aFY const&) const + 3366
+[ 3   ]     0x153dd21a2fa3 dtOO::uVw_phirMs::wV_ms(double const&, double const&) const + 51
+[ 4   ]     0x153dd21a32c2 dtOO::uVw_phirMs::apply(std::vector<CGAL::Point_3<CGAL::Epick>, std::allocator<CGAL::Point_3<CGAL::Epick> > > const*) const + 306
+[ 5   ]     0x153dd2183cf2 dtOO::dtTransformer::apply(CGAL::Point_3<CGAL::Epick> const&) const + 98
+[ 6   ]     0x153dd2172566 dtOO::analyticFunctionTransformed<dtOO::vec3dTransVolThreeD>::Y(dtOO::aFX const&) const + 182
+[ 7   ]     0x153dd2160cf2 dtOO::vec3dFunction::YdtPoint3(dtOO::aFX const&) const + 18
+[ 8   ]     0x153dd216cb1a dtOO::vec3dThreeD::YdtPoint3(dtOO::aFX const&) const + 10
+[ 9   ]     0x153dd211e5a3 dtOO::vec3dThreeDInMap3dTo3d::getPoint(double const&, double const&, double const&) const + 131
+[ 10  ]     0x153dd211e5cc dtOO::vec3dThreeDInMap3dTo3d::getPoint(double const&, double const&, double const&) const + 172
+[ 11  ]     0x153dd211edae dtOO::map3dTo3dTransformed<dtOO::vec3dThreeDInMap3dTo3d>::getPoint(double const&, double const&, double const&) const + 30
+[ 12  ]     0x153dd21173c8 dtOO::vec3dTwoDInMap3dTo3d::getPoint(double const&, double const&) const + 152
+[ 13  ]     0x153dd21006d2 dtOO::map2dTo3d::getPoint(CGAL::Point_2<CGAL::Epick> const&) const + 18
+[ 14  ]     0x153dd211b871 dtOO::vec2dOneDInMap2dTo3d::getPoint(double const&) const + 145
+[ 15  ]     0x153dd2105147 dtOO::map1dTo3d::getPointPercent(double const&) const + 55
+[ 16  ]     0x153dd23bd64c dtOO::dtGmshModel::addIfEdgeToGmshModel(dtOO::map1dTo3d const*, int*) + 156
+[ 17  ]     0x153dd23be498 dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*) + 424
+[ 18  ]     0x153dd23bea76 dtOO::dtGmshModel::addIfRegionToGmshModel(dtOO::map3dTo3d const*, int*) + 422
+[ 19  ]     0x153dd2498d4f dtOO::map3dTo3dGmsh::jInit(dtOO::jsonPrimitive const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 191
+[ 20  ]     0x153dd249914a dtOO::map3dTo3dGmsh::init(QDomElement const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 906
+[ 21  ]     0x153dd21e881e dtOO::dtXmlParser::createBoundedVolume(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 430
+[ 22  ]     0x153dd21e896a dtOO::dtXmlParser::createBoundedVolume(dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 234
+[ 23  ]     0x153dd21f263d dtOO::dtXmlParser::destroyAndCreate(dtOO::baseContainer&, dtOO::labeledVectorHandling<dtOO::constValue*>&, dtOO::labeledVectorHandling<dtOO::analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 24  ]     0x153dd2a1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x153dd2a1cea8]
+[ 25  ]     0x153de185958a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x153de185958a]
+[ 26  ]     0x153de182f8a0 _PyObject_MakeTpCall + 320
+[ 27  ]     0x153de1842ddd _PyEval_EvalFrameDefault + 15949
+[ 28  ]     0x153de18ccd5c PyEval_EvalCode + 172
+[ 29  ]     0x153de190667c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x153de190667c]
+[ 30  ]     0x153de1903f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x153de1903f16]
+[ 31  ]     0x153de19019e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x153de19019e5]
+[ 32  ]     0x153de1900d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x153de1900d53]
+[ 33  ]     0x153de1900b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x153de1900b6a]
+[ 34  ]     0x153de18fef99 Py_RunMain + 985
+[ 35  ]     0x153de18bb66b Py_BytesMain + 59
+[ 36  ]     0x153de14295d0 /lib64/libc.so.6(+0x295d0) [0x153de14295d0]
+[ 37  ]     0x153de1429680 __libc_start_main + 128
+[ 38  ]     0x562b0dced095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+
