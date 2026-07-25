@@ -63,11 +63,11 @@ sbatch cluster/submit_de_combined.sh      # EVAL_MODE=combined  (CFD + Resonanz-
 ```
 
 `submit_de_cfd_only.sh` und `submit_de_combined.sh` sind beide Produktions-konfiguriert
-(cpu_il, 16 Nodes × 4 Tasks × 16 CPUs, 8h, POP_SIZE=64, MAX_GEN=50) — gleiche Parameter
+(cpu_il, 4 Nodes × 4 Tasks × 16 CPUs, 24h, POP_SIZE=16, MAX_GEN=100) — gleiche Parameter
 für direkten Vergleich; nur EVAL_MODE und W_RESONANCE unterscheiden sich (cfd_only: 0.0,
-combined: 0.5). cfd_only läuft ~2-3h (kein FEniCSx), combined ~4-5h. Gemeinsamer Job-Body
-liegt in `cluster/_submit_de_common.sh`; `cluster/submit_de.sh` bleibt als Legacy-Wrapper
-(`RUN_TAG=legacy`, EVAL_MODE=combined) erhalten.
+combined: 0.5). Low-Node/Long-Walltime-Config für kurze Queue. cfd_only läuft ~2-3h (kein
+FEniCSx), combined ~4-6h. Gemeinsamer Job-Body liegt in `cluster/_submit_de_common.sh`;
+`cluster/submit_de.sh` bleibt als Legacy-Wrapper (`RUN_TAG=legacy`, EVAL_MODE=combined).
 
 Smoke-Override (für Pipeline-Checks):
 ```
