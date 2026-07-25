@@ -69,7 +69,8 @@ def _run_dtoo(design: dict, worker_id: int = 0) -> bool:
     if res.returncode != 0 or not os.path.exists(msh):
         with open(log_path) as log_fh:
             tail = log_fh.read()[-8000:]
-        sys.stderr.write(f"[optimize] dtOO build FAILED (worker {worker_id}):\n{tail}\n")
+        print(f"[optimize] dtOO build FAILED (worker {worker_id}):\n{tail}",
+              file=sys.stderr, flush=True)
         return False
     return True
 
@@ -104,7 +105,8 @@ def _run_fenicsx(worker_id: int = 0) -> dict:
     for line in reversed(log_lines):
         if line.startswith("RESULT_JSON "):
             return json.loads(line[len("RESULT_JSON "):])
-    sys.stderr.write(f"[optimize] fenicsx eval FAILED (worker {worker_id}):\n{log_lines[-40:]}\n")
+    print(f"[optimize] fenicsx eval FAILED (worker {worker_id}):\n{log_lines[-40:]}",
+          file=sys.stderr, flush=True)
     return {"frequencies_hz": [], "ok": False}
 
 
@@ -139,26 +141,30 @@ def _run_cfd(design: dict, worker_id: int = 0):
     state = f"DE_w{worker_id}"
     procs = os.environ.get("SLURM_CPUS_PER_TASK", "1")
 
-    # ── Build OF case — bare python3 subprocess, env inherited (no re-source, no UCX) ──
-    build_env = os.environ.copy()
-    dtoo_lib = (
-        os.path.expanduser("~/dtOO/install/lib")
-        + ":" + os.path.expanduser("~/dtOO/install/lib64")
-    )
-    build_env["LD_LIBRARY_PATH"] = dtoo_lib + ":" + build_env.get("LD_LIBRARY_PATH", "")
-    build_cmd = [sys.executable, CFD_BUILD, design_json, state]
+    build_cmd = [
+        "bash", "-lc",
+        f"source ~/pe && "
+        f"export LD_LIBRARY_PATH=~/dtOO/install/lib:~/dtOO/install/lib64:$LD_LIBRARY_PATH && "
+        f"cd {wdir} && "
+        f"python3 {CFD_BUILD} {design_json} {state}",
+    ]
     build_log = os.path.join(wdir, "cfd_build.log")
-    res = subprocess.run(build_cmd, cwd=wdir, stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT, text=True, env=build_env)
+    res = subprocess.run(build_cmd, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT, text=True)
     with open(build_log, "w") as log_fh:
         log_fh.write(res.stdout)
+    uri_dir = os.environ.get("DE_URI_DIR", "")
+    if uri_dir:
+        persist_log = os.path.join(os.path.dirname(uri_dir), f"worker_{worker_id}_cfd_build.log")
+        with open(persist_log, "w") as log_fh:
+            log_fh.write(res.stdout)
     case_dir = None
     for line in res.stdout.splitlines():
         if line.startswith("CFD_CASE_DIR "):
             case_dir = line[len("CFD_CASE_DIR "):].strip()
     if res.returncode != 0 or not case_dir or not os.path.isdir(case_dir):
-        sys.stderr.write(f"[optimize] CFD build FAILED (worker {worker_id}):\n"
-                         f"{res.stdout[-8000:]}\n")
+        print(f"[optimize] CFD build FAILED (worker {worker_id}):\n{res.stdout[-8000:]}",
+              file=sys.stderr, flush=True)
         return None
 
     # ── Run simpleFoam (de_framework OF script) ──
@@ -169,12 +175,13 @@ def _run_cfd(design: dict, worker_id: int = 0):
             res = subprocess.run(of_cmd, stdout=log_fh, stderr=subprocess.STDOUT,
                                  timeout=int(os.environ.get("CFD_TIMEOUT", "1800")))
     except subprocess.TimeoutExpired:
-        sys.stderr.write(f"[optimize] CFD solve TIMEOUT (worker {worker_id})\n")
+        print(f"[optimize] CFD solve TIMEOUT (worker {worker_id})", file=sys.stderr, flush=True)
         return None
     if res.returncode != 0:
         with open(of_log) as log_fh:
             tail = log_fh.read()[-8000:]
-        sys.stderr.write(f"[optimize] CFD solve FAILED (worker {worker_id}):\n{tail}\n")
+        print(f"[optimize] CFD solve FAILED (worker {worker_id}):\n{tail}",
+              file=sys.stderr, flush=True)
         return None
     return case_dir
 
