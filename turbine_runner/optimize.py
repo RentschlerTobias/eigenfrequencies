@@ -130,10 +130,8 @@ def _run_cfd(design: dict, worker_id: int = 0):
     with open(design_json, "w") as fh:
         json.dump(design, fh)
 
-    # Stage the tistos case (tistos_files/ + xml/ as siblings) into the worker
-    # dir, because createStatesAndMeshes loads "tistos_files/machine.xml" and
-    # machine.xml includes "./xml/..." — both resolved relative to CWD.
-    for sub in ("tistos_files", "xml"):
+    # boundaryData_RU_INLET/ is a MappedFieldFixedValue source — sibling of the case dir.
+    for sub in ("tistos_files", "xml", "boundaryData_RU_INLET"):
         dst = os.path.join(wdir, sub)
         if not os.path.isdir(dst):
             shutil.copytree(os.path.join(CFD_STAGE, sub), dst)
