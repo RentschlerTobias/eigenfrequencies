@@ -55,18 +55,25 @@ git pull
 bash cluster/run_de.sh 8 2     # 8 worker, 2 generations
 ```
 
-### Quickstart (multi-node smoke)
+### Quickstart (multi-node)
 
 ```
 sbatch cluster/submit_de_cfd_only.sh      # EVAL_MODE=cfd_only  (reine CFD-Objective)
 sbatch cluster/submit_de_combined.sh      # EVAL_MODE=combined  (CFD + Resonanz-Penalty)
 ```
 
-Beide Varianten sind vollständige sbatch-Skripte mit eigenem `#SBATCH`-Header
-(Default: dev_cpu_il, 6 Nodes × 4 Tasks × 16 CPUs, 30 min — Smoke-Test-Größe
-`DE_POP_SIZE=24` (aus Nodes × Tasks abgeleitet), `DE_MAX_GEN=1`). Gemeinsamer Job-Body liegt in
+`submit_de_cfd_only.sh` ist Smoke-konfiguriert (dev_cpu_il, 8 Nodes × 4 Tasks × 16 CPUs,
+30 min, POP_SIZE=32, MAX_GEN=1) — Pipeline-Check. `submit_de_combined.sh` ist
+Produktions-konfiguriert (cpu_il, 16 Nodes × 4 Tasks × 16 CPUs, 8h, POP_SIZE=64,
+MAX_GEN=50, ~4-5h Laufzeit). Gemeinsamer Job-Body liegt in
 `cluster/_submit_de_common.sh`; `cluster/submit_de.sh` bleibt als Legacy-Wrapper
 (`RUN_TAG=legacy`, EVAL_MODE=combined) erhalten.
+
+Smoke-Override für Combined:
+```
+sbatch --partition=dev_cpu_il --nodes=8 --time=00:30:00 \
+       --export=ALL,DE_MAX_GEN=1 cluster/submit_de_combined.sh
+```
 
 ### EVAL_MODE (Objective-Auswahl)
 
