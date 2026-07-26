@@ -412,4 +412,54 @@ or simply:
 [DE] Generation 95 best=3.872278 mean=4.186136 ok=16/16
 [DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
 [DE] gen 96: dispatching 16 trial evals to 16 workers
-gen 96:   0%|                                            | 0/16 [00:00<?, ?it/s]
+gen 96:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 96:   6%|▉             | 1/16 [04:53<1:13:22, 293.47s/it, ok=1/16 best=4.03]gen 96:  25%|████▎            | 4/16 [05:19<12:31, 62.61s/it, ok=3/16 best=4.03]gen 96:  81%|███████████▍  | 13/16 [05:37<00:46, 15.50s/it, ok=12/16 best=3.909]gen 96: 100%|██████████████| 16/16 [05:46<00:00, 21.69s/it, ok=15/16 best=3.909]
+[DE] Generation 96 best=3.872278 mean=4.166534 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 97: dispatching 16 trial evals to 16 workers
+gen 97:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 97:   6%|▊            | 1/16 [05:11<1:17:47, 311.17s/it, ok=0/16 best=1e+06]gen 97:  50%|████████▌        | 8/16 [05:27<04:03, 30.41s/it, ok=7/16 best=4.09]gen 97:  75%|███████████▎   | 12/16 [05:44<02:01, 30.41s/it, ok=11/16 best=4.09]gen 97:  81%|████████████▏  | 13/16 [05:45<00:52, 17.51s/it, ok=12/16 best=4.09]gen 97: 100%|██████████████| 16/16 [05:59<00:00, 22.49s/it, ok=15/16 best=3.938]
+[DE] Generation 97 best=3.872278 mean=4.166534 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 98: dispatching 16 trial evals to 16 workers
+gen 98:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 98:   6%|▊            | 1/16 [04:54<1:13:42, 294.83s/it, ok=0/16 best=1e+06]gen 98:  12%|█▉             | 2/16 [05:11<30:38, 131.33s/it, ok=1/16 best=4.124]gen 98:  94%|█████████████▏| 15/16 [05:43<00:13, 13.28s/it, ok=14/16 best=4.119]gen 98: 100%|██████████████| 16/16 [05:56<00:00, 22.29s/it, ok=15/16 best=4.119]
+[DE] Generation 98 best=3.872278 mean=4.160047 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 99: dispatching 16 trial evals to 16 workers
+gen 99:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 99:   6%|▊            | 1/16 [05:03<1:15:55, 303.72s/it, ok=0/16 best=1e+06]gen 99:  62%|█████████▍     | 10/16 [05:20<02:21, 23.63s/it, ok=9/16 best=4.043]gen 99:  88%|████████████▎ | 14/16 [05:38<00:47, 23.63s/it, ok=13/16 best=4.043]gen 99:  94%|█████████████▏| 15/16 [06:02<00:17, 17.20s/it, ok=14/16 best=4.043]gen 99:  94%|█████████████▏| 15/16 [06:18<00:17, 17.20s/it, ok=14/16 best=4.043]gen 99: 100%|██████████████| 16/16 [06:18<00:00, 17.10s/it, ok=15/16 best=4.043]gen 99: 100%|██████████████| 16/16 [06:18<00:00, 23.69s/it, ok=15/16 best=4.043]
+[DE] Generation 99 best=3.872278 mean=4.152614 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 100: dispatching 16 trial evals to 16 workers
+gen 100:   0%|                                           | 0/16 [00:00<?, ?it/s]gen 100:   6%|▊           | 1/16 [05:21<1:20:26, 321.78s/it, ok=1/16 best=4.245]gen 100:  88%|███████████▍ | 14/16 [05:42<00:35, 17.98s/it, ok=14/16 best=3.966]gen 100: 100%|█████████████| 16/16 [05:44<00:00, 21.54s/it, ok=15/16 best=3.966]
+[DE] Generation 100 best=3.872278 mean=4.143586 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+
+============================================================
+[DE] BEST  objective = 3.872278
+[DE] BEST  design    = {'cV_ru_alpha_1_ex_0.0': -0.0014642208138519117, 'cV_ru_alpha_1_ex_0.5': -0.01, 'cV_ru_alpha_1_ex_1.0': -0.01, 'cV_ru_alpha_2_ex_0.0': 0.1, 'cV_ru_alpha_2_ex_0.5': 0.1, 'cV_ru_alpha_2_ex_1.0': -0.08, 'cV_ru_offsetM_ex_0.0': 1.5, 'cV_ru_offsetM_ex_0.5': 1.5, 'cV_ru_offsetM_ex_1.0': 1.0, 'cV_ru_ratio_0.0': 0.4, 'cV_ru_ratio_0.5': 0.4216318648366416, 'cV_ru_ratio_1.0': 0.5662911645264219, 'cV_ru_offsetPhiR_ex_0.0': 0.0028561819662465127, 'cV_ru_offsetPhiR_ex_0.5': -0.15, 'cV_ru_offsetPhiR_ex_1.0': 0.15, 'cV_ru_bladeLength_0.0': 0.8, 'cV_ru_bladeLength_0.5': 1.0, 'cV_ru_bladeLength_1.0': 1.2930765499240506, 'cV_ru_t_le_a_0': 0.06, 'cV_ru_t_le_a_0.5': 0.06, 'cV_ru_t_le_a_1': 0.06, 'cV_ru_t_mid_a_0': 0.06, 'cV_ru_t_mid_a_0.5': 0.05199257811735766, 'cV_ru_t_mid_a_1': 0.05852451711168778, 'cV_ru_t_te_a_0': 0.007544297910909009, 'cV_ru_t_te_a_0.5': 0.06, 'cV_ru_t_te_a_1': 0.06, 'cV_ru_u_mid_a_0': 0.4, 'cV_ru_u_mid_a_0.5': 0.4, 'cV_ru_u_mid_a_1': 0.4}
+[DE] BREAKDOWN      = {
+  "total": 3.8722781967144266,
+  "f_cfd": 2.3360037290003612,
+  "f_resonance": 1.5362744677140654,
+  "eta": 0.8211347827525084,
+  "vcav": 0.001386547,
+  "dH": -1.9916717635066257,
+  "resonance": "VIOLATION: mode 3=105.7Hz",
+  "worker_id": 15,
+  "eval_mode": "combined"
+}
+============================================================
+[DE] Done. Logs: /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/combined
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[671,799-800,805]
+Job ID: 6039132
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: COMPLETED (exit code 0)
+Nodes: 4
+Cores per node: 128
+CPU Utilized: 00:00:07
+CPU Efficiency: 0.00% of 209-09:50:56 core-walltime
+Job Wall-clock time: 09:48:58
+Memory Utilized: 2.20 GB
+Memory Efficiency: 0.44% of 500.00 GB (1000.00 MB/core)
