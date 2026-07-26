@@ -166,6 +166,14 @@ def _run_cfd(design: dict, worker_id: int = 0):
         return None
 
     # ── Run simpleFoam (de_framework OF script) ──
+    # simpleFoam skips the solve when endTime already exists (OpenFOAM resumes,
+    # sees step 500, exits "completed"). Without this cleanup the postProcessing/
+    # files are stale from the worker's first eval and the CFD objective is frozen
+    # on that design regardless of geometry — the cache bug from runs 6039132/6039133.
+    for art in ("100", "500", "postProcessing"):
+        p = os.path.join(case_dir, art)
+        if os.path.isdir(p):
+            shutil.rmtree(p)
     of_cmd = ["sh", "-e", CFD_SBATCH, case_dir, str(procs)]
     of_log = os.path.join(wdir, "cfd_solve.log")
     try:
