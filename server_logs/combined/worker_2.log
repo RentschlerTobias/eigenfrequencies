@@ -1,1 +1,235 @@
-Worker 2 ready on uc2n601.localdomain: PYRO:obj_ab9aa2eeb0be408b9f9efb9bacae5f5f@uc2n601.localdomain:42691
+Worker 2 ready on uc2n799.localdomain: PYRO:obj_0edcc08c9c8a43b288cfdc56c6051456@uc2n799.localdomain:44315
+[optimize] dtOO build FAILED (worker 2):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6039132/worker_2/design.json
+[dtoo] applied 30 parameter overrides
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 93, in main
+    parser.destroyAndCreate(bC, cV, aF, aG, bV, dC, dP)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 22262, in destroyAndCreate
+    return _dtOOPythonSWIG.dtXmlParser_destroyAndCreate(self, bC, cV, aF, aG, bV, dC, pL)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: [ map2dTo3d::reparamOnFace() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/geometryKernel/analyticGeometryHeaven/map2dTo3d.cpp'
+*-> line '250'
+
+condition: !md.converged() is true.
+
+Backtrace
+[ 1   ]     0x1512e43ee654 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2b9654) [0x1512e43ee654]
+[ 2   ]     0x1512e47a4f2d dtOO::dtGmshFace::setMap2dTo3d(dtOO::map2dTo3d const*) + 285
+[ 3   ]     0x1512e47bdffb dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*, std::__cxx11::list<GEdge*, std::allocator<GEdge*> > const&, std::vector<int, std::allocator<int> > const&) + 907
+[ 4   ]     0x1512e47be696 dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*) + 934
+[ 5   ]     0x1512e47bea76 dtOO::dtGmshModel::addIfRegionToGmshModel(dtOO::map3dTo3d const*, int*) + 422
+[ 6   ]     0x1512e4898d4f dtOO::map3dTo3dGmsh::jInit(dtOO::jsonPrimitive const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 191
+[ 7   ]     0x1512e489914a dtOO::map3dTo3dGmsh::init(QDomElement const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 906
+[ 8   ]     0x1512e45e881e dtOO::dtXmlParser::createBoundedVolume(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 430
+[ 9   ]     0x1512e45e896a dtOO::dtXmlParser::createBoundedVolume(dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 234
+[ 10  ]     0x1512e45f263d dtOO::dtXmlParser::destroyAndCreate(dtOO::baseContainer&, dtOO::labeledVectorHandling<dtOO::constValue*>&, dtOO::labeledVectorHandling<dtOO::analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 11  ]     0x1512e4e1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x1512e4e1cea8]
+[ 12  ]     0x1512f3c3b58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x1512f3c3b58a]
+[ 13  ]     0x1512f3c118a0 _PyObject_MakeTpCall + 320
+[ 14  ]     0x1512f3c24ddd _PyEval_EvalFrameDefault + 15949
+[ 15  ]     0x1512f3caed5c PyEval_EvalCode + 172
+[ 16  ]     0x1512f3ce867c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x1512f3ce867c]
+[ 17  ]     0x1512f3ce5f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x1512f3ce5f16]
+[ 18  ]     0x1512f3ce39e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1512f3ce39e5]
+[ 19  ]     0x1512f3ce2d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x1512f3ce2d53]
+[ 20  ]     0x1512f3ce2b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x1512f3ce2b6a]
+[ 21  ]     0x1512f3ce0f99 Py_RunMain + 985
+[ 22  ]     0x1512f3c9d66b Py_BytesMain + 59
+[ 23  ]     0x1512f38295d0 /lib64/libc.so.6(+0x295d0) [0x1512f38295d0]
+[ 24  ]     0x1512f3829680 __libc_start_main + 128
+[ 25  ]     0x56406624e095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+
+[optimize] dtOO build FAILED (worker 2):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6039132/worker_2/design.json
+[dtoo] applied 30 parameter overrides
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 93, in main
+    parser.destroyAndCreate(bC, cV, aF, aG, bV, dC, dP)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 22262, in destroyAndCreate
+    return _dtOOPythonSWIG.dtXmlParser_destroyAndCreate(self, bC, cV, aF, aG, bV, dC, pL)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: [ map2dTo3d::reparamOnFace() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/geometryKernel/analyticGeometryHeaven/map2dTo3d.cpp'
+*-> line '250'
+
+condition: !md.converged() is true.
+
+Backtrace
+[ 1   ]     0x14838a0ee654 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2b9654) [0x14838a0ee654]
+[ 2   ]     0x14838a4a4f2d dtOO::dtGmshFace::setMap2dTo3d(dtOO::map2dTo3d const*) + 285
+[ 3   ]     0x14838a4bdffb dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*, std::__cxx11::list<GEdge*, std::allocator<GEdge*> > const&, std::vector<int, std::allocator<int> > const&) + 907
+[ 4   ]     0x14838a4be696 dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*) + 934
+[ 5   ]     0x14838a4be997 dtOO::dtGmshModel::addIfRegionToGmshModel(dtOO::map3dTo3d const*, int*) + 199
+[ 6   ]     0x14838a598d4f dtOO::map3dTo3dGmsh::jInit(dtOO::jsonPrimitive const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 191
+[ 7   ]     0x14838a59914a dtOO::map3dTo3dGmsh::init(QDomElement const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 906
+[ 8   ]     0x14838a2e881e dtOO::dtXmlParser::createBoundedVolume(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 430
+[ 9   ]     0x14838a2e896a dtOO::dtXmlParser::createBoundedVolume(dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 234
+[ 10  ]     0x14838a2f263d dtOO::dtXmlParser::destroyAndCreate(dtOO::baseContainer&, dtOO::labeledVectorHandling<dtOO::constValue*>&, dtOO::labeledVectorHandling<dtOO::analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 11  ]     0x14838ab1cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x14838ab1cea8]
+[ 12  ]     0x14839996a58a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x14839996a58a]
+[ 13  ]     0x1483999408a0 _PyObject_MakeTpCall + 320
+[ 14  ]     0x148399953ddd _PyEval_EvalFrameDefault + 15949
+[ 15  ]     0x1483999ddd5c PyEval_EvalCode + 172
+[ 16  ]     0x148399a1767c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x148399a1767c]
+[ 17  ]     0x148399a14f16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x148399a14f16]
+[ 18  ]     0x148399a129e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x148399a129e5]
+[ 19  ]     0x148399a11d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x148399a11d53]
+[ 20  ]     0x148399a11b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x148399a11b6a]
+[ 21  ]     0x148399a0ff99 Py_RunMain + 985
+[ 22  ]     0x1483999cc66b Py_BytesMain + 59
+[ 23  ]     0x1483994295d0 /lib64/libc.so.6(+0x295d0) [0x1483994295d0]
+[ 24  ]     0x148399429680 __libc_start_main + 128
+[ 25  ]     0x564fe2f41095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+
+[optimize] dtOO build FAILED (worker 2):
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+OpenFoam-v2412 is unloaded 
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+Warning : Gmsh has aleady been initialized
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6039132/worker_2/design.json
+[dtoo] applied 30 parameter overrides
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 93, in main
+    parser.destroyAndCreate(bC, cV, aF, aG, bV, dC, dP)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 22262, in destroyAndCreate
+    return _dtOOPythonSWIG.dtXmlParser_destroyAndCreate(self, bC, cV, aF, aG, bV, dC, pL)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: [ map2dTo3d::reparamOnFace() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/geometryKernel/analyticGeometryHeaven/map2dTo3d.cpp'
+*-> line '250'
+
+condition: !md.converged() is true.
+
+Backtrace
+[ 1   ]     0x1478dabee654 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2b9654) [0x1478dabee654]
+[ 2   ]     0x1478dafa4f2d dtOO::dtGmshFace::setMap2dTo3d(dtOO::map2dTo3d const*) + 285
+[ 3   ]     0x1478dafbdffb dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*, std::__cxx11::list<GEdge*, std::allocator<GEdge*> > const&, std::vector<int, std::allocator<int> > const&) + 907
+[ 4   ]     0x1478dafbe696 dtOO::dtGmshModel::addIfFaceToGmshModel(dtOO::map2dTo3d const*, int*) + 934
+[ 5   ]     0x1478dafbea76 dtOO::dtGmshModel::addIfRegionToGmshModel(dtOO::map3dTo3d const*, int*) + 422
+[ 6   ]     0x1478db098d4f dtOO::map3dTo3dGmsh::jInit(dtOO::jsonPrimitive const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 191
+[ 7   ]     0x1478db09914a dtOO::map3dTo3dGmsh::init(QDomElement const&, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*> const*) + 906
+[ 8   ]     0x1478dade881e dtOO::dtXmlParser::createBoundedVolume(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 430
+[ 9   ]     0x1478dade896a dtOO::dtXmlParser::createBoundedVolume(dtOO::baseContainer*, dtOO::labeledVectorHandling<dtOO::constValue*> const*, dtOO::labeledVectorHandling<dtOO::analyticFunction*> const*, dtOO::labeledVectorHandling<dtOO::analyticGeometry*> const*, dtOO::labeledVectorHandling<dtOO::boundedVolume*>*) const + 234
+[ 10  ]     0x1478dadf263d dtOO::dtXmlParser::destroyAndCreate(dtOO::baseContainer&, dtOO::labeledVectorHandling<dtOO::constValue*>&, dtOO::labeledVectorHandling<dtOO::analyticFunction*>&, dtOO::labeledVectorHandling<dtOO::analyticGeometry*>&, dtOO::labeledVectorHandling<dtOO::boundedVolume*>&, dtOO::labeledVectorHandling<dtOO::dtCase*>&, dtOO::labeledVectorHandling<dtOO::dtPlugin*>&) const + 541
+[ 11  ]     0x1478db61cea8 /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x32cea8) [0x1478db61cea8]
+[ 12  ]     0x1478ea42258a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1aa58a) [0x1478ea42258a]
+[ 13  ]     0x1478ea3f88a0 _PyObject_MakeTpCall + 320
+[ 14  ]     0x1478ea40bddd _PyEval_EvalFrameDefault + 15949
+[ 15  ]     0x1478ea495d5c PyEval_EvalCode + 172
+[ 16  ]     0x1478ea4cf67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x1478ea4cf67c]
+[ 17  ]     0x1478ea4ccf16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x1478ea4ccf16]
+[ 18  ]     0x1478ea4ca9e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x1478ea4ca9e5]
+[ 19  ]     0x1478ea4c9d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x1478ea4c9d53]
+[ 20  ]     0x1478ea4c9b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x1478ea4c9b6a]
+[ 21  ]     0x1478ea4c7f99 Py_RunMain + 985
+[ 22  ]     0x1478ea48466b Py_BytesMain + 59
+[ 23  ]     0x1478ea0295d0 /lib64/libc.so.6(+0x295d0) [0x1478ea0295d0]
+[ 24  ]     0x1478ea029680 __libc_start_main + 128
+[ 25  ]     0x55f1c3c8b095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+

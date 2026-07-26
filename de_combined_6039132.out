@@ -1,0 +1,415 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+========================================
+[DE] variant=combined eval_mode=combined on uc2n671.localdomain
+[DE] POP_SIZE=16  MAX_GEN=100  SEED=42
+[DE] W_RESONANCE=0.5  CFD_ENABLED=1
+[DE] SLURM: 4 nodes x 4 tasks/node, job 6039132
+[DE] state=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json
+[DE] history=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_combined.jsonl
+[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_6039132
+========================================
+[DE] Starting 16 workers via srun (distributed across 4 nodes)...
+[DE] Running DE client...
+[DE] main() entered pid=3793794 cwd=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies
+[DE] configs loaded pop_size=16 max_gen=100 eval_mode=combined w_resonance=0.5 labels=['cV_ru_alpha_1_ex_0.0', 'cV_ru_alpha_1_ex_0.5', 'cV_ru_alpha_1_ex_1.0', 'cV_ru_alpha_2_ex_0.0', 'cV_ru_alpha_2_ex_0.5', 'cV_ru_alpha_2_ex_1.0', 'cV_ru_offsetM_ex_0.0', 'cV_ru_offsetM_ex_0.5', 'cV_ru_offsetM_ex_1.0', 'cV_ru_ratio_0.0', 'cV_ru_ratio_0.5', 'cV_ru_ratio_1.0', 'cV_ru_offsetPhiR_ex_0.0', 'cV_ru_offsetPhiR_ex_0.5', 'cV_ru_offsetPhiR_ex_1.0', 'cV_ru_bladeLength_0.0', 'cV_ru_bladeLength_0.5', 'cV_ru_bladeLength_1.0', 'cV_ru_t_le_a_0', 'cV_ru_t_le_a_0.5', 'cV_ru_t_le_a_1', 'cV_ru_t_mid_a_0', 'cV_ru_t_mid_a_0.5', 'cV_ru_t_mid_a_1', 'cV_ru_t_te_a_0', 'cV_ru_t_te_a_0.5', 'cV_ru_t_te_a_1', 'cV_ru_u_mid_a_0', 'cV_ru_u_mid_a_0.5', 'cV_ru_u_mid_a_1']
+[DE] discovery: uri_dir=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/combined/uris expected=16 timeout=600s
+[DE] discovery: 0/16 URIs after 0s
+[DE] Discovered 16 workers from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/combined/uris
+[DE] discovery done n_workers=16 elapsed=2.1s
+[DE] population=16 dim=30 mutation=0.8 crossover=0.9 max_gen=100 tol=0.01 seed=42 workers=16
+[DE] state_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json history_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_combined.jsonl
+[DE] no checkpoint found at /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_combined.json — starting fresh gen 0
+[DE] gen 0: dispatching 16 evals to 16 workers
+gen 0:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 0:   6%|▉             | 1/16 [06:54<1:43:30, 414.05s/it, ok=1/16 best=8.927]gen 0: 100%|███████████████| 16/16 [07:10<00:00, 19.51s/it, ok=16/16 best=8.477]gen 0: 100%|███████████████| 16/16 [07:10<00:00, 26.91s/it, ok=16/16 best=8.477]
+[DE] Generation 0 best=8.476913 mean=9.312919 ok=16/16
+[DE]   best fitness: f_resonance=6.005 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 1: dispatching 16 trial evals to 16 workers
+gen 1:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 1:   6%|█               | 1/16 [03:30<52:32, 210.14s/it, ok=1/16 best=7.164]gen 1:  62%|█████████▍     | 10/16 [03:45<01:40, 16.74s/it, ok=10/16 best=6.198]gen 1:  88%|█████████████▏ | 14/16 [04:09<00:33, 16.74s/it, ok=14/16 best=5.127]gen 1:  94%|██████████████ | 15/16 [04:10<00:11, 11.77s/it, ok=15/16 best=5.127]gen 1: 100%|███████████████| 16/16 [04:18<00:00, 16.17s/it, ok=16/16 best=5.127]
+[DE] Generation 1 best=5.126693 mean=8.165663 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 2: dispatching 16 trial evals to 16 workers
+gen 2:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 2:   6%|█               | 1/16 [03:38<54:33, 218.26s/it, ok=1/16 best=8.555]gen 2:  75%|███████████▎   | 12/16 [03:55<00:58, 14.57s/it, ok=12/16 best=6.114]gen 2: 100%|███████████████| 16/16 [04:16<00:00, 16.02s/it, ok=16/16 best=6.114]
+[DE] Generation 2 best=5.126693 mean=7.607696 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 3: dispatching 16 trial evals to 16 workers
+gen 3:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 3:   6%|█               | 1/16 [03:29<52:24, 209.61s/it, ok=1/16 best=8.081]gen 3:  50%|████████▌        | 8/16 [03:45<02:49, 21.15s/it, ok=8/16 best=6.405]gen 3:  88%|██████████████  | 14/16 [04:04<00:42, 21.15s/it, ok=14/16 best=6.02]gen 3:  94%|███████████████ | 15/16 [04:05<00:10, 10.78s/it, ok=15/16 best=6.02]gen 3: 100%|████████████████| 16/16 [04:12<00:00, 15.78s/it, ok=16/16 best=6.02]
+[DE] Generation 3 best=5.126693 mean=7.281237 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 4: dispatching 16 trial evals to 16 workers
+gen 4:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 4:   6%|█                | 1/16 [01:29<22:22, 89.50s/it, ok=0/16 best=1e+06]gen 4:  12%|██              | 2/16 [03:34<25:48, 110.59s/it, ok=1/16 best=6.132]gen 4:  69%|██████████▎    | 11/16 [03:54<01:13, 14.80s/it, ok=10/16 best=6.132]gen 4:  88%|█████████████▏ | 14/16 [04:11<00:29, 14.80s/it, ok=13/16 best=6.132]gen 4:  94%|██████████████ | 15/16 [04:14<00:11, 11.28s/it, ok=14/16 best=5.822]gen 4: 100%|███████████████| 16/16 [04:19<00:00, 16.25s/it, ok=15/16 best=5.822]
+[DE] Generation 4 best=5.126693 mean=6.752517 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 5: dispatching 16 trial evals to 16 workers
+gen 5:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 5:   6%|█                | 1/16 [03:56<59:02, 236.14s/it, ok=1/16 best=8.43]gen 5:  88%|██████████████  | 14/16 [04:25<00:28, 14.22s/it, ok=14/16 best=5.17]gen 5:  94%|███████████████ | 15/16 [04:41<00:14, 14.22s/it, ok=15/16 best=5.17]gen 5: 100%|████████████████| 16/16 [04:44<00:00, 13.39s/it, ok=16/16 best=5.17]gen 5: 100%|████████████████| 16/16 [04:44<00:00, 17.78s/it, ok=16/16 best=5.17]
+[DE] Generation 5 best=5.126693 mean=6.513791 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 6: dispatching 16 trial evals to 16 workers
+gen 6:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 6:   6%|█               | 1/16 [03:43<55:56, 223.78s/it, ok=1/16 best=5.766]gen 6:  56%|█████████▌       | 9/16 [04:00<02:19, 19.94s/it, ok=9/16 best=5.629]gen 6:  81%|████████████▏  | 13/16 [04:17<00:59, 19.94s/it, ok=13/16 best=5.629]gen 6:  88%|█████████████▏ | 14/16 [04:25<00:26, 13.16s/it, ok=14/16 best=5.629]gen 6: 100%|███████████████| 16/16 [04:45<00:00, 17.84s/it, ok=16/16 best=5.629]
+[DE] Generation 6 best=5.126693 mean=6.483373 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 7: dispatching 16 trial evals to 16 workers
+gen 7:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 7:   6%|█               | 1/16 [03:42<55:30, 222.05s/it, ok=1/16 best=7.249]gen 7:  81%|████████████▏  | 13/16 [04:25<00:46, 15.63s/it, ok=13/16 best=5.419]gen 7: 100%|███████████████| 16/16 [04:33<00:00, 17.12s/it, ok=16/16 best=5.419]
+[DE] Generation 7 best=5.126693 mean=6.330152 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 8: dispatching 16 trial evals to 16 workers
+gen 8:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 8:   6%|█               | 1/16 [03:33<53:17, 213.20s/it, ok=1/16 best=6.702]gen 8:  25%|████▎            | 4/16 [03:49<08:56, 44.69s/it, ok=4/16 best=6.702]gen 8:  56%|█████████▌       | 9/16 [04:05<02:02, 17.44s/it, ok=9/16 best=5.425]gen 8:  88%|█████████████▏ | 14/16 [04:24<00:21, 10.83s/it, ok=14/16 best=5.425]gen 8: 100%|███████████████| 16/16 [04:43<00:00, 17.73s/it, ok=16/16 best=5.425]
+[DE] Generation 8 best=5.126693 mean=6.092533 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 9: dispatching 16 trial evals to 16 workers
+gen 9:   0%|                                             | 0/16 [00:00<?, ?it/s]gen 9:   6%|█                | 1/16 [03:34<53:39, 214.60s/it, ok=1/16 best=6.92]gen 9:  50%|████████▌        | 8/16 [03:50<02:52, 21.51s/it, ok=8/16 best=5.302]gen 9:  81%|████████████▏  | 13/16 [04:14<01:04, 21.51s/it, ok=13/16 best=5.212]gen 9:  88%|█████████████▏ | 14/16 [04:14<00:24, 12.33s/it, ok=14/16 best=5.212]gen 9:  88%|█████████████▏ | 14/16 [04:34<00:24, 12.33s/it, ok=14/16 best=5.212]gen 9:  94%|██████████████ | 15/16 [05:09<00:17, 17.07s/it, ok=15/16 best=5.212]gen 9: 100%|███████████████| 16/16 [05:09<00:00, 19.34s/it, ok=16/16 best=5.212]
+[DE] Generation 9 best=5.126693 mean=5.659595 ok=16/16
+[DE]   best fitness: f_resonance=2.655 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 10: dispatching 16 trial evals to 16 workers
+gen 10:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 10:   6%|▉              | 1/16 [03:34<53:42, 214.84s/it, ok=1/16 best=5.108]gen 10:  12%|██              | 2/16 [03:52<23:03, 98.83s/it, ok=2/16 best=5.108]gen 10:  44%|███████         | 7/16 [04:10<03:17, 21.94s/it, ok=7/16 best=5.108]gen 10:  88%|████████████▎ | 14/16 [04:25<00:19,  9.72s/it, ok=14/16 best=5.108]gen 10:  94%|█████████████▏| 15/16 [04:44<00:09,  9.72s/it, ok=15/16 best=5.108]gen 10: 100%|██████████████| 16/16 [05:11<00:00, 12.40s/it, ok=16/16 best=5.108]gen 10: 100%|██████████████| 16/16 [05:11<00:00, 19.49s/it, ok=16/16 best=5.108]
+[DE] Generation 10 best=5.108356 mean=5.549454 ok=16/16
+[DE]   best fitness: f_resonance=2.615 f_cfd=2.494 eta=0.9218 vcav=0.001891 dH=-1.802
+[DE] gen 11: dispatching 16 trial evals to 16 workers
+gen 11:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 11:  12%|█▉             | 2/16 [03:31<24:38, 105.63s/it, ok=1/16 best=7.766]gen 11:  38%|██████          | 6/16 [03:46<05:02, 30.22s/it, ok=5/16 best=5.156]gen 11:  44%|███████         | 7/16 [04:02<04:31, 30.22s/it, ok=6/16 best=5.156]gen 11:  50%|████████        | 8/16 [04:03<03:01, 22.73s/it, ok=7/16 best=5.156]gen 11:  56%|█████████       | 9/16 [04:22<02:39, 22.73s/it, ok=8/16 best=5.074]gen 11:  62%|█████████▍     | 10/16 [04:43<02:10, 21.78s/it, ok=9/16 best=5.074]gen 11:  94%|█████████████▏| 15/16 [05:05<00:12, 12.35s/it, ok=14/16 best=5.074]gen 11: 100%|██████████████| 16/16 [05:07<00:00, 19.24s/it, ok=15/16 best=5.074]
+[DE] Generation 11 best=5.073680 mean=5.520633 ok=16/16
+[DE]   best fitness: f_resonance=2.602 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 12: dispatching 16 trial evals to 16 workers
+gen 12:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 12:   6%|▉              | 1/16 [03:27<51:54, 207.64s/it, ok=1/16 best=9.568]gen 12:  19%|███             | 3/16 [03:47<13:14, 61.14s/it, ok=3/16 best=8.063]gen 12:  56%|█████████       | 9/16 [04:03<01:57, 16.73s/it, ok=9/16 best=5.054]gen 12:  81%|███████████▍  | 13/16 [04:25<00:50, 16.73s/it, ok=13/16 best=5.054]gen 12:  88%|████████████▎ | 14/16 [04:26<00:21, 10.93s/it, ok=14/16 best=5.054]gen 12: 100%|██████████████| 16/16 [04:38<00:00, 17.38s/it, ok=16/16 best=5.054]
+[DE] Generation 12 best=5.053685 mean=5.456840 ok=16/16
+[DE]   best fitness: f_resonance=2.523 f_cfd=2.531 eta=0.905 vcav=0.001668 dH=-1.746
+[DE] gen 13: dispatching 16 trial evals to 16 workers
+gen 13:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 13:   6%|▉              | 1/16 [03:19<49:56, 199.79s/it, ok=1/16 best=8.441]gen 13:  19%|███             | 3/16 [03:39<12:48, 59.09s/it, ok=3/16 best=6.864]gen 13:  38%|██████          | 6/16 [03:56<09:50, 59.09s/it, ok=6/16 best=5.053]gen 13:  44%|███████         | 7/16 [04:01<03:23, 22.62s/it, ok=7/16 best=5.053]gen 13:  56%|█████████       | 9/16 [04:16<02:38, 22.62s/it, ok=9/16 best=5.053]gen 13:  62%|████████▊     | 10/16 [04:29<01:42, 17.05s/it, ok=10/16 best=5.053]gen 13:  81%|███████████▍  | 13/16 [04:46<00:51, 17.05s/it, ok=13/16 best=5.053]gen 13:  88%|████████████▎ | 14/16 [05:00<00:25, 12.97s/it, ok=14/16 best=5.053]gen 13: 100%|██████████████| 16/16 [05:07<00:00, 19.20s/it, ok=16/16 best=5.053]
+[DE] Generation 13 best=5.052953 mean=5.443781 ok=16/16
+[DE]   best fitness: f_resonance=2.581 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 14: dispatching 16 trial evals to 16 workers
+gen 14:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 14:  12%|█▉             | 2/16 [03:43<26:05, 111.82s/it, ok=1/16 best=7.685]gen 14:  50%|████████        | 8/16 [04:05<03:12, 24.11s/it, ok=7/16 best=5.351]gen 14:  88%|████████████▎ | 14/16 [04:29<00:48, 24.11s/it, ok=13/16 best=5.351]gen 14:  94%|█████████████▏| 15/16 [04:35<00:12, 12.72s/it, ok=14/16 best=5.351]gen 14: 100%|██████████████| 16/16 [04:41<00:00, 17.56s/it, ok=15/16 best=4.999]
+[DE] Generation 14 best=4.999380 mean=5.405119 ok=16/16
+[DE]   best fitness: f_resonance=2.469 f_cfd=2.531 eta=0.905 vcav=0.001668 dH=-1.746
+[DE] gen 15: dispatching 16 trial evals to 16 workers
+gen 15:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 15:   6%|█               | 1/16 [01:33<23:27, 93.83s/it, ok=0/16 best=1e+06]gen 15:  12%|█▉             | 2/16 [03:29<24:56, 106.88s/it, ok=1/16 best=8.549]gen 15:  19%|███             | 3/16 [03:52<14:48, 68.38s/it, ok=2/16 best=8.549]gen 15:  62%|█████████▍     | 10/16 [04:09<01:25, 14.25s/it, ok=9/16 best=5.501]gen 15:  88%|████████████▎ | 14/16 [04:28<00:28, 14.25s/it, ok=13/16 best=5.501]gen 15:  94%|█████████████▏| 15/16 [05:11<00:13, 13.39s/it, ok=14/16 best=5.501]gen 15: 100%|██████████████| 16/16 [05:11<00:00, 19.44s/it, ok=15/16 best=5.501]
+[DE] Generation 15 best=4.999380 mean=5.404372 ok=16/16
+[DE]   best fitness: f_resonance=2.469 f_cfd=2.531 eta=0.905 vcav=0.001668 dH=-1.746
+[DE] gen 16: dispatching 16 trial evals to 16 workers
+gen 16:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 16:   6%|▉              | 1/16 [03:34<53:34, 214.30s/it, ok=1/16 best=10.03]gen 16:  19%|███             | 3/16 [03:56<13:48, 63.75s/it, ok=3/16 best=5.356]gen 16:  69%|█████████▋    | 11/16 [04:17<01:11, 14.28s/it, ok=11/16 best=5.356]gen 16:  88%|████████████▎ | 14/16 [04:37<00:28, 14.28s/it, ok=14/16 best=5.356]gen 16:  94%|█████████████▏| 15/16 [04:55<00:12, 12.59s/it, ok=15/16 best=5.356]gen 16: 100%|██████████████| 16/16 [05:06<00:00, 19.14s/it, ok=16/16 best=5.356]
+[DE] Generation 16 best=4.999380 mean=5.404372 ok=16/16
+[DE]   best fitness: f_resonance=2.469 f_cfd=2.531 eta=0.905 vcav=0.001668 dH=-1.746
+[DE] gen 17: dispatching 16 trial evals to 16 workers
+gen 17:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 17:   6%|▉              | 1/16 [02:42<40:34, 162.29s/it, ok=0/16 best=1e+06]gen 17:  12%|██              | 2/16 [03:22<21:04, 90.31s/it, ok=1/16 best=8.973]gen 17:  19%|███             | 3/16 [03:43<12:41, 58.60s/it, ok=2/16 best=7.706]gen 17:  50%|████████▌        | 8/16 [04:00<02:11, 16.39s/it, ok=7/16 best=5.31]gen 17:  75%|██████████▌   | 12/16 [04:21<01:05, 16.39s/it, ok=11/16 best=5.177]gen 17:  81%|███████████▍  | 13/16 [04:52<00:39, 13.26s/it, ok=12/16 best=5.072]gen 17:  94%|█████████████▏| 15/16 [05:11<00:13, 13.26s/it, ok=14/16 best=5.072]gen 17: 100%|██████████████| 16/16 [05:14<00:00, 11.44s/it, ok=15/16 best=5.072]gen 17: 100%|██████████████| 16/16 [05:14<00:00, 19.65s/it, ok=15/16 best=5.072]
+[DE] Generation 17 best=4.999380 mean=5.383312 ok=16/16
+[DE]   best fitness: f_resonance=2.469 f_cfd=2.531 eta=0.905 vcav=0.001668 dH=-1.746
+[DE] gen 18: dispatching 16 trial evals to 16 workers
+gen 18:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 18:   6%|▉              | 1/16 [03:37<54:24, 217.61s/it, ok=1/16 best=5.363]gen 18:  25%|████▎            | 4/16 [03:55<09:12, 46.04s/it, ok=4/16 best=5.17]gen 18:  56%|█████████       | 9/16 [04:10<02:04, 17.72s/it, ok=9/16 best=4.772]gen 18:  75%|██████████▌   | 12/16 [04:26<01:10, 17.72s/it, ok=12/16 best=4.772]gen 18:  81%|███████████▍  | 13/16 [04:27<00:35, 11.86s/it, ok=13/16 best=4.772]gen 18: 100%|██████████████| 16/16 [04:35<00:00, 17.19s/it, ok=16/16 best=4.772]
+[DE] Generation 18 best=4.771958 mean=5.268594 ok=16/16
+[DE]   best fitness: f_resonance=2.436 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 19: dispatching 16 trial evals to 16 workers
+gen 19:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 19:  12%|█▉             | 2/16 [03:39<25:36, 109.76s/it, ok=1/16 best=8.996]gen 19:  38%|██████          | 6/16 [03:58<05:19, 31.96s/it, ok=5/16 best=5.022]gen 19:  62%|█████████▍     | 10/16 [04:19<01:49, 18.26s/it, ok=9/16 best=5.022]gen 19:  81%|███████████▍  | 13/16 [04:41<00:54, 18.26s/it, ok=12/16 best=5.022]gen 19:  88%|████████████▎ | 14/16 [05:03<00:30, 15.18s/it, ok=13/16 best=5.022]gen 19: 100%|██████████████| 16/16 [05:12<00:00, 19.55s/it, ok=15/16 best=5.022]
+[DE] Generation 19 best=4.771958 mean=5.258289 ok=16/16
+[DE]   best fitness: f_resonance=2.436 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 20: dispatching 16 trial evals to 16 workers
+gen 20:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 20:   6%|▉              | 1/16 [03:39<54:53, 219.59s/it, ok=1/16 best=10.41]gen 20:  38%|██████          | 6/16 [04:03<05:10, 31.08s/it, ok=6/16 best=5.018]gen 20:  75%|██████████▌   | 12/16 [04:18<02:04, 31.08s/it, ok=12/16 best=5.018]gen 20:  81%|███████████▍  | 13/16 [04:21<00:39, 13.00s/it, ok=13/16 best=5.018]gen 20:  88%|████████████▎ | 14/16 [04:38<00:26, 13.00s/it, ok=14/16 best=5.018]gen 20:  94%|█████████████▏| 15/16 [04:42<00:12, 12.49s/it, ok=15/16 best=5.018]gen 20:  94%|█████████████▏| 15/16 [04:58<00:12, 12.49s/it, ok=15/16 best=5.018]gen 20: 100%|██████████████| 16/16 [05:02<00:00, 13.45s/it, ok=16/16 best=5.018]gen 20: 100%|██████████████| 16/16 [05:02<00:00, 18.94s/it, ok=16/16 best=5.018]
+[DE] Generation 20 best=4.771958 mean=5.226819 ok=16/16
+[DE]   best fitness: f_resonance=2.436 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 21: dispatching 16 trial evals to 16 workers
+gen 21:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 21:  19%|███             | 3/16 [03:34<15:30, 71.60s/it, ok=1/16 best=5.672]gen 21:  50%|████████        | 8/16 [03:52<03:09, 23.64s/it, ok=6/16 best=4.984]gen 21:  62%|█████████▍     | 10/16 [04:15<02:21, 23.64s/it, ok=8/16 best=4.984]gen 21:  69%|██████████▎    | 11/16 [04:44<01:46, 21.26s/it, ok=9/16 best=4.984]gen 21: 100%|██████████████| 16/16 [05:13<00:00, 13.96s/it, ok=14/16 best=4.984]gen 21: 100%|██████████████| 16/16 [05:13<00:00, 19.58s/it, ok=14/16 best=4.984]
+[DE] Generation 21 best=4.771958 mean=5.226819 ok=16/16
+[DE]   best fitness: f_resonance=2.436 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 22: dispatching 16 trial evals to 16 workers
+gen 22:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 22:   6%|▉              | 1/16 [03:31<52:51, 211.43s/it, ok=1/16 best=5.127]gen 22:  25%|████▎            | 4/16 [03:48<08:56, 44.67s/it, ok=4/16 best=5.04]gen 22:  44%|███████▍         | 7/16 [04:10<03:41, 24.65s/it, ok=7/16 best=5.04]gen 22:  75%|██████████▌   | 12/16 [04:32<01:38, 24.65s/it, ok=12/16 best=4.945]gen 22:  81%|███████████▍  | 13/16 [04:46<00:39, 13.30s/it, ok=13/16 best=4.945]gen 22:  88%|████████████▎ | 14/16 [05:02<00:26, 13.30s/it, ok=14/16 best=4.945]gen 22:  94%|█████████████▏| 15/16 [05:03<00:12, 12.26s/it, ok=15/16 best=4.945]gen 22: 100%|██████████████| 16/16 [05:05<00:00, 19.11s/it, ok=16/16 best=4.859]
+[DE] Generation 22 best=4.771958 mean=5.188710 ok=16/16
+[DE]   best fitness: f_resonance=2.436 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 23: dispatching 16 trial evals to 16 workers
+gen 23:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 23:   6%|▉              | 1/16 [03:56<59:12, 236.81s/it, ok=1/16 best=4.829]gen 23:  38%|██████          | 6/16 [04:30<05:50, 35.02s/it, ok=6/16 best=4.829]gen 23:  81%|███████████▍  | 13/16 [04:46<00:42, 14.12s/it, ok=13/16 best=4.829]gen 23:  94%|█████████████▏| 15/16 [05:06<00:14, 14.12s/it, ok=15/16 best=4.829]gen 23: 100%|██████████████| 16/16 [05:29<00:00, 14.19s/it, ok=16/16 best=4.829]gen 23: 100%|██████████████| 16/16 [05:29<00:00, 20.57s/it, ok=16/16 best=4.829]
+[DE] Generation 23 best=4.771958 mean=5.160936 ok=16/16
+[DE]   best fitness: f_resonance=2.436 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 24: dispatching 16 trial evals to 16 workers
+gen 24:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 24:   6%|▊            | 1/16 [04:01<1:00:28, 241.88s/it, ok=1/16 best=5.535]gen 24:  62%|████████▊     | 10/16 [04:18<01:54, 19.15s/it, ok=10/16 best=4.759]gen 24:  81%|███████████▍  | 13/16 [04:37<00:57, 19.15s/it, ok=13/16 best=4.759]gen 24:  88%|████████████▎ | 14/16 [04:38<00:27, 13.89s/it, ok=14/16 best=4.759]gen 24:  94%|█████████████▏| 15/16 [04:57<00:13, 13.89s/it, ok=15/16 best=4.759]gen 24: 100%|██████████████| 16/16 [05:07<00:00, 14.02s/it, ok=16/16 best=4.759]gen 24: 100%|██████████████| 16/16 [05:07<00:00, 19.20s/it, ok=16/16 best=4.759]
+[DE] Generation 24 best=4.759191 mean=5.139723 ok=16/16
+[DE]   best fitness: f_resonance=2.208 f_cfd=2.551 eta=0.8987 vcav=0.001343 dH=-1.714
+[DE] gen 25: dispatching 16 trial evals to 16 workers
+gen 25:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 25:   6%|█               | 1/16 [01:39<24:54, 99.67s/it, ok=0/16 best=1e+06]gen 25:  12%|█▉             | 2/16 [03:23<23:49, 102.13s/it, ok=1/16 best=7.546]gen 25:  19%|███▏             | 3/16 [03:50<14:44, 68.04s/it, ok=2/16 best=7.44]gen 25:  31%|█████           | 5/16 [04:08<06:20, 34.62s/it, ok=4/16 best=5.337]gen 25:  56%|█████████       | 9/16 [04:29<01:54, 16.37s/it, ok=8/16 best=5.337]gen 25:  75%|██████████▌   | 12/16 [04:45<00:48, 12.01s/it, ok=11/16 best=5.188]gen 25: 100%|██████████████| 16/16 [05:06<00:00,  9.11s/it, ok=15/16 best=5.188]gen 25: 100%|██████████████| 16/16 [05:06<00:00, 19.17s/it, ok=15/16 best=5.188]
+[DE] Generation 25 best=4.759191 mean=5.136148 ok=16/16
+[DE]   best fitness: f_resonance=2.208 f_cfd=2.551 eta=0.8987 vcav=0.001343 dH=-1.714
+[DE] gen 26: dispatching 16 trial evals to 16 workers
+gen 26:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 26:  12%|█▉             | 2/16 [03:22<23:36, 101.18s/it, ok=1/16 best=6.721]gen 26:  25%|████            | 4/16 [03:45<09:41, 48.48s/it, ok=3/16 best=6.692]gen 26:  56%|█████████▌       | 9/16 [04:02<02:05, 17.87s/it, ok=8/16 best=6.24]gen 26:  69%|█████████▋    | 11/16 [04:23<01:29, 17.87s/it, ok=10/16 best=5.177]gen 26:  75%|██████████▌   | 12/16 [04:25<00:56, 14.18s/it, ok=11/16 best=5.177]gen 26:  75%|██████████▌   | 12/16 [04:43<00:56, 14.18s/it, ok=11/16 best=5.177]gen 26:  81%|███████████▍  | 13/16 [04:44<00:44, 14.92s/it, ok=12/16 best=5.177]gen 26:  94%|█████████████▏| 15/16 [05:18<00:15, 15.58s/it, ok=14/16 best=5.177]gen 26: 100%|██████████████| 16/16 [05:24<00:00, 20.27s/it, ok=15/16 best=5.177]
+[DE] Generation 26 best=4.759191 mean=5.124510 ok=16/16
+[DE]   best fitness: f_resonance=2.208 f_cfd=2.551 eta=0.8987 vcav=0.001343 dH=-1.714
+[DE] gen 27: dispatching 16 trial evals to 16 workers
+gen 27:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 27:   6%|▉              | 1/16 [03:32<53:13, 212.92s/it, ok=1/16 best=5.003]gen 27:  19%|███             | 3/16 [03:52<13:31, 62.44s/it, ok=3/16 best=5.003]gen 27:  31%|█████           | 5/16 [04:08<06:20, 34.56s/it, ok=5/16 best=5.003]gen 27:  69%|██████████▎    | 11/16 [04:27<01:04, 12.92s/it, ok=11/16 best=4.88]gen 27:  81%|████████████▏  | 13/16 [04:49<00:38, 12.92s/it, ok=13/16 best=4.88]gen 27:  88%|█████████████▏ | 14/16 [04:49<00:22, 11.13s/it, ok=14/16 best=4.88]gen 27:  94%|██████████████ | 15/16 [05:09<00:11, 11.13s/it, ok=15/16 best=4.88]gen 27: 100%|███████████████| 16/16 [05:35<00:00, 13.86s/it, ok=16/16 best=4.88]gen 27: 100%|███████████████| 16/16 [05:35<00:00, 20.94s/it, ok=16/16 best=4.88]
+[DE] Generation 27 best=4.759191 mean=5.106275 ok=16/16
+[DE]   best fitness: f_resonance=2.208 f_cfd=2.551 eta=0.8987 vcav=0.001343 dH=-1.714
+[DE] gen 28: dispatching 16 trial evals to 16 workers
+gen 28:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 28:   6%|▉              | 1/16 [03:42<55:37, 222.51s/it, ok=1/16 best=6.575]gen 28:  25%|████            | 4/16 [04:00<09:24, 47.07s/it, ok=4/16 best=4.912]gen 28:  62%|████████▊     | 10/16 [04:20<01:38, 16.43s/it, ok=10/16 best=4.912]gen 28:  81%|███████████▍  | 13/16 [04:44<00:49, 16.43s/it, ok=13/16 best=4.912]gen 28:  88%|████████████▎ | 14/16 [04:48<00:25, 12.68s/it, ok=14/16 best=4.912]gen 28:  94%|█████████████▏| 15/16 [05:04<00:12, 12.68s/it, ok=15/16 best=4.912]gen 28: 100%|██████████████| 16/16 [05:26<00:00, 14.07s/it, ok=16/16 best=4.912]gen 28: 100%|██████████████| 16/16 [05:26<00:00, 20.39s/it, ok=16/16 best=4.912]
+[DE] Generation 28 best=4.759191 mean=5.086643 ok=16/16
+[DE]   best fitness: f_resonance=2.208 f_cfd=2.551 eta=0.8987 vcav=0.001343 dH=-1.714
+[DE] gen 29: dispatching 16 trial evals to 16 workers
+gen 29:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 29:   6%|▉              | 1/16 [03:43<55:49, 223.33s/it, ok=1/16 best=7.039]gen 29:  25%|████            | 4/16 [03:58<09:17, 46.48s/it, ok=4/16 best=5.071]gen 29:  31%|█████           | 5/16 [04:17<08:31, 46.48s/it, ok=5/16 best=5.071]gen 29:  38%|██████          | 6/16 [04:19<05:06, 30.62s/it, ok=6/16 best=5.071]gen 29:  69%|█████████▋    | 11/16 [04:34<01:09, 13.90s/it, ok=11/16 best=5.071]gen 29:  88%|█████████████▏ | 14/16 [04:57<00:27, 13.90s/it, ok=14/16 best=4.82]gen 29:  94%|██████████████ | 15/16 [05:02<00:10, 10.99s/it, ok=15/16 best=4.82]gen 29: 100%|███████████████| 16/16 [05:16<00:00, 19.78s/it, ok=16/16 best=4.82]
+[DE] Generation 29 best=4.759191 mean=5.045124 ok=16/16
+[DE]   best fitness: f_resonance=2.208 f_cfd=2.551 eta=0.8987 vcav=0.001343 dH=-1.714
+[DE] gen 30: dispatching 16 trial evals to 16 workers
+gen 30:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 30:   6%|▉              | 1/16 [03:11<47:58, 191.88s/it, ok=1/16 best=9.127]gen 30:  12%|█▉             | 2/16 [03:58<24:46, 106.16s/it, ok=2/16 best=6.163]gen 30:  44%|███████         | 7/16 [04:13<03:26, 22.95s/it, ok=7/16 best=5.383]gen 30:  56%|█████████       | 9/16 [04:31<02:40, 22.95s/it, ok=9/16 best=5.383]gen 30:  62%|████████▊     | 10/16 [04:37<01:40, 16.83s/it, ok=10/16 best=5.383]gen 30:  88%|████████████▎ | 14/16 [04:54<00:22, 11.34s/it, ok=14/16 best=5.383]gen 30:  94%|█████████████▏| 15/16 [05:11<00:11, 11.34s/it, ok=15/16 best=5.383]gen 30: 100%|██████████████| 16/16 [05:16<00:00, 11.18s/it, ok=16/16 best=5.251]gen 30: 100%|██████████████| 16/16 [05:16<00:00, 19.77s/it, ok=16/16 best=5.251]
+[DE] Generation 30 best=4.759191 mean=5.044972 ok=16/16
+[DE]   best fitness: f_resonance=2.208 f_cfd=2.551 eta=0.8987 vcav=0.001343 dH=-1.714
+[DE] gen 31: dispatching 16 trial evals to 16 workers
+gen 31:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 31:   6%|▉              | 1/16 [03:56<59:06, 236.42s/it, ok=1/16 best=5.353]gen 31:  38%|██████          | 6/16 [04:12<05:19, 31.93s/it, ok=6/16 best=4.812]gen 31:  69%|█████████▋    | 11/16 [04:35<01:23, 16.64s/it, ok=11/16 best=4.812]gen 31:  88%|████████████▎ | 14/16 [04:55<00:33, 16.64s/it, ok=14/16 best=4.812]gen 31:  94%|█████████████▏| 15/16 [05:13<00:13, 13.93s/it, ok=15/16 best=4.812]gen 31: 100%|██████████████| 16/16 [05:20<00:00, 20.01s/it, ok=16/16 best=4.812]
+[DE] Generation 31 best=4.759191 mean=5.021218 ok=16/16
+[DE]   best fitness: f_resonance=2.208 f_cfd=2.551 eta=0.8987 vcav=0.001343 dH=-1.714
+[DE] gen 32: dispatching 16 trial evals to 16 workers
+gen 32:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 32:  12%|█▉             | 2/16 [03:48<26:39, 114.24s/it, ok=1/16 best=5.191]gen 32:  31%|█████           | 5/16 [04:08<07:29, 40.82s/it, ok=4/16 best=5.191]gen 32:  56%|█████████       | 9/16 [04:24<04:45, 40.82s/it, ok=8/16 best=5.191]gen 32:  62%|█████████▍     | 10/16 [04:34<01:53, 18.88s/it, ok=9/16 best=5.191]gen 32:  81%|███████████▍  | 13/16 [04:54<00:43, 14.58s/it, ok=12/16 best=4.927]gen 32:  94%|█████████████▏| 15/16 [05:14<00:14, 14.58s/it, ok=14/16 best=4.736]gen 32: 100%|██████████████| 16/16 [05:37<00:00, 14.49s/it, ok=15/16 best=4.736]gen 32: 100%|██████████████| 16/16 [05:37<00:00, 21.08s/it, ok=15/16 best=4.736]
+[DE] Generation 32 best=4.735827 mean=4.992012 ok=16/16
+[DE]   best fitness: f_resonance=2.264 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 33: dispatching 16 trial evals to 16 workers
+gen 33:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 33:  12%|█▉             | 2/16 [03:32<24:45, 106.14s/it, ok=1/16 best=8.214]gen 33:  31%|█████           | 5/16 [03:56<07:11, 39.21s/it, ok=4/16 best=6.551]gen 33:  56%|█████████       | 9/16 [04:11<02:14, 19.18s/it, ok=8/16 best=5.027]gen 33:  69%|█████████▋    | 11/16 [04:27<01:35, 19.18s/it, ok=10/16 best=5.027]gen 33:  75%|██████████▌   | 12/16 [04:32<00:58, 14.58s/it, ok=11/16 best=5.027]gen 33:  88%|████████████▎ | 14/16 [04:47<00:29, 14.58s/it, ok=13/16 best=5.027]gen 33:  94%|█████████████▏| 15/16 [04:54<00:12, 12.11s/it, ok=14/16 best=4.799]gen 33: 100%|██████████████| 16/16 [05:08<00:00, 19.31s/it, ok=15/16 best=4.799]
+[DE] Generation 33 best=4.735827 mean=4.967988 ok=16/16
+[DE]   best fitness: f_resonance=2.264 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 34: dispatching 16 trial evals to 16 workers
+gen 34:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 34:   6%|▉              | 1/16 [03:56<59:03, 236.22s/it, ok=1/16 best=10.17]gen 34:  25%|████            | 4/16 [04:14<09:55, 49.61s/it, ok=4/16 best=6.138]gen 34:  56%|█████████       | 9/16 [04:31<02:14, 19.17s/it, ok=9/16 best=4.913]gen 34:  69%|█████████▋    | 11/16 [04:48<01:35, 19.17s/it, ok=11/16 best=4.913]gen 34:  75%|██████████▌   | 12/16 [04:52<00:59, 14.82s/it, ok=12/16 best=4.868]gen 34:  81%|███████████▍  | 13/16 [05:08<00:44, 14.82s/it, ok=13/16 best=4.868]gen 34:  88%|████████████▎ | 14/16 [05:11<00:26, 13.41s/it, ok=14/16 best=4.868]gen 34:  88%|████████████▎ | 14/16 [05:28<00:26, 13.41s/it, ok=14/16 best=4.868]gen 34:  94%|█████████████▏| 15/16 [05:37<00:15, 15.35s/it, ok=15/16 best=4.868]gen 34: 100%|██████████████| 16/16 [05:40<00:00, 21.26s/it, ok=16/16 best=4.868]
+[DE] Generation 34 best=4.735827 mean=4.950598 ok=16/16
+[DE]   best fitness: f_resonance=2.264 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 35: dispatching 16 trial evals to 16 workers
+gen 35:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 35:   6%|▉              | 1/16 [03:36<54:14, 216.99s/it, ok=1/16 best=8.743]gen 35:  12%|█▉             | 2/16 [04:02<24:21, 104.38s/it, ok=2/16 best=8.743]gen 35:  31%|█████           | 5/16 [04:17<06:05, 33.23s/it, ok=5/16 best=5.061]gen 35:  75%|██████████▌   | 12/16 [04:38<02:12, 33.23s/it, ok=12/16 best=4.759]gen 35:  81%|███████████▍  | 13/16 [04:40<00:33, 11.05s/it, ok=13/16 best=4.759]gen 35: 100%|██████████████| 16/16 [04:58<00:00, 18.63s/it, ok=16/16 best=4.759]
+[DE] Generation 35 best=4.735827 mean=4.940350 ok=16/16
+[DE]   best fitness: f_resonance=2.264 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 36: dispatching 16 trial evals to 16 workers
+gen 36:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 36:  12%|██              | 2/16 [03:33<24:53, 106.69s/it, ok=1/16 best=7.04]gen 36:  19%|███             | 3/16 [03:58<15:43, 72.57s/it, ok=2/16 best=5.185]gen 36:  31%|█████           | 5/16 [04:17<07:00, 38.27s/it, ok=4/16 best=5.134]gen 36:  56%|█████████       | 9/16 [04:32<02:01, 17.32s/it, ok=8/16 best=4.948]gen 36:  69%|█████████▋    | 11/16 [04:50<01:26, 17.32s/it, ok=10/16 best=4.948]gen 36:  75%|██████████▌   | 12/16 [04:59<00:56, 14.06s/it, ok=11/16 best=4.948]gen 36:  88%|████████████▎ | 14/16 [05:17<00:25, 12.71s/it, ok=13/16 best=4.603]gen 36: 100%|██████████████| 16/16 [05:33<00:00, 11.30s/it, ok=15/16 best=4.603]gen 36: 100%|██████████████| 16/16 [05:33<00:00, 20.83s/it, ok=15/16 best=4.603]
+[DE] Generation 36 best=4.603445 mean=4.918957 ok=16/16
+[DE]   best fitness: f_resonance=2.132 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 37: dispatching 16 trial evals to 16 workers
+gen 37:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 37:   6%|▊            | 1/16 [04:06<1:01:35, 246.35s/it, ok=1/16 best=5.223]gen 37:  31%|█████           | 5/16 [04:21<07:19, 39.96s/it, ok=5/16 best=5.223]gen 37:  69%|█████████▋    | 11/16 [04:37<03:19, 39.96s/it, ok=11/16 best=5.223]gen 37:  75%|██████████▌   | 12/16 [04:37<00:57, 14.31s/it, ok=12/16 best=5.223]gen 37:  88%|████████████▎ | 14/16 [04:57<00:28, 14.31s/it, ok=14/16 best=5.223]gen 37:  94%|█████████████▏| 15/16 [04:58<00:12, 12.11s/it, ok=15/16 best=5.223]gen 37: 100%|██████████████| 16/16 [05:11<00:00, 19.47s/it, ok=16/16 best=4.817]
+[DE] Generation 37 best=4.603445 mean=4.918957 ok=16/16
+[DE]   best fitness: f_resonance=2.132 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 38: dispatching 16 trial evals to 16 workers
+gen 38:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 38:  12%|█▉             | 2/16 [03:34<25:00, 107.19s/it, ok=1/16 best=6.916]gen 38:  31%|█████           | 5/16 [04:15<07:58, 43.53s/it, ok=4/16 best=5.223]gen 38:  62%|█████████▍     | 10/16 [04:32<01:51, 18.66s/it, ok=9/16 best=4.473]gen 38:  75%|██████████▌   | 12/16 [04:55<01:14, 18.66s/it, ok=11/16 best=4.473]gen 38:  81%|███████████▍  | 13/16 [05:04<00:47, 15.88s/it, ok=12/16 best=4.473]gen 38:  94%|█████████████▏| 15/16 [05:22<00:14, 14.12s/it, ok=14/16 best=4.473]gen 38:  94%|█████████████▏| 15/16 [05:45<00:14, 14.12s/it, ok=14/16 best=4.473]gen 38: 100%|██████████████| 16/16 [06:02<00:00, 18.10s/it, ok=15/16 best=4.473]gen 38: 100%|██████████████| 16/16 [06:02<00:00, 22.66s/it, ok=15/16 best=4.473]
+[DE] Generation 38 best=4.472770 mean=4.905468 ok=16/16
+[DE]   best fitness: f_resonance=2.137 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 39: dispatching 16 trial evals to 16 workers
+gen 39:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 39:   6%|▉              | 1/16 [03:31<52:50, 211.36s/it, ok=1/16 best=5.364]gen 39:  31%|█████           | 5/16 [03:51<06:33, 35.81s/it, ok=5/16 best=4.941]gen 39:  44%|███████         | 7/16 [04:12<05:22, 35.81s/it, ok=7/16 best=4.705]gen 39:  50%|████████        | 8/16 [04:14<02:59, 22.40s/it, ok=8/16 best=4.705]gen 39:  81%|███████████▍  | 13/16 [04:30<00:36, 12.16s/it, ok=13/16 best=4.705]gen 39:  88%|████████████▎ | 14/16 [04:52<00:24, 12.16s/it, ok=14/16 best=4.705]gen 39:  94%|█████████████▏| 15/16 [05:07<00:13, 13.68s/it, ok=15/16 best=4.705]gen 39: 100%|██████████████| 16/16 [05:16<00:00, 19.78s/it, ok=16/16 best=4.705]
+[DE] Generation 39 best=4.472770 mean=4.898334 ok=16/16
+[DE]   best fitness: f_resonance=2.137 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 40: dispatching 16 trial evals to 16 workers
+gen 40:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 40:  12%|██              | 2/16 [03:49<26:48, 114.86s/it, ok=1/16 best=7.18]gen 40:  38%|██████          | 6/16 [04:07<05:30, 33.05s/it, ok=5/16 best=5.518]gen 40:  44%|███████         | 7/16 [04:26<04:57, 33.05s/it, ok=6/16 best=5.137]gen 40:  50%|████████        | 8/16 [04:44<03:44, 28.06s/it, ok=7/16 best=5.137]gen 40:  75%|██████████▌   | 12/16 [05:00<01:04, 16.02s/it, ok=11/16 best=4.691]gen 40:  88%|████████████▎ | 14/16 [05:16<00:32, 16.02s/it, ok=13/16 best=4.691]gen 40:  94%|█████████████▏| 15/16 [05:23<00:13, 13.19s/it, ok=14/16 best=4.691]gen 40: 100%|██████████████| 16/16 [05:39<00:00, 21.19s/it, ok=15/16 best=4.691]
+[DE] Generation 40 best=4.472770 mean=4.876115 ok=16/16
+[DE]   best fitness: f_resonance=2.137 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 41: dispatching 16 trial evals to 16 workers
+gen 41:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 41:   6%|▉              | 1/16 [03:53<58:16, 233.13s/it, ok=1/16 best=6.344]gen 41:  25%|████▎            | 4/16 [04:11<09:50, 49.20s/it, ok=4/16 best=5.99]gen 41:  44%|███████         | 7/16 [04:27<07:22, 49.20s/it, ok=7/16 best=5.133]gen 41:  50%|████████        | 8/16 [04:39<03:07, 23.50s/it, ok=8/16 best=5.133]gen 41:  69%|█████████▋    | 11/16 [04:55<01:21, 16.29s/it, ok=11/16 best=4.522]gen 41:  81%|███████████▍  | 13/16 [05:17<00:48, 16.29s/it, ok=13/16 best=4.522]gen 41:  88%|████████████▎ | 14/16 [05:23<00:27, 13.84s/it, ok=14/16 best=4.522]gen 41:  94%|█████████████▏| 15/16 [05:47<00:13, 13.84s/it, ok=15/16 best=4.522]gen 41: 100%|██████████████| 16/16 [06:14<00:00, 16.83s/it, ok=16/16 best=4.522]gen 41: 100%|██████████████| 16/16 [06:14<00:00, 23.41s/it, ok=16/16 best=4.522]
+[DE] Generation 41 best=4.472770 mean=4.869089 ok=16/16
+[DE]   best fitness: f_resonance=2.137 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 42: dispatching 16 trial evals to 16 workers
+gen 42:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 42:  19%|███             | 3/16 [03:43<16:10, 74.63s/it, ok=1/16 best=5.381]gen 42:  38%|██████          | 6/16 [04:07<05:53, 35.32s/it, ok=4/16 best=5.015]gen 42:  50%|████████        | 8/16 [04:22<04:42, 35.32s/it, ok=6/16 best=5.015]gen 42:  56%|█████████       | 9/16 [04:26<02:35, 22.18s/it, ok=7/16 best=5.015]gen 42:  62%|█████████▍     | 10/16 [04:42<02:13, 22.18s/it, ok=8/16 best=5.015]gen 42:  69%|██████████▎    | 11/16 [04:44<01:30, 18.12s/it, ok=9/16 best=5.015]gen 42:  88%|████████████▎ | 14/16 [05:02<00:36, 18.12s/it, ok=12/16 best=4.738]gen 42:  94%|█████████████▏| 15/16 [05:20<00:13, 13.84s/it, ok=13/16 best=4.738]gen 42: 100%|██████████████| 16/16 [05:33<00:00, 20.82s/it, ok=14/16 best=4.738]
+[DE] Generation 42 best=4.472770 mean=4.860632 ok=16/16
+[DE]   best fitness: f_resonance=2.137 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 43: dispatching 16 trial evals to 16 workers
+gen 43:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 43:  12%|█▉             | 2/16 [03:47<26:30, 113.61s/it, ok=1/16 best=6.799]gen 43:  31%|█████           | 5/16 [04:03<07:18, 39.84s/it, ok=4/16 best=4.996]gen 43:  38%|██████          | 6/16 [04:19<06:38, 39.84s/it, ok=5/16 best=4.996]gen 43:  44%|███████         | 7/16 [04:27<04:20, 28.92s/it, ok=6/16 best=4.996]gen 43:  69%|█████████▋    | 11/16 [04:44<01:19, 15.83s/it, ok=10/16 best=4.764]gen 43:  88%|████████████▎ | 14/16 [05:09<00:31, 15.83s/it, ok=13/16 best=4.764]gen 43:  94%|█████████████▏| 15/16 [05:30<00:13, 13.97s/it, ok=14/16 best=4.764]gen 43: 100%|██████████████| 16/16 [05:30<00:00, 20.69s/it, ok=15/16 best=4.764]
+[DE] Generation 43 best=4.472770 mean=4.845132 ok=16/16
+[DE]   best fitness: f_resonance=2.137 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 44: dispatching 16 trial evals to 16 workers
+gen 44:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 44:   6%|▉              | 1/16 [03:44<56:03, 224.23s/it, ok=1/16 best=6.843]gen 44:  19%|███             | 3/16 [04:13<14:56, 68.95s/it, ok=3/16 best=5.115]gen 44:  31%|█████           | 5/16 [04:31<06:59, 38.13s/it, ok=5/16 best=4.987]gen 44:  62%|████████▊     | 10/16 [04:46<01:32, 15.39s/it, ok=10/16 best=4.882]gen 44:  94%|█████████████▏| 15/16 [05:03<00:09,  9.66s/it, ok=15/16 best=4.652]gen 44:  94%|█████████████▏| 15/16 [05:28<00:09,  9.66s/it, ok=15/16 best=4.652]gen 44: 100%|██████████████| 16/16 [05:50<00:00, 14.17s/it, ok=16/16 best=4.652]gen 44: 100%|██████████████| 16/16 [05:50<00:00, 21.93s/it, ok=16/16 best=4.652]
+[DE] Generation 44 best=4.472770 mean=4.843819 ok=16/16
+[DE]   best fitness: f_resonance=2.137 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 45: dispatching 16 trial evals to 16 workers
+gen 45:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 45:  19%|███▏             | 3/16 [04:09<18:02, 83.29s/it, ok=1/16 best=8.38]gen 45:  31%|█████▎           | 5/16 [04:27<08:35, 46.89s/it, ok=3/16 best=4.96]gen 45:  50%|████████        | 8/16 [04:43<03:25, 25.63s/it, ok=6/16 best=4.762]gen 45:  69%|██████████▎    | 11/16 [05:03<01:28, 17.63s/it, ok=9/16 best=4.762]gen 45: 100%|███████████████| 16/16 [05:21<00:00, 10.66s/it, ok=14/16 best=4.43]gen 45: 100%|███████████████| 16/16 [05:21<00:00, 20.10s/it, ok=14/16 best=4.43]
+[DE] Generation 45 best=4.430389 mean=4.833462 ok=16/16
+[DE]   best fitness: f_resonance=2.094 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 46: dispatching 16 trial evals to 16 workers
+gen 46:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 46:   6%|▊            | 1/16 [04:12<1:03:03, 252.21s/it, ok=1/16 best=6.282]gen 46:  38%|██████          | 6/16 [04:29<05:40, 34.04s/it, ok=6/16 best=5.384]gen 46:  50%|████████        | 8/16 [04:45<04:32, 34.04s/it, ok=8/16 best=4.741]gen 46:  56%|█████████       | 9/16 [04:51<02:37, 22.49s/it, ok=9/16 best=4.741]gen 46:  69%|█████████▋    | 11/16 [05:15<01:52, 22.49s/it, ok=11/16 best=4.601]gen 46:  75%|██████████▌   | 12/16 [05:19<01:10, 17.50s/it, ok=12/16 best=4.601]gen 46:  94%|█████████████▏| 15/16 [05:35<00:17, 17.50s/it, ok=15/16 best=4.601]gen 46: 100%|██████████████| 16/16 [05:49<00:00, 13.38s/it, ok=16/16 best=4.601]gen 46: 100%|██████████████| 16/16 [05:49<00:00, 21.87s/it, ok=16/16 best=4.601]
+[DE] Generation 46 best=4.430389 mean=4.818983 ok=16/16
+[DE]   best fitness: f_resonance=2.094 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 47: dispatching 16 trial evals to 16 workers
+gen 47:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 47:   6%|▉              | 1/16 [03:38<54:41, 218.74s/it, ok=1/16 best=8.279]gen 47:  19%|███             | 3/16 [04:17<15:25, 71.20s/it, ok=3/16 best=4.817]gen 47:  25%|████            | 4/16 [04:37<10:39, 53.26s/it, ok=4/16 best=4.817]gen 47:  50%|████████        | 8/16 [04:57<02:50, 21.33s/it, ok=7/16 best=4.817]gen 47:  81%|███████████▍  | 13/16 [05:15<01:03, 21.33s/it, ok=12/16 best=4.639]gen 47:  88%|████████████▎ | 14/16 [05:27<00:23, 11.74s/it, ok=13/16 best=4.639]gen 47:  94%|█████████████▏| 15/16 [05:45<00:11, 11.74s/it, ok=14/16 best=4.613]gen 47: 100%|██████████████| 16/16 [05:59<00:00, 12.67s/it, ok=15/16 best=4.613]gen 47: 100%|██████████████| 16/16 [05:59<00:00, 22.50s/it, ok=15/16 best=4.613]
+[DE] Generation 47 best=4.430389 mean=4.805624 ok=16/16
+[DE]   best fitness: f_resonance=2.094 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 48: dispatching 16 trial evals to 16 workers
+gen 48:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 48:  25%|████            | 4/16 [03:50<11:32, 57.74s/it, ok=1/16 best=9.255]gen 48:  31%|█████           | 5/16 [04:20<09:13, 50.31s/it, ok=2/16 best=7.445]gen 48:  50%|████████▌        | 8/16 [04:50<03:51, 28.93s/it, ok=5/16 best=4.82]gen 48:  69%|██████████▎    | 11/16 [05:05<01:33, 18.68s/it, ok=8/16 best=4.677]gen 48:  94%|█████████████▏| 15/16 [05:25<00:18, 18.68s/it, ok=12/16 best=4.677]gen 48: 100%|██████████████| 16/16 [05:48<00:00, 13.50s/it, ok=13/16 best=4.677]gen 48: 100%|██████████████| 16/16 [05:48<00:00, 21.75s/it, ok=13/16 best=4.677]
+[DE] Generation 48 best=4.430389 mean=4.804674 ok=16/16
+[DE]   best fitness: f_resonance=2.094 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 49: dispatching 16 trial evals to 16 workers
+gen 49:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 49:  12%|█▉             | 2/16 [03:49<26:45, 114.70s/it, ok=1/16 best=4.897]gen 49:  25%|████            | 4/16 [04:14<10:56, 54.72s/it, ok=3/16 best=4.897]gen 49:  38%|██████          | 6/16 [04:37<09:07, 54.72s/it, ok=5/16 best=4.897]gen 49:  44%|███████         | 7/16 [04:45<04:28, 29.88s/it, ok=6/16 best=4.897]gen 49:  56%|█████████       | 9/16 [05:02<02:36, 22.42s/it, ok=8/16 best=4.897]gen 49:  81%|███████████▍  | 13/16 [05:17<01:07, 22.42s/it, ok=12/16 best=4.722]gen 49:  88%|████████████▎ | 14/16 [05:17<00:23, 11.75s/it, ok=13/16 best=4.722]gen 49: 100%|██████████████| 16/16 [05:36<00:00, 21.02s/it, ok=15/16 best=4.552]
+[DE] Generation 49 best=4.430389 mean=4.786455 ok=16/16
+[DE]   best fitness: f_resonance=2.094 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 50: dispatching 16 trial evals to 16 workers
+gen 50:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 50:  12%|█▉             | 2/16 [03:45<26:16, 112.58s/it, ok=1/16 best=7.817]gen 50:  25%|████            | 4/16 [04:09<10:43, 53.64s/it, ok=3/16 best=4.945]gen 50:  31%|█████           | 5/16 [04:31<09:50, 53.64s/it, ok=4/16 best=4.945]gen 50:  38%|██████          | 6/16 [04:33<05:44, 34.42s/it, ok=5/16 best=4.945]gen 50:  44%|███████         | 7/16 [04:51<05:09, 34.42s/it, ok=6/16 best=4.945]gen 50:  50%|████████        | 8/16 [04:54<03:20, 25.04s/it, ok=7/16 best=4.399]gen 50:  62%|█████████▍     | 10/16 [05:09<01:52, 18.76s/it, ok=9/16 best=4.399]gen 50:  69%|█████████▋    | 11/16 [05:31<01:33, 18.76s/it, ok=10/16 best=4.399]gen 50:  75%|██████████▌   | 12/16 [05:33<01:05, 16.42s/it, ok=11/16 best=4.399]gen 50:  94%|█████████████▏| 15/16 [05:51<00:16, 16.42s/it, ok=14/16 best=4.399]gen 50: 100%|██████████████| 16/16 [06:15<00:00, 13.48s/it, ok=15/16 best=4.399]gen 50: 100%|██████████████| 16/16 [06:15<00:00, 23.45s/it, ok=15/16 best=4.399]
+[DE] Generation 50 best=4.398794 mean=4.770685 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 51: dispatching 16 trial evals to 16 workers
+gen 51:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 51:   6%|█                | 1/16 [03:37<54:23, 217.57s/it, ok=1/16 best=5.4]gen 51:  12%|██▏              | 2/16 [04:04<24:38, 105.64s/it, ok=2/16 best=5.4]gen 51:  19%|███▍              | 3/16 [04:22<14:13, 65.65s/it, ok=3/16 best=5.4]gen 51:  31%|█████           | 5/16 [04:42<06:14, 34.05s/it, ok=5/16 best=4.836]gen 51:  50%|████████▌        | 8/16 [05:06<04:32, 34.05s/it, ok=8/16 best=4.74]gen 51:  56%|█████████▌       | 9/16 [05:09<02:00, 17.21s/it, ok=9/16 best=4.74]gen 51:  88%|████████████▎ | 14/16 [05:26<00:34, 17.21s/it, ok=14/16 best=4.552]gen 51:  94%|█████████████▏| 15/16 [05:32<00:09,  9.59s/it, ok=15/16 best=4.514]gen 51: 100%|██████████████| 16/16 [05:35<00:00, 20.94s/it, ok=16/16 best=4.514]
+[DE] Generation 51 best=4.398794 mean=4.759666 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 52: dispatching 16 trial evals to 16 workers
+gen 52:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 52:   6%|▉              | 1/16 [03:45<56:15, 225.02s/it, ok=1/16 best=8.184]gen 52:  19%|███             | 3/16 [04:07<14:25, 66.59s/it, ok=3/16 best=4.988]gen 52:  19%|███             | 3/16 [04:30<14:25, 66.59s/it, ok=3/16 best=4.988]gen 52:  25%|████            | 4/16 [04:33<10:31, 52.62s/it, ok=4/16 best=4.844]gen 52:  38%|██████          | 6/16 [04:54<05:16, 31.67s/it, ok=6/16 best=4.844]gen 52:  62%|████████▊     | 10/16 [05:10<03:09, 31.67s/it, ok=10/16 best=4.844]gen 52:  69%|█████████▋    | 11/16 [05:12<01:08, 13.67s/it, ok=11/16 best=4.844]gen 52:  88%|████████████▎ | 14/16 [05:30<00:27, 13.67s/it, ok=14/16 best=4.538]gen 52:  94%|█████████████▏| 15/16 [05:37<00:10, 10.55s/it, ok=15/16 best=4.538]gen 52:  94%|█████████████▏| 15/16 [06:00<00:10, 10.55s/it, ok=15/16 best=4.538]gen 52: 100%|██████████████| 16/16 [06:10<00:00, 13.56s/it, ok=16/16 best=4.538]gen 52: 100%|██████████████| 16/16 [06:10<00:00, 23.17s/it, ok=16/16 best=4.538]
+[DE] Generation 52 best=4.398794 mean=4.757222 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 53: dispatching 16 trial evals to 16 workers
+gen 53:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 53:  12%|█▉             | 2/16 [03:58<27:50, 119.33s/it, ok=1/16 best=7.705]gen 53:  19%|███             | 3/16 [04:30<17:57, 82.92s/it, ok=2/16 best=5.417]gen 53:  31%|█████▋            | 5/16 [04:48<07:49, 42.68s/it, ok=4/16 best=4.5]gen 53:  69%|███████████     | 11/16 [05:10<03:33, 42.68s/it, ok=10/16 best=4.5]gen 53:  75%|████████████    | 12/16 [05:13<00:56, 14.09s/it, ok=11/16 best=4.5]gen 53:  88%|██████████████  | 14/16 [05:30<00:28, 14.09s/it, ok=13/16 best=4.5]gen 53:  94%|███████████████ | 15/16 [05:30<00:11, 11.51s/it, ok=14/16 best=4.5]gen 53: 100%|████████████████| 16/16 [05:34<00:00, 20.92s/it, ok=15/16 best=4.5]
+[DE] Generation 53 best=4.398794 mean=4.757222 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 54: dispatching 16 trial evals to 16 workers
+gen 54:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 54:   6%|▊            | 1/16 [04:10<1:02:31, 250.09s/it, ok=1/16 best=5.365]gen 54:  19%|███             | 3/16 [04:38<16:19, 75.34s/it, ok=3/16 best=4.972]gen 54:  38%|██████          | 6/16 [04:55<05:25, 32.53s/it, ok=6/16 best=4.781]gen 54:  69%|█████████▋    | 11/16 [05:10<01:15, 15.02s/it, ok=11/16 best=4.781]gen 54:  88%|████████████▎ | 14/16 [05:25<00:30, 15.02s/it, ok=14/16 best=4.781]gen 54:  94%|█████████████▏| 15/16 [05:26<00:10, 10.54s/it, ok=15/16 best=4.781]gen 54:  94%|█████████████▏| 15/16 [05:45<00:10, 10.54s/it, ok=15/16 best=4.781]gen 54: 100%|██████████████| 16/16 [06:33<00:00, 17.77s/it, ok=16/16 best=4.729]gen 54: 100%|██████████████| 16/16 [06:33<00:00, 24.62s/it, ok=16/16 best=4.729]
+[DE] Generation 54 best=4.398794 mean=4.734307 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 55: dispatching 16 trial evals to 16 workers
+gen 55:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 55:  12%|█▉             | 2/16 [04:35<32:06, 137.60s/it, ok=1/16 best=7.866]gen 55:  19%|███             | 3/16 [04:50<18:48, 86.78s/it, ok=2/16 best=4.916]gen 55:  62%|█████████▍     | 10/16 [05:26<02:05, 20.89s/it, ok=9/16 best=4.777]gen 55:  94%|██████████████ | 15/16 [05:41<00:20, 20.89s/it, ok=14/16 best=4.57]gen 55: 100%|███████████████| 16/16 [05:55<00:00, 12.93s/it, ok=15/16 best=4.57]gen 55: 100%|███████████████| 16/16 [05:55<00:00, 22.22s/it, ok=15/16 best=4.57]
+[DE] Generation 55 best=4.398794 mean=4.722947 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 56: dispatching 16 trial evals to 16 workers
+gen 56:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 56:   6%|▊            | 1/16 [04:15<1:03:58, 255.90s/it, ok=1/16 best=4.673]gen 56:  12%|█▉             | 2/16 [04:38<27:43, 118.85s/it, ok=2/16 best=4.673]gen 56:  50%|████████        | 8/16 [04:59<03:00, 22.59s/it, ok=8/16 best=4.463]gen 56:  62%|████████▊     | 10/16 [05:15<02:15, 22.59s/it, ok=10/16 best=4.463]gen 56:  69%|█████████▋    | 11/16 [05:16<01:21, 16.23s/it, ok=11/16 best=4.463]gen 56:  88%|████████████▎ | 14/16 [05:35<00:32, 16.23s/it, ok=14/16 best=4.463]gen 56:  94%|█████████████▏| 15/16 [05:40<00:11, 11.94s/it, ok=15/16 best=4.463]gen 56: 100%|██████████████| 16/16 [05:41<00:00, 21.36s/it, ok=16/16 best=4.463]
+[DE] Generation 56 best=4.398794 mean=4.701583 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 57: dispatching 16 trial evals to 16 workers
+gen 57:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 57:  19%|███             | 3/16 [04:25<19:10, 88.52s/it, ok=0/16 best=1e+06]gen 57:  44%|███████         | 7/16 [04:50<05:11, 34.61s/it, ok=4/16 best=4.748]gen 57:  88%|█████████████▏ | 14/16 [05:08<00:29, 14.69s/it, ok=11/16 best=4.54]gen 57: 100%|███████████████| 16/16 [05:22<00:00, 20.14s/it, ok=13/16 best=4.54]
+[DE] Generation 57 best=4.398794 mean=4.693497 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 58: dispatching 16 trial evals to 16 workers
+gen 58:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 58:  19%|███             | 3/16 [04:37<20:01, 92.42s/it, ok=1/16 best=7.112]gen 58:  50%|████████        | 8/16 [04:54<03:57, 29.70s/it, ok=6/16 best=4.933]gen 58:  75%|██████████▌   | 12/16 [05:11<01:58, 29.70s/it, ok=10/16 best=4.788]gen 58:  81%|███████████▍  | 13/16 [05:20<00:52, 17.42s/it, ok=11/16 best=4.478]gen 58:  94%|█████████████▏| 15/16 [05:41<00:17, 17.42s/it, ok=13/16 best=4.478]gen 58: 100%|██████████████| 16/16 [05:42<00:00, 14.43s/it, ok=14/16 best=4.478]gen 58: 100%|██████████████| 16/16 [05:42<00:00, 21.41s/it, ok=14/16 best=4.478]
+[DE] Generation 58 best=4.398794 mean=4.680554 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 59: dispatching 16 trial evals to 16 workers
+gen 59:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 59:   6%|▊            | 1/16 [04:44<1:11:08, 284.59s/it, ok=1/16 best=5.363]gen 59:  62%|████████▊     | 10/16 [05:00<02:12, 22.16s/it, ok=10/16 best=4.571]gen 59:  94%|█████████████▏| 15/16 [05:19<00:22, 22.16s/it, ok=15/16 best=4.571]gen 59: 100%|██████████████| 16/16 [05:20<00:00, 13.35s/it, ok=16/16 best=4.571]gen 59: 100%|██████████████| 16/16 [05:20<00:00, 20.04s/it, ok=16/16 best=4.571]
+[DE] Generation 59 best=4.398794 mean=4.676237 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 60: dispatching 16 trial evals to 16 workers
+gen 60:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 60:   6%|▊            | 1/16 [04:22<1:05:37, 262.53s/it, ok=1/16 best=5.022]gen 60:  19%|███             | 3/16 [04:43<16:26, 75.85s/it, ok=3/16 best=5.015]gen 60:  38%|██████          | 6/16 [04:58<12:38, 75.85s/it, ok=6/16 best=4.603]gen 60:  44%|███████         | 7/16 [05:02<04:07, 27.51s/it, ok=7/16 best=4.603]gen 60:  69%|█████████▋    | 11/16 [05:17<01:19, 15.87s/it, ok=11/16 best=4.603]gen 60:  81%|███████████▍  | 13/16 [05:38<00:47, 15.87s/it, ok=13/16 best=4.603]gen 60:  88%|████████████▎ | 14/16 [05:42<00:26, 13.30s/it, ok=14/16 best=4.603]gen 60: 100%|██████████████| 16/16 [05:58<00:00, 11.93s/it, ok=16/16 best=4.603]gen 60: 100%|██████████████| 16/16 [05:58<00:00, 22.41s/it, ok=16/16 best=4.603]
+[DE] Generation 60 best=4.398794 mean=4.672194 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 61: dispatching 16 trial evals to 16 workers
+gen 61:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 61:   6%|▊            | 1/16 [04:23<1:05:58, 263.91s/it, ok=1/16 best=6.653]gen 61:  12%|█▉             | 2/16 [04:40<27:37, 118.37s/it, ok=2/16 best=4.733]gen 61:  44%|███████         | 7/16 [04:56<03:48, 25.39s/it, ok=7/16 best=4.733]gen 61:  81%|███████████▍  | 13/16 [05:11<00:36, 12.11s/it, ok=13/16 best=4.677]gen 61:  94%|█████████████▏| 15/16 [05:30<00:12, 12.11s/it, ok=15/16 best=4.417]gen 61: 100%|██████████████| 16/16 [05:31<00:00, 10.44s/it, ok=16/16 best=4.417]gen 61: 100%|██████████████| 16/16 [05:31<00:00, 20.69s/it, ok=16/16 best=4.417]
+[DE] Generation 61 best=4.398794 mean=4.672194 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 62: dispatching 16 trial evals to 16 workers
+gen 62:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 62:  12%|█▉             | 2/16 [04:18<30:07, 129.07s/it, ok=1/16 best=4.561]gen 62:  31%|█████           | 5/16 [04:38<08:21, 45.63s/it, ok=4/16 best=4.561]gen 62:  50%|████████        | 8/16 [04:54<03:26, 25.85s/it, ok=7/16 best=4.561]gen 62:  69%|█████████▋    | 11/16 [05:10<01:26, 17.31s/it, ok=10/16 best=4.561]gen 62:  75%|██████████▌   | 12/16 [05:28<01:09, 17.31s/it, ok=11/16 best=4.561]gen 62:  81%|███████████▍  | 13/16 [05:49<00:53, 17.97s/it, ok=12/16 best=4.561]gen 62: 100%|██████████████| 16/16 [06:09<00:00, 13.73s/it, ok=15/16 best=4.561]gen 62: 100%|██████████████| 16/16 [06:09<00:00, 23.12s/it, ok=15/16 best=4.561]
+[DE] Generation 62 best=4.398794 mean=4.661160 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 63: dispatching 16 trial evals to 16 workers
+gen 63:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 63:  12%|█▉             | 2/16 [04:25<30:56, 132.60s/it, ok=1/16 best=4.858]gen 63:  31%|█████           | 5/16 [04:40<08:22, 45.66s/it, ok=4/16 best=4.429]gen 63:  56%|█████████       | 9/16 [04:57<02:36, 22.30s/it, ok=8/16 best=4.429]gen 63:  75%|██████████▌   | 12/16 [05:19<01:29, 22.30s/it, ok=11/16 best=4.429]gen 63:  81%|███████████▍  | 13/16 [05:20<00:44, 14.91s/it, ok=12/16 best=4.429]gen 63: 100%|██████████████| 16/16 [05:30<00:00, 20.67s/it, ok=15/16 best=4.429]
+[DE] Generation 63 best=4.398794 mean=4.648662 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 64: dispatching 16 trial evals to 16 workers
+gen 64:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 64:  12%|█▉             | 2/16 [04:42<33:00, 141.45s/it, ok=1/16 best=8.416]gen 64:  56%|█████████       | 9/16 [05:03<03:02, 26.00s/it, ok=8/16 best=4.559]gen 64:  75%|██████████▌   | 12/16 [05:18<01:44, 26.00s/it, ok=11/16 best=4.559]gen 64:  81%|███████████▍  | 13/16 [05:19<00:51, 17.09s/it, ok=12/16 best=4.559]gen 64:  94%|█████████████▏| 15/16 [05:38<00:17, 17.09s/it, ok=14/16 best=4.559]gen 64: 100%|██████████████| 16/16 [05:57<00:00, 15.76s/it, ok=15/16 best=4.559]gen 64: 100%|██████████████| 16/16 [05:57<00:00, 22.34s/it, ok=15/16 best=4.559]
+[DE] Generation 64 best=4.398794 mean=4.628042 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 65: dispatching 16 trial evals to 16 workers
+gen 65:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 65:   6%|▊            | 1/16 [04:23<1:05:49, 263.30s/it, ok=1/16 best=4.626]gen 65:  19%|███             | 3/16 [04:49<16:54, 78.07s/it, ok=3/16 best=4.626]gen 65:  38%|██████          | 6/16 [05:05<05:33, 33.37s/it, ok=6/16 best=4.626]gen 65:  88%|████████████▎ | 14/16 [05:20<01:06, 33.37s/it, ok=14/16 best=4.626]gen 65:  94%|█████████████▏| 15/16 [05:34<00:11, 11.53s/it, ok=15/16 best=4.626]gen 65: 100%|██████████████| 16/16 [05:39<00:00, 21.24s/it, ok=16/16 best=4.626]
+[DE] Generation 65 best=4.398794 mean=4.623429 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 66: dispatching 16 trial evals to 16 workers
+gen 66:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 66:   6%|▉              | 1/16 [04:36<1:09:05, 276.34s/it, ok=1/16 best=4.8]gen 66:  38%|██████          | 6/16 [04:51<06:06, 36.68s/it, ok=6/16 best=4.735]gen 66:  62%|████████▊     | 10/16 [05:10<03:40, 36.68s/it, ok=10/16 best=4.735]gen 66:  69%|█████████▋    | 11/16 [05:13<01:33, 18.62s/it, ok=11/16 best=4.694]gen 66: 100%|██████████████| 16/16 [05:19<00:00, 19.96s/it, ok=16/16 best=4.565]
+[DE] Generation 66 best=4.398794 mean=4.623429 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 67: dispatching 16 trial evals to 16 workers
+gen 67:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 67:   6%|▊            | 1/16 [04:24<1:06:07, 264.52s/it, ok=1/16 best=4.408]gen 67:  44%|███████         | 7/16 [04:39<04:29, 29.94s/it, ok=7/16 best=4.408]gen 67:  69%|█████████▋    | 11/16 [05:01<02:29, 29.94s/it, ok=11/16 best=4.408]gen 67:  75%|██████████▌   | 12/16 [05:03<01:07, 16.97s/it, ok=12/16 best=4.408]gen 67:  88%|████████████▎ | 14/16 [05:21<00:33, 16.97s/it, ok=14/16 best=4.408]gen 67:  94%|█████████████▏| 15/16 [05:23<00:13, 13.81s/it, ok=15/16 best=4.408]gen 67: 100%|██████████████| 16/16 [05:28<00:00, 20.56s/it, ok=16/16 best=4.408]
+[DE] Generation 67 best=4.398794 mean=4.597728 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 68: dispatching 16 trial evals to 16 workers
+gen 68:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 68:   6%|▊            | 1/16 [04:26<1:06:41, 266.80s/it, ok=1/16 best=4.659]gen 68:  25%|████            | 4/16 [04:43<10:58, 54.90s/it, ok=4/16 best=4.659]gen 68:  44%|███████         | 7/16 [05:00<04:17, 28.60s/it, ok=7/16 best=4.437]gen 68:  75%|██████████▌   | 12/16 [05:21<00:59, 14.90s/it, ok=12/16 best=4.437]gen 68: 100%|██████████████| 16/16 [05:41<00:00, 10.96s/it, ok=16/16 best=4.437]gen 68: 100%|██████████████| 16/16 [05:41<00:00, 21.31s/it, ok=16/16 best=4.437]
+[DE] Generation 68 best=4.398794 mean=4.571077 ok=16/16
+[DE]   best fitness: f_resonance=2.063 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 69: dispatching 16 trial evals to 16 workers
+gen 69:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 69:   6%|▊            | 1/16 [04:28<1:07:13, 268.89s/it, ok=1/16 best=4.849]gen 69:  44%|███████         | 7/16 [04:47<04:38, 30.89s/it, ok=7/16 best=4.293]gen 69:  75%|██████████▌   | 12/16 [05:11<01:09, 17.38s/it, ok=12/16 best=4.293]gen 69: 100%|██████████████| 16/16 [05:29<00:00, 12.59s/it, ok=16/16 best=4.293]gen 69: 100%|██████████████| 16/16 [05:29<00:00, 20.57s/it, ok=16/16 best=4.293]
+[DE] Generation 69 best=4.293020 mean=4.535064 ok=16/16
+[DE]   best fitness: f_resonance=1.957 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 70: dispatching 16 trial evals to 16 workers
+gen 70:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 70:  12%|█▉             | 2/16 [04:26<31:03, 133.10s/it, ok=1/16 best=6.166]gen 70:  44%|███████         | 7/16 [04:43<04:46, 31.80s/it, ok=6/16 best=4.437]gen 70:  62%|█████████▍     | 10/16 [05:02<03:10, 31.80s/it, ok=9/16 best=4.437]gen 70:  69%|█████████▋    | 11/16 [05:02<01:35, 19.06s/it, ok=10/16 best=4.437]gen 70:  94%|█████████████▏| 15/16 [05:18<00:12, 12.96s/it, ok=14/16 best=4.437]gen 70:  94%|█████████████▏| 15/16 [05:42<00:12, 12.96s/it, ok=14/16 best=4.437]gen 70: 100%|██████████████| 16/16 [05:53<00:00, 15.80s/it, ok=15/16 best=4.437]gen 70: 100%|██████████████| 16/16 [05:53<00:00, 22.11s/it, ok=15/16 best=4.437]
+[DE] Generation 70 best=4.293020 mean=4.529887 ok=16/16
+[DE]   best fitness: f_resonance=1.957 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 71: dispatching 16 trial evals to 16 workers
+gen 71:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 71:   6%|▊            | 1/16 [04:41<1:10:25, 281.70s/it, ok=1/16 best=4.714]gen 71:  44%|███████         | 7/16 [04:57<04:46, 31.85s/it, ok=7/16 best=4.592]gen 71:  81%|███████████▍  | 13/16 [05:16<00:47, 15.71s/it, ok=13/16 best=4.531]gen 71:  94%|█████████████▏| 15/16 [05:38<00:15, 15.71s/it, ok=15/16 best=4.531]gen 71: 100%|█████████████| 16/16 [34:35<00:00, 179.03s/it, ok=15/16 best=4.531]gen 71: 100%|█████████████| 16/16 [34:35<00:00, 129.74s/it, ok=15/16 best=4.531]
+[DE] Generation 71 best=4.293020 mean=4.521653 ok=16/16
+[DE]   best fitness: f_resonance=1.957 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 72: dispatching 16 trial evals to 16 workers
+gen 72:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 72:   6%|▉             | 1/16 [05:07<1:16:47, 307.18s/it, ok=1/16 best=4.69]gen 72:  56%|█████████       | 9/16 [05:22<03:05, 26.48s/it, ok=9/16 best=4.568]gen 72:  88%|████████████▎ | 14/16 [05:42<00:52, 26.48s/it, ok=13/16 best=4.274]gen 72:  94%|█████████████▏| 15/16 [05:45<00:15, 15.23s/it, ok=14/16 best=4.274]gen 72: 100%|██████████████| 16/16 [05:54<00:00, 22.16s/it, ok=15/16 best=4.274]
+[DE] Generation 72 best=4.274230 mean=4.520479 ok=16/16
+[DE]   best fitness: f_resonance=1.938 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 73: dispatching 16 trial evals to 16 workers
+gen 73:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 73:  12%|█▉             | 2/16 [04:31<31:38, 135.62s/it, ok=1/16 best=5.137]gen 73:  31%|█████           | 5/16 [04:47<08:34, 46.74s/it, ok=4/16 best=5.137]gen 73:  62%|█████████▍     | 10/16 [05:04<02:00, 20.03s/it, ok=9/16 best=4.863]gen 73:  81%|███████████▍  | 13/16 [05:28<01:00, 20.03s/it, ok=12/16 best=4.229]gen 73:  88%|████████████▎ | 14/16 [05:31<00:28, 14.46s/it, ok=12/16 best=4.229]gen 73:  94%|█████████████▏| 15/16 [05:48<00:14, 14.46s/it, ok=13/16 best=4.229]gen 73: 100%|██████████████| 16/16 [05:50<00:00, 13.36s/it, ok=14/16 best=4.229]gen 73: 100%|██████████████| 16/16 [05:50<00:00, 21.91s/it, ok=14/16 best=4.229]
+[DE] Generation 73 best=4.229409 mean=4.517678 ok=16/16
+[DE]   best fitness: f_resonance=1.893 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 74: dispatching 16 trial evals to 16 workers
+gen 74:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 74:   6%|▉             | 1/16 [04:28<1:07:11, 268.79s/it, ok=1/16 best=6.74]gen 74:  25%|████            | 4/16 [05:06<12:12, 61.02s/it, ok=4/16 best=4.517]gen 74:  62%|█████████▍     | 10/16 [05:21<02:01, 20.17s/it, ok=9/16 best=4.517]gen 74:  94%|█████████████▏| 15/16 [05:37<00:20, 20.17s/it, ok=14/16 best=4.323]gen 74: 100%|██████████████| 16/16 [05:45<00:00, 12.11s/it, ok=15/16 best=4.323]gen 74: 100%|██████████████| 16/16 [05:45<00:00, 21.62s/it, ok=15/16 best=4.323]
+[DE] Generation 74 best=4.229409 mean=4.501352 ok=16/16
+[DE]   best fitness: f_resonance=1.893 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 75: dispatching 16 trial evals to 16 workers
+gen 75:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 75:   6%|▊            | 1/16 [04:38<1:09:44, 278.97s/it, ok=0/16 best=1e+06]gen 75:  25%|████            | 4/16 [04:55<11:27, 57.32s/it, ok=3/16 best=4.841]gen 75:  50%|████████        | 8/16 [05:11<03:19, 24.93s/it, ok=7/16 best=4.212]gen 75:  75%|██████████▌   | 12/16 [05:31<01:39, 24.93s/it, ok=11/16 best=4.212]gen 75:  81%|███████████▍  | 13/16 [05:33<00:42, 14.20s/it, ok=12/16 best=4.212]gen 75: 100%|██████████████| 16/16 [05:47<00:00, 21.74s/it, ok=15/16 best=4.212]
+[DE] Generation 75 best=4.212358 mean=4.484291 ok=16/16
+[DE]   best fitness: f_resonance=1.741 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 76: dispatching 16 trial evals to 16 workers
+gen 76:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 76:   6%|▊            | 1/16 [04:31<1:07:59, 271.97s/it, ok=1/16 best=5.063]gen 76:  19%|███             | 3/16 [04:56<17:12, 79.43s/it, ok=3/16 best=5.063]gen 76:  56%|█████████       | 9/16 [05:12<02:27, 21.06s/it, ok=8/16 best=4.871]gen 76:  75%|██████████▌   | 12/16 [05:33<01:24, 21.06s/it, ok=11/16 best=4.313]gen 76:  81%|███████████▍  | 13/16 [05:37<00:44, 14.92s/it, ok=12/16 best=4.313]gen 76:  88%|████████████▎ | 14/16 [05:53<00:29, 14.92s/it, ok=13/16 best=4.313]gen 76:  94%|█████████████▏| 15/16 [05:54<00:13, 13.40s/it, ok=14/16 best=4.313]gen 76: 100%|██████████████| 16/16 [05:56<00:00, 22.29s/it, ok=15/16 best=4.313]
+[DE] Generation 76 best=4.212358 mean=4.471200 ok=16/16
+[DE]   best fitness: f_resonance=1.741 f_cfd=2.471 eta=0.9242 vcav=0.001831 dH=-1.833
+[DE] gen 77: dispatching 16 trial evals to 16 workers
+gen 77:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 77:   6%|▊            | 1/16 [04:33<1:08:19, 273.28s/it, ok=1/16 best=7.129]gen 77:  31%|█████           | 5/16 [04:59<08:28, 46.24s/it, ok=4/16 best=4.641]gen 77:  62%|██████████      | 10/16 [05:15<02:02, 20.34s/it, ok=9/16 best=4.28]gen 77:  88%|█████████████▏ | 14/16 [05:37<00:40, 20.34s/it, ok=13/16 best=4.28]gen 77:  94%|█████████████▏| 15/16 [05:42<00:13, 13.39s/it, ok=14/16 best=4.103]gen 77: 100%|██████████████| 16/16 [05:44<00:00, 21.54s/it, ok=15/16 best=4.103]
+[DE] Generation 77 best=4.102831 mean=4.427544 ok=16/16
+[DE]   best fitness: f_resonance=1.767 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 78: dispatching 16 trial evals to 16 workers
+gen 78:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 78:  12%|█▉             | 2/16 [04:45<33:17, 142.70s/it, ok=0/16 best=1e+06]gen 78:  19%|███▏             | 3/16 [05:04<19:45, 91.20s/it, ok=1/16 best=6.99]gen 78:  62%|█████████▍     | 10/16 [05:19<01:56, 19.41s/it, ok=8/16 best=4.314]gen 78:  94%|█████████████▏| 15/16 [05:42<00:19, 19.41s/it, ok=13/16 best=4.314]gen 78: 100%|██████████████| 16/16 [05:43<00:00, 11.74s/it, ok=14/16 best=4.314]gen 78: 100%|██████████████| 16/16 [05:43<00:00, 21.48s/it, ok=14/16 best=4.314]
+[DE] Generation 78 best=4.102831 mean=4.407487 ok=16/16
+[DE]   best fitness: f_resonance=1.767 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 79: dispatching 16 trial evals to 16 workers
+gen 79:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 79:   6%|▊            | 1/16 [04:58<1:14:39, 298.62s/it, ok=1/16 best=4.672]gen 79:  38%|██████          | 6/16 [05:17<06:39, 39.95s/it, ok=5/16 best=4.384]gen 79:  94%|█████████████▏| 15/16 [05:32<00:13, 13.43s/it, ok=14/16 best=4.202]gen 79:  94%|█████████████▏| 15/16 [05:48<00:13, 13.43s/it, ok=14/16 best=4.202]gen 79: 100%|██████████████| 16/16 [05:51<00:00, 13.99s/it, ok=15/16 best=4.202]gen 79: 100%|██████████████| 16/16 [05:51<00:00, 21.96s/it, ok=15/16 best=4.202]
+[DE] Generation 79 best=4.102831 mean=4.381671 ok=16/16
+[DE]   best fitness: f_resonance=1.767 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 80: dispatching 16 trial evals to 16 workers
+gen 80:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 80:   6%|▊            | 1/16 [04:39<1:09:45, 279.03s/it, ok=1/16 best=4.759]gen 80:  44%|███████         | 7/16 [05:00<04:51, 32.43s/it, ok=7/16 best=4.346]gen 80:  62%|█████████▍     | 10/16 [05:17<03:14, 32.43s/it, ok=9/16 best=4.173]gen 80:  69%|█████████▋    | 11/16 [05:18<01:37, 19.49s/it, ok=10/16 best=4.173]gen 80:  81%|███████████▍  | 13/16 [05:37<00:58, 19.49s/it, ok=12/16 best=4.173]gen 80:  88%|████████████▎ | 14/16 [05:44<00:31, 15.97s/it, ok=13/16 best=4.173]gen 80:  94%|█████████████▏| 15/16 [06:07<00:15, 15.97s/it, ok=14/16 best=4.173]gen 80: 100%|██████████████| 16/16 [06:13<00:00, 15.58s/it, ok=15/16 best=4.173]gen 80: 100%|██████████████| 16/16 [06:13<00:00, 23.34s/it, ok=15/16 best=4.173]
+[DE] Generation 80 best=4.102831 mean=4.371850 ok=16/16
+[DE]   best fitness: f_resonance=1.767 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 81: dispatching 16 trial evals to 16 workers
+gen 81:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 81:   6%|▊            | 1/16 [04:45<1:11:17, 285.15s/it, ok=1/16 best=5.346]gen 81:  25%|████            | 4/16 [05:06<11:56, 59.73s/it, ok=3/16 best=4.515]gen 81:  62%|█████████▍     | 10/16 [05:21<01:58, 19.76s/it, ok=9/16 best=4.099]gen 81:  81%|███████████▍  | 13/16 [05:43<00:59, 19.76s/it, ok=12/16 best=4.099]gen 81:  88%|████████████▎ | 14/16 [05:44<00:28, 14.12s/it, ok=13/16 best=4.099]gen 81: 100%|██████████████| 16/16 [05:45<00:00, 21.59s/it, ok=15/16 best=4.099]
+[DE] Generation 81 best=4.098820 mean=4.365590 ok=16/16
+[DE]   best fitness: f_resonance=1.763 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 82: dispatching 16 trial evals to 16 workers
+gen 82:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 82:   6%|▊            | 1/16 [04:57<1:14:23, 297.57s/it, ok=0/16 best=1e+06]gen 82:  19%|███             | 3/16 [05:12<17:56, 82.80s/it, ok=2/16 best=4.283]gen 82:  62%|█████████▍     | 10/16 [05:28<08:16, 82.80s/it, ok=9/16 best=4.111]gen 82:  69%|█████████▋    | 11/16 [05:32<01:29, 17.82s/it, ok=10/16 best=4.111]gen 82:  81%|███████████▍  | 13/16 [05:48<00:53, 17.82s/it, ok=12/16 best=4.111]gen 82:  88%|████████████▎ | 14/16 [05:54<00:29, 14.68s/it, ok=13/16 best=4.111]gen 82: 100%|██████████████| 16/16 [06:10<00:00, 23.13s/it, ok=15/16 best=4.111]
+[DE] Generation 82 best=4.098820 mean=4.352095 ok=16/16
+[DE]   best fitness: f_resonance=1.763 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 83: dispatching 16 trial evals to 16 workers
+gen 83:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 83:   6%|▊            | 1/16 [04:41<1:10:26, 281.78s/it, ok=1/16 best=4.409]gen 83:  19%|███             | 3/16 [05:19<18:52, 87.12s/it, ok=2/16 best=4.409]gen 83:  94%|█████████████▏| 15/16 [05:43<00:13, 13.55s/it, ok=14/16 best=4.153]gen 83:  94%|█████████████▏| 15/16 [05:58<00:13, 13.55s/it, ok=14/16 best=4.153]gen 83: 100%|██████████████| 16/16 [06:00<00:00, 13.93s/it, ok=15/16 best=4.153]gen 83: 100%|██████████████| 16/16 [06:00<00:00, 22.56s/it, ok=15/16 best=4.153]
+[DE] Generation 83 best=4.098820 mean=4.339390 ok=16/16
+[DE]   best fitness: f_resonance=1.763 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 84: dispatching 16 trial evals to 16 workers
+gen 84:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 84:   6%|▊            | 1/16 [04:53<1:13:22, 293.52s/it, ok=0/16 best=1e+06]gen 84:  25%|████            | 4/16 [05:09<11:57, 59.80s/it, ok=3/16 best=4.495]gen 84:  62%|█████████▍     | 10/16 [05:27<05:58, 59.80s/it, ok=9/16 best=4.101]gen 84:  69%|█████████▋    | 11/16 [05:29<01:31, 18.21s/it, ok=10/16 best=4.101]gen 84:  81%|███████████▍  | 13/16 [05:47<00:54, 18.21s/it, ok=12/16 best=4.101]gen 84:  88%|████████████▎ | 14/16 [05:50<00:29, 14.79s/it, ok=13/16 best=4.101]gen 84: 100%|██████████████| 16/16 [05:53<00:00, 22.08s/it, ok=15/16 best=4.101]
+[DE] Generation 84 best=4.098820 mean=4.328545 ok=16/16
+[DE]   best fitness: f_resonance=1.763 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 85: dispatching 16 trial evals to 16 workers
+gen 85:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 85:   6%|▊            | 1/16 [04:53<1:13:17, 293.14s/it, ok=0/16 best=1e+06]gen 85:  25%|████▎            | 4/16 [05:15<12:16, 61.41s/it, ok=3/16 best=4.08]gen 85:  75%|███████████▎   | 12/16 [05:34<04:05, 61.41s/it, ok=11/16 best=4.08]gen 85:  81%|████████████▏  | 13/16 [05:42<00:48, 16.05s/it, ok=12/16 best=4.08]gen 85: 100%|███████████████| 16/16 [05:52<00:00, 22.02s/it, ok=15/16 best=4.08]
+[DE] Generation 85 best=4.080355 mean=4.318795 ok=16/16
+[DE]   best fitness: f_resonance=1.744 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 86: dispatching 16 trial evals to 16 workers
+gen 86:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 86:   6%|▊            | 1/16 [05:02<1:15:42, 302.82s/it, ok=1/16 best=4.242]gen 86:  50%|████████        | 8/16 [05:18<03:56, 29.53s/it, ok=7/16 best=4.215]gen 86:  81%|███████████▍  | 13/16 [05:41<01:28, 29.53s/it, ok=12/16 best=4.197]gen 86:  88%|████████████▎ | 14/16 [05:49<00:33, 16.73s/it, ok=13/16 best=4.197]gen 86: 100%|██████████████| 16/16 [05:52<00:00, 22.05s/it, ok=15/16 best=4.197]
+[DE] Generation 86 best=4.080355 mean=4.306703 ok=16/16
+[DE]   best fitness: f_resonance=1.744 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 87: dispatching 16 trial evals to 16 workers
+gen 87:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 87:   6%|▊            | 1/16 [05:03<1:15:45, 303.05s/it, ok=0/16 best=1e+06]gen 87:  62%|█████████▍     | 10/16 [05:21<02:22, 23.81s/it, ok=9/16 best=4.147]gen 87:  88%|████████████▎ | 14/16 [05:38<00:47, 23.81s/it, ok=13/16 best=4.147]gen 87:  94%|█████████████▏| 15/16 [05:41<00:15, 15.41s/it, ok=14/16 best=4.129]gen 87: 100%|██████████████| 16/16 [05:47<00:00, 21.69s/it, ok=15/16 best=4.016]
+[DE] Generation 87 best=4.015703 mean=4.282838 ok=16/16
+[DE]   best fitness: f_resonance=1.68 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 88: dispatching 16 trial evals to 16 workers
+gen 88:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 88:   6%|▊            | 1/16 [05:04<1:16:12, 304.84s/it, ok=1/16 best=4.375]gen 88:  62%|█████████▍     | 10/16 [05:20<02:21, 23.61s/it, ok=9/16 best=4.113]gen 88:  75%|██████████▌   | 12/16 [05:41<01:34, 23.61s/it, ok=11/16 best=3.872]gen 88:  81%|███████████▍  | 13/16 [05:49<00:58, 19.38s/it, ok=12/16 best=3.872]gen 88: 100%|██████████████| 16/16 [06:03<00:00, 22.72s/it, ok=15/16 best=3.872]
+[DE] Generation 88 best=3.872278 mean=4.257681 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 89: dispatching 16 trial evals to 16 workers
+gen 89:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 89:   6%|▊            | 1/16 [04:41<1:10:27, 281.85s/it, ok=0/16 best=1e+06]gen 89:  12%|█▉             | 2/16 [04:58<29:21, 125.85s/it, ok=1/16 best=4.406]gen 89:  19%|███             | 3/16 [05:15<16:28, 76.01s/it, ok=2/16 best=4.278]gen 89:  81%|████████████▏  | 13/16 [05:41<00:37, 12.34s/it, ok=12/16 best=4.08]gen 89: 100%|███████████████| 16/16 [05:51<00:00, 21.96s/it, ok=15/16 best=4.08]
+[DE] Generation 89 best=3.872278 mean=4.257681 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 90: dispatching 16 trial evals to 16 workers
+gen 90:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 90:   6%|▊            | 1/16 [05:01<1:15:29, 301.96s/it, ok=1/16 best=4.375]gen 90:  75%|██████████▌   | 12/16 [05:17<01:17, 19.40s/it, ok=11/16 best=3.987]gen 90: 100%|██████████████| 16/16 [05:31<00:00, 20.71s/it, ok=15/16 best=3.987]
+[DE] Generation 90 best=3.872278 mean=4.243764 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 91: dispatching 16 trial evals to 16 workers
+gen 91:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 91:   6%|▊            | 1/16 [05:08<1:17:07, 308.52s/it, ok=1/16 best=4.061]gen 91:  56%|█████████       | 9/16 [05:28<03:09, 27.09s/it, ok=9/16 best=3.978]gen 91:  94%|█████████████▏| 15/16 [05:45<00:27, 27.09s/it, ok=14/16 best=3.978]gen 91: 100%|██████████████| 16/16 [05:52<00:00, 14.43s/it, ok=15/16 best=3.978]gen 91: 100%|██████████████| 16/16 [05:52<00:00, 22.01s/it, ok=15/16 best=3.978]
+[DE] Generation 91 best=3.872278 mean=4.230833 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 92: dispatching 16 trial evals to 16 workers
+gen 92:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 92:   6%|▊            | 1/16 [04:58<1:14:43, 298.91s/it, ok=1/16 best=4.158]gen 92:  69%|█████████▋    | 11/16 [05:15<01:45, 21.13s/it, ok=10/16 best=3.941]gen 92:  94%|█████████████▏| 15/16 [05:33<00:21, 21.13s/it, ok=14/16 best=3.941]gen 92: 100%|██████████████| 16/16 [05:46<00:00, 15.11s/it, ok=15/16 best=3.941]gen 92: 100%|██████████████| 16/16 [05:46<00:00, 21.64s/it, ok=15/16 best=3.941]
+[DE] Generation 92 best=3.872278 mean=4.222253 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 93: dispatching 16 trial evals to 16 workers
+gen 93:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 93:   6%|▊            | 1/16 [05:03<1:15:47, 303.15s/it, ok=1/16 best=4.149]gen 93:  75%|██████████▌   | 12/16 [05:22<01:19, 19.77s/it, ok=11/16 best=3.928]gen 93: 100%|██████████████| 16/16 [05:29<00:00, 20.61s/it, ok=15/16 best=3.928]
+[DE] Generation 93 best=3.872278 mean=4.207138 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 94: dispatching 16 trial evals to 16 workers
+gen 94:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 94:   6%|▊            | 1/16 [05:00<1:15:06, 300.45s/it, ok=1/16 best=4.295]gen 94:  50%|████████        | 8/16 [05:17<03:56, 29.52s/it, ok=7/16 best=4.037]gen 94:  81%|███████████▍  | 13/16 [05:37<01:28, 29.52s/it, ok=12/16 best=4.037]gen 94:  88%|████████████▎ | 14/16 [05:42<00:32, 16.18s/it, ok=13/16 best=4.037]gen 94: 100%|██████████████| 16/16 [05:56<00:00, 22.27s/it, ok=15/16 best=4.037]
+[DE] Generation 94 best=3.872278 mean=4.197826 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 95: dispatching 16 trial evals to 16 workers
+gen 95:   0%|                                            | 0/16 [00:00<?, ?it/s]gen 95:   6%|▊            | 1/16 [05:18<1:19:42, 318.84s/it, ok=1/16 best=4.441]gen 95:  75%|██████████▌   | 12/16 [05:36<01:22, 20.57s/it, ok=12/16 best=4.114]gen 95: 100%|██████████████| 16/16 [05:58<00:00, 22.44s/it, ok=15/16 best=4.018]
+[DE] Generation 95 best=3.872278 mean=4.186136 ok=16/16
+[DE]   best fitness: f_resonance=1.536 f_cfd=2.336 eta=0.8211 vcav=0.001387 dH=-1.992
+[DE] gen 96: dispatching 16 trial evals to 16 workers
+gen 96:   0%|                                            | 0/16 [00:00<?, ?it/s]

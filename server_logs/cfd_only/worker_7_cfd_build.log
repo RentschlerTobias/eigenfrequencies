@@ -50,4 +50,4 @@ Warning : Gmsh has aleady been initialized
 [cfd] wrote DE_w7.xml with 30 design parameters
 [cfd] CreateStates done for DE_w7
 [cfd] CreateMeshes done (tistos_ru_of_n)
-CFD_CASE_DIR /scratch/slurm_tmpdir/job_6038847/worker_7/tistos_ru_of_n_DE_w7
+CFD_CASE_DIR /scratch/slurm_tmpdir/job_6039133/worker_7/tistos_ru_of_n_DE_w7
