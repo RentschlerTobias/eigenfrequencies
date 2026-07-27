@@ -1,0 +1,3 @@
+Worker 7 ready on uc2n606.localdomain: PYRO:obj_800e467dc2424b18aa794c4c3ce6f677@uc2n606.localdomain:42685
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+[2026-07-27T23:55:21.047] error: *** STEP 6066539.6 ON uc2n606 CANCELLED AT 2026-07-27T23:55:21 DUE TO TIME LIMIT ***

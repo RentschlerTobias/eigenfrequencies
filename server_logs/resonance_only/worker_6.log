@@ -1,0 +1,129 @@
+Worker 6 ready on uc2n601.localdomain: PYRO:obj_6579b39e0b73451ca690179187b3f152@uc2n601.localdomain:41689
+[optimize] fenicsx eval FAILED (worker 6):
+['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
+[optimize] dtOO build FAILED (worker 6):
+maxL    4.523/   1.400 -- Small/Large/Total (   158/   485/  1411):    483 splits,    627 swaps,    101 collapses,   1309 moves
+Debug   :  iter   2 minL    0.359/   0.700 maxL    2.407/   1.400 -- Small/Large/Total (   110/    56/  1975):    494 splits,    472 swaps,    306 collapses,   1981 moves
+Debug   :  iter   3 minL    0.480/   0.700 maxL    1.549/   1.400 -- Small/Large/Total (    74/     4/  2053):     70 splits,     49 swaps,     44 collapses,    736 moves
+Debug   :  iter   4 minL    0.465/   0.700 maxL    1.386/   1.400 -- Small/Large/Total (    67/     0/  2053):      4 splits,      2 swaps,      4 collapses,    254 moves
+Debug   :  iter   5 minL    0.474/   0.700 maxL    1.386/   1.400 -- Small/Large/Total (    67/     0/  2056):      1 splits,      3 swaps,      0 collapses,    145 moves
+Debug   :  iter   6 minL    0.474/   0.700 maxL    1.386/   1.400 -- Small/Large/Total (    66/     0/  2053):      0 splits,      2 swaps,      1 collapses,    112 moves
+Debug   :  iter   7 minL    0.474/   0.700 maxL    1.386/   1.400 -- Small/Large/Total (    65/     0/  2053):      0 splits,      0 swaps,      0 collapses,     91 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     7.23000E-03 sec (  0 %)
+Debug   :  CPU SPLIT    4.70982E-01 sec (  5 %) 
+Debug   :  CPU COLLAPS  9.72553E-01 sec ( 11 %) 
+Debug   :  CPU SMOOTH   7.16826E+00 sec ( 83 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    8.61903E+00 sec 
+Debug   :  ---------------------------------------
+Debug   :  iter   1 minL    0.474/   0.700 maxL    1.386/   1.400 -- Small/Large/Total (    65/     0/  2053):      0 splits,      0 swaps,      0 collapses,     56 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     8.41000E-04 sec (  0 %)
+Debug   :  CPU SPLIT    1.51398E-01 sec ( 17 %) 
+Debug   :  CPU COLLAPS  7.46970E-02 sec (  8 %) 
+Debug   :  CPU SMOOTH   6.65980E-01 sec ( 75 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    8.92916E-01 sec 
+Debug   :  ---------------------------------------
+Debug   : Type 23 1324 triangles generated, 596 internal nodes
+Info    : Meshing surface 14 (Parametric surface, MeshAdapt)
+Debug   : Recovering 4 model edges
+Debug   : Recovering 80 mesh edges (0 not recovered)
+Debug   : Boundary edges recovered for surface 14
+Debug   : Computing mesh size field at mesh nodes 80
+Debug   : Delaunizing the initial mesh
+Debug   : Starting to add internal nodes
+Debug   :  iter   1 minL    0.286/   0.700 maxL    4.798/   1.400 -- Small/Large/Total (    58/   217/   778):    270 splits,    286 swaps,     63 collapses,    732 moves
+Debug   :  iter   2 minL    0.437/   0.700 maxL    1.972/   1.400 -- Small/Large/Total (    60/    37/  1069):    227 splits,    113 swaps,    130 collapses,    963 moves
+Debug   :  iter   3 minL    0.507/   0.700 maxL    1.397/   1.400 -- Small/Large/Total (    43/     0/  1135):     48 splits,     25 swaps,     26 collapses,    505 moves
+Debug   :  iter   4 minL    0.507/   0.700 maxL    1.397/   1.400 -- Small/Large/Total (    42/     0/  1135):      0 splits,      1 swaps,      0 collapses,    110 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     2.31000E-03 sec (  0 %)
+Debug   :  CPU SPLIT    1.35757E-01 sec (  4 %) 
+Debug   :  CPU COLLAPS  3.61504E-01 sec ( 10 %) 
+Debug   :  CPU SMOOTH   2.94428E+00 sec ( 85 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    3.44385E+00 sec 
+Debug   :  ---------------------------------------
+Debug   :  iter   1 minL    0.507/   0.700 maxL    1.397/   1.400 -- Small/Large/Total (    42/     0/  1135):      0 splits,      0 swaps,      0 collapses,     45 moves
+Debug   :  ---------------------------------------
+Debug   :  CPU Report 
+Debug   :  ---------------------------------------
+Debug   :  CPU SWAP     4.56000E-04 sec (  0 %)
+Debug   :  CPU SPLIT    8.37250E-02 sec ( 16 %) 
+Debug   :  CPU COLLAPS  4.17060E-02 sec (  8 %) 
+Debug   :  CPU SMOOTH   3.96877E-01 sec ( 76 %) 
+Debug   :  ---------------------------------------
+Debug   :  CPU TOTAL    5.22764E-01 sec 
+Debug   :  ---------------------------------------
+Debug   : Type 23 730 triangles generated, 326 internal nodes
+Info    : Meshing surface 15 (Parametric surface, MeshAdapt)
+[dtoo] loaded 30 design parameters from /scratch/slurm_tmpdir/job_6066539/worker_6/design.json
+[dtoo] applied 30 parameter overrides
+[dtoo] plugin ru_adjustDomain applied
+[dtoo] makeGrid on ruWithRounding_mechMesh ...
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/dtoo_export.py", line 104, in main
+    bV.get(MECH_VOLUME).makeGrid()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/st/st_us-042020/st_ac136362/dtOO/install/tools/dtOOPythonSWIG.py", line 6017, in makeGrid
+    return _dtOOPythonSWIG.boundedVolume_makeGrid(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+Exception: [ map2dTo3d::reparamOnFace() ]
+*-> file '/home/st/st_us-042020/st_ac136362/dtOO/src/geometryKernel/analyticGeometryHeaven/map2dTo3d.cpp'
+*-> line '250'
+
+condition: !md.converged() is true.
+
+Backtrace
+[ 1   ]     0x14a114eee654 /home/st/st_us-042020/st_ac136362/dtOO/install/lib/libdtOO.so.2(+0x2b9654) [0x14a114eee654]
+[ 2   ]     0x14a1152a332a dtOO::dtGmshFace::reparamOnFace(CGAL::Point_3<CGAL::Epick>) const + 26
+[ 3   ]     0x14a1152a338b dtOO::dtGmshFace::parFromPoint(SPoint3 const&, bool, bool) const + 59
+[ 4   ]     0x14a11419b2dd GEdge::reparamOnFace(GFace const*, double, int) const + 125
+[ 5   ]     0x14a1143656fe reparamMeshVertexOnFace(MVertex const*, GFace const*, SPoint2&, bool, bool, int) + 590
+[ 6   ]     0x14a1143e8d51 /home/st/st_us-042020/st_ac136362/dtOO/install/lib64/libgmsh.so.4.14(+0x729d51) [0x14a1143e8d51]
+[ 7   ]     0x14a1143f7817 meshGFace::operator()(GFace*, bool) + 775
+[ 8   ]     0x14a1152cd718 dtOO::dtMeshGFace::operator()(dtOO::dtGmshFace*) + 24
+[ 9   ]     0x14a11535c042 dtOO::bVOMeshRule::preUpdate() + 5650
+[ 10  ]     0x14a1153422d5 dtOO::bVOSubject::preNotify() + 53
+[ 11  ]     0x14a1153a957e dtOO::gmshBoundedVolume::makePreGrid() + 6110
+[ 12  ]     0x14a1153a4d47 dtOO::gmshBoundedVolume::makeGrid() + 23
+[ 13  ]     0x14a11592d14d /home/st/st_us-042020/st_ac136362/dtOO/install/tools/_dtOOPythonSWIG.so(+0x33d14d) [0x14a11592d14d]
+[ 14  ]     0x14a124700bda /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x1a9bda) [0x14a124700bda]
+[ 15  ]     0x14a1246d9723 PyObject_Vectorcall + 83
+[ 16  ]     0x14a1246eaddd _PyEval_EvalFrameDefault + 15949
+[ 17  ]     0x14a124774d5c PyEval_EvalCode + 172
+[ 18  ]     0x14a1247ae67c /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x25767c) [0x14a1247ae67c]
+[ 19  ]     0x14a1247abf16 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x254f16) [0x14a1247abf16]
+[ 20  ]     0x14a1247a99e5 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x2529e5) [0x14a1247a99e5]
+[ 21  ]     0x14a1247a8d53 /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251d53) [0x14a1247a8d53]
+[ 22  ]     0x14a1247a8b6a /opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib64/libpython3.13.so.1.0(+0x251b6a) [0x14a1247a8b6a]
+[ 23  ]     0x14a1247a6f99 Py_RunMain + 985
+[ 24  ]     0x14a12476366b Py_BytesMain + 59
+[ 25  ]     0x14a1242295d0 /lib64/libc.so.6(+0x295d0) [0x14a1242295d0]
+[ 26  ]     0x14a124229680 __libc_start_main + 128
+[ 27  ]     0x55ac9b119095 _start + 37
+
+
+Honor thy error as a hidden intention. (Brian Eno)
+
+[optimize] fenicsx eval FAILED (worker 6):
+['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
+[optimize] fenicsx eval FAILED (worker 6):
+['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
+[optimize] fenicsx eval FAILED (worker 6):
+['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
+[optimize] fenicsx eval FAILED (worker 6):
+['mkdir: cannot create directory ‘/run/user/985462’: Permission denied']
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+[2026-07-27T23:55:21.048] error: *** STEP 6066539.9 ON uc2n601 CANCELLED AT 2026-07-27T23:55:21 DUE TO TIME LIMIT ***
