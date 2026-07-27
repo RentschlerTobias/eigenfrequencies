@@ -45,6 +45,14 @@ export DESIGN_PRESET="${DESIGN_PRESET:-full30}"
 export FOAM_SIGFPE="${FOAM_SIGFPE:-0}"
 export OSLO_LOCK_PATH="${OSLO_LOCK_PATH:-/tmp}"
 
+# OpenMP + MUMPS parallel factorization (PETSc/SLEPc shift-invert).
+# Each worker is a single Python process (no MPI), so give it all
+# cpus-per-task as OpenMP threads → MUMPS internal factorization runs
+# multi-threaded. PETSc ICNTL_16=1 enables parallel internal MUMPS work.
+# Honors caller-provided OMP_NUM_THREADS / PETSC_OPTIONS (smoke overrides etc).
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-${SLURM_CPUS_PER_TASK:-1}}"
+export PETSC_OPTIONS="${PETSC_OPTIONS:-} -mat_mumps_icntl_16 1"
+
 # Per-variant namespace: two concurrent runs never clobber each other's
 # checkpoints, histories, URIs or worker logs.
 LOG_DIR="$REPO_ROOT/server_logs/${RUN_TAG}"
