@@ -4,76 +4,32 @@ Verifies that the modal solver produces stable eigenfrequencies and mode shapes
 against frozen golden JSON files.  The test regenerates the solution on-the-fly
 with the current code and compares against the stored reference.
 
-Work-around for the import-time XML read in config.py (Todo 7):
-  N_RPM=72 is set in the environment before importing turbine_runner.config.
+Imports ONLY from the eigenfrequencies package (no demo/beam or turbine_runner
+path hacks).  The beam mesh is generated inline with gmsh so the test is fully
+self-contained.
 """
 
 import json
 import os
-import sys
+import tempfile
 
 import numpy as np
 import pytest
 
-# ---------------------------------------------------------------------------
-# Path setup
-# ---------------------------------------------------------------------------
+from eigenfrequencies.config import (
+    BCConfig,
+    MaterialConfig,
+    MeshConfig,
+    SolverConfig,
+)
+from eigenfrequencies.io import load_and_prepare_mesh
+from eigenfrequencies.solver import ModalSolver
+
 _REPO_ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
-_BEAM_DIR = os.path.join(_REPO_ROOT, "demo", "beam")
-_TURBINE_DIR = os.path.join(_REPO_ROOT, "turbine_runner")
-
-# ---------------------------------------------------------------------------
-# Prevent import-time templateState.xml read (known issue, fixed in Todo 7).
-# ---------------------------------------------------------------------------
-os.environ["N_RPM"] = "72"
-
-# ---------------------------------------------------------------------------
-# Imports — beam
-# ---------------------------------------------------------------------------
-# Temporarily add beam dir to sys.path so that solver.py's internal
-# ``from config import …`` resolves to demo/beam/config.py.
-sys.path.insert(0, _BEAM_DIR)
-
-import config as _beam_config  # noqa: E402
-BeamConfig = _beam_config.BeamConfig
-BeamSolverConfig = _beam_config.SolverConfig
-BeamOutputConfig = _beam_config.OutputConfig
-
-from solver import ModalSolver  # noqa: E402
-from geometry import generate_mesh as beam_generate_mesh  # noqa: E402
-
-# Remove beam modules from sys.modules so turbine imports don't collide.
-for _mod_name in list(sys.modules):
-    if _mod_name in ("config", "solver", "geometry"):
-        del sys.modules[_mod_name]
-
-sys.path.remove(_BEAM_DIR)
-
-# ---------------------------------------------------------------------------
-# Imports — turbine_runner
-# ---------------------------------------------------------------------------
-sys.path.insert(0, _TURBINE_DIR)
-
-import config as _turbine_config  # noqa: E402
-MaterialConfig = _turbine_config.MaterialConfig
-BCConfig = _turbine_config.BCConfig
-MeshConfig = _turbine_config.MeshConfig
-RunnerSolverConfig = _turbine_config.SolverConfig
-
-from mesh_prep import load_and_prepare_mesh  # noqa: E402
-from solver import RunnerModalSolver  # noqa: E402
-from stl_to_msh import stl_to_volume_msh, DEFAULT_STL  # noqa: E402
-
-# ---------------------------------------------------------------------------
-# Golden paths
-# ---------------------------------------------------------------------------
 _GOLDEN_DIR = os.path.join(os.path.dirname(__file__), "golden")
 _BEAM_GOLDEN = os.path.join(_GOLDEN_DIR, "beam.json")
 _TESTCASE_GOLDEN = os.path.join(_GOLDEN_DIR, "testcase_coarse.json")
 
-# ---------------------------------------------------------------------------
-# Tolerances
-# ---------------------------------------------------------------------------
 _FREQ_REL_TOL = 1e-4
 _MAC_MIN = 0.999
 
@@ -108,9 +64,69 @@ def _load_golden(path):
         return json.load(fh)
 
 
-# ==========================================================================
-# Beam
-# ==========================================================================
+def _generate_beam_msh(output_dir: str, length=1.0, width=0.1, height=0.01, lc=0.1) -> str:
+    """Generate a rectangular beam mesh with gmsh (inline, no demo/beam import)."""
+    import gmsh
+
+    gmsh.initialize()
+    gmsh.option.setNumber("Mesh.Algorithm", 6)
+    gmsh.model.add("beam")
+
+    L, B, H = length, width, height
+    B2 = B / 2
+    H2 = H / 2
+
+    occ = gmsh.model.occ
+    p1 = occ.addPoint(0, -B2, -H2, lc)
+    p2 = occ.addPoint(L, -B2, -H2, lc)
+    p3 = occ.addPoint(L, B2, -H2, lc)
+    p4 = occ.addPoint(0, B2, -H2, lc)
+    p5 = occ.addPoint(0, -B2, H2, lc)
+    p6 = occ.addPoint(L, -B2, H2, lc)
+    p7 = occ.addPoint(L, B2, H2, lc)
+    p8 = occ.addPoint(0, B2, H2, lc)
+
+    e1 = occ.addLine(p1, p2)
+    e2 = occ.addLine(p2, p3)
+    e3 = occ.addLine(p3, p4)
+    e4 = occ.addLine(p4, p1)
+    e5 = occ.addLine(p5, p6)
+    e6 = occ.addLine(p6, p7)
+    e7 = occ.addLine(p7, p8)
+    e8 = occ.addLine(p8, p5)
+    e9 = occ.addLine(p1, p5)
+    e10 = occ.addLine(p2, p6)
+    e11 = occ.addLine(p3, p7)
+    e12 = occ.addLine(p4, p8)
+
+    bottom_loop = occ.addCurveLoop([e1, e2, e3, e4])
+    bottom = occ.addSurfaceFilling(bottom_loop)
+    top_loop = occ.addCurveLoop([e5, e6, e7, e8])
+    top = occ.addSurfaceFilling(top_loop)
+    front_loop = occ.addCurveLoop([e1, e10, e5, e9])
+    front = occ.addSurfaceFilling(front_loop)
+    back_loop = occ.addCurveLoop([e3, e11, e7, e12])
+    back = occ.addSurfaceFilling(back_loop)
+    left_loop = occ.addCurveLoop([e4, e12, e8, e9])
+    left = occ.addSurfaceFilling(left_loop)
+    right_loop = occ.addCurveLoop([e2, e10, e6, e11])
+    right = occ.addSurfaceFilling(right_loop)
+
+    surfaces = [bottom, top, front, back, left, right]
+    surface_loop = occ.addSurfaceLoop(surfaces)
+    volume_tag = occ.addVolume([surface_loop])
+    occ.synchronize()
+
+    gmsh.model.addPhysicalGroup(3, [volume_tag])
+    gmsh.model.setPhysicalName(3, volume_tag, "Beam")
+    gmsh.model.occ.synchronize()
+    gmsh.model.mesh.generate(3)
+
+    msh_path = os.path.join(output_dir, "beam.msh")
+    gmsh.write(msh_path)
+    gmsh.finalize()
+    return msh_path
+
 
 @pytest.mark.requires_container
 @pytest.mark.slow
@@ -118,42 +134,46 @@ def test_beam_golden():
     """Cantilever beam modal solver matches frozen golden reference."""
     golden = _load_golden(_BEAM_GOLDEN)
 
-    beam_config = BeamConfig(
+    output_dir = tempfile.mkdtemp(prefix="beam_test_")
+    mesh_file = _generate_beam_msh(
+        output_dir,
         length=1.0,
         width=0.1,
         height=0.01,
+        lc=0.1,
+    )
+
+    from dolfinx.io import gmsh as dgmsh
+    from mpi4py import MPI
+
+    mesh_data = dgmsh.read_from_msh(mesh_file, MPI.COMM_WORLD, rank=0, gdim=3)
+    domain = mesh_data.mesh
+
+    material = MaterialConfig(
         youngs_modulus=210e9,
         density=7850.0,
-        mesh_resolution=0.1,
+        poisson_ratio=0.0,
     )
-    solver_config = BeamSolverConfig(
-        freq_min=0.0,
-        freq_max=1000.0,
+    bc_config = BCConfig(
+        mode="axial_plane",
+        axis="x",
+        plane_value=0.0,
+        plane_tol=1e-6,
+    )
+    solver_config = SolverConfig(
         num_eigenvalues=10,
         tolerance=1e-6,
+        element_degree=2,
+        solver_backend="scipy",
     )
-    output_config = BeamOutputConfig(
-        save_vtk=False,
-        save_xdmf=False,
-        output_dir=os.path.join(os.path.dirname(__file__), "output", "beam_test"),
-    )
-    os.makedirs(output_config.output_dir, exist_ok=True)
 
-    # Generate mesh
-    mesh_file = beam_generate_mesh(beam_config, output_config.output_dir)
-
-    # Solve
-    solver = ModalSolver(beam_config, solver_config, output_config, boundary_type="cantilever")
+    solver = ModalSolver(domain, material, bc_config, solver_config)
     eigenvalues, eigenvectors = solver.solve()
     frequencies = solver.compute_frequencies(eigenvalues)
 
-    domain = solver.create_mesh()
     mesh_coords = domain.geometry.x
-
-    # Extract mode-shape displacement norms
     mode_shapes = _extract_mode_shape_norms(eigenvectors, mesh_coords)
 
-    # Compare frequencies
     golden_freqs = golden["frequencies"]
     assert len(frequencies) == len(golden_freqs), (
         f"Frequency count mismatch: got {len(frequencies)}, expected {len(golden_freqs)}"
@@ -166,7 +186,6 @@ def test_beam_golden():
             f"expected={expected:.6f} Hz, rel_err={rel_err:.6e}"
         )
 
-    # Compare mode shapes via MAC
     golden_shapes = golden["mode_shapes"]
     assert len(mode_shapes) == len(golden_shapes), (
         f"Mode-shape count mismatch: got {len(mode_shapes)}, expected {len(golden_shapes)}"
@@ -179,18 +198,12 @@ def test_beam_golden():
         )
 
 
-# ==========================================================================
-# Testcase coarse (Laval disc, free-free)
-# ==========================================================================
-
 @pytest.mark.requires_container
 @pytest.mark.slow
 def test_testcase_coarse_golden():
     """Laval disc coarse mesh (free-free) matches frozen golden reference."""
     golden = _load_golden(_TESTCASE_GOLDEN)
 
-    # Coarse mesh settings (must match the golden generator)
-    element_size = 0.01
     element_degree = 1
     solver_backend = "scipy"
     num_eigenvalues = 16
@@ -202,40 +215,33 @@ def test_testcase_coarse_golden():
     )
     bc_config = BCConfig(mode="free")
 
-    msh_path = "/workspace/turbine_runner/data/testcase_coarse.msh"
+    msh_path = os.path.join(_REPO_ROOT, "turbine_runner", "data", "testcase_coarse.msh")
+    if not os.path.isfile(msh_path):
+        pytest.skip(f"Coarse mesh not found at {msh_path} — generate it first")
+
     mesh_config = MeshConfig(msh_path=msh_path)
-    solver_config = RunnerSolverConfig(
+    solver_config = SolverConfig(
         num_eigenvalues=num_eigenvalues,
         tolerance=1e-6,
         element_degree=element_degree,
         solver_backend=solver_backend,
     )
 
-    # Generate coarse mesh if missing
-    if not os.path.isfile(msh_path):
-        stl_path = DEFAULT_STL
-        stl_to_volume_msh(stl_path, msh_path, element_size=element_size, order=element_degree)
-
-    # Solve
     domain = load_and_prepare_mesh(mesh_config)
-    solver = RunnerModalSolver(domain, material, bc_config, solver_config)
+    solver = ModalSolver(domain, material, bc_config, solver_config)
     eigenvalues, eigenvectors = solver.solve()
     frequencies = solver.compute_frequencies(eigenvalues)
 
-    # For free-free, remove rigid-body modes (freq < 1 Hz threshold)
     rigid_threshold_hz = 1.0
     keep = [i for i, f in enumerate(frequencies) if f >= rigid_threshold_hz]
     elastic_frequencies = [float(frequencies[i]) for i in keep]
     elastic_eigenvectors = [eigenvectors[i] for i in keep]
 
-    # Take first 10 elastic modes
     first_10_freqs = elastic_frequencies[:10]
     first_10_vectors = elastic_eigenvectors[:10]
 
-    # Extract mode-shape displacement norms
     mode_shapes = _extract_mode_shape_norms(first_10_vectors, domain.geometry.x)
 
-    # Compare frequencies
     golden_freqs = golden["frequencies"]
     assert len(first_10_freqs) == len(golden_freqs), (
         f"Frequency count mismatch: got {len(first_10_freqs)}, expected {len(golden_freqs)}"
@@ -248,7 +254,6 @@ def test_testcase_coarse_golden():
             f"expected={expected:.6f} Hz, rel_err={rel_err:.6e}"
         )
 
-    # Compare mode shapes via MAC
     golden_shapes = golden["mode_shapes"]
     assert len(mode_shapes) == len(golden_shapes), (
         f"Mode-shape count mismatch: got {len(mode_shapes)}, expected {len(golden_shapes)}"

@@ -1,7 +1,12 @@
-"""Characterization test: dtOO export parity and env-override matrix.
+"""Driver-integration characterization test: dtOO export parity and env-override matrix.
 
-Freezes the expected behavior of ``dtoo_export.py`` so that future changes to
-env-var handling, defaults, or export output are caught immediately.
+Freezes the expected behavior of ``turbine_runner.dtoo_export`` (a kept driver
+file) so that future changes to env-var handling, defaults, or export output
+are caught immediately.
+
+This is an explicitly-marked driver-integration test: it imports from
+``turbine_runner`` because ``dtoo_export.py`` is a driver file that has not been
+ported into the ``eigenfrequencies`` package.
 
 This test runs **inside the dtOO container** (atismer/dtoo-opensuse:stable) where
 dtOOPythonSWIG is available. Locally it skips gracefully with a clear message.

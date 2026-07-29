@@ -1,0 +1,9 @@
+[solver] clamped facets=8, fixed DOFs=27
+[solver] clamped-node bbox: min=[-7.86705783e-18  5.53419969e-18 -2.84074831e-17], max=[5.53419969e-18 1.00000000e+00 1.00000000e+00]
+SolverConfigError raised as expected: solver_backend='slepc' supports mode='free' only; use 'scipy' for clamped BCs
+Traceback (most recent call last):
+  File "/workspace/tests/solver/_demo_failure.py", line 17, in <module>
+    solver.solve()
+  File "/workspace/src/eigenfrequencies/solver/core.py", line 149, in solve
+    raise SolverConfigError(
+eigenfrequencies.solver.exceptions.SolverConfigError: solver_backend='slepc' supports mode='free' only; use 'scipy' for clamped BCs

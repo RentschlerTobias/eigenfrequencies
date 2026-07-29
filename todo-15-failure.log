@@ -1,0 +1,63 @@
+bringing up nodes...
+bringing up nodes...
+
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+______________________________ test_schema_parity ______________________________
+[gw1] linux -- Python 3.13.14 /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python3
+
+    def test_schema_parity():
+        """Dataclass fields and required sets must match the committed schema."""
+        with open(_SCHEMA_PATH) as fh:
+            committed = json.load(fh)
+    
+        # Top-level RunConfig parity
+        run_schema = committed
+        expected_run_fields = set(_RUNCONFIG_FIELD_MAP.keys())
+        actual_run_fields = set(run_schema.get("properties", {}).keys())
+        assert expected_run_fields == actual_run_fields, (
+            f"RunConfig field mismatch: dataclass has {sorted(expected_run_fields)}, "
+            f"schema has {sorted(actual_run_fields)}"
+        )
+    
+        expected_run_required = {
+            f.name for f in fields(RunConfig)
+            if f.default is dataclasses.MISSING and f.default_factory is dataclasses.MISSING
+        }
+        actual_run_required = set(run_schema.get("required", []))
+        assert expected_run_required == actual_run_required, (
+            f"RunConfig required-field mismatch: dataclass requires {sorted(expected_run_required)}, "
+            f"schema requires {sorted(actual_run_required)}"
+        )
+    
+        # Sub-config parity
+        for field_name, cls in _RUNCONFIG_FIELD_MAP.items():
+            cls_schema = run_schema["properties"][field_name]
+    
+            expected_fields = {f.name for f in fields(cls)}
+            actual_fields = set(cls_schema.get("properties", {}).keys())
+>           assert expected_fields == actual_fields, (
+                f"{cls.__name__} field mismatch: dataclass has {sorted(expected_fields)}, "
+                f"schema has {sorted(actual_fields)}"
+            )
+E           AssertionError: MaterialConfig field mismatch: dataclass has ['_probe_field', 'density', 'poisson_ratio', 'youngs_modulus'], schema has ['density', 'poisson_ratio', 'youngs_modulus']
+E           assert {'_probe_fiel...ungs_modulus'} == {'density', '...ungs_modulus'}
+E             
+E             Extra items in the left set:
+E             '_probe_field'
+E             Use -v to get more diff
+
+tests/config/test_schema_parity.py:101: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:423
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:423: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/lastfailed: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/lastfailed'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/config/test_schema_parity.py::test_schema_parity - AssertionErro...
+1 failed, 3 passed, 2 warnings in 0.94s

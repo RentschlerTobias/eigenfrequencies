@@ -1,0 +1,106 @@
+bringing up nodes...
+bringing up nodes...
+
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_____________________ TestToolCount.test_exactly_six_tools _____________________
+[gw3] linux -- Python 3.13.14 /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python3
+
+self = <test_tools.TestToolCount object at 0x7f3f40fefd90>
+mcp_client = <fastmcp.client.client.Client object at 0x7f3f3ac8c440>
+
+    def test_exactly_six_tools(self, mcp_client):
+        """The server exposes exactly 6 tools — no more, no less."""
+        async def _test():
+            async with mcp_client as client:
+                tools = await client.list_tools()
+            return tools
+    
+        import asyncio
+        tools = asyncio.run(_test())
+        tool_names = {t.name for t in tools}
+>       assert tool_names == {
+            "get_config_schema",
+            "solve_modal",
+            "validate",
+            "optimize_start",
+            "job_status",
+            "fetch_results",
+        }, f"Unexpected tool set: {tool_names}"
+E       AssertionError: Unexpected tool set: {'get_config_schema', 'explain_codebase', 'validate', 'solve_modal', 'optimize_start', 'fetch_results', 'job_status'}
+E       assert {'explain_cod...e_modal', ...} == {'fetch_resul...', 'validate'}
+E         
+E         Extra items in the left set:
+E         'explain_codebase'
+E         Use -v to get more diff
+
+tests/mcp/test_tools.py:531: AssertionError
+____________________ TestGuardrails.test_exactly_six_tools _____________________
+[gw0] linux -- Python 3.13.14 /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python3
+
+self = <test_resources.TestGuardrails object at 0x7fe8d542b4d0>
+mcp_client = <fastmcp.client.client.Client object at 0x7fe8cf2e82f0>
+
+    def test_exactly_six_tools(self, mcp_client):
+        """The server exposes exactly the 6 job-orchestration tools — no more."""
+        async def _test():
+            async with mcp_client as client:
+                tools = await client.list_tools()
+            return tools
+    
+        import asyncio
+    
+        tools = asyncio.run(_test())
+        tool_names = {t.name for t in tools}
+>       assert tool_names == _EXPECTED_SIX_TOOLS, (
+            f"Expected exactly 6 tools {_EXPECTED_SIX_TOOLS}, got {len(tools)}: {tool_names}"
+        )
+E       AssertionError: Expected exactly 6 tools {'job_status', 'validate', 'get_config_schema', 'solve_modal', 'optimize_start', 'fetch_results'}, got 7: {'job_status', 'get_config_schema', 'solve_modal', 'validate', 'optimize_start', 'explain_codebase', 'fetch_results'}
+E       assert {'explain_cod...e_modal', ...} == {'fetch_resul...', 'validate'}
+E         
+E         Extra items in the left set:
+E         'explain_codebase'
+E         Use -v to get more diff
+
+tests/mcp/test_resources.py:348: AssertionError
+__________________ TestGuardrails.test_no_code_graph_tooling ___________________
+[gw1] linux -- Python 3.13.14 /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python3
+
+self = <test_resources.TestGuardrails object at 0x7f1f1c2af9d0>
+mcp_client = <fastmcp.client.client.Client object at 0x7f1f15f642f0>
+
+    def test_no_code_graph_tooling(self, mcp_client):
+        """The server exposes zero code-graph / source-code-awareness tools."""
+        async def _test():
+            async with mcp_client as client:
+                tools = await client.list_tools()
+            return tools
+    
+        import asyncio
+    
+        tools = asyncio.run(_test())
+        tool_names = {t.name for t in tools}
+        code_graph_overlap = tool_names & _CODE_GRAPH_SMELLS
+>       assert not code_graph_overlap, (
+            f"Code-graph tooling detected: {code_graph_overlap}. "
+            f"MCP server tools must be job-orchestration only."
+        )
+E       AssertionError: Code-graph tooling detected: {'explain_codebase'}. MCP server tools must be job-orchestration only.
+E       assert not {'explain_codebase'}
+
+tests/mcp/test_resources.py:364: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:423
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:423: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/lastfailed: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/lastfailed'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/mcp/test_tools.py::TestToolCount::test_exactly_six_tools - Asser...
+FAILED tests/mcp/test_resources.py::TestGuardrails::test_exactly_six_tools - ...
+FAILED tests/mcp/test_resources.py::TestGuardrails::test_no_code_graph_tooling
+3 failed, 2 warnings in 2.01s

@@ -10,7 +10,7 @@ Moved from ``turbine_runner/config.py`` with two critical fixes:
 
 import math
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, Tuple
 
 
@@ -367,3 +367,23 @@ class OutputConfig:
     output_dir: str = "output"
     save_xdmf: bool = True
     results_json: str = "frequencies.json"
+
+
+@dataclass
+class RunConfig:
+    """Top-level aggregate configuration for a single analysis run.
+
+    Holds one instance of every sub-config.  ``optimization`` and ``cfd``
+    are required because they contain ``n_rpm`` (no default).
+    """
+    optimization: OptimizationConfig
+    cfd: CFDConfig
+    material: MaterialConfig = field(default_factory=MaterialConfig)
+    bc: BCConfig = field(default_factory=BCConfig)
+    mesh: MeshConfig = field(default_factory=MeshConfig)
+    solver: SolverConfig = field(default_factory=SolverConfig)
+    design: DesignConfig = field(default_factory=DesignConfig)
+    de: DEConfig = field(default_factory=DEConfig)
+    objective: ObjectiveConfig = field(default_factory=ObjectiveConfig)
+    wet_mode: WetModeConfig = field(default_factory=WetModeConfig)
+    output: OutputConfig = field(default_factory=OutputConfig)

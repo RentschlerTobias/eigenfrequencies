@@ -1,0 +1,35 @@
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/concurrent/futures/process.py", line 254, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/home/t1dde/Duty/projects/eigenfrequencies/src/eigenfrequencies/optimize/evaluators/process_pool.py", line 42, in _eval_single
+    result = evaluator(design)
+  File "<string>", line 6, in always_fail
+    raise RuntimeError('simulated worker crash')
+RuntimeError: simulated worker crash
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/t1dde/Duty/projects/eigenfrequencies/src/eigenfrequencies/optimize/evaluators/process_pool.py", line 96, in evaluate
+    result = future.result()
+  File "/home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 460, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/concurrent/futures/_base.py", line 402, in __get_result
+    raise self._exception
+RuntimeError: simulated worker crash
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 9, in <module>
+    pool.evaluate([Design(vector=[1.0])])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/t1dde/Duty/projects/eigenfrequencies/src/eigenfrequencies/optimize/evaluators/process_pool.py", line 106, in evaluate
+    raise EvaluationError(
+    ...<2 lines>...
+    ) from last_exc
+eigenfrequencies.optimize.evaluators.base.EvaluationError: Worker 0 failed after 1 retry: simulated worker crash

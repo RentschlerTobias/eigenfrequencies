@@ -1,0 +1,40 @@
+# Todo 28 — CMA-ES backend failure paths
+
+## 1. cma not installed → ImportError on instantiation
+
+$ uv run python -c "
+from unittest.mock import patch
+with patch.dict('sys.modules', {'cma': None}):
+    import importlib
+    import eigenfrequencies.optimize.backends.cmaes as cmaes_mod
+    importlib.reload(cmaes_mod)
+    cmaes_mod.CMAESOptimizer({'bounds': [(0.0, 1.0)]})
+"
+Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+    cmaes_mod.CMAESOptimizer({'bounds': [(0.0, 1.0)]})
+  File ".../cmaes.py", line 42, in __init__
+    raise ImportError("unavailable: cma not installed")
+ImportError: unavailable: cma not installed
+
+## 2. Insufficient budget → sphere does not converge
+
+With budget=20 on 2-D sphere, best objective = 4.3 (not < 1e-3):
+
+$ uv run python -c "
+import numpy as np
+from eigenfrequencies.optimize.backends.cmaes import CMAESOptimizer
+
+def sphere(v):
+    return float(np.sum(np.asarray(v)**2))
+
+opt = CMAESOptimizer({'bounds': [(-5.0, 5.0), (-5.0, 5.0)], 'seed': 42})
+for _ in range(3):
+    d = opt.ask(6)
+    objs = [sphere(v.vector) for v in d]
+    opt.tell(d, objs)
+print('best=', opt._es.result.fbest)
+"
+best= 4.318664147971622
+
+This confirms the convergence test would catch a broken CMA-ES implementation.

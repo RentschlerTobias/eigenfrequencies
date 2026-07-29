@@ -1,0 +1,17 @@
+# todo-1-failure.log
+# QA test: Attempt to create branch again (should fail)
+
+## Timestamp
+2026-07-28
+
+## Command
+git checkout -b refactor/standalone-tool
+
+## Expected Result
+fatal: a branch named 'refactor/standalone-tool' already exists
+
+## Actual Result
+fatal: a branch named 'refactor/standalone-tool' already exists
+
+## Conclusion
+QA failure test passed - attempting to create an existing branch correctly fails with the expected error.

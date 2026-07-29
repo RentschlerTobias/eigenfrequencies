@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SUPERSEDED-BY: eigenfrequencies.optimize.evaluators.pyro_pool
 """Pyro5 server for DE worker evaluation.
 
 Starts once, registers with Name Server, waits for RPC calls.
@@ -14,10 +15,15 @@ import Pyro5.api
 # Pyro5.config is implicitly available after Pyro5.api import
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, "legacy"))
 
-from config import OptimizationConfig, ObjectiveConfig, CFDConfig
-from objective import combined_objective, resonance_term, cfd_scalar
+from eigenfrequencies.config import CFDConfig, ObjectiveConfig, OptimizationConfig
+from eigenfrequencies.io.cfd_eval import evaluate_cfd
+from eigenfrequencies.penalty.objective import (
+    cfd_scalar,
+    combined_objective,
+    resonance_term,
+)
 from optimize import _run_dtoo, _run_fenicsx, _run_cfd, DTOO_FAIL_PENALTY
 
 host = socket.gethostname()
@@ -52,8 +58,8 @@ class Evaluator(object):
         x = {lab: float(v) for lab, v in zip(labels, x_list)}
 
         obj_cfg = ObjectiveConfig()
-        opt_cfg = OptimizationConfig()
-        cfd_cfg = CFDConfig()
+        opt_cfg = OptimizationConfig(n_rpm=72.0)
+        cfd_cfg = CFDConfig(n_rpm=72.0)
         eval_mode = obj_cfg.eval_mode
 
         # CFD runs in "combined" and "cfd_only" modes. Legacy CFD_ENABLED=0 env
@@ -93,7 +99,6 @@ class Evaluator(object):
                     "worker_id": worker_id,
                     "eval_mode": eval_mode,
                 }
-            from cfd_eval import evaluate_cfd
             cfd = evaluate_cfd(case_dir, cfd_cfg)
             if not cfd.get("ok"):
                 return float(DTOO_FAIL_PENALTY), {

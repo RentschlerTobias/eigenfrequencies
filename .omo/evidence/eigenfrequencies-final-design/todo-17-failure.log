@@ -1,0 +1,53 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/t1dde/Duty/projects/eigenfrequencies
+configfile: pyproject.toml
+plugins: xdist-3.8.0
+collecting ... collected 1 item
+
+tests/cli/test_cli_optimize.py::TestOptimizeFailurePaths::test_optimize_unknown_optimizer_exits_2 PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 0.14s =========================
+---
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/t1dde/Duty/projects/eigenfrequencies
+configfile: pyproject.toml
+plugins: xdist-3.8.0
+collecting ... collected 1 item
+
+tests/cli/test_cli_optimize.py::TestOptimizeFailurePaths::test_optimize_missing_config_exits_2 PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 0.13s =========================
+---
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/t1dde/Duty/projects/eigenfrequencies
+configfile: pyproject.toml
+plugins: xdist-3.8.0
+collecting ... collected 1 item
+
+tests/cli/test_cli_report.py::TestReportFailurePaths::test_report_missing_run_dir_exits_2 PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 0.10s =========================

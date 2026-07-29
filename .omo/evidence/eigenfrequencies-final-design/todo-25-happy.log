@@ -1,0 +1,108 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/t1dde/Duty/projects/eigenfrequencies
+configfile: pyproject.toml
+plugins: xdist-3.8.0
+created: 24/24 workers
+24 workers [31 items]
+
+scheduling tests via LoadScheduling
+
+tests/optimize/test_protocol.py::test_design_is_frozen 
+tests/optimize/test_process_pool.py::TestProcessPoolRetry::test_two_failures_raise_evaluation_error 
+tests/optimize/test_process_pool.py::TestProcessPoolSphere::test_reaches_1e6_within_default_budget 
+tests/optimize/test_protocol.py::test_design_metadata_default 
+tests/optimize/test_protocol.py::test_tell_mismatched_lengths_raises 
+tests/optimize/test_process_pool.py::TestProcessPoolContextManager::test_exit_shuts_down 
+tests/optimize/test_process_pool.py::TestProcessPoolSphere::test_reaches_1e6_with_x0 
+[gw9] [  3%] PASSED tests/optimize/test_protocol.py::test_design_is_frozen 
+tests/optimize/test_protocol.py::test_state_roundtrip_reproduces_ask 
+[gw15] [  6%] PASSED tests/optimize/test_protocol.py::test_state_roundtrip_reproduces_ask 
+[gw11] [  9%] PASSED tests/optimize/test_protocol.py::test_tell_mismatched_lengths_raises 
+[gw7] [ 12%] PASSED tests/optimize/test_protocol.py::test_design_metadata_default 
+tests/optimize/test_de.py::TestDEEnvOverrides::test_de_pop_size_override 
+[gw22] [ 16%] PASSED tests/optimize/test_de.py::TestDEEnvOverrides::test_de_pop_size_override 
+tests/optimize/test_protocol.py::test_register_and_create 
+[gw12] [ 19%] PASSED tests/optimize/test_protocol.py::test_register_and_create 
+tests/optimize/test_de.py::TestDEEnvOverrides::test_de_f_override 
+[gw23] [ 22%] PASSED tests/optimize/test_de.py::TestDEEnvOverrides::test_de_f_override 
+tests/optimize/test_process_pool.py::TestProcessPoolContextManager::test_enter_returns_self 
+[gw5] [ 25%] PASSED tests/optimize/test_process_pool.py::TestProcessPoolContextManager::test_enter_returns_self 
+tests/optimize/test_de.py::TestDEBounds::test_trials_stay_inside_bounds 
+tests/optimize/test_protocol.py::test_create_unknown_raises 
+[gw14] [ 29%] PASSED tests/optimize/test_protocol.py::test_create_unknown_raises 
+tests/optimize/test_de.py::TestDESphere::test_reaches_1e6_within_default_budget 
+tests/optimize/test_de.py::TestDEDeterminism::test_different_seed_different_ask 
+[gw18] [ 32%] PASSED tests/optimize/test_de.py::TestDEDeterminism::test_different_seed_different_ask 
+tests/optimize/test_process_pool.py::TestProcessPoolRetry::test_retry_once_then_succeed 
+tests/optimize/test_protocol.py::test_ask_returns_requested_count 
+[gw10] [ 35%] PASSED tests/optimize/test_protocol.py::test_ask_returns_requested_count 
+tests/optimize/test_process_pool.py::TestProcessPoolIsolation::test_worker_dirs_created 
+tests/optimize/test_de.py::TestDEStateRoundtrip::test_roundtrip_preserves_best 
+[gw20] [ 38%] PASSED tests/optimize/test_de.py::TestDEStateRoundtrip::test_roundtrip_preserves_best 
+tests/optimize/test_de.py::TestDEStateRoundtrip::test_roundtrip_after_initial_tell 
+[gw19] [ 41%] PASSED tests/optimize/test_de.py::TestDEStateRoundtrip::test_roundtrip_after_initial_tell 
+tests/optimize/test_de.py::TestDESphere::test_reaches_1e6_with_x0 
+tests/optimize/test_de.py::TestDEDeterminism::test_same_seed_same_ask_sequence 
+[gw17] [ 45%] PASSED tests/optimize/test_de.py::TestDEDeterminism::test_same_seed_same_ask_sequence 
+tests/optimize/test_de.py::TestDEStateRoundtrip::test_roundtrip_after_multiple_generations 
+[gw21] [ 48%] PASSED tests/optimize/test_de.py::TestDEStateRoundtrip::test_roundtrip_after_multiple_generations 
+[gw5] [ 51%] PASSED tests/optimize/test_de.py::TestDEBounds::test_trials_stay_inside_bounds 
+tests/optimize/test_protocol.py::test_tell_updates_state 
+[gw8] [ 54%] PASSED tests/optimize/test_protocol.py::test_tell_updates_state 
+[gw16] [ 58%] PASSED tests/optimize/test_de.py::TestDESphere::test_reaches_1e6_with_x0 
+[gw13] [ 61%] PASSED tests/optimize/test_de.py::TestDESphere::test_reaches_1e6_within_default_budget 
+[gw6] [ 64%] PASSED tests/optimize/test_process_pool.py::TestProcessPoolContextManager::test_exit_shuts_down 
+tests/optimize/test_de.py::TestDEBounds::test_x0_init_respects_bounds 
+[gw6] [ 67%] PASSED tests/optimize/test_de.py::TestDEBounds::test_x0_init_respects_bounds 
+[gw3] [ 70%] PASSED tests/optimize/test_process_pool.py::TestProcessPoolRetry::test_two_failures_raise_evaluation_error 
+tests/optimize/test_de.py::TestDEProtocolErrors::test_tell_mismatched_raises 
+[gw3] [ 74%] PASSED tests/optimize/test_de.py::TestDEProtocolErrors::test_tell_mismatched_raises 
+[gw2] [ 77%] PASSED tests/optimize/test_process_pool.py::TestProcessPoolRetry::test_retry_once_then_succeed 
+tests/optimize/test_de.py::TestDEEnvOverrides::test_defaults_without_env 
+[gw2] [ 80%] PASSED tests/optimize/test_de.py::TestDEEnvOverrides::test_defaults_without_env 
+[gw4] [ 83%] PASSED tests/optimize/test_process_pool.py::TestProcessPoolIsolation::test_worker_dirs_created 
+tests/optimize/test_de.py::TestDEBounds::test_bounds_property 
+[gw4] [ 87%] PASSED tests/optimize/test_de.py::TestDEBounds::test_bounds_property 
+[gw0] [ 90%] PASSED tests/optimize/test_process_pool.py::TestProcessPoolSphere::test_reaches_1e6_within_default_budget 
+tests/optimize/test_de.py::TestDEEnvOverrides::test_de_cr_override 
+[gw0] [ 93%] PASSED tests/optimize/test_de.py::TestDEEnvOverrides::test_de_cr_override 
+[gw1] [ 96%] PASSED tests/optimize/test_process_pool.py::TestProcessPoolSphere::test_reaches_1e6_with_x0 
+tests/optimize/test_de.py::TestDEEnvOverrides::test_de_max_gen_override 
+[gw1] [100%] PASSED tests/optimize/test_de.py::TestDEEnvOverrides::test_de_max_gen_override 
+
+=============================== warnings summary ===============================
+tests/optimize/test_process_pool.py::TestProcessPoolContextManager::test_exit_shuts_down
+  /home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/popen_fork.py:73: DeprecationWarning: This process (pid=72903) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/optimize/test_process_pool.py::TestProcessPoolRetry::test_two_failures_raise_evaluation_error
+  /home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/popen_fork.py:73: DeprecationWarning: This process (pid=72822) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/optimize/test_process_pool.py::TestProcessPoolRetry::test_retry_once_then_succeed
+  /home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/popen_fork.py:73: DeprecationWarning: This process (pid=72819) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/optimize/test_process_pool.py::TestProcessPoolIsolation::test_worker_dirs_created
+tests/optimize/test_process_pool.py::TestProcessPoolIsolation::test_worker_dirs_created
+  /home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/popen_fork.py:73: DeprecationWarning: This process (pid=72826) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/optimize/test_process_pool.py::TestProcessPoolSphere::test_reaches_1e6_within_default_budget
+tests/optimize/test_process_pool.py::TestProcessPoolSphere::test_reaches_1e6_within_default_budget
+  /home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/popen_fork.py:73: DeprecationWarning: This process (pid=72809) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/optimize/test_process_pool.py::TestProcessPoolSphere::test_reaches_1e6_with_x0
+tests/optimize/test_process_pool.py::TestProcessPoolSphere::test_reaches_1e6_with_x0
+  /home/t1dde/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/lib/python3.13/multiprocessing/popen_fork.py:73: DeprecationWarning: This process (pid=72814) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 31 passed, 1 skipped, 10 warnings in 4.47s ==================

@@ -1,0 +1,7 @@
+# Minimal configuration — only required fields.
+# All other sub-configs fall back to their built-in defaults.
+optimization:
+  n_rpm: 72.0
+
+cfd:
+  n_rpm: 72.0

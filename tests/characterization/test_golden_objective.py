@@ -5,27 +5,22 @@ outputs derived from de_history_resonance_only.jsonl (generation 0, rows 0-4)
 and de_history_combined.jsonl (CFD scalars).  Any refactor that changes the
 math (tanh mapping, penalty depth, band intervals) is caught immediately.
 
-Work-around for the import-time XML read in config.py:
-  N_RPM=72 is set in the environment before importing turbine_runner.config.
+Imports ONLY from the eigenfrequencies package (no turbine_runner path hack).
 """
 
 import json
 import os
-import sys
 
 import pytest
 
-# Prevent import-time templateState.xml read (known issue, fixed in Todo 7).
-os.environ["N_RPM"] = "72"
+from eigenfrequencies.config import CFDConfig, ObjectiveConfig, OptimizationConfig
+from eigenfrequencies.penalty.objective import (
+    cfd_scalar,
+    combined_objective,
+    resonance_term,
+)
 
-# Add turbine_runner to path so 'import objective' resolves
 _HERE = os.path.dirname(os.path.abspath(__file__))
-TURBINE_RUNNER_DIR = os.path.join(_HERE, "..", "..", "turbine_runner")
-sys.path.insert(0, os.path.abspath(TURBINE_RUNNER_DIR))
-
-from objective import cfd_scalar, resonance_term, combined_objective
-from config import OptimizationConfig, ObjectiveConfig, CFDConfig
-
 _GOLDEN_PATH = os.path.join(_HERE, "golden", "objective_cases.json")
 
 
@@ -51,8 +46,8 @@ def golden_cases():
 def configs():
     """Fresh config instances (same defaults as when golden was generated)."""
     return {
-        "opt_cfg": OptimizationConfig(),
-        "cfd_cfg": CFDConfig(),
+        "opt_cfg": OptimizationConfig(n_rpm=72.0),
+        "cfd_cfg": CFDConfig(n_rpm=72.0),
         "obj_cfg": ObjectiveConfig(),
     }
 

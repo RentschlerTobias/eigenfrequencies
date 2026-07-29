@@ -1,0 +1,11 @@
+name: eigenfrequencies
+channels: [conda-forge]
+dependencies:
+  - python>=3.11,<3.14
+  - fenics-dolfinx=0.11.*
+  - slepc4py
+  - petsc4py
+  - mpi4py
+  - pyyaml
+  - typer
+  - jsonschema

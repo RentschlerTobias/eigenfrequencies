@@ -50,6 +50,15 @@ demo/beam/demo/
 .cache/
 .fltk/
 
+# Eigenfrequency job runs (DE history, state snapshots)
+.eigenfrequencies/jobs/
+islands_state/
+*.d3
+
+# Differential evolution run artifacts
+de_state*.json
+de_history*.jsonl
+
 # Claude Code personal settings (not shared)
 .claude/settings.local.json
 

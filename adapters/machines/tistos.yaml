@@ -1,0 +1,88 @@
+# Tistos runner machine adapter — mirrors turbine_runner/dtoo_export.py defaults
+# plus the 30 design-parameter bounds from the "full30" preset.
+#
+# How mesh_scale_factor was determined:
+#   The dtOO mesh (ruWithRounding_mechMesh) is written in gmsh format with
+#   coordinates in the native dtOO units.  The physical scale is established
+#   by running the axis-discovery diagnostic (mesh_prep.py) inside the fenicsx
+#   container: it prints the mesh bounding-box spans in each axis.
+#   Set mesh_scale_factor to the reciprocal of that span ratio so the scaled
+#   mesh has hub_radius ≈ 0.15 m (physical).  Until the diagnostic is run
+#   inside the dtOO container the factor is unknown; a placeholder value of
+#   1.0 is used here and must be updated once DTOO_CASE_DIR is accessible.
+#
+# dtOO container requirements (atismer/dtoo-opensuse:stable):
+#   interpreter : python3.12
+#   LD_LIBRARY_PATH: /dtOO-install/lib:/dtOO-install/lib64
+#   working_dir : ~/dtOO/build/test/tistos  (or DTOO_CASE_DIR override)
+#
+name: tistos
+case_dir: ~/dtOO/build/test/tistos
+state: templateState
+mech_volume: ruWithRounding_mechMesh
+adjust_plugin: ru_adjustDomain
+
+# -----------------------------------------------------------------------
+# Design-parameter bounds (min, max) — from "full30" preset in
+# src/eigenfrequencies/config.py _DESIGN_PRESETS.
+# The initial (third) value from the preset is NOT stored here; it is
+# supplied at runtime by the caller via export_mesh(design_values).
+# -----------------------------------------------------------------------
+design:
+  cV_ru_alpha_1_ex_0.0:   {min: -0.155,  max:  0.025}
+  cV_ru_alpha_1_ex_0.5:   {min: -0.19,   max: -0.01}
+  cV_ru_alpha_1_ex_1.0:   {min: -0.19,   max: -0.01}
+  cV_ru_alpha_2_ex_0.0:   {min: -0.08,   max:  0.1}
+  cV_ru_alpha_2_ex_0.5:   {min: -0.08,   max:  0.1}
+  cV_ru_alpha_2_ex_1.0:   {min: -0.08,   max:  0.07}
+  cV_ru_offsetM_ex_0.0:   {min:  1.0,    max:  1.5}
+  cV_ru_offsetM_ex_0.5:   {min:  1.0,    max:  1.5}
+  cV_ru_offsetM_ex_1.0:   {min:  1.0,    max:  1.5}
+  cV_ru_ratio_0.0:        {min:  0.4,    max:  0.6}
+  cV_ru_ratio_0.5:        {min:  0.4,    max:  0.6}
+  cV_ru_ratio_1.0:        {min:  0.4,    max:  0.6}
+  cV_ru_offsetPhiR_ex_0.0: {min: -0.15,  max:  0.15}
+  cV_ru_offsetPhiR_ex_0.5: {min: -0.15,  max:  0.15}
+  cV_ru_offsetPhiR_ex_1.0: {min: -0.15,  max:  0.15}
+  cV_ru_bladeLength_0.0:   {min:  0.4,   max:  0.8}
+  cV_ru_bladeLength_0.5:   {min:  0.6,   max:  1.0}
+  cV_ru_bladeLength_1.0:   {min:  0.8,   max:  1.3}
+  cV_ru_t_le_a_0:          {min:  0.005, max:  0.06}
+  cV_ru_t_le_a_0.5:        {min:  0.005, max:  0.06}
+  cV_ru_t_le_a_1:          {min:  0.005, max:  0.06}
+  cV_ru_t_mid_a_0:         {min:  0.005, max:  0.06}
+  cV_ru_t_mid_a_0.5:       {min:  0.005, max:  0.06}
+  cV_ru_t_mid_a_1:         {min:  0.005, max:  0.06}
+  cV_ru_t_te_a_0:          {min:  0.005, max:  0.06}
+  cV_ru_t_te_a_0.5:        {min:  0.005, max:  0.06}
+  cV_ru_t_te_a_1:          {min:  0.005, max:  0.06}
+  cV_ru_u_mid_a_0:         {min:  0.4,   max:  0.6}
+  cV_ru_u_mid_a_0.5:       {min:  0.4,   max:  0.6}
+  cV_ru_u_mid_a_1:         {min:  0.4,   max:  0.6}
+
+# -----------------------------------------------------------------------
+# Mesh coordinate scale factor.
+#   1.0 = dtOO native units (unknown physical scale — update after
+#         axis diagnostic run inside the dtOO container).
+#   See "How mesh_scale_factor was determined" note at the top of this file.
+# -----------------------------------------------------------------------
+mesh_scale_factor: 1.0
+
+# -----------------------------------------------------------------------
+# Boundary-condition template — mirrors the BCConfig used in the
+# tistos coarse/fine characterisation runs (axis_discovery: z-axis clamp
+# on hub bore at z=0 plane, radius band hub_center=(0,0), hub_radius=0.15).
+# -----------------------------------------------------------------------
+bc_template:
+  type: hub_clamp
+  params:
+    hub_center: [0.0, 0.0]
+    hub_radius: 0.15
+    axial_min: null
+    axial_max: null
+
+# -----------------------------------------------------------------------
+# Rotation axis: let the adapter discover it from the mesh bounding box
+# (longest span = axis).  Explicit override: [x, y, z] 3-vector.
+# -----------------------------------------------------------------------
+axis: auto

@@ -3,9 +3,6 @@
 Freezes the exact instances used by the current tistos run so that future
 refactors (e.g. removing a field, changing a default, or altering __post_init__
 behaviour) are caught immediately.
-
-Work-around for the import-time XML read in config.py (Todo 7):
-  N_RPM=72 is set in the environment before importing turbine_runner.config.
 """
 
 import json
@@ -14,10 +11,7 @@ from dataclasses import asdict, fields
 
 import pytest
 
-# Prevent import-time templateState.xml read (known issue, fixed in Todo 7).
-os.environ["N_RPM"] = "72"
-
-from turbine_runner.config import (
+from eigenfrequencies.config import (
     BCConfig,
     CFDConfig,
     DEConfig,
@@ -85,7 +79,10 @@ def test_roundtrip_equality(name, cls):
 
     _validate_all_fields_present(cls, golden[name])
 
-    original = cls()
+    kwargs = {}
+    if name in ("OptimizationConfig", "CFDConfig"):
+        kwargs = {"n_rpm": 72.0}
+    original = cls(**kwargs)
     reconstructed = cls(**golden[name])
 
     assert _deep_eq(asdict(reconstructed), golden[name]), (

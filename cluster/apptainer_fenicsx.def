@@ -15,7 +15,7 @@ From: dolfinx/dolfinx:stable
 #         python3 /workspace/turbine_runner/evaluate.py /workspace/turbine_runner/data/runner.msh
 
 %post
-    pip install gmsh pygmo matplotlib pyvista scipy plotly
+    pip install gmsh matplotlib pyvista scipy plotly
 
 %environment
     export PYTHONUNBUFFERED=1

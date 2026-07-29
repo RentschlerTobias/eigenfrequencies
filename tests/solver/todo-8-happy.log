@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0 -- /dolfinx-env/bin/python3
+cachedir: .pytest_cache
+rootdir: /workspace
+configfile: pyproject.toml
+collecting ... collected 5 items
+
+tests/solver/test_scipy_backend.py::test_beam_clamped_scipy PASSED       [ 20%]
+tests/solver/test_slepc_backend.py::test_testcase_free_free_slepc PASSED [ 40%]
+tests/solver/test_solver_config_error.py::test_unknown_backend_raises PASSED [ 60%]
+tests/solver/test_solver_config_error.py::test_slepc_with_clamped_bc_raises PASSED [ 80%]
+tests/solver/test_solver_config_error.py::test_invalid_bc_mode_raises PASSED [100%]
+
+============================== 5 passed in 19.35s ==============================

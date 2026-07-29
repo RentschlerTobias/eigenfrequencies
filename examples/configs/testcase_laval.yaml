@@ -1,0 +1,71 @@
+# Laval disc coarse-mesh configuration (free-free validation)
+optimization:
+  n_rpm: 72.0
+  Z_guidevanes: 18
+  max_harmonic: 6
+  margin_hz: 5.0
+  margin_fraction: 0.05
+  penalty_k: 1.0
+  max_iter: 40
+  method: Nelder-Mead
+cfd:
+  n_rpm: 72.0
+  omega: 7.5398223686155035
+  rho: 1000.0
+  g: 9.81
+  design_head: -2.4
+  operating_point: n
+  end_time: 500
+  post_folder: "100"
+material:
+  youngs_modulus: 75854000000.0
+  density: 8910.0
+  poisson_ratio: 0.34
+bc:
+  axis: z
+  hub_center: [0.0, 0.0]
+  hub_radius: 0.15
+  axial_min: null
+  axial_max: null
+  mode: free
+  plane_value: 0.0
+  plane_tol: 1.0e-6
+mesh:
+  msh_path: turbine_runner/data/testcase_coarse.msh
+  step_path: null
+  force_volume_remesh: false
+  fallback_element_size: 0.05
+  gdim: 3
+solver:
+  num_eigenvalues: 16
+  tolerance: 1.0e-6
+  freq_min: 0.0
+  freq_max: 2000.0
+  element_degree: 1
+  solver_backend: slepc
+design:
+  params: {}
+de:
+  pop_size: 20
+  mutation: 0.8
+  crossover: 0.9
+  max_generations: 30
+  tol: 0.01
+  seed: null
+objective:
+  eval_mode: combined
+  w_eta: 1.0
+  w_cav: 1.0
+  w_head: 1.0
+  w_resonance: 1.0
+  mode: penalty
+  hard_penalty: 1000000.0
+wet_mode:
+  enabled: false
+  compare_dry_wet: true
+  rho_fluid: 1000.0
+  method: rayleigh
+output:
+  output_dir: output
+  save_xdmf: true
+  results_json: frequencies.json

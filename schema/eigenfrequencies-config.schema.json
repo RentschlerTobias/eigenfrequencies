@@ -1,0 +1,343 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Configuration schema for hydraulic turbine runner modal analysis",
+  "properties": {
+    "bc": {
+      "properties": {
+        "axial_max": {
+          "default": null,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "axial_min": {
+          "default": null,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "axis": {
+          "default": "z",
+          "type": "string"
+        },
+        "hub_center": {
+          "default": [
+            0.0,
+            0.0
+          ],
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "hub_radius": {
+          "default": 0.15,
+          "type": "number"
+        },
+        "mode": {
+          "default": "axial_plane",
+          "type": "string"
+        },
+        "plane_tol": {
+          "default": 1e-06,
+          "type": "number"
+        },
+        "plane_value": {
+          "default": 0.0,
+          "type": "number"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "cfd": {
+      "properties": {
+        "design_head": {
+          "default": -2.4,
+          "type": "number"
+        },
+        "end_time": {
+          "default": 500,
+          "type": "integer"
+        },
+        "g": {
+          "default": 9.81,
+          "type": "number"
+        },
+        "n_rpm": {
+          "type": "number"
+        },
+        "omega": {
+          "default": null,
+          "readOnly": true,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "operating_point": {
+          "default": "n",
+          "type": "string"
+        },
+        "post_folder": {
+          "default": "100",
+          "type": "string"
+        },
+        "rho": {
+          "default": 1000.0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "n_rpm"
+      ],
+      "type": "object"
+    },
+    "de": {
+      "properties": {
+        "crossover": {
+          "default": 0.9,
+          "type": "number"
+        },
+        "max_generations": {
+          "default": 30,
+          "type": "integer"
+        },
+        "mutation": {
+          "default": 0.8,
+          "type": "number"
+        },
+        "pop_size": {
+          "default": 20,
+          "type": "integer"
+        },
+        "seed": {
+          "default": null,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "tol": {
+          "default": 0.01,
+          "type": "number"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "design": {
+      "properties": {
+        "params": {
+          "default": null,
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "material": {
+      "properties": {
+        "density": {
+          "default": 7850.0,
+          "type": "number"
+        },
+        "poisson_ratio": {
+          "default": 0.3,
+          "type": "number"
+        },
+        "youngs_modulus": {
+          "default": 210000000000.0,
+          "type": "number"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "mesh": {
+      "properties": {
+        "fallback_element_size": {
+          "default": 0.05,
+          "type": "number"
+        },
+        "force_volume_remesh": {
+          "default": false,
+          "type": "boolean"
+        },
+        "gdim": {
+          "default": 3,
+          "type": "integer"
+        },
+        "msh_path": {
+          "default": "data/runner.msh",
+          "type": "string"
+        },
+        "step_path": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "objective": {
+      "properties": {
+        "eval_mode": {
+          "default": "combined",
+          "type": "string"
+        },
+        "hard_penalty": {
+          "default": 1000000.0,
+          "type": "number"
+        },
+        "mode": {
+          "default": "penalty",
+          "type": "string"
+        },
+        "w_cav": {
+          "default": 1.0,
+          "type": "number"
+        },
+        "w_eta": {
+          "default": 1.0,
+          "type": "number"
+        },
+        "w_head": {
+          "default": 1.0,
+          "type": "number"
+        },
+        "w_resonance": {
+          "default": 1.0,
+          "type": "number"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "optimization": {
+      "properties": {
+        "Z_guidevanes": {
+          "default": 18,
+          "type": "integer"
+        },
+        "margin_fraction": {
+          "default": 0.05,
+          "type": "number"
+        },
+        "margin_hz": {
+          "default": 5.0,
+          "type": "number"
+        },
+        "max_harmonic": {
+          "default": 6,
+          "type": "integer"
+        },
+        "max_iter": {
+          "default": 40,
+          "type": "integer"
+        },
+        "method": {
+          "default": "Nelder-Mead",
+          "type": "string"
+        },
+        "n_rpm": {
+          "type": "number"
+        },
+        "penalty_k": {
+          "default": 1.0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "n_rpm"
+      ],
+      "type": "object"
+    },
+    "output": {
+      "properties": {
+        "output_dir": {
+          "default": "output",
+          "type": "string"
+        },
+        "results_json": {
+          "default": "frequencies.json",
+          "type": "string"
+        },
+        "save_xdmf": {
+          "default": true,
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "solver": {
+      "properties": {
+        "element_degree": {
+          "default": 1,
+          "type": "integer"
+        },
+        "freq_max": {
+          "default": 2000.0,
+          "type": "number"
+        },
+        "freq_min": {
+          "default": 0.0,
+          "type": "number"
+        },
+        "num_eigenvalues": {
+          "default": 10,
+          "type": "integer"
+        },
+        "solver_backend": {
+          "default": "scipy",
+          "type": "string"
+        },
+        "tolerance": {
+          "default": 1e-06,
+          "type": "number"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "wet_mode": {
+      "properties": {
+        "compare_dry_wet": {
+          "default": true,
+          "type": "boolean"
+        },
+        "enabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "method": {
+          "default": "rayleigh",
+          "type": "string"
+        },
+        "rho_fluid": {
+          "default": 1000.0,
+          "type": "number"
+        }
+      },
+      "required": [],
+      "type": "object"
+    }
+  },
+  "required": [
+    "optimization",
+    "cfd"
+  ],
+  "title": "EigenfrequenciesConfig",
+  "type": "object"
+}

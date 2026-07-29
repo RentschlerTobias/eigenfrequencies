@@ -1,0 +1,40 @@
+# Custom configuration — overrides selected defaults for a validation run.
+material:
+  youngs_modulus: 110000000000.0
+  density: 8600.0
+  poisson_ratio: 0.33
+
+bc:
+  axis: z
+  hub_center: [0.0, 0.0]
+  hub_radius: 0.12
+  mode: free
+
+mesh:
+  msh_path: data/custom_runner.msh
+  force_volume_remesh: true
+  fallback_element_size: 0.03
+
+solver:
+  num_eigenvalues: 20
+  element_degree: 2
+  solver_backend: slepc
+
+optimization:
+  n_rpm: 90.0
+  Z_guidevanes: 20
+  max_harmonic: 8
+  margin_hz: 10.0
+
+cfd:
+  n_rpm: 90.0
+  design_head: -3.0
+  end_time: 1000
+
+objective:
+  eval_mode: resonance_only
+  w_resonance: 2.0
+
+output:
+  output_dir: output_custom
+  save_xdmf: false

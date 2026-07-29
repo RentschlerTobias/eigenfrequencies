@@ -18,7 +18,7 @@
     "plane_tol": 1e-06
   },
   "MeshConfig": {
-    "msh_path": "/home/t1dde/Duty/projects/eigenfrequencies/turbine_runner/data/runner.msh",
+    "msh_path": "data/runner.msh",
     "step_path": null,
     "force_volume_remesh": false,
     "fallback_element_size": 0.05,
@@ -205,6 +205,7 @@
     "seed": null
   },
   "CFDConfig": {
+    "n_rpm": 72.0,
     "omega": 7.5398223686155035,
     "rho": 1000.0,
     "g": 9.81,
@@ -229,7 +230,7 @@
     "method": "rayleigh"
   },
   "OutputConfig": {
-    "output_dir": "/home/t1dde/Duty/projects/eigenfrequencies/turbine_runner/output",
+    "output_dir": "output",
     "save_xdmf": true,
     "results_json": "frequencies.json"
   }

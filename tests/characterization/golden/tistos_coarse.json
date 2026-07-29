@@ -1,0 +1,18 @@
+{
+  "_description": "Golden solver reference for tistos coarse run via DtooAdapter(adapters/machines/tistos.yaml). Generate by running: uv run python -m pytest tests/adapters/test_tistos_yaml.py --collect-only inside the dtOO container (atismer/dtoo-opensuse:stable). The first container run will xfail and print actual values for manual update.",
+  "mesh_hash": "TBD — generate in dtOO container",
+  "frequencies": "TBD — generate in dtOO container",
+  "mode_shapes": "TBD — generate in dtOO container",
+  "solver_settings": {
+    "boundary_type": "hub_clamp",
+    "axis": "auto",
+    "element_degree": 1,
+    "num_eigenvalues": 10,
+    "solver_backend": "scipy",
+    "tolerance": 1e-06,
+    "mesh_scale_factor": 1.0,
+    "bc_template": "hub_clamp"
+  },
+  "git_sha": "TBD — run inside dtOO container to capture",
+  "source_config": "adapters/machines/tistos.yaml"
+}

@@ -1,20 +1,19 @@
 """Generate golden objective_cases.json from de_history JSONL rows."""
 import json
 import os
-import sys
 
-# Must set N_RPM before importing turbine_runner.config
-os.environ["N_RPM"] = "72"
-
-# Add turbine_runner to path so 'import objective' and 'import optimization' work
-_HERE = os.path.dirname(os.path.abspath(__file__))
-TURBINE_RUNNER_DIR = os.path.join(_HERE, "..", "..", "turbine_runner")
-sys.path.insert(0, os.path.abspath(TURBINE_RUNNER_DIR))
-
-from objective import cfd_scalar, resonance_term, combined_objective
-from config import OptimizationConfig, ObjectiveConfig, CFDConfig
+from eigenfrequencies.config import CFDConfig, ObjectiveConfig, OptimizationConfig
+from eigenfrequencies.penalty.band import _forbidden_intervals
+from eigenfrequencies.penalty.objective import (
+    cfd_scalar,
+    combined_objective,
+    resonance_term,
+)
 
 # Read rows from JSONL files
+_HERE = os.path.dirname(os.path.abspath(__file__))
+TURBINE_RUNNER_DIR = os.path.join(_HERE, "..", "..", "turbine_runner")
+
 resonance_rows = []
 resonance_path = os.path.join(TURBINE_RUNNER_DIR, "de_history_resonance_only.jsonl")
 with open(resonance_path) as fh:
@@ -28,16 +27,14 @@ with open(combined_path) as fh:
         combined_rows.append(json.loads(line))
 
 # Build configs
-opt_cfg = OptimizationConfig()
-cfd_cfg = CFDConfig()
+opt_cfg = OptimizationConfig(n_rpm=72.0)
+cfd_cfg = CFDConfig(n_rpm=72.0)
 obj_cfg = ObjectiveConfig()
 
-# Document the design preset and band bounds
-design_preset = os.environ.get("DESIGN_PRESET", "full30")
+design_preset = "full30"
 
-# Build forbidden intervals for documentation
-import optimization
-intervals = optimization._forbidden_intervals(opt_cfg)
+# Document the design preset and band bounds
+intervals = _forbidden_intervals(opt_cfg)
 
 cases = []
 for i in range(5):

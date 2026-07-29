@@ -1,0 +1,49 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/t1dde/Duty/projects/eigenfrequencies
+configfile: pyproject.toml
+plugins: xdist-3.8.0
+created: 24/24 workers
+24 workers [15 items]
+
+scheduling tests via LoadScheduling
+
+tests/optimize/test_pso.py::TestPSOBounds::test_trials_stay_inside_bounds 
+tests/optimize/test_pso.py::TestPSOProtocolErrors::test_tell_mismatched_raises 
+tests/optimize/test_pso.py::TestPSOStateRoundtrip::test_roundtrip_after_multiple_generations 
+tests/optimize/test_pso.py::TestPSODeterminism::test_same_seed_same_ask_sequence 
+tests/optimize/test_pso.py::TestPSOSphere::test_reaches_1e6_within_budget_500 
+tests/optimize/test_pso.py::TestPSOProtocolErrors::test_tell_without_ask_raises 
+tests/optimize/test_pso.py::TestPSOStateRoundtrip::test_roundtrip_preserves_best 
+tests/optimize/test_pso.py::TestPSOUnavailable::test_import_without_pymoo_does_not_crash 
+tests/optimize/test_pso.py::TestPSOStateRoundtrip::test_roundtrip_after_initial_tell 
+tests/optimize/test_pso.py::TestPSODeterminism::test_different_seed_different_ask 
+tests/optimize/test_pso.py::TestPSOUnavailable::test_registry_reports_unavailable_when_pymoo_missing 
+tests/optimize/test_pso.py::TestPSOProtocolErrors::test_tell_missing_metadata_raises 
+[gw7] [  6%] PASSED tests/optimize/test_pso.py::TestPSOUnavailable::test_registry_reports_unavailable_when_pymoo_missing 
+tests/optimize/test_pso.py::TestPSOBounds::test_bounds_property 
+[gw6] [ 13%] PASSED tests/optimize/test_pso.py::TestPSOUnavailable::test_import_without_pymoo_does_not_crash 
+tests/optimize/test_pso.py::TestPSOPartialEvaluation::test_partial_ask_advances_after_full_tell 
+tests/optimize/test_pso.py::TestPSOPartialEvaluation::test_partial_ask_returns_remaining 
+[gw13] [ 20%] PASSED tests/optimize/test_pso.py::TestPSOPartialEvaluation::test_partial_ask_returns_remaining 
+[gw10] [ 26%] PASSED tests/optimize/test_pso.py::TestPSOProtocolErrors::test_tell_without_ask_raises 
+[gw15] [ 33%] PASSED tests/optimize/test_pso.py::TestPSOPartialEvaluation::test_partial_ask_advances_after_full_tell 
+[gw12] [ 40%] PASSED tests/optimize/test_pso.py::TestPSOBounds::test_bounds_property 
+[gw2] [ 46%] PASSED tests/optimize/test_pso.py::TestPSODeterminism::test_different_seed_different_ask 
+[gw3] [ 53%] PASSED tests/optimize/test_pso.py::TestPSOStateRoundtrip::test_roundtrip_preserves_best 
+[gw9] [ 60%] PASSED tests/optimize/test_pso.py::TestPSOProtocolErrors::test_tell_missing_metadata_raises 
+[gw4] [ 66%] PASSED tests/optimize/test_pso.py::TestPSOStateRoundtrip::test_roundtrip_after_initial_tell 
+[gw1] [ 73%] PASSED tests/optimize/test_pso.py::TestPSODeterminism::test_same_seed_same_ask_sequence 
+[gw8] [ 80%] PASSED tests/optimize/test_pso.py::TestPSOProtocolErrors::test_tell_mismatched_raises 
+[gw5] [ 86%] PASSED tests/optimize/test_pso.py::TestPSOStateRoundtrip::test_roundtrip_after_multiple_generations 
+[gw11] [ 93%] PASSED tests/optimize/test_pso.py::TestPSOBounds::test_trials_stay_inside_bounds 
+[gw0] [100%] PASSED tests/optimize/test_pso.py::TestPSOSphere::test_reaches_1e6_within_budget_500 
+
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 15 passed, 1 warning in 4.34s =========================
