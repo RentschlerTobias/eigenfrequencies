@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0 -- /dolfinx-env/bin/python3
+cachedir: .pytest_cache
+rootdir: /workspace
+configfile: pyproject.toml
+collecting ... collected 2 items
+
+tests/characterization/test_golden_solver.py::test_beam_golden PASSED    [ 50%]
+tests/characterization/test_golden_solver.py::test_testcase_coarse_golden PASSED [100%]
+
+============================== 2 passed in 46.29s ==============================
