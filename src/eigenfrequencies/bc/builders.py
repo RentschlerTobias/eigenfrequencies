@@ -11,7 +11,6 @@ import numpy as np
 
 from eigenfrequencies.config import BCConfig
 
-
 _AXIS_INDEX = {"x": 0, "y": 1, "z": 2}
 
 

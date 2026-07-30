@@ -15,8 +15,8 @@ import numpy as np
 import pytest
 
 from eigenfrequencies.optimize.backends.de import DEOptimizer
-from eigenfrequencies.optimize.evaluators.process_pool import ProcessPool
 from eigenfrequencies.optimize.evaluators.base import EvaluationError
+from eigenfrequencies.optimize.evaluators.process_pool import ProcessPool
 from eigenfrequencies.optimize.protocol import Design
 
 

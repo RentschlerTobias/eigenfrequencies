@@ -1,7 +1,9 @@
  
 import os
-from dtOOPythonSWIG import *
 import shutil
+
+from dtOOPythonSWIG import *
+
 
 class createStatesAndMeshes:
   def CreateStates(self, state):

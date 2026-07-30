@@ -18,7 +18,6 @@ from eigenfrequencies.adapters.dtoo.machine_yaml import (
 from eigenfrequencies.bc.builders import clamp, foil_clamp, free_free
 from eigenfrequencies.config import BCConfig
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

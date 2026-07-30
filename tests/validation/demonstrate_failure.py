@@ -1,7 +1,7 @@
 """Temporary failure demonstration: corrupt analytical root -> comparison fails."""
 
-import sys
 import os
+import sys
 
 # Add repo root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np
 
 from eigenfrequencies.validation.beam.analytical import analytical_frequencies_cantilever
+
 
 # Mock beam config with required attributes
 class MockBeam:
@@ -39,6 +40,7 @@ print("FEM frequencies (first 5):", fem_frequencies[:5])
 
 # Now corrupt the first analytical root by +5%
 from eigenfrequencies.validation.beam import analytical as analytical_mod
+
 original_compute_alpha = analytical_mod.compute_alpha_values
 
 def corrupted_compute_alpha(num_modes, boundary_type="cantilever"):

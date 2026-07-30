@@ -18,7 +18,6 @@ from eigenfrequencies.adapters.dtoo.machine_yaml import (
 )
 from eigenfrequencies.config_yaml import ConfigError
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

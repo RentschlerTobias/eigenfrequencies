@@ -168,6 +168,7 @@ class TestCMAESUnavailable:
         with patch.dict("sys.modules", {"cma": None}):
             # Force re-import of the module so the top-level ``import cma`` fails.
             import importlib
+
             import eigenfrequencies.optimize.backends.cmaes as cmaes_mod
 
             importlib.reload(cmaes_mod)
@@ -178,8 +179,9 @@ class TestCMAESUnavailable:
         """``create("cmaes", ...)`` with ``cma`` missing must raise a clear error."""
         with patch.dict("sys.modules", {"cma": None}):
             import importlib
-            import eigenfrequencies.optimize.backends.cmaes as cmaes_mod
+
             import eigenfrequencies.optimize as opt_pkg
+            import eigenfrequencies.optimize.backends.cmaes as cmaes_mod
 
             importlib.reload(cmaes_mod)
             # Re-register the factory with the freshly reloaded module.

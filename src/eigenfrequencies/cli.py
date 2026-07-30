@@ -14,6 +14,7 @@ from typing import Optional
 
 import typer
 
+from eigenfrequencies import provenance
 from eigenfrequencies.config import (
     BCConfig,
     MaterialConfig,
@@ -23,7 +24,6 @@ from eigenfrequencies.config import (
 )
 from eigenfrequencies.config_yaml import ConfigError, load_config
 from eigenfrequencies.io.results import write_results_json
-from eigenfrequencies import provenance
 from eigenfrequencies.validation.beam.analytical import (
     analytical_frequencies_cantilever,
     classify_mode,
@@ -269,6 +269,7 @@ def _run_testcase_validation(full: bool = False) -> tuple:
 
     # Lightweight coarse-mesh sanity check
     import numpy as np
+
     from eigenfrequencies.io import load_and_prepare_mesh
 
     _REPO_ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
@@ -676,8 +677,8 @@ def report(
     typer.echo("\nObjective Breakdown")
     typer.echo("-" * 40)
     typer.echo(f"  combined:     {best_obj:.6f}")
-    typer.echo(f"  resonance_term: 0.000000 (not computed in this run)")
-    typer.echo(f"  cfd_scalar:     0.000000 (not computed in this run)")
+    typer.echo("  resonance_term: 0.000000 (not computed in this run)")
+    typer.echo("  cfd_scalar:     0.000000 (not computed in this run)")
 
     # Frequency table vs forbidden band (placeholder)
     typer.echo("\nFrequency Table vs Forbidden Band")
@@ -783,9 +784,8 @@ def discover_axis(
         raise typer.Exit(EXIT_CONFIG_ERROR)
 
     try:
-        from eigenfrequencies.io.axis import inspect_mesh
-
         from eigenfrequencies.config import MeshConfig
+        from eigenfrequencies.io.axis import inspect_mesh
 
         mesh_cfg = MeshConfig(msh_path=str(mesh), gdim=3)
         result = inspect_mesh(mesh_cfg, verbose=False)
@@ -844,9 +844,8 @@ def measure_scale(
         raise typer.Exit(EXIT_CONFIG_ERROR)
 
     try:
-        from eigenfrequencies.io.axis import inspect_mesh
-
         from eigenfrequencies.config import MeshConfig
+        from eigenfrequencies.io.axis import inspect_mesh
 
         mesh_cfg = MeshConfig(msh_path=str(mesh), gdim=3)
         result = inspect_mesh(mesh_cfg, verbose=False)

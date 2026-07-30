@@ -11,7 +11,8 @@ import platform
 import socket
 import subprocess
 import warnings
-from datetime import datetime as _dt, timezone as _tz
+from datetime import datetime as _dt
+from datetime import timezone as _tz
 
 
 def _git_commit_and_dirty() -> tuple:

@@ -17,8 +17,8 @@ import tempfile
 import time
 from typing import TYPE_CHECKING
 
+from eigenfrequencies.optimize.evaluators.base import EvaluationError, EvaluatorPool
 from eigenfrequencies.optimize.protocol import Design
-from eigenfrequencies.optimize.evaluators.base import EvaluatorPool, EvaluationError
 
 if TYPE_CHECKING:
     import Pyro5.api

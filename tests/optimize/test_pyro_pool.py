@@ -16,8 +16,8 @@ import time
 
 import pytest
 
-from eigenfrequencies.optimize.evaluators.pyro_pool import Pyro5Pool
 from eigenfrequencies.optimize.evaluators.base import EvaluationError
+from eigenfrequencies.optimize.evaluators.pyro_pool import Pyro5Pool
 from eigenfrequencies.optimize.protocol import Design
 
 # Skip the entire module if Pyro5 is absent.

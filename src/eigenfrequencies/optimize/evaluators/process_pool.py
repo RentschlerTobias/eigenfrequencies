@@ -11,8 +11,8 @@ import tempfile
 from concurrent.futures import ProcessPoolExecutor
 from typing import Callable
 
+from eigenfrequencies.optimize.evaluators.base import EvaluationError, EvaluatorPool
 from eigenfrequencies.optimize.protocol import Design
-from eigenfrequencies.optimize.evaluators.base import EvaluatorPool, EvaluationError
 
 
 def _eval_single(

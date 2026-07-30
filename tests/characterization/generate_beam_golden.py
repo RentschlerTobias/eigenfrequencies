@@ -2,13 +2,14 @@
 
 Runs inside the fenicsx container.
 """
-import json
 import hashlib
+import json
 import os
 import subprocess
 import tempfile
 
 import numpy as np
+
 from eigenfrequencies.config import BCConfig, MaterialConfig, SolverConfig
 from eigenfrequencies.solver import ModalSolver
 

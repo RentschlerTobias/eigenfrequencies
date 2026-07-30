@@ -63,8 +63,8 @@ def _load_golden(path):
 # ---------------------------------------------------------------------------
 slepc_available = False
 try:
-    import slepc4py  # noqa: F401
     import petsc4py  # noqa: F401
+    import slepc4py  # noqa: F401
 
     slepc_available = True
 except ImportError:
@@ -86,7 +86,7 @@ def test_testcase_free_free_slepc():
     element_degree = 1
     num_eigenvalues = 16
 
-    from eigenfrequencies.config import MaterialConfig, BCConfig, SolverConfig, MeshConfig
+    from eigenfrequencies.config import BCConfig, MaterialConfig, MeshConfig, SolverConfig
     from eigenfrequencies.io import load_and_prepare_mesh
     from eigenfrequencies.solver import ModalSolver
 

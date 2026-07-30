@@ -20,7 +20,6 @@ from stable_baselines3 import PPO, SAC, TD3
 from eigenfrequencies.config import DesignConfig
 from eigenfrequencies.optimize.rl import EigenfreqEnv
 
-
 # ---------------------------------------------------------------------------
 # Shared fixture — tiny sphere on t_midspan3 preset
 # ---------------------------------------------------------------------------

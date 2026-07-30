@@ -71,8 +71,9 @@ def test_beam_clamped_scipy():
     # Generate beam mesh using demo/beam geometry module
     sys.path.insert(0, _BEAM_DIR)
     try:
+        from config import BeamConfig, OutputConfig  # noqa: E402
+        from config import SolverConfig as BeamSolverConfig
         from geometry import generate_mesh as beam_generate_mesh  # noqa: E402
-        from config import BeamConfig, SolverConfig as BeamSolverConfig, OutputConfig  # noqa: E402
     finally:
         sys.path.remove(_BEAM_DIR)
         for _mod_name in list(sys.modules):
@@ -99,7 +100,7 @@ def test_beam_clamped_scipy():
     domain = mesh_data.mesh
 
     # Use the generic ModalSolver with injected BCConfig
-    from eigenfrequencies.config import MaterialConfig, BCConfig, SolverConfig
+    from eigenfrequencies.config import BCConfig, MaterialConfig, SolverConfig
     from eigenfrequencies.solver import ModalSolver
 
     material = MaterialConfig(

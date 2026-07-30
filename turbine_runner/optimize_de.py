@@ -9,11 +9,11 @@ blocking on network I/O only (no subprocess.pipe deadlocks, no Name Server).
 Supports both resonance-only (CFD_CASE_DIR="") and full CFD+resonance modes.
 """
 
-import os
-import sys
-import math
-import random
 import json
+import math
+import os
+import random
+import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -28,6 +28,8 @@ except ImportError:  # tqdm optional — fall back to plain per-generation logs
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "legacy"))
 
+from optimize import DTOO_FAIL_PENALTY
+
 from eigenfrequencies.config import (
     CFDConfig,
     DEConfig,
@@ -35,8 +37,6 @@ from eigenfrequencies.config import (
     ObjectiveConfig,
     OptimizationConfig,
 )
-from optimize import DTOO_FAIL_PENALTY
-
 
 # ────────────────────────────────
 # Worker discovery

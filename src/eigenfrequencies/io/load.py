@@ -22,9 +22,8 @@ class MeshVerificationError(RuntimeError):
 
 def _read_msh(msh_path: str, gdim: int):
     """Read a gmsh .msh into a dolfinx mesh (beam pattern, solver.py:31-34)."""
-    from mpi4py import MPI
-
     from dolfinx.io import gmsh as dgmsh
+    from mpi4py import MPI
 
     mesh_data = dgmsh.read_from_msh(msh_path, MPI.COMM_WORLD, rank=0, gdim=gdim)
     return mesh_data.mesh

@@ -6,8 +6,10 @@ import sys
 import numpy as np
 import pytest
 
-from eigenfrequencies.validation.beam.analytical import analytical_frequencies_cantilever
-from eigenfrequencies.validation.beam.analytical import classify_mode
+from eigenfrequencies.validation.beam.analytical import (
+    analytical_frequencies_cantilever,
+    classify_mode,
+)
 
 TOLERANCE_PCT = 5.0
 
@@ -21,7 +23,7 @@ def test_beam_fem_vs_analytical():
     _BEAM_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "demo", "beam")
     sys.path.insert(0, _BEAM_DIR)
 
-    from config import BeamConfig, SolverConfig, OutputConfig
+    from config import BeamConfig, OutputConfig, SolverConfig
     from geometry import generate_mesh
     from solver import ModalSolver
 

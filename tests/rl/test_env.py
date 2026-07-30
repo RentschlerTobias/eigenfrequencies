@@ -2,12 +2,11 @@
 
 import numpy as np
 import pytest
+from gymnasium.utils.env_checker import check_env
 
 from eigenfrequencies.config import CFDConfig, DesignConfig, ObjectiveConfig, OptimizationConfig
 from eigenfrequencies.config_yaml import ConfigError
 from eigenfrequencies.optimize.rl import EigenfreqEnv
-from gymnasium.utils.env_checker import check_env
-
 
 # ---------------------------------------------------------------------------
 # Shared fixtures

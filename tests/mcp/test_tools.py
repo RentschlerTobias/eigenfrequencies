@@ -14,7 +14,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # ── fastmcp availability guard ────────────────────────────────────────────────
 
 @pytest.fixture(scope="module")

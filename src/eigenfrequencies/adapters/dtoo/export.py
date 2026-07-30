@@ -20,7 +20,6 @@ from typing import Dict, Optional
 
 from eigenfrequencies.adapters.dtoo.machine_yaml import MachineAdapterConfig
 
-
 # Env vars that the original driver honoured; we preserve the same override
 # matrix so existing shell scripts and Docker invocations keep working.
 _ENV_OVERRIDES = {

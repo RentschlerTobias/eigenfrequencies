@@ -14,10 +14,10 @@ Prints: the OpenFOAM case directory (absolute) on the last stdout line as
         "CFD_CASE_DIR <path>" so the caller can parse it.
 """
 
-import sys
-import os
 import json
+import os
 import subprocess
+import sys
 import xml.etree.ElementTree as ET
 
 CASE_NAME = "tistos_ru_of"

@@ -29,6 +29,8 @@ from eigenfrequencies.optimize.protocol import (
     Design,
     Optimizer,
     ProtocolUsageError,
+)
+from eigenfrequencies.optimize.protocol import (
     create as _create_optimizer,
 )
 

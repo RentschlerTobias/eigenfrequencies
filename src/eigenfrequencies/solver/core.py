@@ -11,16 +11,15 @@ original reference solver, but two things differ:
 """
 
 import numpy as np
-
 import ufl
-from dolfinx import fem, mesh as dmesh
+from dolfinx import fem
+from dolfinx import mesh as dmesh
 
-from eigenfrequencies.config import MaterialConfig, BCConfig, SolverConfig
+from eigenfrequencies.config import BCConfig, MaterialConfig, SolverConfig
 from eigenfrequencies.solver.exceptions import SolverConfigError
 from eigenfrequencies.solver.rayleigh import rayleigh_refine
 from eigenfrequencies.solver.scipy_backend import solve_scipy
 from eigenfrequencies.solver.slepc_backend import solve_slepc
-
 
 _AXIS_INDEX = {"x": 0, "y": 1, "z": 2}
 

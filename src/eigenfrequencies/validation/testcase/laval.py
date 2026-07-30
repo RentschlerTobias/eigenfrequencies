@@ -10,11 +10,9 @@ import sys
 import numpy as np
 
 from eigenfrequencies.config import BCConfig, MaterialConfig, MeshConfig, OutputConfig, SolverConfig
-from eigenfrequencies.io import load_and_prepare_mesh
+from eigenfrequencies.io import DEFAULT_MSH, DEFAULT_STL, load_and_prepare_mesh, stl_to_volume_msh
 from eigenfrequencies.io.results import write_results_xdmf_vtk
 from eigenfrequencies.solver import ModalSolver
-
-from eigenfrequencies.io import DEFAULT_MSH, DEFAULT_STL, stl_to_volume_msh
 
 # Reference data from 2026.07.15_NatFreqShare4Tobias.docx (table) and its
 # embedded ANSYS report (image). "ND" = nodal-diameter mode of the disc; each ND

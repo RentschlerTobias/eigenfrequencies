@@ -6,16 +6,19 @@ Starts once, registers with Name Server, waits for RPC calls.
 Each call evaluates one design vector (dtOO build + FEniCSx + optional CFD).
 """
 
-import sys
-import os
 import json
+import os
 import socket
+import sys
 
 import Pyro5.api
+
 # Pyro5.config is implicitly available after Pyro5.api import
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "legacy"))
+
+from optimize import DTOO_FAIL_PENALTY, _run_cfd, _run_dtoo, _run_fenicsx
 
 from eigenfrequencies.config import CFDConfig, ObjectiveConfig, OptimizationConfig
 from eigenfrequencies.io.cfd_eval import evaluate_cfd
@@ -24,7 +27,6 @@ from eigenfrequencies.penalty.objective import (
     combined_objective,
     resonance_term,
 )
-from optimize import _run_dtoo, _run_fenicsx, _run_cfd, DTOO_FAIL_PENALTY
 
 host = socket.gethostname()
 worker_id = int(sys.argv[1]) if len(sys.argv) > 1 else 0

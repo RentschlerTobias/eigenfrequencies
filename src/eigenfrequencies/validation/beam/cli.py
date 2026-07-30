@@ -13,8 +13,8 @@ try:
         Button,
         Checkbox,
         DataTable,
-        Header,
         Footer,
+        Header,
         Input,
         Log,
         Static,
@@ -35,7 +35,7 @@ _BEAM_DIR = os.path.join(
 if _BEAM_DIR not in sys.path:
     sys.path.insert(0, _BEAM_DIR)
 
-from config import BeamConfig, SolverConfig, OutputConfig  # noqa: E402
+from config import BeamConfig, OutputConfig, SolverConfig  # noqa: E402
 from geometry import generate_mesh  # noqa: E402
 from solver import ModalSolver  # noqa: E402
 

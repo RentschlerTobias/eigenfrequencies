@@ -60,19 +60,23 @@ where = ["src"]
 [tool.ruff]
 line-length = 100
 exclude = [
-    "turbine_runner/legacy/",
+    "turbine_runner/",
     "demo/",
     "docs/",
+    "dtOO/",
+    "examples/",
     ".venv/",
 ]
 
 [tool.ruff.lint]
-# E: pycodestyle errors, F: pyflakes, I: isort
 select = ["E", "F", "I"]
 ignore = [
-    "E501",   # line too long — handled by formatter
-    "E741",   # ambiguous variable names (l, O, I) — common in FEM/math code
+    "E402",   # module import not at top — legitimate in schema/test conditional imports
+    "E501",   # line too long
+    "E741",   # ambiguous variable names (l, O, I) — common in FEM/math
+    "E712",   # == True/False — common in numpy mask code
     "F401",   # unused import — many are re-exports
+    "F841",   # local variable unused — common in tests
 ]
 
 [tool.pytest.ini_options]

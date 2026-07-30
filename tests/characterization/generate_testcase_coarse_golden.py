@@ -2,18 +2,17 @@
 
 Runs inside the fenicsx container.
 """
-import json
 import hashlib
+import json
 import os
-import sys
 import subprocess
+import sys
 
 import numpy as np
-from eigenfrequencies.config import BCConfig, MaterialConfig, MeshConfig, SolverConfig
-from eigenfrequencies.io import load_and_prepare_mesh
-from eigenfrequencies.solver import ModalSolver
 
-from eigenfrequencies.io import DEFAULT_MSH, DEFAULT_STL, stl_to_volume_msh
+from eigenfrequencies.config import BCConfig, MaterialConfig, MeshConfig, SolverConfig
+from eigenfrequencies.io import DEFAULT_MSH, DEFAULT_STL, load_and_prepare_mesh, stl_to_volume_msh
+from eigenfrequencies.solver import ModalSolver
 
 
 def compute_mesh_hash(mesh_file: str) -> str:

@@ -34,9 +34,9 @@ def solve_slepc(
         of full-length eigenvectors.
     """
     try:
+        from dolfinx.fem import petsc as fem_petsc
         from petsc4py import PETSc
         from slepc4py import SLEPc
-        from dolfinx.fem import petsc as fem_petsc
     except ImportError as exc:
         raise SolverConfigError(
             "SLEPc backend requested but petsc4py/slepc4py are not available."

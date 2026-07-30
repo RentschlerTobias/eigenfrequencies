@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from eigenfrequencies.config import MaterialConfig, BCConfig, SolverConfig
+from eigenfrequencies.config import BCConfig, MaterialConfig, SolverConfig
 from eigenfrequencies.solver import ModalSolver, SolverConfigError
 
 

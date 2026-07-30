@@ -44,7 +44,7 @@ def write_results_xdmf_vtk(solver, frequencies, eigenvectors, output_config) -> 
         output_config: ``OutputConfig`` dataclass with ``output_dir``.
     """
     from dolfinx import fem
-    from dolfinx.io import XDMFFile, VTKFile
+    from dolfinx.io import VTKFile, XDMFFile
 
     geom_degree = solver.domain.geometry.cmap.degree
     V_out = fem.functionspace(solver.domain, ("Lagrange", geom_degree, (3,)))

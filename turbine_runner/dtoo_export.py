@@ -30,7 +30,6 @@ DTOO_LOG_FILE.
 import json
 import os
 
-
 CASE_DIR = os.environ.get("DTOO_CASE_DIR", os.path.expanduser("~/dtOO/build/test/tistos"))
 MACHINE_XML = os.environ.get("DTOO_MACHINE_XML", "machine.xml")
 STATE_XML = os.environ.get("DTOO_STATE_XML", "machineSave.xml")
@@ -58,15 +57,15 @@ def main() -> None:
     design = _load_design()
 
     from dtOOPythonSWIG import (
-        logMe,
-        dtXmlParser,
         baseContainer,
-        labeledVectorHandlingConstValue,
+        dtXmlParser,
         labeledVectorHandlingAnalyticFunction,
         labeledVectorHandlingAnalyticGeometry,
         labeledVectorHandlingBoundedVolume,
+        labeledVectorHandlingConstValue,
         labeledVectorHandlingDtCase,
         labeledVectorHandlingDtPlugin,
+        logMe,
     )
 
     LOG_FILE = os.environ.get("DTOO_LOG_FILE", os.path.join(os.path.dirname(OUTPUT_MSH), "dtoo_build.log"))
