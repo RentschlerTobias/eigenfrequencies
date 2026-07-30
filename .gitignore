@@ -43,6 +43,10 @@ venv.bak/
 Thumbs.db
 
 # Project specific
+TestCaseGeomertyMesh.*
+*.docx
+*.stl
+*.msh
 
 !cluster.log
 output/
