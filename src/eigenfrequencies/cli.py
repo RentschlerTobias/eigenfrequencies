@@ -475,12 +475,32 @@ def optimize(
     config: Path = typer.Option(..., "--config", help="Path to YAML config file"),
     optimizer: str = typer.Option(..., "--optimizer", help="Optimizer name: de|pso|cmaes|bo|rl"),
     islands: int = typer.Option(1, "--islands", help="Number of islands (default 1)"),
-    workers: int = typer.Option(1, "--workers", help="Number of workers (default 1)"),
+    workers: int = typer.Option(1, "--workers", help="Parallel evaluation workers (default 1)"),
+    evaluator: str = typer.Option(
+        "process_pool",
+        "--evaluator",
+        help="Evaluator backend: process_pool (local) | pyro5 (cluster)",
+    ),
+    uri_dir: Optional[Path] = typer.Option(
+        None,
+        "--uri-dir",
+        help="Directory with worker_N.uri files (required for --evaluator pyro5)",
+    ),
     resume: Optional[Path] = typer.Option(None, "--resume", help="Path to prior state dict JSON"),
     budget: Optional[int] = typer.Option(None, "--budget", help="Evaluation budget"),
     out: Optional[Path] = typer.Option(None, "--out", help="Override output directory from config"),
 ) -> None:
-    """Run design optimization from a YAML config file."""
+    """Run design optimization from a YAML config file.
+
+    For cluster runs, start workers first:
+
+        eigenfrequencies cluster worker 0 --uri-dir /path/to/uris &
+
+    Then run the coordinator:
+
+        eigenfrequencies optimize --config tistos.yaml --optimizer de \\
+            --evaluator pyro5 --uri-dir /path/to/uris --workers N
+    """
     try:
         run_cfg = load_config(config)
     except ConfigError as exc:
@@ -539,22 +559,63 @@ def optimize(
     if budget is None:
         budget = de_cfg.pop_size * de_cfg.max_generations
 
-    def _objective(vec: list[float]) -> float:
-        return sum(v * v for v in vec)
+    # ── Build evaluator pool ────────────────────────────────────────────────
+    labels = run_cfg.design.labels
 
+    if evaluator == "pyro5":
+        if uri_dir is None:
+            uri_dir_str = os.environ.get("DE_URI_DIR")
+            if not uri_dir_str:
+                typer.echo(
+                    "pyro5 evaluator requires --uri-dir or DE_URI_DIR env var", err=True
+                )
+                raise typer.Exit(EXIT_CONFIG_ERROR)
+        else:
+            uri_dir_str = str(uri_dir)
+        try:
+            from eigenfrequencies.optimize.evaluators.pyro_pool import Pyro5Pool
+        except ImportError as exc:
+            typer.echo(f"Pyro5 not installed: {exc}", err=True)
+            raise typer.Exit(EXIT_CONFIG_ERROR)
+        pool = Pyro5Pool(uri_dir=uri_dir_str, n_workers=workers, labels=labels)
+        typer.echo(f"[optimize] using Pyro5Pool  uri_dir={uri_dir_str}  workers={workers}")
+    elif evaluator == "process_pool":
+        from eigenfrequencies.optimize.evaluators.process_pool import ProcessPool
+
+        def _local_eval(design):
+            return sum(v * v for v in design.vector)
+
+        pool = ProcessPool(n_workers=workers, evaluator=_local_eval)
+        typer.echo(f"[optimize] using ProcessPool  workers={workers}  (dummy evaluator)")
+    else:
+        typer.echo(f"Unknown evaluator '{evaluator}'. Choose: process_pool | pyro5", err=True)
+        raise typer.Exit(EXIT_CONFIG_ERROR)
+
+    # ── Optimisation loop ────────────────────────────────────────────────────
     history: list[dict] = []
     evaluations = 0
-    while evaluations < budget:
-        n = min(de_cfg.pop_size, budget - evaluations)
-        designs = opt.ask(n)
-        objectives = [_objective(d.vector) for d in designs]
-        opt.tell(designs, objectives)
-        evaluations += n
-        history.append({
-            "generation": len(history),
-            "designs": [d.vector for d in designs],
-            "objectives": objectives,
-        })
+    try:
+        while evaluations < budget:
+            n = min(de_cfg.pop_size, budget - evaluations)
+            designs = opt.ask(n)
+            try:
+                objectives = pool.evaluate(designs)
+            except Exception as exc:
+                typer.echo(f"Evaluation error (generation {len(history)}): {exc}", err=True)
+                raise typer.Exit(EXIT_SOLVE_ERROR)
+            opt.tell(designs, objectives)
+            evaluations += n
+            best = min(objectives)
+            typer.echo(
+                f"[gen {len(history)}] best={best:.6f}  mean={sum(objectives)/len(objectives):.6f}"
+            )
+            history.append({
+                "generation": len(history),
+                "designs": [d.vector for d in designs],
+                "objectives": objectives,
+            })
+    finally:
+        pool.shutdown()
 
     result = {
         "best_design": opt.state_dict().get("best_vec", []),
@@ -815,6 +876,45 @@ def measure_scale(
     typer.echo(f"mesh_scale_factor: {scale_factor:.8f}  # {feature_desc}")
 
     raise typer.Exit(EXIT_OK)
+
+
+cluster_app = typer.Typer(help="Cluster worker utilities for distributed optimisation")
+app.add_typer(cluster_app, name="cluster")
+
+
+@cluster_app.command()
+def worker(
+    worker_id: int = typer.Argument(..., help="Worker index (unique per SLURM task)"),
+    uri_dir: Path = typer.Option(
+        ...,
+        "--uri-dir",
+        help="Shared-filesystem directory where the URI file will be written",
+    ),
+    config: Optional[Path] = typer.Option(
+        None,
+        "--config",
+        help="YAML RunConfig for OptimizationConfig / ObjectiveConfig (optional)",
+    ),
+) -> None:
+    """Start a Pyro5 evaluation worker and register its URI on the shared filesystem.
+
+    Run one instance per SLURM task:
+
+        srun -n1 eigenfrequencies cluster worker $SLURM_PROCID --uri-dir $DE_URI_DIR &
+
+    The coordinator discovers workers by reading *.uri files from --uri-dir.
+    """
+    try:
+        from eigenfrequencies.cluster.worker import run_worker
+    except ImportError as exc:
+        typer.echo(f"Pyro5 not installed: {exc}", err=True)
+        raise typer.Exit(EXIT_CONFIG_ERROR)
+
+    run_worker(
+        worker_id=worker_id,
+        uri_dir=str(uri_dir),
+        config_path=str(config) if config is not None else None,
+    )
 
 
 if __name__ == "__main__":

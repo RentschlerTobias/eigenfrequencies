@@ -62,7 +62,7 @@ def _run_dtoo(design: dict, worker_id: int = 0) -> bool:
         f"export DTOO_CASE_DIR=~/dtOO/build/test/tistos && "
         f"export DTOO_OUTPUT_MSH={msh} && "
         f"export DTOO_DESIGN_JSON={design_json} && "
-        f"python3 {os.path.join(HERE, 'dtoo_export.py')}",
+        f"python3 {os.path.join(HERE, '..', 'dtoo_export.py')}",
     ]
     log_path = os.path.join(wdir, "dtoo.log")
     with open(log_path, "w") as log_fh:
