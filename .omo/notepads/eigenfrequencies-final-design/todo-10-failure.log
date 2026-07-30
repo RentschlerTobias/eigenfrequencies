@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from eigenfrequencies.added_mass import rayleigh_ratios; rayleigh_ratios([100.0], None, None, None)
+                                                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/t1dde/Duty/projects/eigenfrequencies/src/eigenfrequencies/added_mass/core.py", line 66, in rayleigh_ratios
+    raise NotImplementedError(
+    ...<2 lines>...
+    )
+NotImplementedError: rayleigh_ratios requires the fluid-domain Laplace solve (dolfinx). Use placeholder_ratios for plumbing tests; see HANDOFF.md.

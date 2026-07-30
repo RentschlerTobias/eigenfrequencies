@@ -1,0 +1,47 @@
+bringing up nodes...
+bringing up nodes...
+
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+____________________________ test_probe_reads_state ____________________________
+[gw1] linux -- Python 3.13.14 /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python
+
+    @pytest.mark.order(2)
+    def test_probe_reads_state():
+        assert os.path.exists(_STATE_FILE), "state file missing — likely parallel execution race"
+        with open(_STATE_FILE) as f:
+            content = f.read()
+>       assert content == "step1", f"expected 'step1', got '{content}'"
+E       AssertionError: expected 'step1', got ''
+E       assert '' == 'step1'
+E         
+E         - step1
+
+tests/characterization/test_probe_order_dependent.py:26: AssertionError
+=============================== warnings summary ===============================
+tests/characterization/test_probe_order_dependent.py:14
+tests/characterization/test_probe_order_dependent.py:14
+tests/characterization/test_probe_order_dependent.py:14
+tests/characterization/test_probe_order_dependent.py:14
+  /home/t1dde/Duty/projects/eigenfrequencies/tests/characterization/test_probe_order_dependent.py:14: PytestUnknownMarkWarning: Unknown pytest.mark.order - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.order(1)
+
+tests/characterization/test_probe_order_dependent.py:21
+tests/characterization/test_probe_order_dependent.py:21
+tests/characterization/test_probe_order_dependent.py:21
+tests/characterization/test_probe_order_dependent.py:21
+  /home/t1dde/Duty/projects/eigenfrequencies/tests/characterization/test_probe_order_dependent.py:21: PytestUnknownMarkWarning: Unknown pytest.mark.order - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.order(2)
+
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:423
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:423: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/lastfailed: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/lastfailed'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/characterization/test_probe_order_dependent.py::test_probe_reads_state
+1 failed, 1 passed, 10 warnings in 0.31s

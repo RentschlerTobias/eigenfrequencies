@@ -1,0 +1,17 @@
+todo-41-happy.log
+=================
+
+Documentation set created under docs/.
+
+Files written:
+- docs/install.md
+- docs/quickstart.md
+- docs/adapters.md
+- docs/mcp.md
+- docs/cluster.md
+
+Files updated:
+- documentation.md (roadmap + module map)
+- docs/source/api/solver.md (aligned with real ported names)
+
+All requirements from Todo 41 satisfied.

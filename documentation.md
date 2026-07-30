@@ -82,6 +82,22 @@ CFD math + `tanh` scalarization ported from de_framework `tistos_files/tistosPyB
 
 ## 6. Later (out of current scope)
 
-Unsteady CFD; Helmholtz-acoustic ↔ elasticity FSI; forced-response amplitude/fatigue;
-kinematic blade-passing band auto-derivation; true multi-objective Pareto (NSGA-II) if the
-scalarization proves limiting.
+- **Wet / FSI**: Added-mass (`src/eigenfrequencies/added_mass.py`) and Helmholtz-acoustic ↔ elasticity coupling remain future work. The `WetModeConfig` interface exists but `enabled: false` is the only tested path.
+- **NSGA-II**: True multi-objective Pareto optimization is deferred. The current scalarized single-objective setup (`combined_objective` in `src/eigenfrequencies/objective.py`) is the supported path.
+- Unsteady CFD; forced-response amplitude/fatigue; kinematic blade-passing band auto-derivation.
+
+## 7. Module map (current paths)
+
+| Old path (de_framework / turbine_runner) | Current path |
+|------------------------------------------|--------------|
+| `turbine_runner/solver.py` | `src/eigenfrequencies/solver/core.py` |
+| `turbine_runner/config.py` | `src/eigenfrequencies/config.py` |
+| `turbine_runner/optimization.py` | `src/eigenfrequencies/objective.py` |
+| `turbine_runner/cfd_eval.py` | `src/eigenfrequencies/cfd_eval.py` |
+| `turbine_runner/evaluate.py` | `src/eigenfrequencies/cli.py` (solve/validate/optimize/report) |
+| `turbine_runner/server_de.py` | `cluster/_submit_de_common.sh` + `cluster/submit_de_*.sh` |
+| `turbine_runner/optimize_de.py` | `src/eigenfrequencies/optimize.py` |
+| `turbine_runner/dtoo_export.py` | `src/eigenfrequencies/adapters/dtoo/export.py` |
+| `turbine_runner/mesh_prep.py` | `eigenfrequencies dtoo discover-axis` + `eigenfrequencies dtoo measure-scale` |
+
+See `docs/install.md`, `docs/quickstart.md`, `docs/adapters.md`, `docs/mcp.md`, and `docs/cluster.md` for user-facing documentation.

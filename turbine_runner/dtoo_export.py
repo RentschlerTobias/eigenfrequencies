@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SUPERSEDED-BY: eigenfrequencies.adapters.dtoo.export
 """STAGE 1: build the tistos runner mech mesh with dtOO and export a .msh.
 
 Runs INSIDE the dtOO container (atismer/dtoo-opensuse:stable). Self-contained:

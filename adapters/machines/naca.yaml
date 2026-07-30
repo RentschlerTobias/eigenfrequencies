@@ -1,0 +1,47 @@
+# naca — 2-D NACA00xx foil validation case with foil-root clamp.
+#
+# Pre-check: dtOO/test/naca/machineSave.xml state ``init``, bounded volume
+# ``gridGmsh`` (2-D blade-in-channel mesh, extruded in spanwise direction).
+# No domain-adjust plugin is defined for this case — ``adjust_plugin`` is
+# set to the empty string and the export plugin is omitted.
+#
+# Design labels: 7 foil-blade profile parameters (no spanwise sections — this
+# is a 2-D validation geometry, not a 3-D turbine runner).
+# Mesh scale factor: 1.0 — dtOO mesh is assumed to be in metres (physical units).
+# BC template: foil_clamp — axial-plane clamp at the foil root surface (z=0),
+# simulating a disc validator with the blade root constrained.
+
+name: naca
+case_dir: dtOO/test/naca
+state: init
+mech_volume: gridGmsh
+adjust_plugin: ""
+mesh_scale_factor: 1.0
+bc_template: foil_clamp
+axis: auto
+
+design:
+  # -----------------------------------------------------------------------
+  # Foil-blade profile parameters (2-D, no spanwise sections)
+  # -----------------------------------------------------------------------
+  cV_alpha_1_ex:
+    min: -5.0
+    max: 10.0
+  cV_alpha_2_ex:
+    min: -5.0
+    max: 5.0
+  cV_M_ex:
+    min: -0.05
+    max: 0.05
+  cV_offsetM_ex:
+    min: -0.6
+    max: 0.0
+  cV_offsetPhiR_ex:
+    min: -0.15
+    max: 0.15
+  cV_ratio:
+    min: 0.4
+    max: 0.6
+  cV_bladeLength:
+    min: 0.1
+    max: 2.0

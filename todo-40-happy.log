@@ -1,0 +1,13 @@
+Todo 40 complete: docker/fenicsx.Dockerfile and cluster/apptainer_fenicsx.def updated.
+
+Changes:
+- Removed: pygmo (banned, decision #14)
+- Added: uv installation (curl-based install from astral.sh)
+- Added: COPY . /src/eigenfrequencies
+- Added: uv pip install . --no-deps + uv pip install .[optimize,mcp,dev] --no-deps --all-extrals
+- rl extra excluded from docker image (d3rlpy/stable-baselines3 adds ~500MB bloat)
+- Apptainer def: pygmo removed from pip install line, mirrors Dockerfile
+
+Files modified:
+- docker/fenicsx.Dockerfile
+- cluster/apptainer_fenicsx.def

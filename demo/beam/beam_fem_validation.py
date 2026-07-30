@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from solver import ModalSolver
 from geometry import generate_mesh
 from config import BeamConfig, SolverConfig, OutputConfig
-from euler_analytical import analytical_frequencies_cantilever
+from eigenfrequencies.validation.beam.analytical import analytical_frequencies_cantilever
 
 
 def classify_mode(eigenvector, mesh_coords):

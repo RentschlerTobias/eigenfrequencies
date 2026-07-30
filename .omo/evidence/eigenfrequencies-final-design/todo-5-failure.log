@@ -1,0 +1,16 @@
+Todo 5 – Failure Path Evidence
+Date: 2026-07-28
+
+Scenario: Remove one field from frozen JSON → reconstruction must raise.
+
+Test: test_missing_field_raises in tests/characterization/test_golden_config.py
+Target: OptimizationConfig (load-bearing: Z_guidevanes, n_rpm, margin_hz, penalty_k)
+Removed field: margin_hz
+
+Validation: _validate_all_fields_present() raises ValueError when a required field is missing.
+Result: PASSED — ValueError raised as expected.
+
+pytest output excerpt:
+  tests/characterization/test_golden_config.py::test_missing_field_raises PASSED
+
+The missing-field guard prevents silent default-fallback bugs.

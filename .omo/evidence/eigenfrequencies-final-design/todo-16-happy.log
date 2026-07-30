@@ -1,0 +1,25 @@
+Successfully installed annotated-doc-0.0.5 pyyaml-6.0.3 shellingham-1.5.4 typer-0.27.0
+=== HAPPY PATH EVIDENCE ===
+
+--- solve --config examples/configs/testcase_laval.yaml --json ---
+Info    : Reading 'turbine_runner/data/testcase_coarse.msh'...
+Info    : 2 entities
+Info    : 110344 nodes
+Info    : [  0%] Reading nodes                                                                                Info    : [ 10%] Reading nodes                                                                                Info    : [ 20%] Reading nodes                                                                                Info    : [ 30%] Reading nodes                                                                                Info    : [ 40%] Reading nodes                                                                                Info    : [ 50%] Reading nodes                                                                                Info    : [ 60%] Reading nodes                                                                                Info    : [ 70%] Reading nodes                                                                                Info    : [ 80%] Reading nodes                                                                                Info    : [ 90%] Reading nodes                                                                                                                                                                Info    : 304185 elements
+Info    : [  0%] Reading elements                                                                                Info    : [ 10%] Reading elements                                                                                Info    : [ 20%] Reading elements                                                                                Info    : [ 30%] Reading elements                                                                                Info    : [ 40%] Reading elements                                                                                Info    : [ 50%] Reading elements                                                                                Info    : [ 60%] Reading elements                                                                                Info    : [ 70%] Reading elements                                                                                Info    : [ 80%] Reading elements                                                                                Info    : [ 90%] Reading elements                                                                                                                                                                Info    : Done reading 'turbine_runner/data/testcase_coarse.msh'
+[mesh_prep] read turbine_runner/data/testcase_coarse.msh: topology.dim=3, cells=304185
+[solver] free-free BC: no DOFs clamped (rigid modes expected)
+[solver] system DOFs=331032 (SLEPc, no DOF restriction)
+[solver] SLEPc converged eigenpairs: 23/16
+[solver] 6 rigid-body modes (6 expected for one connected body; more suggests disconnected parts in the mesh)
+Mode shapes written to: output/modes.xdmf
+Geometry written to: output/geometry.pvd
+Mode shapes (VTK) written to: output/modes.pvd
+Mode shapes written to: output/modes.xdmf
+{"frequencies_hz":[0.00048813290410701767,0.0003209291707393049,0.0002867513906892886,0.00014243767217967304,0.0002195751312666009,0.0005031197601913013,231.12350771030583,232.55556734980368,267.49395365983037,356.40458527345345,356.7959049816897,853.8971897824579,855.2095060599486,1533.289679630866,1534.0600533416068,1587.5670605132175]}
+
+--- validate --suite testcase (should skip, no env var) ---
+Set RUN_TESTCASE_VALIDATION=1 to run testcase validation (heavyweight)
+
+--- validate --suite testcase --full (should skip, no env var) ---
+Set RUN_TESTCASE_VALIDATION=1 to run testcase validation (heavyweight)

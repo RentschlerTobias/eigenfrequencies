@@ -1,0 +1,37 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/t1dde/Duty/projects/eigenfrequencies
+configfile: pyproject.toml
+plugins: xdist-3.8.0, anyio-4.14.2
+collecting ... collected 21 items
+
+tests/mcp/test_tools.py::TestGetConfigSchema::test_returns_valid_schema PASSED [  4%]
+tests/mcp/test_tools.py::TestGetConfigSchema::test_schema_matches_committed_artifact PASSED [  9%]
+tests/mcp/test_tools.py::TestSolveModal::test_valid_config_returns_job_id PASSED [ 14%]
+tests/mcp/test_tools.py::TestSolveModal::test_typo_in_field_name_returns_structured_error PASSED [ 19%]
+tests/mcp/test_tools.py::TestSolveModal::test_missing_required_field_returns_error PASSED [ 23%]
+tests/mcp/test_tools.py::TestSolveModal::test_nested_typo_returns_error_naming_path PASSED [ 28%]
+tests/mcp/test_tools.py::TestSolveModal::test_non_dict_config_returns_error PASSED [ 33%]
+tests/mcp/test_tools.py::TestOptimizeStart::test_valid_config_returns_job_id PASSED [ 38%]
+tests/mcp/test_tools.py::TestOptimizeStart::test_optimize_with_budget_passes_budget PASSED [ 42%]
+tests/mcp/test_tools.py::TestOptimizeStart::test_invalid_config_returns_structured_error PASSED [ 47%]
+tests/mcp/test_tools.py::TestOptimizeStart::test_default_islands_workers PASSED [ 52%]
+tests/mcp/test_tools.py::TestValidate::test_beam_suite_returns_job_id PASSED [ 57%]
+tests/mcp/test_tools.py::TestValidate::test_testcase_suite_returns_job_id PASSED [ 61%]
+tests/mcp/test_tools.py::TestValidate::test_unknown_suite_returns_error PASSED [ 66%]
+tests/mcp/test_tools.py::TestJobStatus::test_known_job_returns_status PASSED [ 71%]
+tests/mcp/test_tools.py::TestJobStatus::test_unknown_job_returns_error PASSED [ 76%]
+tests/mcp/test_tools.py::TestJobStatus::test_failed_job_returns_state_failed PASSED [ 80%]
+tests/mcp/test_tools.py::TestFetchResults::test_done_job_returns_results PASSED [ 85%]
+tests/mcp/test_tools.py::TestFetchResults::test_unknown_job_returns_error PASSED [ 90%]
+tests/mcp/test_tools.py::TestFetchResults::test_not_done_job_returns_error PASSED [ 95%]
+tests/mcp/test_tools.py::TestToolCount::test_exactly_six_tools PASSED    [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 21 passed, 1 warning in 0.55s =========================

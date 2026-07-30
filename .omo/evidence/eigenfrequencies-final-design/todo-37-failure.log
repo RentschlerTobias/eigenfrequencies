@@ -1,0 +1,25 @@
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 3.4.5                                 │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                  🖥  Server:      eigenfrequencies, 3.4.5                     │
+│                  🚀 Deploy free: https://horizon.prefect.io                  │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[07/29/26 13:42:25] INFO     Starting MCP server                transport.py:241
+                             'eigenfrequencies' with transport                  
+                             'stdio'                                            
+OK: error names field "material" — <root>: 'optimization' is a required property <root>: 'cfd' is a required property material: 'typo' 
+OK: error message is LLM-usable — "config validation failed"
+OK: details count = 3

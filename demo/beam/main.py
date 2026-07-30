@@ -3,7 +3,7 @@
 from solver import ModalSolver
 from geometry import generate_mesh
 from config import BeamConfig, SolverConfig, OutputConfig
-from euler_analytical import analytical_frequencies_cantilever
+from eigenfrequencies.validation.beam.analytical import analytical_frequencies_cantilever
 import os
 import sys
 

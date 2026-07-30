@@ -1,0 +1,95 @@
+# canadaLight — full turbine geometry with guide vane, runner, and draft tube.
+#
+# Pre-check: dtOO/test/canadaLight/machineSave.xml state ``E1_12685``, bounded
+# volume ``ruWithRounding_mechMesh`` (solid runner blade with TE rounding).
+# Adjust plugin ``ru_adjustDomain`` from ru_gridChannel.xml finalises the runner
+# domain before meshing.
+#
+# Design labels: 21 spanwise runner-blade parameters (7 parameters × 3 sections).
+# Mesh scale factor: 1.0 — dtOO mesh is assumed to be in metres (physical units).
+# BC template: free_free — no clamp, modal analysis only.
+
+name: canadaLight
+case_dir: dtOO/test/canadaLight
+state: E1_12685
+mech_volume: ruWithRounding_mechMesh
+adjust_plugin: ru_adjustDomain
+mesh_scale_factor: 1.0
+bc_template: free_free
+axis: auto
+
+design:
+  # -----------------------------------------------------------------------
+  # Spanwise section: hub (0 %)
+  # -----------------------------------------------------------------------
+  cV_ru_alpha_1_ex_0.0:
+    min: -5.0
+    max: 10.0
+  cV_ru_alpha_2_ex_0.0:
+    min: -5.0
+    max: 5.0
+  cV_ru_M_ex_0.0:
+    min: -0.05
+    max: 0.05
+  cV_ru_offsetM_ex_0.0:
+    min: -0.6
+    max: 0.0
+  cV_ru_offsetPhiR_ex_0.0:
+    min: -0.15
+    max: 0.15
+  cV_ru_ratio_0.0:
+    min: 0.4
+    max: 0.6
+  cV_ru_bladeLength_0.0:
+    min: 0.1
+    max: 2.0
+
+  # -----------------------------------------------------------------------
+  # Spanwise section: mid (50 %)
+  # -----------------------------------------------------------------------
+  cV_ru_alpha_1_ex_0.5:
+    min: -5.0
+    max: 10.0
+  cV_ru_alpha_2_ex_0.5:
+    min: -5.0
+    max: 5.0
+  cV_ru_M_ex_0.5:
+    min: -0.05
+    max: 0.05
+  cV_ru_offsetM_ex_0.5:
+    min: -0.6
+    max: 0.0
+  cV_ru_offsetPhiR_ex_0.5:
+    min: -0.15
+    max: 0.15
+  cV_ru_ratio_0.5:
+    min: 0.4
+    max: 0.6
+  cV_ru_bladeLength_0.5:
+    min: 0.1
+    max: 2.0
+
+  # -----------------------------------------------------------------------
+  # Spanwise section: tip (100 %)
+  # -----------------------------------------------------------------------
+  cV_ru_alpha_1_ex_1.0:
+    min: -5.0
+    max: 10.0
+  cV_ru_alpha_2_ex_1.0:
+    min: -5.0
+    max: 5.0
+  cV_ru_M_ex_1.0:
+    min: -0.05
+    max: 0.05
+  cV_ru_offsetM_ex_1.0:
+    min: -0.6
+    max: 0.0
+  cV_ru_offsetPhiR_ex_1.0:
+    min: -0.15
+    max: 0.15
+  cV_ru_ratio_1.0:
+    min: 0.4
+    max: 0.6
+  cV_ru_bladeLength_1.0:
+    min: 0.1
+    max: 2.0

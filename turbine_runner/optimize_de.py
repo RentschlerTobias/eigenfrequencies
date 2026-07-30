@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SUPERSEDED-BY: eigenfrequencies.optimize.backends.de
 """Differential Evolution (DE) parallel optimizer via Pyro5 RPC.
 
 Persistent worker servers (one per core) publish their Pyro5 URIs to a shared
@@ -25,9 +26,15 @@ try:
 except ImportError:  # tqdm optional — fall back to plain per-generation logs
     _HAVE_TQDM = False
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "legacy"))
 
-from config import OptimizationConfig, ObjectiveConfig, CFDConfig, DEConfig, DesignConfig
+from eigenfrequencies.config import (
+    CFDConfig,
+    DEConfig,
+    DesignConfig,
+    ObjectiveConfig,
+    OptimizationConfig,
+)
 from optimize import DTOO_FAIL_PENALTY
 
 
@@ -294,7 +301,7 @@ def main():
           flush=True)
 
     de_cfg = DEConfig()
-    opt_cfg = OptimizationConfig()
+    opt_cfg = OptimizationConfig(n_rpm=72.0)
     obj_cfg = ObjectiveConfig()
     design_cfg = DesignConfig()
     labels = design_cfg.labels

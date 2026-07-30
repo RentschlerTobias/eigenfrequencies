@@ -1,0 +1,73 @@
+{
+  "_description": "Golden reference for dtoo_export.py characterization tests. Generated locally; checksum must be updated inside the dtOO container.",
+  "checksum": "TBD — generate in dtOO container",
+  "design_json": {
+    "cV_ru_bladeLength_0.5": 0.75,
+    "cV_ru_alpha_1_ex_0.5": -0.1
+  },
+  "env_override_matrix": {
+    "DTOO_CASE_DIR": {
+      "default": "~/dtOO/build/test/tistos",
+      "behavior_unset": "Uses default path; script chdir's there at start of main()",
+      "behavior_set_valid": "chdir to the provided directory; must contain machine.xml + machineSave.xml + xml/",
+      "behavior_set_nonexistent": "Raises FileNotFoundError (or OSError) on os.chdir() — frozen error type",
+      "notes": "This is the dtOO case directory baked into the container image at /dtOO/test/tistos"
+    },
+    "DTOO_MACHINE_XML": {
+      "default": "machine.xml",
+      "behavior_unset": "Uses default filename",
+      "behavior_set": "Passed to dtXmlParser.init() as the machine XML filename",
+      "notes": "Relative to DTOO_CASE_DIR"
+    },
+    "DTOO_STATE_XML": {
+      "default": "machineSave.xml",
+      "behavior_unset": "Uses default filename",
+      "behavior_set": "Passed to dtXmlParser.init() as the state XML filename",
+      "notes": "Relative to DTOO_CASE_DIR"
+    },
+    "DTOO_STATE": {
+      "default": "templateState",
+      "behavior_unset": "Loads the template state (baseline geometry)",
+      "behavior_set": "Loads the named state from machineSave.xml via parser.loadStateToConst()",
+      "notes": "State name must exist in the state XML"
+    },
+    "DTOO_MECH_VOLUME": {
+      "default": "ruWithRounding_mechMesh",
+      "behavior_unset": "Uses default bounded volume name",
+      "behavior_set": "Calls bV.get(name).makeGrid() and .getModel().writeMSH()",
+      "notes": "Must be a valid bounded volume label in the dtOO case"
+    },
+    "DTOO_ADJUST_PLUGIN": {
+      "default": "ru_adjustDomain",
+      "behavior_unset": "Attempts to apply the default domain-adjust plugin",
+      "behavior_set": "Attempts to apply the named plugin; if missing, prints warning and continues",
+      "notes": "Plugin is optional — caught with a broad except that logs and continues"
+    },
+    "DTOO_DESIGN_JSON": {
+      "default": "",
+      "behavior_unset": "Empty string → no design overrides → baseline geometry",
+      "behavior_set_valid": "Loads {label: value} dict and applies cV.get(label).setValue(value) before geometry creation",
+      "behavior_set_invalid": "File does not exist → falls back to baseline geometry with a console message",
+      "notes": "Path can be absolute or relative; empty/missing builds the template geometry"
+    },
+    "DTOO_OUTPUT_MSH": {
+      "default": "data/runner.msh",
+      "behavior_unset": "Writes to data/runner.msh relative to dtoo_export.py location",
+      "behavior_set": "Writes to the specified path; parent directories are created with os.makedirs(exist_ok=True)",
+      "notes": "This is the mesh file consumed by the FEniCSx stage (main.py / evaluate.py)"
+    },
+    "DTOO_LOG_FILE": {
+      "default": "<dirname(DTOO_OUTPUT_MSH)>/dtoo_build.log",
+      "behavior_unset": "Derives log path from DTOO_OUTPUT_MSH directory",
+      "behavior_set": "Explicit log file path passed to logMe.initLog()",
+      "notes": "Initialized inside main() after dtOOPythonSWIG import"
+    }
+  },
+  "container_requirements": {
+    "image": "atismer/dtoo-opensuse:stable",
+    "interpreter": "python3.12",
+    "ld_library_path": "/dtOO-install/lib:/dtOO-install/lib64",
+    "shell": "bash -lc",
+    "working_dir": "/dtOO/test/tistos (or DTOO_CASE_DIR override)"
+  }
+}

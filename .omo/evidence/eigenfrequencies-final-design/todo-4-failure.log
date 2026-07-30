@@ -1,0 +1,56 @@
+# Todo 4 Failure-Path Evidence — dtOO Export Characterization
+# Generated: 2026-07-28
+#
+# Environment: dtOO NOT available locally (dtOOPythonSWIG import fails).
+# The failure-path test (test_dtoo_case_dir_nonexistent_raises) is SKIPPED
+# locally. In the dtOO container, pointing DTOO_CASE_DIR at a nonexistent
+# directory must raise FileNotFoundError at os.chdir() in main().
+#
+# Container reproduction:
+#   docker run --rm -e DTOO_CASE_DIR=/nonexistent \
+#     -v "$PWD/turbine_runner:/src" atismer/dtoo-opensuse:stable \
+#     bash -lc 'export LD_LIBRARY_PATH=/dtOO-install/lib:/dtOO-install/lib64:$LD_LIBRARY_PATH && python3.12 /src/dtoo_export.py'
+#
+# Expected container output: FileNotFoundError: [Errno 2] No such file or directory: '/nonexistent'
+
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0 -- /home/t1dde/Duty/projects/eigenfrequencies/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/t1dde/Duty/projects/eigenfrequencies
+configfile: pyproject.toml
+plugins: xdist-3.8.0
+created: 24/24 workers
+24 workers [7 items]
+
+scheduling tests via LoadScheduling
+
+tests/characterization/test_golden_dtoo_export.py::TestDtOOExportEnvOverrides::test_dtoo_output_msh_override 
+tests/characterization/test_golden_dtoo_export.py::TestDtOOExportHappyPath::test_export_produces_runner_msh 
+[gw0] [ 14%] SKIPPED tests/characterization/test_golden_dtoo_export.py::TestDtOOExportHappyPath::test_export_produces_runner_msh 
+tests/characterization/test_golden_dtoo_export.py::TestDtOOExportEnvOverrides::test_dtoo_design_json_invalid_path_uses_baseline 
+[gw4] [ 28%] SKIPPED tests/characterization/test_golden_dtoo_export.py::TestDtOOExportEnvOverrides::test_dtoo_design_json_invalid_path_uses_baseline 
+tests/characterization/test_golden_dtoo_export.py::TestDtOOExportHappyPath::test_design_json_roundtrip 
+[gw2] [ 42%] SKIPPED tests/characterization/test_golden_dtoo_export.py::TestDtOOExportHappyPath::test_design_json_roundtrip 
+tests/characterization/test_golden_dtoo_export.py::TestDtOOExportEnvOverrides::test_dtoo_case_dir_nonexistent_raises 
+[gw3] [ 57%] SKIPPED tests/characterization/test_golden_dtoo_export.py::TestDtOOExportEnvOverrides::test_dtoo_case_dir_nonexistent_raises 
+tests/characterization/test_golden_dtoo_export.py::TestDtOOExportHappyPath::test_runner_msh_checksum_matches_golden 
+[gw1] [ 71%] SKIPPED tests/characterization/test_golden_dtoo_export.py::TestDtOOExportHappyPath::test_runner_msh_checksum_matches_golden 
+tests/characterization/test_golden_dtoo_export.py::TestDtOOExportEnvOverrides::test_dtoo_log_file_default 
+[gw6] [ 85%] SKIPPED tests/characterization/test_golden_dtoo_export.py::TestDtOOExportEnvOverrides::test_dtoo_log_file_default 
+[gw5] [100%] SKIPPED tests/characterization/test_golden_dtoo_export.py::TestDtOOExportEnvOverrides::test_dtoo_output_msh_override 
+
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469
+  /home/t1dde/Duty/projects/eigenfrequencies/.venv/lib/python3.13/site-packages/_pytest/cacheprovider.py:469: PytestCacheWarning: cache could not write path /home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids: [Errno 13] Permission denied: '/home/t1dde/Duty/projects/eigenfrequencies/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [1] tests/characterization/test_golden_dtoo_export.py:49: dtOOPythonSWIG not available — run inside the dtOO container (atismer/dtoo-opensuse:stable) with LD_LIBRARY_PATH set
+SKIPPED [1] tests/characterization/test_golden_dtoo_export.py:151: dtOOPythonSWIG not available — run inside the dtOO container (atismer/dtoo-opensuse:stable) with LD_LIBRARY_PATH set
+SKIPPED [1] tests/characterization/test_golden_dtoo_export.py:97: dtOOPythonSWIG not available — run inside the dtOO container (atismer/dtoo-opensuse:stable) with LD_LIBRARY_PATH set
+SKIPPED [1] tests/characterization/test_golden_dtoo_export.py:134: dtOOPythonSWIG not available — run inside the dtOO container (atismer/dtoo-opensuse:stable) with LD_LIBRARY_PATH set
+SKIPPED [1] tests/characterization/test_golden_dtoo_export.py:66: dtOOPythonSWIG not available — run inside the dtOO container (atismer/dtoo-opensuse:stable) with LD_LIBRARY_PATH set
+SKIPPED [1] tests/characterization/test_golden_dtoo_export.py:174: dtOOPythonSWIG not available — run inside the dtOO container (atismer/dtoo-opensuse:stable) with LD_LIBRARY_PATH set
+SKIPPED [1] tests/characterization/test_golden_dtoo_export.py:162: dtOOPythonSWIG not available — run inside the dtOO container (atismer/dtoo-opensuse:stable) with LD_LIBRARY_PATH set
+======================== 7 skipped, 1 warning in 0.99s =========================

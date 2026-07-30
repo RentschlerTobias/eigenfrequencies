@@ -1,0 +1,64 @@
+# Todo 42 — Public-repo preparation — HAPPY LOG
+
+## Actions taken
+
+### 1. LICENSE created
+- Path: LICENSE
+- License: MIT
+- Copyright: IHS University of Stuttgart
+- Reference: pyproject.toml declares MIT with IHS as author
+
+### 2. README.md rewritten
+- What it is: eigenfrequency analysis toolkit for hydraulic turbines
+- Validation highlights: Euler-Bernoulli beam ≤ 1 %, Laval disc ≤ 3 % vs reference
+- Install section: conda+uv path, link to docs/install.md
+- Quickstart: eigenfrequencies solve/validate/optimize/report on beam.yaml
+- Adapter list: tistos, canadaLight, naca (planned)
+- MCP section: eigenfrequencies mcp (stdio server)
+- Roadmap: wet/FSI + NSGA-II future work
+- Layout: project tree overview
+- No AI attribution added (global rule)
+- No pygmo/pagmo references
+- No PyPI workflow
+
+### 3. .gitignore audited and updated
+Added entries:
+  - `.eigenfrequencies/jobs/`
+  - `islands_state/`
+  - `*.d3`
+  - `de_state*.json`  (run artifact)
+  - `de_history*.jsonl` (run artifact)
+Existing entries retained (graphify-out/, etc.)
+
+### 4. graphify-out/ untracked
+Command: git rm -r --cached graphify-out/
+Result: fatal: pathspec 'graphify-out/' did not match any files
+Status: graphify-out/ was already untracked in git index (present in .gitignore, not staged)
+
+### 5. Secrets sweep
+Tool: grep -rn pattern: (token|password|secret|private_key|api_key|aws_secret|ghp_\w+|sk-\w{20,})
+Scope: entire repository tree
+
+Results: 6 matches — ALL FALSE POSITIVES
+  - dtOO/src/libraryKernel/meshEngine/tetgen/LICENSE
+      "must require no special password or key" — LICENSE boilerplate
+  - dtOO/src/geometryKernel/.../dtPointD_readCSV.cpp
+      boost::is_any_of("\t ,") — C++ tokenizer template, NOT a secret
+  - dtOO/src/geometryKernel/.../dtPoint3_readIBL.cpp
+      boost::is_any_of("\t ") — C++ tokenizer template, NOT a secret
+  - dtOO/src/geometryKernel/.../dtPoint3_readCSV.cpp
+      boost::is_any_of("\t ,") — C++ tokenizer template, NOT a secret
+  - dtOO/src/generalKernel/xmlHeaven/qtXmlPrimitive.cpp
+      boost::is_any_of("|") — C++ tokenizer template, NOT a secret
+  - dtOO/src/generalKernel/jsonHeaven/jsonPrimitive.cpp
+      boost::is_any_of("|") — C++ tokenizer template, NOT a secret
+
+No real secrets, tokens, passwords, private keys, or API credentials found.
+
+Pyro URI hostnames (e.g., localhost, container hostnames) are documented and
+expected for HPC/SLURM job submission workflows — not swept.
+
+### 6. Evidence log
+- File: todo-42-happy.log
+- Created: 2026-07-29
+- Status: COMPLETE

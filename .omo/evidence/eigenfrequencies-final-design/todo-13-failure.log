@@ -1,0 +1,6 @@
+Frozen resonance_term: 0.7638188166774569
+Replay  resonance_term: 0.0
+Frozen combined total:   3.235307324235655
+Replay  combined total:  2.471488507558198
+
+FAILURE PATH VERIFIED: perturbed bound produces different values.

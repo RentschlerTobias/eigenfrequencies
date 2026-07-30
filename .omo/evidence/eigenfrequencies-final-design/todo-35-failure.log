@@ -1,0 +1,5 @@
+structured_content: {'error': 'config validation failed', 'details': ["<root>: Additional properties are not allowed ('materail' was unexpected)"]}
+is_error: False
+
+# Missing required field:
+structured_content: {'error': 'config validation failed', 'details': ["<root>: 'optimization' is a required property"]}
