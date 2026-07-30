@@ -1,311 +1,0 @@
-OpenFoam-v2412 is unloaded 
-
-Don't forget to initialize OpenFOAM with:
-
-	source $FOAM_INIT
-
-or simply:
-
-	foamInit
-
-========================================
-[DE] Pyro5 DE multi-node (file-based URI discovery) on uc2n601.localdomain
-[DE] POP_SIZE=256  MAX_GEN=10  SEED=42
-[DE] SLURM: 8 nodes x 32 tasks/node
-[DE] Partition=dev_cpu_il
-[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_5827863
-========================================
-[DE] Starting 256 workers via srun (distributed across 8 nodes)...
-[DE] Running DE client (polls up to 120s for all 256 workers)...
-[DE] Discovered 256 workers from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/uris
-[DE] population=256 dim=3 mutation=0.8 crossover=0.9 max_gen=10 tol=0.01 seed=42 workers=256
-gen 0:   0%|                                            | 0/256 [00:00<?, ?it/s]gen 0:   0%|           | 1/256 [03:53<16:30:32, 233.07s/it, ok=0/256 best=1e+06]gen 0:   1%|▏            | 3/256 [04:09<4:40:04, 66.42s/it, ok=0/256 best=1e+06]gen 0:  10%|█▎            | 25/256 [04:25<22:53,  5.94s/it, ok=4/256 best=8.568]gen 0:  20%|██▋           | 50/256 [04:43<09:38,  2.81s/it, ok=18/256 best=5.33]gen 0:  54%|██████▉      | 137/256 [04:58<01:39,  1.20it/s, ok=76/256 best=5.33]gen 0:  78%|████████▌  | 200/256 [05:20<00:46,  1.20it/s, ok=125/256 best=5.316]gen 0:  79%|████████▋  | 201/256 [05:20<00:33,  1.62it/s, ok=126/256 best=5.316]gen 0:  96%|██████████▌| 245/256 [05:39<00:06,  1.79it/s, ok=170/256 best=5.307]gen 0: 100%|███████████| 256/256 [05:43<00:00,  1.34s/it, ok=181/256 best=5.307]
-[DE] Generation 0 best=5.307122 mean=292975.488218 ok=181/256
-[DE]   best fitness: f_resonance=5.307 freqs=[20.0,91.7,102.1,108.1...]
-gen 1:   0%|                                            | 0/256 [00:00<?, ?it/s]gen 1:   0%|           | 1/256 [04:01<17:06:15, 241.47s/it, ok=0/256 best=1e+06]gen 1:   8%|█             | 20/256 [04:16<36:48,  9.36s/it, ok=5/256 best=7.099]gen 1:  21%|██▋          | 54/256 [04:31<10:09,  3.02s/it, ok=26/256 best=5.299]gen 1:  36%|████▋        | 92/256 [04:47<04:27,  1.63s/it, ok=61/256 best=5.299]gen 1:  67%|████████    | 171/256 [05:02<01:03,  1.33it/s, ok=96/256 best=5.299]gen 1:  88%|█████████▋ | 225/256 [05:26<00:23,  1.33it/s, ok=150/256 best=5.299]gen 1:  88%|█████████▋ | 226/256 [05:26<00:18,  1.59it/s, ok=151/256 best=5.299]gen 1: 100%|███████████| 256/256 [05:38<00:00,  1.32s/it, ok=181/256 best=5.299]
-[DE] Generation 1 best=5.299123 mean=152351.086705 ok=217/256
-[DE]   best fitness: f_resonance=5.299 freqs=[19.2,87.3,102.3,108.1...]
-gen 2:   0%|                                            | 0/256 [00:00<?, ?it/s]gen 2:   0%|           | 1/256 [04:09<17:40:40, 249.57s/it, ok=0/256 best=1e+06]gen 2:  12%|█▋            | 31/256 [04:24<23:12,  6.19s/it, ok=6/256 best=6.142]gen 2:  27%|███▍         | 68/256 [04:40<07:56,  2.53s/it, ok=40/256 best=5.338]gen 2:  53%|██████▊      | 135/256 [04:55<02:13,  1.10s/it, ok=75/256 best=5.33]gen 2:  77%|████████▍  | 196/256 [05:17<01:06,  1.10s/it, ok=126/256 best=5.309]gen 2:  77%|█████████▏  | 197/256 [05:17<00:45,  1.30it/s, ok=127/256 best=5.27]gen 2:  93%|███████████▏| 239/256 [05:35<00:11,  1.50it/s, ok=169/256 best=5.27]gen 2: 100%|████████████| 256/256 [05:43<00:00,  1.34s/it, ok=186/256 best=5.27]
-[DE] Generation 2 best=5.270213 mean=128913.073900 ok=223/256
-[DE]   best fitness: f_resonance=5.27 freqs=[19.9,92.5,101.9,108.1...]
-gen 3:   0%|                                            | 0/256 [00:00<?, ?it/s]gen 3:   0%|           | 1/256 [03:54<16:34:40, 234.04s/it, ok=0/256 best=1e+06]gen 3:   2%|▎            | 6/256 [04:09<2:10:55, 31.42s/it, ok=1/256 best=13.85]gen 3:  11%|█▎           | 27/256 [04:25<21:34,  5.65s/it, ok=12/256 best=5.323]gen 3:  29%|███▋         | 73/256 [04:40<05:29,  1.80s/it, ok=45/256 best=5.258]gen 3:  52%|██████▏     | 133/256 [04:55<01:52,  1.10it/s, ok=80/256 best=5.258]gen 3:  75%|████████▎  | 192/256 [05:10<00:39,  1.62it/s, ok=115/256 best=5.258]gen 3:  96%|██████████▌| 245/256 [05:33<00:06,  1.62it/s, ok=168/256 best=5.245]gen 3:  96%|██████████▌| 246/256 [05:33<00:05,  1.83it/s, ok=169/256 best=5.245]gen 3: 100%|███████████| 256/256 [05:38<00:00,  1.32s/it, ok=179/256 best=5.245]
-[DE] Generation 3 best=5.245420 mean=125006.371568 ok=224/256
-[DE]   best fitness: f_resonance=5.245 freqs=[20.4,94.3,102.6,108.2...]
-gen 4:   0%|                                            | 0/256 [00:00<?, ?it/s]gen 4:   0%|           | 1/256 [04:03<17:14:37, 243.44s/it, ok=0/256 best=1e+06]gen 4:   8%|█▏            | 21/256 [04:18<35:05,  8.96s/it, ok=7/256 best=5.809]gen 4:  23%|██▉          | 58/256 [04:33<09:17,  2.81s/it, ok=28/256 best=5.809]gen 4:  37%|████▊        | 95/256 [04:48<04:17,  1.60s/it, ok=62/256 best=5.272]gen 4:  64%|███████▋    | 164/256 [05:03<01:14,  1.24it/s, ok=96/256 best=5.268]gen 4:  84%|█████████▏ | 215/256 [05:24<00:33,  1.24it/s, ok=144/256 best=5.268]gen 4:  84%|█████████▎ | 216/256 [05:24<00:26,  1.53it/s, ok=145/256 best=5.268]gen 4:  99%|██████████▉| 254/256 [05:41<00:01,  1.69it/s, ok=183/256 best=5.268]gen 4: 100%|███████████| 256/256 [05:41<00:00,  1.34s/it, ok=185/256 best=5.268]
-[DE] Generation 4 best=5.245420 mean=125005.989052 ok=224/256
-[DE]   best fitness: f_resonance=5.245 freqs=[20.4,94.3,102.6,108.2...]
-gen 5:   0%|                                            | 0/256 [00:00<?, ?it/s][2026-07-07T05:13:28.275] error: *** JOB 5827863 ON uc2n601 CANCELLED AT 2026-07-07T05:13:28 DUE TO TIME LIMIT ***
-[DE] Worker error for individual 165: receiving: not enough data
-gen 5:   0%|             | 1/256 [01:27<6:13:34, 87.90s/it, ok=0/256 best=1e+06][DE] Worker error for individual 84: receiving: not enough data
-[DE] Worker error for individual 218: receiving: not enough data
-[DE] Worker error for individual 11: receiving: not enough data
-[DE] Worker error for individual 209: receiving: not enough data
-[DE] Worker error for individual 163: receiving: not enough data
-[DE] Worker error for individual 122: receiving: not enough data
-[DE] Worker error for individual 198: receiving: not enough data
-[DE] Worker error for individual 6: receiving: not enough data
-[DE] Worker error for individual 227: receiving: not enough data
-[DE] Worker error for individual 240: receiving: not enough data
-[DE] Worker error for individual 246: receiving: not enough data
-[DE] Worker error for individual 24: receiving: not enough data
-[DE] Worker error for individual 228: receiving: not enough data
-[DE] Worker error for individual 12: receiving: not enough data
-[DE] Worker error for individual 8: receiving: not enough data
-[DE] Worker error for individual 36: receiving: not enough data
-[DE] Worker error for individual 190: receiving: not enough data
-[DE] Worker error for individual 133: receiving: not enough data
-[DE] Worker error for individual 142: receiving: not enough data
-[DE] Worker error for individual 25: receiving: not enough data
-[DE] Worker error for individual 31: receiving: not enough data
-[DE] Worker error for individual 49: receiving: not enough data
-[DE] Worker error for individual 78: receiving: not enough data
-[DE] Worker error for individual 135: receiving: not enough data
-[DE] Worker error for individual 39: receiving: not enough data
-[DE] Worker error for individual 40: receiving: not enough data
-[DE] Worker error for individual 94: receiving: not enough data
-[DE] Worker error for individual 75: receiving: not enough data
-[DE] Worker error for individual 89: receiving: not enough data
-[DE] Worker error for individual 180: receiving: not enough data
-[DE] Worker error for individual 5: receiving: not enough data
-[DE] Worker error for individual 191: receiving: not enough data
-[DE] Worker error for individual 50: receiving: not enough data
-[DE] Worker error for individual 220: receiving: not enough data
-[DE] Worker error for individual 192: receiving: not enough data
-[DE] Worker error for individual 111: receiving: not enough data
-[DE] Worker error for individual 77: receiving: not enough data
-[DE] Worker error for individual 151: receiving: not enough data
-[DE] Worker error for individual 241: receiving: not enough data
-[DE] Worker error for individual 74: receiving: not enough data
-[DE] Worker error for individual 238: receiving: not enough data
-[DE] Worker error for individual 199: receiving: not enough data
-[DE] Worker error for individual 157: receiving: not enough data
-[DE] Worker error for individual 211: receiving: not enough data
-[DE] Worker error for individual 107: receiving: not enough data
-[DE] Worker error for individual 19: receiving: not enough data
-[DE] Worker error for individual 233: receiving: not enough data
-[DE] Worker error for individual 219: receiving: not enough data
-[DE] Worker error for individual 245: receiving: not enough data
-[DE] Worker error for individual 169: receiving: not enough data
-[DE] Worker error for individual 247: receiving: not enough data
-[DE] Worker error for individual 38: receiving: not enough data
-[DE] Worker error for individual 113: receiving: not enough data
-[DE] Worker error for individual 189: receiving: not enough data
-[DE] Worker error for individual 243: receiving: not enough data
-[DE] Worker error for individual 9: receiving: not enough data
-[DE] Worker error for individual 207: receiving: not enough data
-[DE] Worker error for individual 234: receiving: not enough data
-[DE] Worker error for individual 193: receiving: not enough data
-[DE] Worker error for individual 149: receiving: not enough data
-[DE] Worker error for individual 90: receiving: not enough data
-[DE] Worker error for individual 154: receiving: not enough data
-[DE] Worker error for individual 15: receiving: not enough data
-[DE] Worker error for individual 179: receiving: not enough data
-[DE] Worker error for individual 2: receiving: not enough data
-[DE] Worker error for individual 112: receiving: not enough data
-[DE] Worker error for individual 104: receiving: not enough data
-[DE] Worker error for individual 255: receiving: not enough data
-[DE] Worker error for individual 206: receiving: not enough data
-[DE] Worker error for individual 253: receiving: not enough data
-[DE] Worker error for individual 155: receiving: not enough data
-[DE] Worker error for individual 217: receiving: not enough data
-[DE] Worker error for individual 164: receiving: not enough data
-[DE] Worker error for individual 45: receiving: not enough data
-[DE] Worker error for individual 126: receiving: not enough data
-[DE] Worker error for individual 222: receiving: not enough data
-[DE] Worker error for individual 254: receiving: not enough data
-[DE] Worker error for individual 35: receiving: not enough data
-[DE] Worker error for individual 108: receiving: not enough data
-[DE] Worker error for individual 124: receiving: not enough data
-[DE] Worker error for individual 13: receiving: not enough data
-[DE] Worker error for individual 86: receiving: not enough data
-[DE] Worker error for individual 181: receiving: not enough data
-[DE] Worker error for individual 153: receiving: not enough data
-[DE] Worker error for individual 216: receiving: not enough data
-[DE] Worker error for individual 42: receiving: not enough data
-[DE] Worker error for individual 176: receiving: not enough data
-[DE] Worker error for individual 197: receiving: not enough data
-[DE] Worker error for individual 92: receiving: not enough data
-[DE] Worker error for individual 226: receiving: not enough data
-[DE] Worker error for individual 106: receiving: not enough data
-[DE] Worker error for individual 188: receiving: not enough data
-[DE] Worker error for individual 250: receiving: not enough data
-[DE] Worker error for individual 67: receiving: not enough data
-[DE] Worker error for individual 212: receiving: not enough data
-[DE] Worker error for individual 115: receiving: not enough data
-[DE] Worker error for individual 182: receiving: not enough data
-[DE] Worker error for individual 14: receiving: not enough data
-[DE] Worker error for individual 29: receiving: not enough data
-[DE] Worker error for individual 60: receiving: not enough data
-[DE] Worker error for individual 93: receiving: not enough data
-[DE] Worker error for individual 208: receiving: not enough data
-[DE] Worker error for individual 194: receiving: not enough data
-[DE] Worker error for individual 102: receiving: not enough data
-[DE] Worker error for individual 186: receiving: not enough data
-[DE] Worker error for individual 204: receiving: not enough data
-[DE] Worker error for individual 121: receiving: not enough data
-[DE] Worker error for individual 37: receiving: not enough data
-[DE] Worker error for individual 160: receiving: not enough data
-[DE] Worker error for individual 168: receiving: not enough data
-[DE] Worker error for individual 236: receiving: not enough data
-[DE] Worker error for individual 184: receiving: not enough data
-[DE] Worker error for individual 196: receiving: not enough data
-[DE] Worker error for individual 225: receiving: not enough data
-[DE] Worker error for individual 28: receiving: not enough data
-[DE] Worker error for individual 98: receiving: not enough data
-[DE] Worker error for individual 139: receiving: not enough data
-[DE] Worker error for individual 203: receiving: not enough data
-[DE] Worker error for individual 178: receiving: not enough data
-[DE] Worker error for individual 101: receiving: not enough data
-[DE] Worker error for individual 248: receiving: not enough data
-[DE] Worker error for individual 210: receiving: not enough data
-[DE] Worker error for individual 7: receiving: not enough data
-[DE] Worker error for individual 244: receiving: not enough data
-[DE] Worker error for individual 205: receiving: not enough data
-[DE] Worker error for individual 66: receiving: not enough data
-[DE] Worker error for individual 58: receiving: not enough data
-[DE] Worker error for individual 34: receiving: not enough data
-[DE] Worker error for individual 235: receiving: not enough data
-[DE] Worker error for individual 195: receiving: not enough data
-[DE] Worker error for individual 148: receiving: not enough data
-[DE] Worker error for individual 47: receiving: not enough data
-[DE] Worker error for individual 145: receiving: not enough data
-[DE] Worker error for individual 223: receiving: not enough data
-[DE] Worker error for individual 62: receiving: not enough data
-[DE] Worker error for individual 201: receiving: not enough data
-[DE] Worker error for individual 59: receiving: not enough data
-[DE] Worker error for individual 252: receiving: not enough data
-[DE] Worker error for individual 213: receiving: not enough data
-[DE] Worker error for individual 16: receiving: not enough data
-[DE] Worker error for individual 110: receiving: not enough data
-[DE] Worker error for individual 80: receiving: not enough data
-[DE] Worker error for individual 65: receiving: not enough data
-[DE] Worker error for individual 43: receiving: not enough data
-[DE] Worker error for individual 57: receiving: not enough data
-[DE] Worker error for individual 1: receiving: not enough data
-[DE] Worker error for individual 79: receiving: not enough data
-[DE] Worker error for individual 143: receiving: not enough data
-[DE] Worker error for individual 44: receiving: not enough data
-[DE] Worker error for individual 224: receiving: not enough data
-[DE] Worker error for individual 97: receiving: not enough data
-[DE] Worker error for individual 200: receiving: not enough data
-[DE] Worker error for individual 83: receiving: not enough data
-[DE] Worker error for individual 20: receiving: not enough data
-[DE] Worker error for individual 95: receiving: not enough data
-[DE] Worker error for individual 183: receiving: not enough data
-[DE] Worker error for individual 129: receiving: not enough data
-[DE] Worker error for individual 27: receiving: not enough data
-[DE] Worker error for individual 202: receiving: not enough data
-[DE] Worker error for individual 72: receiving: not enough data
-[DE] Worker error for individual 187: receiving: not enough data
-[DE] Worker error for individual 114: receiving: not enough data
-[DE] Worker error for individual 21: receiving: not enough data
-[DE] Worker error for individual 214: receiving: not enough data
-[DE] Worker error for individual 120: receiving: not enough data
-[DE] Worker error for individual 242: receiving: not enough data
-[DE] Worker error for individual 18: receiving: not enough data
-[DE] Worker error for individual 221: receiving: not enough data
-[DE] Worker error for individual 147: receiving: not enough data
-[DE] Worker error for individual 85: receiving: not enough data
-[DE] Worker error for individual 17: receiving: not enough data
-[DE] Worker error for individual 132: receiving: not enough data
-[DE] Worker error for individual 3: receiving: not enough data
-[DE] Worker error for individual 134: receiving: not enough data
-[DE] Worker error for individual 141: receiving: not enough data
-[DE] Worker error for individual 71: receiving: not enough data
-[DE] Worker error for individual 91: receiving: not enough data
-[DE] Worker error for individual 131: receiving: not enough data
-[DE] Worker error for individual 32: receiving: not enough data
-[DE] Worker error for individual 230: receiving: not enough data
-[DE] Worker error for individual 251: receiving: not enough data
-[DE] Worker error for individual 22: receiving: not enough data
-[DE] Worker error for individual 46: receiving: not enough data
-[DE] Worker error for individual 117: receiving: not enough data
-[DE] Worker error for individual 144: receiving: not enough data
-[DE] Worker error for individual 81: receiving: not enough data
-[DE] Worker error for individual 109: receiving: not enough data
-[DE] Worker error for individual 56: receiving: not enough data
-[DE] Worker error for individual 172: receiving: not enough data
-[DE] Worker error for individual 239: receiving: not enough data
-[DE] Worker error for individual 152: receiving: not enough data
-[DE] Worker error for individual 232: receiving: not enough data
-[DE] Worker error for individual 119: receiving: not enough data
-[DE] Worker error for individual 82: receiving: not enough data
-[DE] Worker error for individual 118: receiving: not enough data
-[DE] Worker error for individual 167: receiving: not enough data
-[DE] Worker error for individual 170: receiving: not enough data
-[DE] Worker error for individual 140: receiving: not enough data
-[DE] Worker error for individual 23: receiving: not enough data
-[DE] Worker error for individual 100: receiving: not enough data
-[DE] Worker error for individual 156: receiving: not enough data
-[DE] Worker error for individual 103: receiving: not enough data
-[DE] Worker error for individual 53: receiving: not enough data
-[DE] Worker error for individual 249: receiving: not enough data
-[DE] Worker error for individual 0: receiving: not enough data
-[DE] Worker error for individual 138: receiving: not enough data
-[DE] Worker error for individual 173: receiving: not enough data
-[DE] Worker error for individual 99: receiving: not enough data
-[DE] Worker error for individual 137: receiving: not enough data
-[DE] Worker error for individual 128: receiving: not enough data
-[DE] Worker error for individual 146: receiving: not enough data
-[DE] Worker error for individual 63: receiving: not enough data
-[DE] Worker error for individual 159: receiving: not enough data
-[DE] Worker error for individual 26: receiving: not enough data
-[DE] Worker error for individual 64: receiving: not enough data
-[DE] Worker error for individual 55: receiving: not enough data
-[DE] Worker error for individual 237: receiving: not enough data
-[DE] Worker error for individual 76: receiving: not enough data
-[DE] Worker error for individual 177: receiving: not enough data
-[DE] Worker error for individual 33: receiving: not enough data
-[DE] Worker error for individual 127: receiving: not enough data
-[DE] Worker error for individual 166: receiving: not enough data
-[DE] Worker error for individual 61: receiving: not enough data
-[DE] Worker error for individual 185: receiving: not enough data
-[DE] Worker error for individual 125: receiving: not enough data
-[DE] Worker error for individual 105: receiving: not enough data
-[DE] Worker error for individual 174: receiving: not enough data
-[DE] Worker error for individual 158: receiving: not enough data
-[DE] Worker error for individual 130: receiving: not enough data
-[DE] Worker error for individual 171: receiving: not enough data
-[DE] Worker error for individual 175: receiving: not enough data
-[DE] Worker error for individual 68: receiving: not enough data
-[DE] Worker error for individual 52: receiving: not enough data
-[DE] Worker error for individual 4: receiving: not enough data
-[DE] Worker error for individual 30: receiving: not enough data
-[DE] Worker error for individual 54: receiving: not enough data
-[DE] Worker error for individual 10: receiving: not enough data
-[DE] Worker error for individual 136: receiving: not enough data
-[DE] Worker error for individual 88: receiving: not enough data
-[DE] Worker error for individual 87: receiving: not enough data
-[DE] Worker error for individual 70: receiving: not enough data
-[DE] Worker error for individual 69: receiving: not enough data
-[DE] Worker error for individual 150: receiving: not enough data
-[DE] Worker error for individual 231: receiving: not enough data
-[DE] Worker error for individual 48: receiving: not enough data
-[DE] Worker error for individual 123: receiving: not enough data
-[DE] Worker error for individual 96: receiving: not enough data
-[DE] Worker error for individual 116: receiving: not enough data
-[DE] Worker error for individual 215: receiving: not enough data
-[DE] Worker error for individual 73: receiving: not enough data
-[DE] Worker error for individual 161: receiving: not enough data
-[DE] Worker error for individual 229: receiving: not enough data
-[DE] Worker error for individual 51: receiving: not enough data
-[DE] Worker error for individual 162: receiving: not enough data
-[DE] Worker error for individual 41: receiving: not enough data
-gen 5: 100%|█████████████| 256/256 [01:27<00:00,  2.91it/s, ok=0/256 best=1e+06]
-[DE] Generation 5 best=5.245420 mean=125005.989052 ok=224/256
-[DE]   best fitness: f_resonance=5.245 freqs=[20.4,94.3,102.6,108.2...]
-
-============================= JOB FEEDBACK =============================
-
-NodeName=uc2n[601-608]
-Job ID: 5827863
-Cluster: uc3
-User/Group: st_ac136362/st_us-042020
-State: TIMEOUT (exit code 0)
-Nodes: 8
-Cores per node: 128
-CPU Utilized: 00:00:01
-CPU Efficiency: 0.00% of 21-12:33:04 core-walltime
-Job Wall-clock time: 00:30:16
-Memory Utilized: 1.55 GB
-Memory Efficiency: 0.15% of 1000.00 GB (1000.00 MB/core)

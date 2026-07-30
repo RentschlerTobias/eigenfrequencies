@@ -1,6 +1,0 @@
-$ .venv/bin/python /tmp/test_mesh_verification_error.py
-...
-[mesh_prep] read /tmp/tmpuibko4lu/surface.msh: topology.dim=2, cells=100
-[mesh_prep] volume-meshing fallback triggered (tdim=2 (no volume cells))
-[mesh_prep] meshing volume from surface /tmp/tmpuibko4lu/surface.msh
-MeshVerificationError raised as expected: Fallback failed to produce a 3-D volume mesh: /tmp/tmpuibko4lu/surface_volume.msh

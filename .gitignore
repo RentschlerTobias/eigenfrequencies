@@ -48,7 +48,6 @@ TestCaseGeomertyMesh.*
 *.stl
 *.msh
 
-!cluster.log
 output/
 demo/beam/demo/
 .cache/
@@ -68,3 +67,16 @@ de_history*.jsonl
 
 # Knowledge graph artifacts (regenerated locally by graphify)
 graphify-out/
+
+# Internal / dev-only files (keep locally, don't publish)
+HANDOFF*.md
+obsidian_*.md
+documentation.md
+overview.md
+PROGRESS.md
+AGENTS.md
+eigenfrequencies_todos/
+server_logs/
+run_log/
+log_refactor/
+.omo/

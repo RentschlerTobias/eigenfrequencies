@@ -1,7 +1,0 @@
-Skipping malformed JSON at /tmp/tmpkom_inbs/corrupt.jsonl line 2
-Skipping malformed JSON at /tmp/tmpkom_inbs/corrupt.jsonl line 2
-parse_history_jsonl: rows=2, skipped=1
-export_dataset: n_rows=2, skipped=1
-observations shape: (2, 1)
-rewards: [2. 0.]
-FAILURE PATH DEMONSTRATED: corrupt line skipped=1, rest exported successfully

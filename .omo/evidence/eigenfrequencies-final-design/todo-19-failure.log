@@ -1,1 +1,0 @@
-ConfigError raised as expected: Invalid bounds at design.cV_x: min (1.0) > max (0.0)

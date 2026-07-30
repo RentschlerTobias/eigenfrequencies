@@ -1,5 +1,0 @@
-Normal analytical frequencies: [  8.35516594  52.36093119 146.61212349 287.30124714 474.92954728]
-FEM frequencies (first 5): [  8.39455014  53.07686427  83.07471262 157.89589686 188.84629118]
-Corrupted analytical frequencies: [  9.21157045  52.36093119 146.61212349 287.30124714 474.92954728]
-Mode 1: FEM=8.3946 Hz, Ana=9.2116 Hz, Error=8.87% -> FAIL
-FAILURE DEMONSTRATED: corrupted analytical root causes test failure
