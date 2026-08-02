@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=de_cfd_only
 #SBATCH --output=de_cfd_only_%j.out
-#SBATCH --time=24:00:00
+#SBATCH --time=00:30:00
 #SBATCH --nodes=4
 #SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=16
 #SBATCH --hint=nomultithread
-#SBATCH --partition=cpu_il
+#SBATCH --partition=dev_cpu_il
 
 # CFD-only DE variant (EVAL_MODE=cfd_only): workers skip dtoo modal + FEniCSx,
 # objective = cfd_scalar(eta, vcav, dH). Defaults match submit_de_combined.sh
