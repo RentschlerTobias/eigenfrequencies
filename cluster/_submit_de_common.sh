@@ -28,6 +28,11 @@ set -u
 REPO_ROOT="${SLURM_SUBMIT_DIR:-$PWD}"
 cd "$REPO_ROOT"
 
+# src-Layout: make `eigenfrequencies` importable in the py313-dtoo env (which
+# does not have the package installed). Keeps host srun + enroot FEniCSx paths
+# unchanged (container uses its own /workspace via -m bind-mount).
+export PYTHONPATH="$REPO_ROOT/src:${PYTHONPATH:-}"
+
 POP_SIZE="${DE_POP_SIZE:-$((SLURM_NNODES * SLURM_NTASKS_PER_NODE))}"
 MAX_GEN="${DE_MAX_GEN:-10}"
 SEED="${DE_SEED:-42}"
