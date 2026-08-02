@@ -1,0 +1,64 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+========================================
+[DE] variant=resonance_only eval_mode=resonance_only on uc2n601.localdomain
+[DE] POP_SIZE=4  MAX_GEN=1  SEED=42
+[DE] W_RESONANCE=1.0  CFD_ENABLED=0
+[DE] SLURM: 1 nodes x 4 tasks/node, job 6093871
+[DE] state=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_resonance_only.json
+[DE] history=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_resonance_only.jsonl
+[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_6093871
+========================================
+[DE] Starting 4 workers via srun (distributed across 1 nodes)...
+[DE] Running DE client...
+[DE] main() entered pid=3832881 cwd=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies
+[DE] configs loaded pop_size=4 max_gen=1 eval_mode=resonance_only w_resonance=1.0 labels=['cV_ru_alpha_1_ex_0.0', 'cV_ru_alpha_1_ex_0.5', 'cV_ru_alpha_1_ex_1.0', 'cV_ru_alpha_2_ex_0.0', 'cV_ru_alpha_2_ex_0.5', 'cV_ru_alpha_2_ex_1.0', 'cV_ru_offsetM_ex_0.0', 'cV_ru_offsetM_ex_0.5', 'cV_ru_offsetM_ex_1.0', 'cV_ru_ratio_0.0', 'cV_ru_ratio_0.5', 'cV_ru_ratio_1.0', 'cV_ru_offsetPhiR_ex_0.0', 'cV_ru_offsetPhiR_ex_0.5', 'cV_ru_offsetPhiR_ex_1.0', 'cV_ru_bladeLength_0.0', 'cV_ru_bladeLength_0.5', 'cV_ru_bladeLength_1.0', 'cV_ru_t_le_a_0', 'cV_ru_t_le_a_0.5', 'cV_ru_t_le_a_1', 'cV_ru_t_mid_a_0', 'cV_ru_t_mid_a_0.5', 'cV_ru_t_mid_a_1', 'cV_ru_t_te_a_0', 'cV_ru_t_te_a_0.5', 'cV_ru_t_te_a_1', 'cV_ru_u_mid_a_0', 'cV_ru_u_mid_a_0.5', 'cV_ru_u_mid_a_1']
+[DE] discovery: uri_dir=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/resonance_only/uris expected=4 timeout=600s
+[DE] discovery: 0/4 URIs after 0s
+[DE] Discovered 4 workers from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/resonance_only/uris
+[DE] discovery done n_workers=4 elapsed=2.0s
+[DE] population=4 dim=30 mutation=0.8 crossover=0.9 max_gen=1 tol=0.01 seed=42 workers=4
+[DE] state_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_resonance_only.json history_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_resonance_only.jsonl
+[DE] Checkpoint /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_resonance_only.json incompatible with current config (labels/pop_size/bounds) — starting fresh. Set DE_FRESH=1 to silence.
+[DE] no checkpoint found at /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_resonance_only.json — starting fresh gen 0
+[DE] gen 0: dispatching 4 evals to 4 workers
+gen 0:   0%|                                              | 0/4 [00:00<?, ?it/s]gen 0: 100%|███████████████████| 4/4 [00:03<00:00,  1.26it/s, ok=0/4 best=1e+06]
+[DE] Generation 0 best=1000000.000000 mean=1000000.000000 ok=0/4
+[DE]   best fitness: error=dtoo_build_failed
+[DE] gen 1: dispatching 4 trial evals to 4 workers
+gen 1:   0%|                                              | 0/4 [00:00<?, ?it/s]gen 1: 100%|███████████████████| 4/4 [00:02<00:00,  1.56it/s, ok=0/4 best=1e+06]
+[DE] Generation 1 best=1000000.000000 mean=1000000.000000 ok=0/4
+[DE]   best fitness: error=dtoo_build_failed
+
+============================================================
+[DE] BEST  objective = 1000000.000000
+[DE] BEST  design    = {'cV_ru_alpha_1_ex_0.0': 0.004872982423868022, 'cV_ru_alpha_1_ex_0.5': -0.11506513546824179, 'cV_ru_alpha_1_ex_1.0': -0.015079716192407971, 'cV_ru_alpha_2_ex_0.0': 0.03402273030531863, 'cV_ru_alpha_2_ex_0.5': 0.03875801072398795, 'cV_ru_alpha_2_ex_1.0': -0.06818810955839917, 'cV_ru_offsetM_ex_0.0': 1.4337715415968637, 'cV_ru_offsetM_ex_0.5': 1.3086522283750657, 'cV_ru_offsetM_ex_1.0': 1.3286597825110331, 'cV_ru_ratio_0.0': 0.5155095255375718, 'cV_ru_ratio_0.5': 0.40202440411861723, 'cV_ru_ratio_1.0': 0.5354515688199649, 'cV_ru_offsetPhiR_ex_0.0': 0.04571841251056208, 'cV_ru_offsetPhiR_ex_0.5': -0.0026510870865109615, 'cV_ru_offsetPhiR_ex_1.0': 0.04602043523346666, 'cV_ru_bladeLength_0.0': 0.40400214390547823, 'cV_ru_bladeLength_0.5': 0.6833682636796429, 'cV_ru_bladeLength_1.0': 1.098288373885862, 'cV_ru_t_le_a_0': 0.04333963143275606, 'cV_ru_t_le_a_0.5': 0.05970486035898813, 'cV_ru_t_le_a_1': 0.027243502852337103, 'cV_ru_t_mid_a_0': 0.014698095985221829, 'cV_ru_t_mid_a_0.5': 0.028962957830934426, 'cV_ru_t_mid_a_1': 0.04796504902806092, 'cV_ru_t_te_a_0': 0.01577708084197574, 'cV_ru_t_te_a_0.5': 0.01945021940488333, 'cV_ru_t_te_a_1': 0.009023193367017956, 'cV_ru_u_mid_a_0': 0.42832406190006633, 'cV_ru_u_mid_a_0.5': 0.41227246166708625, 'cV_ru_u_mid_a_1': 0.4671394674924954}
+[DE] BREAKDOWN      = {
+  "error": "dtoo_build_failed",
+  "worker_id": 0,
+  "eval_mode": "resonance_only"
+}
+============================================================
+[DE] Done. Logs: /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/resonance_only
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n601
+Job ID: 6093871
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 128
+CPU Utilized: 00:00:02
+CPU Efficiency: 0.06% of 00:55:28 core-walltime
+Job Wall-clock time: 00:00:26
+Memory Utilized: 71.12 MB
+Memory Efficiency: 0.06% of 125.00 GB (1000.00 MB/core)

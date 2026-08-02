@@ -1,0 +1,9 @@
+bash: Agent: command not found...
+Failed to search for file: GDBus.Error:org.freedesktop.DBus.Error.NameHasNoOwner: Could not activate remote peer.
+bash: Agent: command not found...
+Failed to search for file: GDBus.Error:org.freedesktop.DBus.Error.NameHasNoOwner: Could not activate remote peer.
+bash: Agent: command not found...
+Failed to search for file: GDBus.Error:org.freedesktop.DBus.Error.NameHasNoOwner: Could not activate remote peer.
+[?2004h[st_ac136362@uc2n601 eigenfrequencies]$ ^C[?2004l[?2004h[?2004l
+[?2004h[st_ac136362@uc2n601 eigenfrequencies]$ exit
+[?2004lexit

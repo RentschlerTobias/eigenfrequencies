@@ -1,0 +1,105 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+========================================
+[DE] variant=resonance_only eval_mode=resonance_only on uc2n601.localdomain
+[DE] POP_SIZE=32  MAX_GEN=50  SEED=42
+[DE] W_RESONANCE=1.0  CFD_ENABLED=0
+[DE] SLURM: 8 nodes x 4 tasks/node, job 6067201
+[DE] state=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_resonance_only.json
+[DE] history=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_resonance_only.jsonl
+[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_6067201
+========================================
+[DE] Starting 32 workers via srun (distributed across 8 nodes)...
+[DE] Running DE client...
+[DE] main() entered pid=2510968 cwd=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies
+[DE] configs loaded pop_size=32 max_gen=50 eval_mode=resonance_only w_resonance=1.0 labels=['cV_ru_alpha_1_ex_0.0', 'cV_ru_alpha_1_ex_0.5', 'cV_ru_alpha_1_ex_1.0', 'cV_ru_alpha_2_ex_0.0', 'cV_ru_alpha_2_ex_0.5', 'cV_ru_alpha_2_ex_1.0', 'cV_ru_offsetM_ex_0.0', 'cV_ru_offsetM_ex_0.5', 'cV_ru_offsetM_ex_1.0', 'cV_ru_ratio_0.0', 'cV_ru_ratio_0.5', 'cV_ru_ratio_1.0', 'cV_ru_offsetPhiR_ex_0.0', 'cV_ru_offsetPhiR_ex_0.5', 'cV_ru_offsetPhiR_ex_1.0', 'cV_ru_bladeLength_0.0', 'cV_ru_bladeLength_0.5', 'cV_ru_bladeLength_1.0', 'cV_ru_t_le_a_0', 'cV_ru_t_le_a_0.5', 'cV_ru_t_le_a_1', 'cV_ru_t_mid_a_0', 'cV_ru_t_mid_a_0.5', 'cV_ru_t_mid_a_1', 'cV_ru_t_te_a_0', 'cV_ru_t_te_a_0.5', 'cV_ru_t_te_a_1', 'cV_ru_u_mid_a_0', 'cV_ru_u_mid_a_0.5', 'cV_ru_u_mid_a_1']
+[DE] discovery: uri_dir=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/resonance_only/uris expected=32 timeout=600s
+[DE] discovery: 0/32 URIs after 0s
+[DE] Discovered 32 workers from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/server_logs/resonance_only/uris
+[DE] discovery done n_workers=32 elapsed=2.2s
+[DE] population=32 dim=30 mutation=0.8 crossover=0.9 max_gen=50 tol=0.01 seed=42 workers=32
+[DE] state_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_resonance_only.json history_file=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_resonance_only.jsonl
+[DE] Resuming from /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_resonance_only.json at generation 12 (best=4.903472).
+[DE] gen 12: dispatching 32 trial evals to 32 workers
+gen 12:   0%|                                            | 0/32 [00:00<?, ?it/s]gen 12:   3%|▍            | 1/32 [03:21<1:44:11, 201.67s/it, ok=0/32 best=1e+06]gen 12:  12%|██              | 4/32 [03:49<21:20, 45.72s/it, ok=0/32 best=1e+06]gen 12:  41%|██████         | 13/32 [04:08<03:45, 11.86s/it, ok=9/32 best=5.128]gen 12:  75%|██████████▌   | 24/32 [04:24<00:46,  5.87s/it, ok=20/32 best=5.044]gen 12: 100%|██████████████| 32/32 [04:38<00:00,  8.70s/it, ok=28/32 best=5.044]
+[DE] Generation 12 best=4.903472 mean=6.464705 ok=32/32
+[DE]   best fitness: f_resonance=4.903 freqs=[30.2,100.1,107.5,118.7...]
+[DE] gen 13: dispatching 32 trial evals to 32 workers
+gen 13:   0%|                                            | 0/32 [00:00<?, ?it/s]gen 13:   3%|▍            | 1/32 [03:08<1:37:13, 188.18s/it, ok=0/32 best=1e+06]gen 13:   6%|█               | 2/32 [03:25<43:56, 87.90s/it, ok=1/32 best=11.79]gen 13:  41%|██████         | 13/32 [03:42<03:08,  9.93s/it, ok=12/32 best=4.83]gen 13:  72%|██████████▊    | 23/32 [04:01<01:29,  9.93s/it, ok=21/32 best=4.83]gen 13:  75%|███████████▎   | 24/32 [04:04<00:43,  5.46s/it, ok=22/32 best=4.83]gen 13:  88%|█████████████▏ | 28/32 [04:21<00:21,  5.46s/it, ok=24/32 best=4.83]gen 13:  91%|█████████████▌ | 29/32 [04:29<00:15,  5.33s/it, ok=25/32 best=4.83]gen 13:  97%|██████████████▌| 31/32 [04:51<00:05,  5.33s/it, ok=27/32 best=4.83]gen 13: 100%|███████████████| 32/32 [04:57<00:00,  6.08s/it, ok=28/32 best=4.83]gen 13: 100%|███████████████| 32/32 [04:57<00:00,  9.29s/it, ok=28/32 best=4.83]
+[DE] Generation 13 best=4.829749 mean=6.240203 ok=32/32
+[DE]   best fitness: f_resonance=4.83 freqs=[29.4,98.7,107.4,118.0...]
+[DE] gen 14: dispatching 32 trial evals to 32 workers
+gen 14:   0%|                                            | 0/32 [00:00<?, ?it/s]gen 14:   3%|▍            | 1/32 [03:12<1:39:39, 192.90s/it, ok=0/32 best=1e+06]gen 14:  19%|███             | 6/32 [03:27<11:24, 26.33s/it, ok=4/32 best=5.022]gen 14:  44%|██████▏       | 14/32 [03:43<03:00, 10.04s/it, ok=11/32 best=5.022]gen 14:  69%|█████████▋    | 22/32 [04:00<01:01,  6.17s/it, ok=18/32 best=4.992]gen 14:  91%|████████████▋ | 29/32 [04:24<00:18,  6.17s/it, ok=25/32 best=4.992]gen 14:  94%|█████████████▏| 30/32 [04:38<00:11,  5.60s/it, ok=26/32 best=4.992]gen 14:  97%|█████████████▌| 31/32 [04:54<00:05,  5.60s/it, ok=27/32 best=4.992]gen 14: 100%|██████████████| 32/32 [04:56<00:00,  6.03s/it, ok=28/32 best=4.992]gen 14: 100%|██████████████| 32/32 [04:56<00:00,  9.26s/it, ok=28/32 best=4.992]
+[DE] Generation 14 best=4.829749 mean=5.954253 ok=32/32
+[DE]   best fitness: f_resonance=4.83 freqs=[29.4,98.7,107.4,118.0...]
+[DE] gen 15: dispatching 32 trial evals to 32 workers
+gen 15:   0%|                                            | 0/32 [00:00<?, ?it/s]gen 15:   3%|▍            | 1/32 [03:09<1:37:52, 189.43s/it, ok=0/32 best=1e+06]gen 15:  12%|██▏              | 4/32 [03:31<19:28, 41.75s/it, ok=3/32 best=6.77]gen 15:  44%|██████▏       | 14/32 [03:47<02:57,  9.84s/it, ok=11/32 best=5.006]gen 15:  88%|████████████▎ | 28/32 [04:05<00:18,  4.63s/it, ok=24/32 best=5.006]gen 15:  97%|█████████████▌| 31/32 [04:27<00:04,  4.63s/it, ok=27/32 best=5.006]gen 15: 100%|██████████████| 32/32 [05:01<00:00,  6.50s/it, ok=28/32 best=5.006]gen 15: 100%|██████████████| 32/32 [05:01<00:00,  9.43s/it, ok=28/32 best=5.006]
+[DE] Generation 15 best=4.829749 mean=5.872881 ok=32/32
+[DE]   best fitness: f_resonance=4.83 freqs=[29.4,98.7,107.4,118.0...]
+[DE] gen 16: dispatching 32 trial evals to 32 workers
+gen 16:   0%|                                            | 0/32 [00:00<?, ?it/s]gen 16:   3%|▍            | 1/32 [03:12<1:39:20, 192.27s/it, ok=0/32 best=1e+06]gen 16:   9%|█▌              | 3/32 [03:27<26:54, 55.67s/it, ok=2/32 best=8.415]gen 16:  47%|██████▌       | 15/32 [03:44<02:28,  8.74s/it, ok=13/32 best=5.084]gen 16:  84%|███████████▊  | 27/32 [04:03<00:23,  4.79s/it, ok=24/32 best=4.788]gen 16:  94%|█████████████▏| 30/32 [04:26<00:09,  4.79s/it, ok=26/32 best=4.788]gen 16:  97%|█████████████▌| 31/32 [04:37<00:05,  5.60s/it, ok=27/32 best=4.788]gen 16: 100%|██████████████| 32/32 [04:46<00:00,  8.95s/it, ok=28/32 best=4.788]
+[DE] Generation 16 best=4.787785 mean=5.643958 ok=32/32
+[DE]   best fitness: f_resonance=4.788 freqs=[34.4,97.6,107.4,115.4...]
+[DE] gen 17: dispatching 32 trial evals to 32 workers
+gen 17:   0%|                                            | 0/32 [00:00<?, ?it/s]gen 17:   3%|▍            | 1/32 [02:55<1:30:49, 175.79s/it, ok=0/32 best=1e+06]gen 17:   9%|█▌              | 3/32 [03:18<26:07, 54.06s/it, ok=0/32 best=1e+06]gen 17:  19%|███             | 6/32 [03:34<10:27, 24.12s/it, ok=3/32 best=4.859]gen 17:  31%|████▋          | 10/32 [03:49<08:50, 24.12s/it, ok=7/32 best=4.859]gen 17:  34%|█████▏         | 11/32 [03:49<04:03, 11.61s/it, ok=8/32 best=4.859]gen 17:  62%|████████▊     | 20/32 [04:04<01:07,  5.62s/it, ok=16/32 best=4.859]gen 17:  88%|████████████▎ | 28/32 [04:29<00:22,  5.62s/it, ok=24/32 best=4.675]gen 17:  91%|████████████▋ | 29/32 [04:30<00:13,  4.34s/it, ok=25/32 best=4.675]gen 17: 100%|██████████████| 32/32 [04:44<00:00,  8.88s/it, ok=28/32 best=4.675]
+[DE] Generation 17 best=4.675096 mean=5.578204 ok=32/32
+[DE]   best fitness: f_resonance=4.675 freqs=[37.2,97.8,107.3,118.3...]
+[DE] gen 18: dispatching 32 trial evals to 32 workers
+gen 18:   0%|                                            | 0/32 [00:00<?, ?it/s][2026-07-28T02:24:23.044] error: *** JOB 6067201 ON uc2n601 CANCELLED AT 2026-07-28T02:24:23 DUE TO TIME LIMIT ***
+[DE] Worker error for individual 9: receiving: not enough data
+gen 18:   3%|▌               | 1/32 [00:15<08:05, 15.68s/it, ok=0/32 best=1e+06][DE] Worker error for individual 13: receiving: not enough data
+[DE] Worker error for individual 15: receiving: not enough data
+[DE] Worker error for individual 28: receiving: not enough data
+[DE] Worker error for individual 20: receiving: not enough data
+[DE] Worker error for individual 30: receiving: not enough data
+[DE] Worker error for individual 1: receiving: not enough data
+[DE] Worker error for individual 29: receiving: not enough data
+[DE] Worker error for individual 4: receiving: not enough data
+[DE] Worker error for individual 0: receiving: not enough data
+[DE] Worker error for individual 18: receiving: not enough data
+[DE] Worker error for individual 19: receiving: not enough data
+[DE] Worker error for individual 8: receiving: not enough data
+[DE] Worker error for individual 21: receiving: not enough data
+[DE] Worker error for individual 16: receiving: not enough data
+[DE] Worker error for individual 7: receiving: not enough data
+[DE] Worker error for individual 26: receiving: not enough data
+[DE] Worker error for individual 5: receiving: not enough data
+[DE] Worker error for individual 10: receiving: not enough data
+[DE] Worker error for individual 25: receiving: not enough data
+[DE] Worker error for individual 3: receiving: not enough data
+[DE] Worker error for individual 14: receiving: not enough data
+[DE] Worker error for individual 22: receiving: not enough data
+[DE] Worker error for individual 23: receiving: not enough data
+[DE] Worker error for individual 2: receiving: not enough data
+[DE] Worker error for individual 12: receiving: not enough data
+[DE] Worker error for individual 31: receiving: not enough data
+[DE] Worker error for individual 17: receiving: not enough data
+[DE] Worker error for individual 24: receiving: not enough data
+[DE] Worker error for individual 6: receiving: not enough data
+[DE] Worker error for individual 27: receiving: not enough data
+[DE] Worker error for individual 11: receiving: not enough data
+gen 18: 100%|███████████████| 32/32 [00:15<00:00,  2.04it/s, ok=0/32 best=1e+06]
+[DE] Generation 18 best=4.675096 mean=5.578204 ok=32/32
+[DE]   best fitness: f_resonance=4.675 freqs=[37.2,97.8,107.3,118.3...]
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[601-608]
+Job ID: 6067201
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: TIMEOUT (exit code 0)
+Nodes: 8
+Cores per node: 128
+CPU Utilized: 00:00:01
+CPU Efficiency: 0.00% of 21-09:59:28 core-walltime
+Job Wall-clock time: 00:30:07
+Memory Utilized: 1.44 GB
+Memory Efficiency: 0.14% of 1000.00 GB (1000.00 MB/core)

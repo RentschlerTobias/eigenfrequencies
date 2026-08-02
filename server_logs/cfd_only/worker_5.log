@@ -1,1 +1,5 @@
-Worker 5 ready on uc2n716.localdomain: PYRO:obj_0c174c7580c3462d86b632883b9a9103@uc2n716.localdomain:32779
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/server_de.py", line 20, in <module>
+    from eigenfrequencies.config import CFDConfig, ObjectiveConfig, OptimizationConfig
+ModuleNotFoundError: No module named 'eigenfrequencies'
+srun: error: uc2n698: task 0: Exited with exit code 1
