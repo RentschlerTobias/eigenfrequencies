@@ -2,4 +2,4 @@ Traceback (most recent call last):
   File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/server_de.py", line 20, in <module>
     from eigenfrequencies.config import CFDConfig, ObjectiveConfig, OptimizationConfig
 ModuleNotFoundError: No module named 'eigenfrequencies'
-srun: error: uc2n794: task 0: Exited with exit code 1
+srun: error: uc2n601: task 0: Exited with exit code 1

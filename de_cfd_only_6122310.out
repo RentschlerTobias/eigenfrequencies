@@ -1,0 +1,46 @@
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+
+The following have been reloaded with a version change:
+  1) compiler/gnu/15.2 => compiler/gnu/14.2
+
+========================================
+[DE] variant=cfd_only eval_mode=cfd_only on uc2n601.localdomain
+[DE] POP_SIZE=16  MAX_GEN=100  SEED=42
+[DE] W_RESONANCE=0.0  CFD_ENABLED=1
+[DE] SLURM: 4 nodes x 4 tasks/node, job 6122310
+[DE] state=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_state_cfd_only.json
+[DE] history=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/de_history_cfd_only.jsonl
+[DE] CFD_CASE_DIR=/scratch/slurm_tmpdir/job_6122310
+========================================
+[DE] Starting 16 workers via srun (distributed across 4 nodes)...
+[DE] Running DE client...
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/eigenfrequencies/turbine_runner/optimize_de.py", line 31, in <module>
+    from eigenfrequencies.config import (
+    ...<5 lines>...
+    )
+ModuleNotFoundError: No module named 'eigenfrequencies'
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n[601-604]
+Job ID: 6122310
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: FAILED (exit code 1)
+Nodes: 4
+Cores per node: 128
+CPU Utilized: 00:00:02
+CPU Efficiency: 0.03% of 02:08:00 core-walltime
+Job Wall-clock time: 00:00:15
+Memory Utilized: 171.65 MB
+Memory Efficiency: 0.03% of 500.00 GB (1000.00 MB/core)
+The task which had the largest memory consumption differs by 100.06% from the average task max memory consumption
