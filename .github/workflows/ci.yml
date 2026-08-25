@@ -40,8 +40,17 @@ jobs:
       - name: Install Sphinx
         run: pip install sphinx furo myst-parser
 
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
       - name: Build documentation
         run: cd docs && make html
+
+      - name: Render Quarto slides
+        run: quarto render docs/slides --to revealjs
+
+      - name: Copy slides into Sphinx site
+        run: cp -r docs/slides docs/_build/html/slides
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

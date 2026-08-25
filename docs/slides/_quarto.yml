@@ -1,0 +1,46 @@
+project:
+  title: "Eigenfrequency-Aware CFD Optimization"
+
+format:
+  revealjs:
+    # --- Broadsheet design (matches the standalone HTML deck) ---
+    theme: [default, broadsheet.scss]
+    width: 1920
+    height: 1080
+    margin: 0.035               # small letterbox so the sheet nearly fills the screen
+    min-scale: 0.2
+    max-scale: 2.0
+    center: false               # sections fill the full 1920×1080 stage (so the
+                                # registration marks anchor to the true corners);
+                                # the theme flex-centres the CONTENT inside them
+    slide-number: c/t
+    footer: "Stuttgart–Laval"
+    # brand marks are painted by the theme (U Stuttgart top-right, IHS
+    # bottom-left) — no Quarto `logo:` to avoid a duplicate bottom-right mark
+
+    # --- title slide: full-bleed Francis-runner photo (like the HTML cover) ---
+    title-slide-attributes:
+      data-background-image: images/titel_la_mirror.png
+      data-background-size: cover
+      data-background-position: center
+
+    # --- reveal.js features the user asked for ---
+    chalkboard: true              # draw / annotate (press B, or the toolbar)
+    menu:                         # slide overview menu (press M)
+      side: left
+      numbers: true
+    navigation-mode: grid         # L/R between stacks, U/D within a vertical stack
+    controls: true
+    controls-layout: bottom-right
+    progress: true
+    hash: true
+    transition: fade
+    transition-speed: fast
+    overview: true                # press O for the grid overview
+    touch: true
+
+    # --- typography / rendering ---
+    html-math-method: mathjax
+    fig-align: left
+    incremental: false
+    link-external-newwindow: true

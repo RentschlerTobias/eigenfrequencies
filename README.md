@@ -610,6 +610,29 @@ Full MCP guide: [`docs/mcp.md`](docs/mcp.md)
 
 ---
 
+## Documentation & Slides
+
+The Sphinx documentation and the *Eigenfrequency-Aware CFD Optimization* Quarto/reveal.js slide deck are published together on GitHub Pages.
+
+- **Sphinx docs:** quickstart, theory, API reference.
+- **Slides:** `docs/slides/slides.qmd` (rendered with `quarto render --to revealjs`), based at `docs/slides/`. The deck covers the full freq-aware CFD optimisation pipeline presented in the Stuttgart–Laval project exchange.
+
+To enable Pages on a fresh clone:
+
+1. Push the repo to GitHub (or use the existing `RentschlerTobias/eigenfrequencies` remote).
+2. In **Settings → Pages → Build and deployment → Source**, select **GitHub Actions**.
+3. The `docs` job in `.github/workflows/ci.yml` builds Sphinx + Quarto and deploys automatically on every push to `main`.
+
+To render the slides locally:
+
+```bash
+# Install Quarto CLI from https://quarto.org/
+quarto render docs/slides --to revealjs
+# Open docs/slides/slides.html in a browser
+```
+
+---
+
 ## License
 
 MIT — IHS University of Stuttgart.
