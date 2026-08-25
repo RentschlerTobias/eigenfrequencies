@@ -14,7 +14,7 @@ This is a framework for optimizing eigenfrequencies of hydraulic machine compone
 Slides
 ======
 
-* `Eigenfrequency-Aware CFD Optimization <../slides/slides.html>`_ — Quarto/reveal.js deck (Stuttgart–Laval).
+* `Eigenfrequency-Aware CFD Optimization <slides/slides.html>`_ — Quarto/reveal.js deck (Stuttgart–Laval).
 
 Indices and tables
 ==================
