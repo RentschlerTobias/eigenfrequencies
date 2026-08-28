@@ -53,6 +53,15 @@ mcp = [
 dtoo = [
     "Pyro5",
 ]
+hydroflow = [
+    "hydroflow-opt",
+]
+
+# Cases discovered by hydroflow-opt. One class per machine YAML; see
+# eigenfrequencies.hydroflow.case.MachineCasePlugin.
+[project.entry-points."hydroflow_opt.cases"]
+tistos = "eigenfrequencies.hydroflow.case:TistosCase"
+naca = "eigenfrequencies.hydroflow.case:NacaCase"
 
 [tool.setuptools.packages.find]
 where = ["src"]

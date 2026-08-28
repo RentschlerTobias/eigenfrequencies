@@ -1,0 +1,188 @@
+"""Evaluate one hydroflow-opt candidate: request.json -> physics -> result.json.
+
+Invoked by hydroflow-opt's SubprocessBackend through the command built in
+:meth:`eigenfrequencies.hydroflow.case.MachineCasePlugin.worker_command`::
+
+    python -m eigenfrequencies.hydroflow.worker --machine NAME REQUEST RESULT
+
+Contract (.omo/notes/hydroflow-contract.md):
+
+* request carries ``candidate.id`` and ``candidate.parameters`` (name -> value)
+* result must echo it as ``candidate_id`` — a mismatch is scored as failed
+* ``status`` is "success" or "failed", ``objective`` a float or null,
+  ``metadata`` an object (never a scalar), ``error`` a string or null
+* the process must exit 0 and leave a result file behind **even when the
+  evaluation fails**. An unwritten result is an unexplained failure for the
+  orchestrator, so every path here ends in :func:`_write`.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+import time
+import traceback
+from pathlib import Path
+from typing import Any
+
+_STAGE_MESH = "mesh"
+_STAGE_MODAL = "modal"
+_STAGE_CFD = "cfd"
+
+
+def _write(result_path: Path, payload: dict[str, Any]) -> None:
+    """Write result.json, creating the parent directory if needed."""
+    result_path.parent.mkdir(parents=True, exist_ok=True)
+    result_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def _failed(
+    result_path: Path,
+    candidate_id: Any,
+    error: str,
+    *,
+    timings: dict[str, float] | None = None,
+    metadata: dict[str, Any] | None = None,
+) -> int:
+    """Record a failed evaluation and exit 0 — the run itself did not crash."""
+    _write(
+        result_path,
+        {
+            "candidate_id": candidate_id,
+            "status": "failed",
+            "objective": None,
+            "timings": timings or {},
+            "metadata": metadata or {},
+            "error": error,
+        },
+    )
+    return 0
+
+
+def evaluate(machine: str, parameters: dict[str, float], options: dict[str, Any]) -> tuple:
+    """Run the physics for one design.
+
+    Returns ``(objective, timings, metadata)``. Raises on any failure; the
+    caller turns that into a failed result.
+    """
+    from eigenfrequencies.adapters.dtoo import load_machine_yaml
+    from eigenfrequencies.config import CFDConfig, ObjectiveConfig, OptimizationConfig
+    from eigenfrequencies.hydroflow.case import machines_dir
+    from eigenfrequencies.penalty.objective import combined_objective, resonance_term
+
+    yaml_path = options.get("machine_yaml") or machines_dir() / f"{machine}.yaml"
+    machine_cfg = load_machine_yaml(yaml_path)
+
+    unknown = set(parameters) - set(machine_cfg.design)
+    if unknown:
+        raise ValueError(
+            f"candidate carries parameters absent from {machine}: {sorted(unknown)}"
+        )
+
+    eval_mode = options.get("eval_mode", "combined")
+    if eval_mode not in ("combined", "cfd_only", "resonance_only"):
+        raise ValueError(f"unknown eval_mode: {eval_mode!r}")
+
+    n_rpm = float(options.get("n_rpm", 72.0))
+    cfd_cfg = CFDConfig(n_rpm=n_rpm)
+    opt_cfg = OptimizationConfig(n_rpm=n_rpm)
+    obj_cfg = ObjectiveConfig()
+    for cfg, key in ((cfd_cfg, "cfd"), (opt_cfg, "optimization"), (obj_cfg, "objective")):
+        for field, value in (options.get(key) or {}).items():
+            setattr(cfg, field, value)
+
+    timings: dict[str, float] = {}
+    metadata: dict[str, Any] = {
+        "machine": machine,
+        "eval_mode": eval_mode,
+        "parameters": dict(parameters),
+    }
+
+    run_modal = eval_mode in ("combined", "resonance_only")
+    run_cfd = eval_mode in ("combined", "cfd_only")
+
+    frequencies = None
+    if run_modal:
+        from eigenfrequencies.hydroflow.physics import run_modal_stage
+
+        started = time.perf_counter()
+        frequencies, mesh_meta = run_modal_stage(machine_cfg, parameters, options)
+        timings[_STAGE_MESH] = mesh_meta.pop("mesh_seconds", 0.0)
+        timings[_STAGE_MODAL] = time.perf_counter() - started - timings[_STAGE_MESH]
+        metadata["mesh"] = mesh_meta
+        metadata["frequencies_hz"] = [float(f) for f in frequencies]
+
+    cfd = None
+    if run_cfd:
+        from eigenfrequencies.hydroflow.physics import run_cfd_stage
+
+        started = time.perf_counter()
+        cfd = run_cfd_stage(machine_cfg, parameters, options, cfd_cfg)
+        timings[_STAGE_CFD] = time.perf_counter() - started
+        if not cfd.get("ok"):
+            raise RuntimeError(f"CFD evaluation failed: {cfd.get('error')}")
+        metadata["cfd"] = {k: cfd[k] for k in ("eta", "vcav", "dH", "P", "Q") if k in cfd}
+
+    if eval_mode == "combined":
+        objective, breakdown = combined_objective(
+            cfd, frequencies, cfd_cfg, opt_cfg, obj_cfg
+        )
+        metadata["breakdown"] = breakdown
+    elif eval_mode == "cfd_only":
+        from eigenfrequencies.penalty.objective import cfd_scalar
+
+        objective = cfd_scalar(cfd, cfd_cfg, obj_cfg)
+    else:
+        objective = resonance_term(frequencies, opt_cfg, obj_cfg)
+
+    return float(objective), timings, metadata
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="eigenfrequencies.hydroflow.worker")
+    parser.add_argument("--machine", required=True)
+    parser.add_argument("request")
+    parser.add_argument("result")
+    args = parser.parse_args(argv if argv is not None else sys.argv[1:])
+
+    result_path = Path(args.result)
+    candidate_id = None
+    try:
+        request = json.loads(Path(args.request).read_text(encoding="utf-8"))
+        candidate = request["candidate"]
+        candidate_id = candidate["id"]
+        parameters = {str(k): float(v) for k, v in candidate["parameters"].items()}
+        options = request.get("options") or {}
+    except Exception as exc:  # noqa: BLE001 - a malformed request is still a result
+        return _failed(result_path, candidate_id, f"{type(exc).__name__}: {exc}")
+
+    started = time.perf_counter()
+    try:
+        objective, timings, metadata = evaluate(args.machine, parameters, options)
+    except Exception as exc:  # noqa: BLE001 - report, never crash the optimizer
+        return _failed(
+            result_path,
+            candidate_id,
+            f"{type(exc).__name__}: {exc}",
+            timings={"total": time.perf_counter() - started},
+            metadata={"traceback": traceback.format_exc(limit=8)},
+        )
+
+    timings["total"] = time.perf_counter() - started
+    _write(
+        result_path,
+        {
+            "candidate_id": candidate_id,
+            "status": "success",
+            "objective": objective,
+            "timings": timings,
+            "metadata": metadata,
+            "error": None,
+        },
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
