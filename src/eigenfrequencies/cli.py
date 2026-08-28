@@ -382,13 +382,7 @@ def solve(
     os.makedirs(run_cfg.output.output_dir, exist_ok=True)
     json_path = os.path.join(run_cfg.output.output_dir, run_cfg.output.results_json)
     prov = provenance.generate(run_cfg)
-    write_payload = {
-        "frequencies_hz": [float(f) for f in frequencies],
-        "eigenvalues": [float(ev) for ev in eigenvalues],
-        "provenance": prov,
-    }
-    with open(json_path, "w") as fh:
-        json.dump(write_payload, fh, indent=2)
+    write_results_json(frequencies, eigenvalues, json_path, provenance=prov)
 
     if run_cfg.output.save_xdmf and write_results_xdmf_vtk is not None:
         try:

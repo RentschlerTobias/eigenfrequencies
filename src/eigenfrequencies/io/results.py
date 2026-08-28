@@ -14,18 +14,27 @@ def write_results_json(
     frequencies,
     eigenvalues=None,
     output_path: str = "output/frequencies.json",
+    provenance=None,
 ) -> None:
     """Write frequencies (and optional eigenvalues) to a JSON file.
+
+    This is the single definition of the solve-result schema. The CLI and the
+    hydroflow-opt worker both go through here so the two cannot drift apart.
 
     Args:
         frequencies: List of eigenfrequencies in Hz.
         eigenvalues: Optional list of raw eigenvalues.
         output_path: Destination file path.
+        provenance: Optional provenance block (versions, seeds, git sha).
     """
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    parent = os.path.dirname(output_path)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
     payload = {"frequencies_hz": [float(f) for f in frequencies]}
     if eigenvalues is not None:
         payload["eigenvalues"] = [float(ev) for ev in eigenvalues]
+    if provenance is not None:
+        payload["provenance"] = provenance
     with open(output_path, "w") as fh:
         json.dump(payload, fh, indent=2)
 

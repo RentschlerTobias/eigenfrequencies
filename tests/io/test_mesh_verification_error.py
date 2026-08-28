@@ -27,8 +27,12 @@ def _make_surface_msh(path: str) -> None:
         l3 = gmsh.model.geo.addLine(p3, p4)
         l4 = gmsh.model.geo.addLine(p4, p1)
         ll = gmsh.model.geo.addCurveLoop([l1, l2, l3, l4])
-        gmsh.model.geo.addPlaneSurface([ll])
+        surf = gmsh.model.geo.addPlaneSurface([ll])
         gmsh.model.geo.synchronize()
+        # The surface needs a physical group: without one the dolfinx gmsh reader
+        # bails out with "No 'physical groups' in gmsh mesh" before our own volume
+        # check ever runs, and the test would pass for the wrong reason.
+        gmsh.model.addPhysicalGroup(2, [surf], tag=1)
         gmsh.model.mesh.generate(2)
         gmsh.write(path)
     finally:
