@@ -33,7 +33,11 @@ def test_beam_fem_vs_analytical():
         height=0.01,
         youngs_modulus=210e9,
         density=7850.0,
-        mesh_resolution=0.1,
+        # 0.1 leaves the 0.01 m section unresolved and overstiffens the third
+        # bending mode by 7.7 %. Convergence over 0.1 / 0.05 / 0.025 gives
+        # 7.70 % / 0.59 % / 0.00 % for that mode, so this is discretisation,
+        # not a modelling error — 0.05 is the cheapest resolution that holds.
+        mesh_resolution=0.05,
     )
     solver_config = SolverConfig(
         freq_min=0.0,

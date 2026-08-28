@@ -124,19 +124,31 @@ def classify_mode(eigenvector, mesh_coords):
     dominant = max(displacements, key=displacements.get)
 
     y_coords = mesh_coords[:, 1]
-    z_coords = mesh_coords[:, 2]
 
-    top_mask = z_coords > 0
-    bottom_mask = z_coords < 0
+    # Torsion about the beam axis is an antisymmetric out-of-plane displacement:
+    # the two halves of the cross-section move in opposite directions, whereas
+    # bending moves them together. Comparing the antisymmetric against the
+    # symmetric part of uz across the section makes this scale-free.
+    #
+    # Split at the actual mid-plane, not at y=0. Meshes built from a corner at
+    # the origin have no negative coordinates at all, and the previous version
+    # (masking on z>0 / z<0) left one side empty, pinned the indicator to zero,
+    # and so labelled every torsional mode "bending_z".
+    y_mid = 0.5 * (np.min(y_coords) + np.max(y_coords))
+    left_mask = y_coords < y_mid
+    right_mask = y_coords > y_mid
 
-    if np.any(top_mask) and np.any(bottom_mask):
-        uz_top = uz[top_mask]
-        uz_bottom = uz[bottom_mask]
-        torsion_indicator = np.abs(np.mean(uz_top) - np.mean(uz_bottom))
+    if np.any(left_mask) and np.any(right_mask):
+        mean_left = float(np.mean(uz[left_mask]))
+        mean_right = float(np.mean(uz[right_mask]))
+        antisymmetric = abs(mean_right - mean_left)
+        symmetric = abs(mean_right + mean_left)
+        torsion_indicator = antisymmetric
     else:
-        torsion_indicator = 0
+        antisymmetric = symmetric = 0.0
+        torsion_indicator = 0.0
 
-    if torsion_indicator > 0.5 * max_uz:
+    if antisymmetric > symmetric and max_uz > 0:
         mode_type = "torsion"
     elif dominant == "x":
         mode_type = "axial"
