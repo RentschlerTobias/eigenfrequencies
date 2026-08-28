@@ -11,37 +11,66 @@ Physical definitions (mirrors the reference):
     eta  = P / (rho * g * dH * Q)                    (efficiency)
     Vcav = cavitation volume from the cavitationVolume function object
 
-NOTE (cluster validation): the exact column layout of OpenFOAM functionObject
-.dat files depends on the case's `system/` setup. The column indices below match
-the de_framework tistos case; confirm them against a real postProcessing/ dump on
-the cluster (see HANDOFF.md) before trusting magnitudes.
+Column layout verified 2026-08-28 against the case definition in
+rl_framework/xml/tistos_ru_of.xml and the reference reader
+rl_framework/tistos_files/tistosPyBib.py:ReadResults:
+
+  Q_ru_in / ptot_ru_in / ptot_ru_out  surfaceFieldValue, operation sum,
+                                      writeFields no -> [time, value], col 1
+  V_CAV                               cavitationVolume, operation sum -> col 1
+  forces (moment.dat)                 type forces, libforces.so, patches
+                                      (RU_BLADE), CofR (0 0 0), rhoInf 997
+                                      -> [time, total(3), pressure(3),
+                                      viscous(3)], total_z at index 3
+
+Note rhoInf=997 in the forces functionObject against rho=1000 in tistos.yaml:
+a systematic 0.3 % bias in eta. Harmless for ranking designs, worth aligning
+before quoting absolute efficiencies.
 """
 
 import os
 
-import numpy as np
+#: Fraction of the trailing iterations averaged for every quantity. A steady
+#: simpleFoam solution still oscillates, so the de_framework reference averages
+#: the last tenth of the run (average_time = endTime/10) rather than reading a
+#: single row. Taking one row feeds that oscillation straight into the DE
+#: objective as noise.
+_AVERAGE_LAST_FRACTION = 0.1
 
 
-def _last_data_row(dat_path: str) -> list:
-    """Return the numeric fields of the last non-comment line of an OpenFOAM .dat."""
+def _data_rows(dat_path: str) -> list:
+    """Return all numeric rows of an OpenFOAM .dat as lists of floats."""
     if not os.path.isfile(dat_path):
         raise FileNotFoundError(dat_path)
-    last = None
+    rows = []
     with open(dat_path) as fh:
         for line in fh:
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            last = line
-    if last is None:
+            # OpenFOAM wraps vectors/tensors in parentheses; strip to flat floats.
+            cleaned = line.replace("(", " ").replace(")", " ")
+            rows.append([float(tok) for tok in cleaned.split()])
+    if not rows:
         raise ValueError(f"no data rows in {dat_path}")
-    # OpenFOAM wraps vectors/tensors in parentheses; strip them to flat floats.
-    cleaned = last.replace("(", " ").replace(")", " ")
-    return [float(tok) for tok in cleaned.split()]
+    return rows
 
 
-def _scalar(case_dir: str, name: str, time: str, col: int = 1) -> float:
-    """Read a single scalar functionObject result (time in col 0, value in col)."""
+def _last_data_row(dat_path: str) -> list:
+    """Return the numeric fields of the last non-comment line of an OpenFOAM .dat."""
+    return _data_rows(dat_path)[-1]
+
+
+def _mean_last(dat_path: str, col: int) -> float:
+    """Mean of *col* over the trailing _AVERAGE_LAST_FRACTION of the rows."""
+    rows = _data_rows(dat_path)
+    n = max(1, int(len(rows) * _AVERAGE_LAST_FRACTION))
+    tail = rows[-n:]
+    return float(sum(r[col] for r in tail) / len(tail))
+
+
+def _scalar_path(case_dir: str, name: str, time: str) -> str:
+    """Resolve the .dat file of a scalar functionObject."""
     path = os.path.join(case_dir, "postProcessing", name, time, f"{name}.dat")
     if not os.path.isfile(path):
         # OpenFOAM sometimes names the file 'surfaceFieldValue.dat' etc.; fall back
@@ -52,7 +81,17 @@ def _scalar(case_dir: str, name: str, time: str, col: int = 1) -> float:
         if not dats:
             raise FileNotFoundError(path)
         path = os.path.join(tdir, dats[0])
-    return _last_data_row(path)[col]
+    return path
+
+
+def _scalar(case_dir: str, name: str, time: str, col: int = 1) -> float:
+    """Trailing-average of a scalar functionObject (time in col 0, value in col)."""
+    return _mean_last(_scalar_path(case_dir, name, time), col)
+
+
+def _last_time(case_dir: str, name: str, time: str) -> float:
+    """Last written iteration of a scalar functionObject."""
+    return _last_data_row(_scalar_path(case_dir, name, time))[0]
 
 
 def _moment_z(case_dir: str, folder: str) -> float:
@@ -67,11 +106,11 @@ def _moment_z(case_dir: str, folder: str) -> float:
     for fname in ("moment.dat", "moment_ru_blade.dat"):
         p = os.path.join(base, fname)
         if os.path.isfile(p):
-            return _last_data_row(p)[3]
+            return _mean_last(p, 3)
     # combined forces.dat: [time, force(3), moment(3), ...] -> moment_z at index 6
     p = os.path.join(base, "forces.dat")
     if os.path.isfile(p):
-        return _last_data_row(p)[6]
+        return _mean_last(p, 6)
     raise FileNotFoundError(os.path.join(base, "moment.dat"))
 
 
@@ -95,6 +134,19 @@ def evaluate_cfd(case_dir: str, cfd_cfg) -> dict:
         ptot_out = _scalar(case_dir, "ptot_ru_out", t)
         moment_z = _moment_z(case_dir, t)
         vcav = abs(_scalar(case_dir, "V_CAV", t))
+
+        # Reject a run that stopped before endTime. The reference raises
+        # "Max number of iterations not reached" here; without it a diverged or
+        # truncated solve enters the objective looking perfectly valid, and the
+        # DE happily optimises towards whatever the broken case reported.
+        end_time = getattr(cfd_cfg, "end_time", None)
+        if end_time is not None:
+            last_it = _last_time(case_dir, "ptot_ru_in", t)
+            if abs(last_it - float(end_time)) > 1e-6:
+                return {"ok": False,
+                        "error": f"Max number of iterations not reached "
+                                 f"(last={last_it:g}, expected={float(end_time):g})",
+                        "eta": 0.0, "vcav": 0.0, "dH": 0.0, "P": 0.0, "Q": 0.0}
 
         P = moment_z * cfd_cfg.omega
         dH = (ptot_out - ptot_in) / cfd_cfg.g
