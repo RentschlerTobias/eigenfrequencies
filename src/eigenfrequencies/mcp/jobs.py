@@ -70,12 +70,18 @@ def _build_cli_cmd(
         ValueError: if kind is not one of ``solve``, ``validate``, or ``optimize``.
     """
     extra = extra_args or []
+    # Go through the interpreter rather than the bare "eigenfrequencies" console
+    # script: the script only resolves when its bin/ is on PATH, which is not the
+    # case for a non-activated conda env and will not be inside the enroot
+    # container on the cluster either. sys.executable always points at the
+    # interpreter that owns this installation.
+    base = [sys.executable, "-m", "eigenfrequencies.cli"]
     if kind == "solve":
-        return ["eigenfrequencies", "solve", "--config", config_path, *extra]
+        return [*base, "solve", "--config", config_path, *extra]
     if kind == "validate":
-        return ["eigenfrequencies", "validate", "--suite", config_path, *extra]
+        return [*base, "validate", "--suite", config_path, *extra]
     if kind == "optimize":
-        return ["eigenfrequencies", "optimize", "--config", config_path, *extra]
+        return [*base, "optimize", "--config", config_path, *extra]
     raise ValueError(
         f"Unknown job kind: {kind!r}. Expected 'solve', 'validate', or 'optimize'."
     )

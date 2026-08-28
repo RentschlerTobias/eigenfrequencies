@@ -398,10 +398,11 @@ class TestGuardrails:
         """Demonstrate that adding a code-graph probe tool breaks the 6-tool invariant.
 
         This test temporarily registers a probe tool on the server's mcp instance
-        to prove the guardrail catches tool-creep.  The probe is registered
-        only within this test — it does not contaminate other tests because
-        fastmcp deduplicates tools by name via the decorator call, and the
-        probe name "explain_codebase" is not in the expected set.
+        to prove the guardrail catches tool-creep, then removes it again.
+
+        The probe MUST be removed in a finally block. ``mcp`` is a module-level
+        singleton, so a tool registered here stays registered for the rest of the
+        session and makes test_exactly_six_tools fail depending on test order.
         """
         from eigenfrequencies.mcp.server import mcp as server_mcp
 
@@ -418,21 +419,26 @@ class TestGuardrails:
 
         import asyncio
 
-        tools = asyncio.run(_check())
-        tool_names = {t.name for t in tools}
+        try:
+            tools = asyncio.run(_check())
+            tool_names = {t.name for t in tools}
 
-        # The registry test (test_exactly_six_tools) would FAIL here because
-        # we now have 7 tools instead of 6, and "explain_codebase" is a
-        # code-graph smell.
-        assert len(tools) == 7, f"Expected 7 tools (6 + probe), got {len(tools)}: {tool_names}"
-        assert "explain_codebase" in tool_names
-        code_graph_overlap = tool_names & _CODE_GRAPH_SMELLS
-        assert "explain_codebase" in code_graph_overlap, (
-            f"Probe tool 'explain_codebase' should be in code-graph smell set. "
-            f"Overlap: {code_graph_overlap}"
-        )
+            # The registry test (test_exactly_six_tools) would FAIL here because
+            # we now have 7 tools instead of 6, and "explain_codebase" is a
+            # code-graph smell.
+            assert len(tools) == 7, (
+                f"Expected 7 tools (6 + probe), got {len(tools)}: {tool_names}"
+            )
+            assert "explain_codebase" in tool_names
+            code_graph_overlap = tool_names & _CODE_GRAPH_SMELLS
+            assert "explain_codebase" in code_graph_overlap, (
+                f"Probe tool 'explain_codebase' should be in code-graph smell set. "
+                f"Overlap: {code_graph_overlap}"
+            )
 
-        # The 6-tool assertion would fail:
-        assert tool_names != _EXPECTED_SIX_TOOLS, (
-            "After adding probe, tool set must NOT equal the expected 6-tool set"
-        )
+            # The 6-tool assertion would fail:
+            assert tool_names != _EXPECTED_SIX_TOOLS, (
+                "After adding probe, tool set must NOT equal the expected 6-tool set"
+            )
+        finally:
+            server_mcp.remove_tool("explain_codebase")
