@@ -144,13 +144,11 @@ class ModalSolver:
         bc, bc_dofs = self.apply_bc(V)
 
         if self.solver.solver_backend == "slepc":
-            if self.bc.mode != "free":
-                raise SolverConfigError(
-                    "solver_backend='slepc' supports mode='free' only; "
-                    "use 'scipy' for clamped BCs"
-                )
+            # Both boundary conditions are supported. The clamp is imposed by
+            # assembly (unit diagonal in K, zero in M) rather than by removing
+            # DOFs, which keeps the sparsity SLEPc is here for.
             self.backend_used = "slepc"
-            eigenvalues, full_vectors = solve_slepc(a_form, b_form, self.solver)
+            eigenvalues, full_vectors = solve_slepc(a_form, b_form, self.solver, bc)
             self._rigid_body_check(eigenvalues)
             return eigenvalues, full_vectors
 

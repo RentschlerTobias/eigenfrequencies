@@ -27,8 +27,15 @@ Two solver backends are available:
 
 | Backend | Library | Use case |
 |---|---|---|
-| `scipy` | `scipy.sparse.linalg.eigsh` | Local development, clamped BCs |
-| `slepc` | PETSc + SLEPc, Krylov–Schur, MUMPS | Cluster, free-free BC, large problems |
+| `scipy` | `scipy.sparse.linalg.eigsh` | Local development, small and medium problems |
+| `slepc` | PETSc + SLEPc, Krylov–Schur, MUMPS | Cluster, large problems (past ~1M DOFs) |
+
+Both support every BC mode — clamped and free-free — and agree to machine
+precision on the same problem, so the choice is one of numerics, not of
+physics. scipy slices the constrained DOFs out of the CSR matrices; SLEPc keeps
+the sparsity and pushes them to an infinite eigenvalue by writing a unit
+diagonal into K and a zero diagonal into M. The equivalence is pinned by
+`tests/solver/test_backend_equivalence.py`.
 
 ```
 src/eigenfrequencies/solver/

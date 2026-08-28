@@ -101,9 +101,12 @@ class SolverConfig:
             bending-dominated eigenfrequencies ~15-20% on thin structures
             (measured against experiment on the test-case disc); use 2
             (quadratic, ~1M DOFs, needs ~8 GB+) for validation-grade runs.
-        solver_backend: "scipy" (eigsh on CSR slices, suited to clamped BCs)
-            or "slepc" (PETSc/SLEPc shift-invert + MUMPS factorization;
-            free-free mode only, scales past ~1M DOFs).
+        solver_backend: "scipy" (eigsh on CSR slices) or "slepc" (PETSc/SLEPc
+            shift-invert + MUMPS factorization, scales past ~1M DOFs). Both
+            support every BC mode and agree to machine precision on the same
+            problem, so this is a choice of numerics, not of physics: pick
+            slepc when the factorization is the memory wall. See
+            tests/solver/test_backend_equivalence.py.
     """
     num_eigenvalues: int = 10
     tolerance: float = 1e-6

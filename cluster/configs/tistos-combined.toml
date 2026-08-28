@@ -32,8 +32,13 @@ container = "~/enroot-images/fenicsx.sqsh"
 timeout = 7200
 
 [case.options.modal.solver]
+# P2 per Q6, SLEPc as the plan intended. Both backends handle the hub clamp
+# and agree to machine precision (tests/solver/test_backend_equivalence.py);
+# SLEPc keeps the matrices sparse, which is what decides whether 545k DOFs fit.
+# Switch to "scipy" if MUMPS turns out to be the memory problem rather than the
+# solution — the physics does not change either way.
 element_degree = 2
-solver_backend = "scipy"
+solver_backend = "slepc"
 num_eigenvalues = 10
 
 [case.options.cfd]

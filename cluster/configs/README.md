@@ -41,27 +41,37 @@ concurrent_evaluations × mpi_ranks × threads_per_rank ≤ available_cpus
 optimization.islands                                  ≤ concurrent_evaluations
 ```
 
-## Open decision: SLEPc vs. the hub clamp
+## Eigensolver: a config switch, not a fork in the physics
 
-The plan calls for "P2 + SLEPc" in all three runs. **That combination does not
-exist in the code.** `solver/core.py:146-150` rejects `solver_backend="slepc"`
-unless `bc.mode == "free"`, and tistos' machine YAML clamps the hub
-(`bc_template: hub_clamp` → `radius_band`). The SLEPc path is a free-free
-shift-invert; it was written for the validation disc, which hangs free.
+The plan called for "P2 + SLEPc", and SLEPc used to reject anything but a
+free-free boundary condition — while tistos clamps its hub. That restriction is
+gone: the clamp is now imposed by assembly (unit diagonal in K, zero in M, so
+the constrained rows sit at an infinite eigenvalue) instead of by removing DOFs,
+which is what keeps the matrices sparse.
 
-These configs therefore use **P2 + scipy with the hub clamp** — the
-discretization from Q6, the boundary condition from the machine. Three ways
-out, in order of what they cost:
+Both backends therefore solve the same clamped problem, and they agree to
+machine precision — 6e-14 % on the fixture mesh, pinned by
+`tests/solver/test_backend_equivalence.py`. Switching is one line:
 
-* keep scipy (this default): correct BC, but the factorization is the memory
-  wall — that is where the ~28.6 GB comes from;
-* switch to free-free + SLEPc (`modal.bc.mode = "free"`,
-  `modal.solver.solver_backend = "slepc"`): scales past 10^6 DOFs, discards the
-  first 6 rigid-body modes — but the runner then vibrates unattached, which is
-  not the machine;
-* teach the SLEPc backend the clamped case: right answer, real work, not a
-  config change.
+```toml
+[case.options.modal.solver]
+solver_backend = "slepc"    # or "scipy"
+```
 
-The first run will show whether scipy fits in memory at all. Until then the
-number in `[resources]` is an estimate carried over from the validation case,
-not a measurement of tistos.
+| | `slepc` (default here) | `scipy` |
+|---|---|---|
+| Constrained DOFs | unit/zero diagonal, matrix stays sparse | sliced out of the CSR matrices |
+| Factorization | MUMPS, distributed | ARPACK on the restricted system |
+| Scales to | past ~10^6 DOFs | ~10^5–10^6 |
+
+tistos at P2 is roughly 545k DOFs, which is exactly the range where the choice
+starts to matter — hence SLEPc as the default. If MUMPS turns out to be the
+memory problem rather than the solution, switch to scipy; the frequencies do
+not change.
+
+Free-free (`modal.bc.mode = "free"`) remains available for validation against
+an unmounted disc, but it is not the machine: the runner is bolted to a shaft.
+
+The ~28.6 GB in `[resources]` is still an estimate carried over from the
+validation case, not a measurement of tistos with either backend. The first run
+turns it into a number.

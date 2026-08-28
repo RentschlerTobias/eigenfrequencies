@@ -31,18 +31,31 @@ def test_unknown_backend_raises():
 
 
 @pytest.mark.requires_container
-def test_slepc_with_clamped_bc_raises():
-    """SLEPc backend with a clamped BC raises SolverConfigError."""
-    domain = _dummy_domain()
-    material = MaterialConfig()
-    bc_config = BCConfig(mode="axial_plane", axis="x", plane_value=0.0)
-    solver_config = SolverConfig(solver_backend="slepc")
+def test_slepc_accepts_a_clamped_bc():
+    """SLEPc solves the clamped problem — it used to reject it outright.
 
-    solver = ModalSolver(domain, material, bc_config, solver_config)
-    with pytest.raises(SolverConfigError) as exc_info:
-        solver.solve()
-    assert "slepc" in str(exc_info.value).lower()
-    assert "free" in str(exc_info.value).lower()
+    The clamp is imposed by assembly (unit diagonal in K, zero in M), not by
+    removing DOFs, so the constrained rows sit at an infinite eigenvalue and
+    drop out of the spectrum. What is checked here is only that the path runs
+    and produces physical frequencies; that it produces the *right* ones is
+    ``test_backends_agree_on_the_clamped_problem``.
+    """
+    domain = _dummy_domain()
+    bc_config = BCConfig(mode="axial_plane", axis="x", plane_value=0.0)
+    solver_config = SolverConfig(
+        solver_backend="slepc", num_eigenvalues=3, element_degree=1
+    )
+
+    solver = ModalSolver(domain, MaterialConfig(), bc_config, solver_config)
+    eigenvalues, _ = solver.solve()
+    frequencies = solver.compute_frequencies(eigenvalues)
+
+    assert solver.backend_used == "slepc"
+    assert len(frequencies) >= 1
+    # A clamped body has no rigid-body modes, and no spurious mode from the
+    # constrained rows survived into the result.
+    assert np.all(frequencies > 1.0)
+    assert np.all(np.isfinite(frequencies))
 
 
 @pytest.mark.requires_container
