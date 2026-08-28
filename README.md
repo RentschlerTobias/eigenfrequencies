@@ -45,6 +45,8 @@ src/eigenfrequencies/solver/
 └── rayleigh.py      ← Rayleigh-quotient refinement step
 ```
 
+Full backend guide: [`docs/solver_backends.md`](docs/solver_backends.md)
+
 ### 2 · Penalty / resonance objective
 
 A runner rotating at *n* RPM with *Z* guide vanes is excited at the blade-passing frequency and its harmonics:
