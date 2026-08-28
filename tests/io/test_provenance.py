@@ -187,12 +187,17 @@ class TestGenerateDirtyGit:
 
         _real_run = subprocess.run
 
+        # Match the flags exactly as they appear in the argv list. "porcelain" in
+        # cmd is False for ["git", "status", "--porcelain"] — list membership is
+        # not a substring test — so these branches used to fall through to the
+        # real git, and the test only passed while the working tree happened to
+        # be dirty.
         def _fake_run(cmd, **kwargs):
-            if "show-toplevel" in cmd:
+            if "--show-toplevel" in cmd:
                 return subprocess.CompletedProcess(args=[], returncode=0, stdout="/repo\n")
             if "HEAD" in cmd:
                 return subprocess.CompletedProcess(args=[], returncode=0, stdout="a" * 40 + "\n")
-            if "porcelain" in cmd:
+            if "--porcelain" in cmd:
                 return subprocess.CompletedProcess(
                     args=[], returncode=0,
                     stdout=" M src/eigenfrequencies/some_file.py\n",
