@@ -1,0 +1,33 @@
+# Keep the FEniCSx image build context small. Without this, `docker build`
+# ships ~290 MB — mostly meshes and history — and every byte of it lands in
+# the image, which then has to be exported and copied to the cluster.
+#
+# What stays: src/, adapters/, cluster/, schema/, scripts/, tests/fixtures/ —
+# everything the installed package or a mounted-repo run actually reads.
+
+.git
+.github
+.pytest_cache
+.ruff_cache
+.omo
+.opencode
+**/__pycache__
+
+# Results and scratch, never inputs.
+output/
+enroot-images/
+demo/**/output/
+tests/**/output/
+docs/
+
+# Reference meshes and recorded runs (72 MB + 34 MB). The evaluation builds its
+# own geometry with dtOO; these are for local inspection only.
+turbine_runner/assets/
+turbine_runner/data/
+turbine_runner/*.log
+turbine_runner/de_state*.json
+turbine_runner/de_history*.jsonl
+
+# The dtOO submodule is not part of this image — dtOO lives in its own
+# container (atismer/dtoo-opensuse:stable).
+dtOO/

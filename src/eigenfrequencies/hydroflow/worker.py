@@ -62,6 +62,32 @@ def _failed(
     return 0
 
 
+def _override(cfg: Any, values: dict[str, Any], *, section: str) -> None:
+    """Apply ``[case.options.<section>]`` onto a config dataclass, strictly.
+
+    A key the dataclass does not declare is an error, not a no-op. Silently
+    dropping ``w_resonanc`` would leave a run that looks healthy, finishes, and
+    is quietly incomparable to the other two — the failure mode this project
+    has already paid for once.
+
+    ``[case.options.cfd]`` is the exception: it is read twice, once here for
+    the operating point and once by the CFD stage for its plumbing. Those keys
+    are skipped rather than rejected.
+    """
+    from eigenfrequencies.hydroflow.physics import CFD_STAGE_KEYS
+
+    foreign = CFD_STAGE_KEYS if section == "cfd" else frozenset()
+    for field, value in values.items():
+        if field in foreign:
+            continue
+        if not hasattr(cfg, field):
+            known = sorted(vars(cfg))
+            raise ValueError(
+                f"options.{section} has no field {field!r}; known: {', '.join(known)}"
+            )
+        setattr(cfg, field, value)
+
+
 def evaluate(
     machine: str,
     parameters: dict[str, float],
@@ -105,8 +131,7 @@ def evaluate(
     opt_cfg = OptimizationConfig(n_rpm=n_rpm)
     obj_cfg = ObjectiveConfig()
     for cfg, key in ((cfd_cfg, "cfd"), (opt_cfg, "optimization"), (obj_cfg, "objective")):
-        for field, value in (options.get(key) or {}).items():
-            setattr(cfg, field, value)
+        _override(cfg, options.get(key) or {}, section=key)
 
     timings: dict[str, float] = {}
     metadata: dict[str, Any] = {

@@ -80,3 +80,6 @@ server_logs/
 run_log/
 log_refactor/
 .omo/
+
+# Container tarballs for the cluster (GB-scale, rebuilt by cluster/export_*.sh)
+enroot-images/

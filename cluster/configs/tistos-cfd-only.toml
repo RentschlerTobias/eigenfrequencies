@@ -1,0 +1,53 @@
+# tistos — CFD only. Run this one FIRST: cheapest of the three (no modal
+# solve) and the one that proves the CFD objective varies between designs.
+#
+# Submit with:  sbatch cluster/submit_hydroflow_opt.sh cluster/configs/tistos-cfd-only.toml
+# See cluster/configs/README.md for the shared settings and the open SLEPc question.
+
+[run]
+# [USER] Set an absolute workspace path. A relative one is resolved against
+# *this file's* directory, so the default writes into the repo checkout.
+# The scratch directory is redirected to node-local $TMPDIR by the submit script.
+directory = "runs/tistos-cfd-only"
+
+[case]
+name = "tistos"
+
+[case.options]
+# The one line that differs between the three runs.
+eval_mode = "cfd_only"
+n_rpm = 72.0
+
+[case.options.dtoo]
+# Explicit: the auto-detection falls back to docker, which does not exist on a
+# compute node. dtOOPythonSWIG needs both environments sourced — physics.py
+# does that itself.
+runtime = "enroot"
+container = "~/enroot-images/dtOO-opensuse.sqsh"
+case_dir = "/dtOO/build/test/tistos"
+timeout = 1800
+
+[case.options.cfd]
+# procs is left unset on purpose: the worker then takes resources.mpi_ranks,
+# which is the number hydroflow-opt validated against the CPU budget.
+timeout = 3600
+
+[resources]
+# [USER] Sized for a 40-core / 96 GB node; submit_hydroflow_opt.sh verifies it
+# against the real allocation. cfd_only has no modal solve and is therefore not
+# memory-bound — once the first run reports its peak, concurrent_evaluations
+# can go up.
+available_cpus = 40
+concurrent_evaluations = 3
+mpi_ranks = 4
+threads_per_rank = 1
+
+[optimization]
+# Identical in all three configs. Total evaluations = islands × population_size
+# × (generations + 1) = 2 × 8 × 11 = 176.
+islands = 2
+population_size = 8
+generations = 10
+differential_weight = 0.8
+crossover_rate = 0.9
+seed = 20260911

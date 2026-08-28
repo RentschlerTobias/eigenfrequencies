@@ -123,6 +123,39 @@ class TestOptionsPlumbing:
         assert stub_stages["modal"]["context"]["scratch_dir"] == scratch
         assert stub_stages["cfd"]["context"]["scratch_dir"] == scratch
 
+    def test_a_typo_in_an_options_table_is_rejected(self, tmp_path, stub_stages):
+        """A silently ignored weight makes a comparison run quietly invalid."""
+        result = run_worker(
+            tmp_path, write_request(tmp_path, options={"objective": {"w_resonanc": 2.0}})
+        )
+
+        assert result["status"] == "failed"
+        assert "w_resonanc" in result["error"]
+        assert "w_resonance" in result["error"], "the message should list the real fields"
+
+    def test_config_fields_still_reach_their_dataclass(self, tmp_path, monkeypatch):
+        captured = {}
+
+        def cfd(machine_cfg, parameters, options, cfd_cfg, context=None):
+            captured["design_head"] = cfd_cfg.design_head
+            captured["end_time"] = cfd_cfg.end_time
+            return {"ok": True, "eta": -0.9, "vcav": 0.0, "dH": -2.4, "P": 1.0, "Q": 1.0}
+
+        monkeypatch.setattr("eigenfrequencies.hydroflow.physics.run_cfd_stage", cfd)
+        run_worker(
+            tmp_path,
+            write_request(
+                tmp_path,
+                options={
+                    "eval_mode": "cfd_only",
+                    # timeout belongs to the CFD *stage*, the other two to
+                    # CFDConfig — one table, two readers.
+                    "cfd": {"design_head": -3.0, "end_time": 800, "timeout": 3600},
+                },
+            ),
+        )
+        assert captured == {"design_head": -3.0, "end_time": 800}
+
     def test_n_rpm_option_drives_the_operating_point(self, tmp_path, monkeypatch):
         captured = {}
 

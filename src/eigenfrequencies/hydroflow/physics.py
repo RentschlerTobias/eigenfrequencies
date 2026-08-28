@@ -125,6 +125,16 @@ RESULT_MARKER = "RESULT_JSON "
 
 _RUNTIME_KINDS = ("auto", "inprocess", "native", "docker", "enroot")
 
+#: Keys under ``[case.options.cfd]`` that belong to *this* module rather than to
+#: :class:`eigenfrequencies.config.CFDConfig`. The table has two readers — the
+#: worker fills the physical operating point from it, the CFD stage its
+#: plumbing — and without this list neither could tell a foreign key from a
+#: typo. A silently ignored ``w_resonanc`` is how a comparison run ends up
+#: incomparable without anyone noticing.
+CFD_STAGE_KEYS = frozenset(
+    {"stage_dir", "state", "case_name", "procs", "timeout", "solve_script"}
+)
+
 
 class StageError(RuntimeError):
     """A physics stage failed. The worker reports it as ``status: failed``."""

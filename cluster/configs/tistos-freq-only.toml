@@ -1,0 +1,62 @@
+# tistos — resonance only. Run second, after cfd_only has shown the chain works.
+#
+# Submit with:  sbatch cluster/submit_hydroflow_opt.sh cluster/configs/tistos-freq-only.toml
+# See cluster/configs/README.md for the shared settings and the open SLEPc question.
+
+[run]
+# [USER] Set an absolute workspace path. A relative one is resolved against
+# *this file's* directory, so the default writes into the repo checkout.
+directory = "runs/tistos-freq-only"
+
+[case]
+name = "tistos"
+
+[case.options]
+# The one line that differs between the three runs.
+eval_mode = "resonance_only"
+n_rpm = 72.0
+
+[case.options.dtoo]
+runtime = "enroot"
+container = "~/enroot-images/dtOO-opensuse.sqsh"
+case_dir = "/dtOO/build/test/tistos"
+timeout = 1800
+
+[case.options.modal]
+# The image must carry gmsh on top of dolfinx — the plain dolfinx image cannot
+# read a .msh. cluster/export_fenicsx_enroot.sh builds and ships the right one.
+runtime = "enroot"
+container = "~/enroot-images/fenicsx.sqsh"
+timeout = 7200
+
+[case.options.modal.solver]
+# P2 per Q6. scipy, not slepc: the SLEPc path is free-free only and tistos
+# clamps its hub — see cluster/configs/README.md.
+element_degree = 2
+solver_backend = "scipy"
+num_eigenvalues = 10
+
+[case.options.optimization]
+# The forbidden band: harmonics of the blade-passing frequency
+# f_bp = Z_guidevanes × n_rpm / 60.
+Z_guidevanes = 18
+max_harmonic = 6
+margin_hz = 5.0
+margin_fraction = 0.05
+
+[resources]
+# [USER] Sized for a 40-core / 96 GB node; the submit script verifies it.
+# Memory binds here, not cores: ~28.6 GB peak per modal solve.
+available_cpus = 40
+concurrent_evaluations = 3
+mpi_ranks = 1
+threads_per_rank = 12
+
+[optimization]
+# Identical in all three configs.
+islands = 2
+population_size = 8
+generations = 10
+differential_weight = 0.8
+crossover_rate = 0.9
+seed = 20260911

@@ -1,0 +1,72 @@
+# tistos — CFD + resonance. Run last: the most expensive per candidate, and the
+# one whose result the other two explain.
+#
+# Objective = cfd_scalar + w_resonance × resonance_penalty. The resonance term
+# is a soft constraint: zero unless a mode sits inside the forbidden band.
+#
+# Submit with:  sbatch cluster/submit_hydroflow_opt.sh cluster/configs/tistos-combined.toml
+# See cluster/configs/README.md for the shared settings and the open SLEPc question.
+
+[run]
+# [USER] Set an absolute workspace path. A relative one is resolved against
+# *this file's* directory, so the default writes into the repo checkout.
+directory = "runs/tistos-combined"
+
+[case]
+name = "tistos"
+
+[case.options]
+# The one line that differs between the three runs.
+eval_mode = "combined"
+n_rpm = 72.0
+
+[case.options.dtoo]
+runtime = "enroot"
+container = "~/enroot-images/dtOO-opensuse.sqsh"
+case_dir = "/dtOO/build/test/tistos"
+timeout = 1800
+
+[case.options.modal]
+runtime = "enroot"
+container = "~/enroot-images/fenicsx.sqsh"
+timeout = 7200
+
+[case.options.modal.solver]
+element_degree = 2
+solver_backend = "scipy"
+num_eigenvalues = 10
+
+[case.options.cfd]
+timeout = 3600
+
+[case.options.optimization]
+Z_guidevanes = 18
+max_harmonic = 6
+margin_hz = 5.0
+margin_fraction = 0.05
+
+[case.options.objective]
+# Weights on the three hydraulic terms plus the resonance constraint. Changing
+# any of these makes the run incomparable to the other two.
+w_eta = 1.0
+w_cav = 1.0
+w_head = 1.0
+w_resonance = 1.0
+
+[resources]
+# [USER] Sized for a 40-core / 96 GB node; the submit script verifies it.
+# Both stages run per candidate, so memory binds as in the freq-only run, but
+# mpi_ranks has to stay ≥ 1 for simpleFoam: 3 × 4 × 1 = 12 ≤ 40.
+available_cpus = 40
+concurrent_evaluations = 3
+mpi_ranks = 4
+threads_per_rank = 1
+
+[optimization]
+# Identical in all three configs.
+islands = 2
+population_size = 8
+generations = 10
+differential_weight = 0.8
+crossover_rate = 0.9
+seed = 20260911
