@@ -29,6 +29,12 @@ from typing import Any
 #: mode sits in the forbidden band — which is the outcome one hopes for — and a
 #: design family without cavitation reports vcav = 0 throughout. Constant at any
 #: other value is frozen for those too.
+#:
+#: ``Q`` is deliberately absent. The flow rate is set by the mapped inlet
+#: profile in ``boundaryData_RU_INLET``, so it is an input to the simulation,
+#: not a result: two candidates measured 17.68047 to every digit while eta,
+#: vcav and dH differed by factors. Listing it here would fail every healthy
+#: run.
 _METRICS: tuple[tuple[str, tuple[str, ...], bool], ...] = (
     ("objective", ("objective",), False),
     ("eta", ("metadata", "cfd", "eta"), False),

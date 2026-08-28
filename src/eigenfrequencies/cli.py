@@ -62,6 +62,23 @@ EXIT_VALIDATION_DEVIATION = 4
 TOLERANCE_PCT = 5.0
 
 
+def _job_result_path() -> Optional[str]:
+    """Return ``$JOB_DIR/result.json``, or ``None`` outside a job.
+
+    ``JobStore`` starts the CLI with ``JOB_DIR`` pointing at the job directory
+    and expects the payload there — ``fetch()`` refuses a job that finished
+    without one, and the MCP ``fetch_results`` tool then reports "done but
+    result.json is missing" for a solve that in fact succeeded and wrote its
+    results to the configured output directory. Nothing outside a job sets
+    ``JOB_DIR``, so ordinary CLI use writes nothing extra.
+    """
+    job_dir = os.environ.get("JOB_DIR")
+    if not job_dir:
+        return None
+    os.makedirs(job_dir, exist_ok=True)
+    return os.path.join(job_dir, "result.json")
+
+
 def _generate_beam_msh(
     output_dir: str,
     length: float = 1.0,
@@ -383,6 +400,11 @@ def solve(
     json_path = os.path.join(run_cfg.output.output_dir, run_cfg.output.results_json)
     prov = provenance.generate(run_cfg)
     write_results_json(frequencies, eigenvalues, json_path, provenance=prov)
+    # Second destination, same writer: the job copy cannot drift from the
+    # configured one because neither is built by hand.
+    job_result = _job_result_path()
+    if job_result:
+        write_results_json(frequencies, eigenvalues, job_result, provenance=prov)
 
     if run_cfg.output.save_xdmf and write_results_xdmf_vtk is not None:
         try:
@@ -631,6 +653,10 @@ def optimize(
     result_path = out_dir / "optimization_result.json"
     with open(result_path, "w") as fh:
         json.dump(result, fh, indent=2)
+    job_result = _job_result_path()
+    if job_result:
+        with open(job_result, "w") as fh:
+            json.dump(result, fh, indent=2)
 
     typer.echo(f"Optimization complete. Best objective: {result['best_objective']:.6f}")
     typer.echo(f"Result written to {result_path}")

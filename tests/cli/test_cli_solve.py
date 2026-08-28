@@ -242,3 +242,37 @@ class TestSolveFailurePaths:
 
         assert result.exit_code == EXIT_SOLVE_ERROR
         assert "mesh missing" in result.output
+
+
+class TestJobResultPublishing:
+    """The CLI has to leave its payload where JobStore expects to find it.
+
+    ``JobStore`` starts the CLI with ``JOB_DIR`` set and ``fetch()`` reads
+    ``$JOB_DIR/result.json``. The CLI only ever wrote to the configured output
+    directory, so every real job finished "done" with nothing to fetch, and the
+    MCP ``fetch_results`` tool answered "done but result.json is missing" for a
+    solve that had in fact succeeded.
+    """
+
+    def test_the_payload_lands_in_the_job_directory(self, tmp_path, monkeypatch):
+        from eigenfrequencies.cli import _job_result_path
+        from eigenfrequencies.io.results import write_results_json
+
+        job_dir = tmp_path / "job"
+        monkeypatch.setenv("JOB_DIR", str(job_dir))
+        path = _job_result_path()
+        assert path == str(job_dir / "result.json")
+
+        # The same writer the configured output goes through, so the two copies
+        # share one schema definition.
+        write_results_json([8.39, 52.61], None, path)
+        assert json.loads(Path(path).read_text())["frequencies_hz"] == [8.39, 52.61]
+
+    def test_it_is_a_no_op_outside_a_job(self, tmp_path, monkeypatch):
+        from eigenfrequencies.cli import _job_result_path
+
+        monkeypatch.delenv("JOB_DIR", raising=False)
+        monkeypatch.chdir(tmp_path)
+
+        assert _job_result_path() is None
+        assert list(tmp_path.iterdir()) == [], "plain CLI use must write nothing extra"
