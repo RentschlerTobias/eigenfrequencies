@@ -47,6 +47,39 @@ def _default_root() -> Path:
     return Path(".eigenfrequencies/jobs")
 
 
+#: Running subprocesses, shared by every ``JobStore`` on the same root within
+#: one process, keyed ``{resolved root: {job_id: handle}}``.
+#:
+#: The MCP server constructs a new ``JobStore`` for every tool call
+#: (``server.py``: ``store = JobStore()`` in each tool). With the handles held
+#: per instance, the store that answered ``job_status`` never knew about the
+#: process the store in ``solve_modal`` had started: ``poll()`` was never
+#: called, nothing ever updated ``status.json``, and every job stayed
+#: ``"running"`` forever while its solve had long since finished. Keying by
+#: root keeps separate stores — and separate tests — isolated.
+_HANDLES: Dict[str, Dict[str, "_JobHandle"]] = {}
+_HANDLES_LOCK = threading.Lock()
+
+
+def _pid_alive(pid: int) -> bool:
+    """True if *pid* still exists.
+
+    Used only to reconcile a job whose handle is gone — after a server restart,
+    say, or from a different process. PIDs are recycled, so a job can in
+    principle be misread as running when an unrelated process inherited its
+    number; the in-process handle above is authoritative whenever it exists.
+    """
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True  # Alive, owned by someone else.
+    except OSError:
+        return False
+    return True
+
+
 # ── CLI command construction ────────────────────────────────────────────────
 
 
@@ -188,10 +221,12 @@ class JobStore:
     def __init__(self, root: Optional[str | Path] = None) -> None:
         self._root = Path(root) if root is not None else _default_root()
         self._root.mkdir(parents=True, exist_ok=True)
-        # In-process tracking for active local subprocesses.
-        self._handles: Dict[str, _JobHandle] = {}
-        # Lock for thread-safe handle mutation.
-        self._lock = threading.Lock()
+        # Active subprocesses are tracked per root, not per instance: callers
+        # that build a store per request must still see each other's jobs.
+        key = str(self._root.resolve())
+        with _HANDLES_LOCK:
+            self._handles = _HANDLES.setdefault(key, {})
+        self._lock = _HANDLES_LOCK
 
     # ── directory helpers ────────────────────────────────────────────────
 
@@ -243,6 +278,39 @@ class JobStore:
             self._handles.pop(job_id, None)
 
         return existing
+
+    def _reconcile_orphan(self, job_id: str, status: dict) -> dict:
+        """Settle a job whose process this store never tracked.
+
+        Reached when the submitting process is gone — a restarted server, or a
+        second process reading the same job root. Without this a job that
+        finished long ago keeps reporting ``"running"``, because nothing is
+        left to call ``poll()``.
+
+        The exit code died with the handle, so the outcome is read from what
+        the job left behind: a ``result.json`` means it got far enough to write
+        one, its absence means it did not.
+        """
+        if status.get("state") != "running" or status.get("cluster"):
+            return status
+        pid = status.get("pid")
+        if not isinstance(pid, int) or _pid_alive(pid):
+            return status
+
+        done = self._result_path(job_id).is_file()
+        status.update(
+            {
+                "state": "done" if done else "failed",
+                "exit_code": 0 if done else None,
+                "finished_utc": datetime.now(timezone.utc)
+                .isoformat()
+                .replace("+00:00", "Z"),
+                # Say so: this outcome was inferred, not observed.
+                "reconciled": "process gone; outcome inferred from result.json",
+            }
+        )
+        self._write_status(job_id, status)
+        return status
 
     def _check_cluster_job(self, job_id: str, handle: _JobHandle) -> Optional[dict]:
         """Poll sacct and update status if the cluster job has finished."""
@@ -393,7 +461,10 @@ class JobStore:
             if updated is not None:
                 return updated
 
-        return self._read_status(job_id)
+        status = self._read_status(job_id)
+        if handle is None:
+            return self._reconcile_orphan(job_id, status)
+        return status
 
     def fetch(self, job_id: str) -> dict:
         """Return the ``result.json`` payload.

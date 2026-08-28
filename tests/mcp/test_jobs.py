@@ -531,3 +531,108 @@ class TestContextManager:
             assert s.status(job_id)["state"] == "done"
         # After exit, no pending handles should block cleanup
         assert True  # No exception = clean exit
+
+
+# ── tests: status across store instances ────────────────────────────────────
+
+
+class TestStatusAcrossInstances:
+    """The MCP server builds a new JobStore for every tool call.
+
+    ``server.py`` does ``store = JobStore()`` inside ``solve_modal``,
+    ``job_status`` and ``fetch_results`` alike. Any state kept per instance is
+    therefore invisible to the next call, which is how every job used to stay
+    ``"running"`` forever while its solve had long since finished.
+    """
+
+    def test_a_second_store_sees_the_job_finish(self, tmp_path: Path, worker_dir: Path):
+        root = tmp_path / ".eigenfrequencies/jobs"
+        submitter = JobStore(root=root)
+        job_id = submitter.submit(
+            "solve",
+            config_path=str(worker_dir / "beam.yaml"),
+            extra_args=[sys.executable, "-c", _simple_worker_script()],
+        )
+
+        # A different instance, exactly as the next tool call would build it.
+        poller = JobStore(root=root)
+        stat = _poll_until_done(poller, job_id, timeout=10.0)
+
+        assert stat["state"] == "done"
+        assert stat["exit_code"] == 0
+        assert poller.fetch(job_id)["frequencies_hz"]
+
+    def test_a_failure_is_visible_across_instances(self, tmp_path: Path, worker_dir: Path):
+        root = tmp_path / ".eigenfrequencies/jobs"
+        job_id = JobStore(root=root).submit(
+            "solve",
+            config_path=str(worker_dir / "beam.yaml"),
+            extra_args=[sys.executable, "-c", _failing_worker_script()],
+        )
+        stat = _poll_until_done(JobStore(root=root), job_id, timeout=10.0)
+
+        assert stat["state"] == "failed"
+        assert stat["exit_code"] == 2
+
+    def test_separate_roots_stay_isolated(self, tmp_path: Path, worker_dir: Path):
+        """Sharing is per job root, so unrelated stores cannot see each other."""
+        one = JobStore(root=tmp_path / "a")
+        two = JobStore(root=tmp_path / "b")
+        job_id = one.submit(
+            "solve",
+            config_path=str(worker_dir / "beam.yaml"),
+            extra_args=[sys.executable, "-c", _simple_worker_script()],
+        )
+        _poll_until_done(one, job_id, timeout=10.0)
+
+        assert two.list_jobs() == []
+        with pytest.raises(JobNotFoundError):
+            two.status(job_id)
+
+    def test_an_orphaned_job_is_settled_from_what_it_left_behind(self, tmp_path: Path):
+        """After a server restart no handle survives, and poll() is gone with it.
+
+        The status file then says "running" forever unless someone reconciles
+        it. A finished job with a result is done; one without, failed.
+        """
+        root = tmp_path / ".eigenfrequencies/jobs"
+        store = JobStore(root=root)
+        for job_id, wrote_result, expected in (
+            ("aaaa", True, "done"),
+            ("bbbb", False, "failed"),
+        ):
+            job_dir = root / job_id
+            job_dir.mkdir(parents=True)
+            # A PID that is certainly gone: our own child, already reaped.
+            dead = _sp.Popen([sys.executable, "-c", "pass"])
+            dead.wait()
+            (job_dir / "status.json").write_text(
+                json.dumps({"state": "running", "pid": dead.pid, "cluster": False}),
+                encoding="utf-8",
+            )
+            if wrote_result:
+                (job_dir / "result.json").write_text('{"frequencies_hz": [1.0]}')
+
+            stat = store.status(job_id)
+            assert stat["state"] == expected
+            assert "reconciled" in stat, "an inferred outcome must say so"
+
+    def test_a_live_orphan_is_left_alone(self, tmp_path: Path, worker_dir: Path):
+        """A running process must not be declared finished by the fallback."""
+        root = tmp_path / ".eigenfrequencies/jobs"
+        job_id = JobStore(root=root).submit(
+            "solve",
+            config_path=str(worker_dir / "beam.yaml"),
+            extra_args=[sys.executable, "-c", _long_running_worker_script()],
+        )
+        # Drop the handle to simulate a restart while the job still runs.
+        from eigenfrequencies.mcp import jobs as jobs_module
+
+        with jobs_module._HANDLES_LOCK:
+            handle = jobs_module._HANDLES[str(root.resolve())].pop(job_id)
+
+        try:
+            assert JobStore(root=root).status(job_id)["state"] == "running"
+        finally:
+            handle.process.kill()
+            handle.process.wait()
