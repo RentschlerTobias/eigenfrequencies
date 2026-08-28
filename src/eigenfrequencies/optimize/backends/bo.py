@@ -26,14 +26,6 @@ from typing import Any
 
 from eigenfrequencies.optimize.protocol import Design, Optimizer, ProtocolUsageError
 
-try:
-    import optuna
-
-    _OPTUNA_AVAILABLE = True
-except ModuleNotFoundError:  # pragma: no cover
-    _OPTUNA_AVAILABLE = False
-    optuna = None  # type: ignore[assignment]
-
 
 class BOOptimizer(Optimizer):
     """Bayesian Optimisation via Optuna TPESampler (ask/tell interface).
@@ -48,11 +40,18 @@ class BOOptimizer(Optimizer):
     """
 
     def __init__(self, config: Any = None) -> None:
-        if not _OPTUNA_AVAILABLE:
+        # Imported here rather than at module scope so the module stays importable
+        # without optuna, and so a re-import under a patched sys.modules cannot
+        # bake a stale "unavailable" flag into the class.
+        try:
+            import optuna
+        except ImportError:
             raise RuntimeError(
                 "BOOptimizer unavailable: optuna not installed. "
                 "Install with: pip install optuna"
-            )
+            ) from None
+
+        self._optuna = optuna
 
         cfg = config or {}
         self._bounds: list[tuple[float, float]] = list(cfg.get("bounds", []))
@@ -114,7 +113,7 @@ class BOOptimizer(Optimizer):
         """
         trials: list[dict[str, Any]] = []
         for trial in self._study.trials:
-            if trial.state == optuna.trial.TrialState.COMPLETE:
+            if trial.state == self._optuna.trial.TrialState.COMPLETE:
                 trials.append(
                     {
                         "params": trial.params,
@@ -141,12 +140,12 @@ class BOOptimizer(Optimizer):
 
         self._study = self._create_study()
         distributions = {
-            f"x{i}": optuna.distributions.FloatDistribution(low, high)
+            f"x{i}": self._optuna.distributions.FloatDistribution(low, high)
             for i, (low, high) in enumerate(self._bounds)
         }
         for trial_data in state.get("trials", []):
-            trial = optuna.trial.create_trial(
-                state=optuna.trial.TrialState.COMPLETE,
+            trial = self._optuna.trial.create_trial(
+                state=self._optuna.trial.TrialState.COMPLETE,
                 params=trial_data["params"],
                 distributions=distributions,
                 value=trial_data["value"],
@@ -159,11 +158,11 @@ class BOOptimizer(Optimizer):
 
     def _create_study(self) -> Any:
         """Build a fresh Optuna Study with TPESampler."""
-        sampler = optuna.samplers.TPESampler(
+        sampler = self._optuna.samplers.TPESampler(
             seed=self._seed,
             n_startup_trials=self._n_startup_trials,
         )
-        return optuna.create_study(
+        return self._optuna.create_study(
             direction=self._direction,
             sampler=sampler,
         )

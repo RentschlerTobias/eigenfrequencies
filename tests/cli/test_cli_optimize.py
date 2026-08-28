@@ -200,8 +200,12 @@ class TestOptimizeFailurePaths:
         assert "Unknown optimizer" in result.output
 
     def test_optimize_unimplemented_backends_exits_2(self, minimal_optimize_config_yaml: Path):
-        """Unregistered backends (pso, rl) yield exit code 2."""
-        for backend in ("pso", "rl"):
+        """Unregistered backends yield exit code 2.
+
+        "pso" used to be listed here but is registered and working now
+        (see eigenfrequencies.optimize.__init__); only "rl" is still absent.
+        """
+        for backend in ("rl",):
             result = runner.invoke(
                 app,
                 [

@@ -51,7 +51,7 @@ from eigenfrequencies.adapters.dtoo import DtooAdapter, load_machine_yaml
 # Module-level skip: dtOO is only available inside its container.
 _DTOO_AVAILABLE = importlib.util.find_spec("dtOOPythonSWIG") is not None
 
-_REPO_ROOT = Path(__file__).resolve().parents[3]
+_REPO_ROOT = Path(__file__).resolve().parents[2]
 _ADAPTER_YAML = _REPO_ROOT / "adapters" / "machines" / "tistos.yaml"
 _GOLDEN_PATH = (
     Path(__file__).resolve().parents[1] / "characterization" / "golden" / "tistos_coarse.json"

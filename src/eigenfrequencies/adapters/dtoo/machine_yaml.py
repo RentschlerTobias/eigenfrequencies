@@ -192,7 +192,7 @@ def load_machine_yaml(path: str | Path) -> MachineAdapterConfig:
 
     kwargs: Dict[str, Any] = {}
     kwargs["name"] = raw["name"]
-    kwargs["case_dir"] = raw["case_dir"]
+    kwargs["case_dir"] = os.path.expanduser(raw["case_dir"])
     kwargs["state"] = raw["state"]
     kwargs["mech_volume"] = raw["mech_volume"]
     kwargs["adjust_plugin"] = raw["adjust_plugin"]

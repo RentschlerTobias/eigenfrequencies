@@ -25,21 +25,6 @@ import numpy as np
 
 from eigenfrequencies.optimize.protocol import Design, Optimizer, ProtocolUsageError
 
-_PYM_AVAILABLE = False
-_PSO = None
-_Problem = None
-
-# Lazy import so the module is importable even when pymoo is absent.
-try:
-    from pymoo.algorithms.soo.nonconvex.pso import PSO
-    from pymoo.core.problem import Problem
-
-    _PYM_AVAILABLE = True
-    _PSO = PSO
-    _Problem = Problem
-except Exception:  # pragma: no cover
-    pass
-
 
 class PSOOptimizer(Optimizer):
     """Particle Swarm Optimizer implementing the ask/tell protocol.
@@ -52,8 +37,14 @@ class PSOOptimizer(Optimizer):
     """
 
     def __init__(self, config: Any = None) -> None:
-        if not _PYM_AVAILABLE:
-            raise RuntimeError("unavailable: pymoo not installed")
+        try:
+            from pymoo.algorithms.soo.nonconvex.pso import PSO
+            from pymoo.core.problem import Problem
+        except Exception:
+            raise RuntimeError("unavailable: pymoo not installed") from None
+
+        self._PSO = PSO
+        self._Problem = Problem
 
         cfg = config or {}
         self._bounds: list[tuple[float, float]] = list(cfg.get("bounds", []))
@@ -66,9 +57,9 @@ class PSOOptimizer(Optimizer):
 
         xl = np.array([b[0] for b in self._bounds], dtype=float)
         xu = np.array([b[1] for b in self._bounds], dtype=float)
-        self._problem = _Problem(n_var=self._dim, n_obj=1, xl=xl, xu=xu)
+        self._problem = self._Problem(n_var=self._dim, n_obj=1, xl=xl, xu=xu)
 
-        self._algorithm = _PSO(pop_size=self._pop_size)
+        self._algorithm = self._PSO(pop_size=self._pop_size)
         self._algorithm.setup(
             self._problem,
             termination=("n_gen", 100_000),
@@ -179,9 +170,6 @@ class PSOOptimizer(Optimizer):
 
     def load_state(self, state: dict) -> None:
         """Restore optimizer state from a dict produced by ``state_dict``."""
-        if not _PYM_AVAILABLE:
-            raise RuntimeError("unavailable: pymoo not installed")
-
         self._bounds = [tuple(b) for b in state["bounds"]]
         self._dim = state["dim"]
         self._pop_size = state["pop_size"]

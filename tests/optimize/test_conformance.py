@@ -23,6 +23,7 @@ import numpy as np
 import pytest
 
 from eigenfrequencies.config import OptimizationConfig
+from eigenfrequencies.optimize import protocol as _protocol
 from eigenfrequencies.optimize.protocol import (
     Design,
     Optimizer,
@@ -33,6 +34,20 @@ from eigenfrequencies.optimize.protocol import (
 from eigenfrequencies.penalty.band import compute_penalty
 
 BACKENDS = ["de", "pso", "cmaes", "bo"]
+
+# Snapshot the clean registry once at import time. The degradation tests below
+# purge and re-import ``eigenfrequencies.optimize`` while monkeypatching optional
+# deps to ``None``, which registers poisoned backend classes (availability flags
+# cached as ``False``). Restoring this clean snapshot after every test prevents
+# that poisoning from leaking into subsequent ``create(...)`` calls.
+_CLEAN_REGISTRY = dict(_protocol._REGISTRY)
+
+
+@pytest.fixture(autouse=True)
+def _restore_registry_after_each_test():
+    yield
+    _protocol._REGISTRY.clear()
+    _protocol._REGISTRY.update(_CLEAN_REGISTRY)
 DEFAULT_BOUNDS_2D = [(-2.0, 3.0), (0.0, 5.0)]
 DEFAULT_POP = 10
 
@@ -223,17 +238,14 @@ class TestUnavailableDepDegradation:
                     monkeypatch.setitem(sys.modules, sub, None)
             mod_path = f"eigenfrequencies.optimize.backends.{backend}"
             pkg = "eigenfrequencies.optimize"
+            # monkeypatch.delitem restores both entries when the test ends. A raw
+            # `del` on the parent package leaves it missing, and the next test that
+            # imports a submodule dies with KeyError during namespace-path lookup.
             for m in (mod_path, pkg):
-                if m in sys.modules:
-                    del sys.modules[m]
-            try:
-                from eigenfrequencies.optimize import create as fresh_create
-                with pytest.raises(error_class, match=match):
-                    fresh_create(backend, {"bounds": [(-1.0, 1.0)]})
-            finally:
-                for m in (mod_path, pkg):
-                    if m in sys.modules:
-                        del sys.modules[m]
+                monkeypatch.delitem(sys.modules, m, raising=False)
+            from eigenfrequencies.optimize import create as fresh_create
+            with pytest.raises(error_class, match=match):
+                fresh_create(backend, {"bounds": [(-1.0, 1.0)]})
 
 
 # ── Failure-Path Probe Backend ──────────────────────────────────────

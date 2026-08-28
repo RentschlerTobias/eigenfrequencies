@@ -154,10 +154,12 @@ class TestPSOUnavailable:
         monkeypatch.setitem(sys.modules, "pymoo.algorithms.soo.nonconvex.pso", None)
         monkeypatch.setitem(sys.modules, "pymoo.core", None)
         monkeypatch.setitem(sys.modules, "pymoo.core.problem", None)
-        # Force re-import of the pso module
-        mod_name = "eigenfrequencies.optimize.backends.pso"
-        if mod_name in sys.modules:
-            del sys.modules[mod_name]
+        # Force re-import of the pso module. Use monkeypatch.delitem so the entry
+        # is restored on teardown — a raw `del` leaks into whichever test runs
+        # next and breaks namespace-path recalculation (KeyError on the parent).
+        monkeypatch.delitem(
+            sys.modules, "eigenfrequencies.optimize.backends.pso", raising=False
+        )
         from eigenfrequencies.optimize.backends.pso import PSOOptimizer as PSO2
 
         with pytest.raises(RuntimeError, match="unavailable: pymoo not installed"):
@@ -172,13 +174,14 @@ class TestPSOUnavailable:
         monkeypatch.setitem(sys.modules, "pymoo.algorithms.soo.nonconvex.pso", None)
         monkeypatch.setitem(sys.modules, "pymoo.core", None)
         monkeypatch.setitem(sys.modules, "pymoo.core.problem", None)
-        # Force re-import
+        # Force re-import. monkeypatch.delitem restores both entries on teardown;
+        # dropping "eigenfrequencies.optimize" with a raw `del` poisons the parent
+        # package for later tests in this session.
         for mod in (
             "eigenfrequencies.optimize.backends.pso",
             "eigenfrequencies.optimize",
         ):
-            if mod in sys.modules:
-                del sys.modules[mod]
+            monkeypatch.delitem(sys.modules, mod, raising=False)
         from eigenfrequencies.optimize import create as create2
 
         with pytest.raises(RuntimeError, match="unavailable: pymoo not installed"):

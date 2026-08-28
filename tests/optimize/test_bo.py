@@ -154,10 +154,11 @@ class TestBOUnavailable:
         """Removing optuna from sys.modules should not break the import."""
         # Temporarily hide optuna
         monkeypatch.setitem(sys.modules, "optuna", None)
-        # Force re-import of the bo module
-        mod_name = "eigenfrequencies.optimize.backends.bo"
-        if mod_name in sys.modules:
-            del sys.modules[mod_name]
+        # Force re-import of the bo module. monkeypatch.delitem restores the entry
+        # on teardown; a raw `del` leaks into later tests and breaks their imports.
+        monkeypatch.delitem(
+            sys.modules, "eigenfrequencies.optimize.backends.bo", raising=False
+        )
         from eigenfrequencies.optimize.backends.bo import BOOptimizer as BO2
 
         with pytest.raises(RuntimeError, match="unavailable: optuna not installed"):
@@ -166,13 +167,15 @@ class TestBOUnavailable:
     def test_registry_reports_unavailable_when_optuna_missing(self, monkeypatch):
         """Creating 'bo' without optuna raises a clear error."""
         monkeypatch.setitem(sys.modules, "optuna", None)
-        mod_name = "eigenfrequencies.optimize.backends.bo"
-        if mod_name in sys.modules:
-            del sys.modules[mod_name]
-        # Re-import __init__ so the lambda is fresh
-        init_name = "eigenfrequencies.optimize"
-        if init_name in sys.modules:
-            del sys.modules[init_name]
+        # Re-import both the backend and __init__ so the lambda is fresh. Both go
+        # through monkeypatch.delitem so the package entry is restored afterwards —
+        # dropping "eigenfrequencies.optimize" permanently poisons namespace-path
+        # recalculation for every test that imports it later.
+        for mod in (
+            "eigenfrequencies.optimize.backends.bo",
+            "eigenfrequencies.optimize",
+        ):
+            monkeypatch.delitem(sys.modules, mod, raising=False)
         from eigenfrequencies.optimize import create as create2
 
         with pytest.raises(RuntimeError, match="unavailable: optuna not installed"):

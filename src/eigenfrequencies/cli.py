@@ -471,6 +471,11 @@ def validate(
             raise typer.Exit(EXIT_VALIDATION_DEVIATION)
 
 
+def _local_eval(design):
+    """Module-level dummy evaluator for ProcessPool (must be picklable)."""
+    return sum(v * v for v in design.vector)
+
+
 @app.command()
 def optimize(
     config: Path = typer.Option(..., "--config", help="Path to YAML config file"),
@@ -582,9 +587,6 @@ def optimize(
         typer.echo(f"[optimize] using Pyro5Pool  uri_dir={uri_dir_str}  workers={workers}")
     elif evaluator == "process_pool":
         from eigenfrequencies.optimize.evaluators.process_pool import ProcessPool
-
-        def _local_eval(design):
-            return sum(v * v for v in design.vector)
 
         pool = ProcessPool(n_workers=workers, evaluator=_local_eval)
         typer.echo(f"[optimize] using ProcessPool  workers={workers}  (dummy evaluator)")

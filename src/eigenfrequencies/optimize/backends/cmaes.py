@@ -17,13 +17,6 @@ import numpy as np
 
 from eigenfrequencies.optimize.protocol import Design, Optimizer, ProtocolUsageError
 
-try:
-    import cma
-
-    _CMA_AVAILABLE = True
-except ImportError:
-    _CMA_AVAILABLE = False
-
 
 class CMAESOptimizer(Optimizer):
     """CMA-ES optimizer implementing the ask/tell protocol.
@@ -38,8 +31,10 @@ class CMAESOptimizer(Optimizer):
     """
 
     def __init__(self, config: Any = None) -> None:
-        if not _CMA_AVAILABLE:
-            raise ImportError("unavailable: cma not installed")
+        try:
+            import cma  # noqa: F811
+        except ImportError:
+            raise ImportError("unavailable: cma not installed") from None
 
         cfg = config or {}
         self._bounds: list[tuple[float, float]] = list(cfg.get("bounds", []))
