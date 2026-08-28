@@ -85,6 +85,28 @@ def hub_clamp(
     )
 
 
+def from_template(template_type: str, params: Optional[dict] = None) -> BCConfig:
+    """Return the ``BCConfig`` for a machine YAML ``bc_template``.
+
+    Takes the template's type and params as plain values rather than a
+    ``BCTemplate`` so this module keeps its one-way dependency on ``config``:
+    the dtOO adapter imports the builders, not the other way round. Both the
+    adapter and the hydroflow physics stage resolve templates through here, so
+    naca gets its foil clamp and tistos its hub clamp from a single mapping.
+    """
+    params = params or {}
+    if template_type == "hub_clamp":
+        return clamp(**params)
+    if template_type == "foil_clamp":
+        return foil_clamp(**params)
+    if template_type == "free_free":
+        return free_free()
+    raise ValueError(
+        f"Unknown bc_template.type {template_type!r}; "
+        f"expected hub_clamp, foil_clamp, or free_free"
+    )
+
+
 def build_predicate(cfg: BCConfig) -> Optional[Callable]:
     """Build a coordinate predicate function from a ``BCConfig``.
 

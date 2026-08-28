@@ -1,0 +1,382 @@
+"""The physics stages: runtime selection, staleness cleanup, error reporting.
+
+dtOO and OpenFOAM are not available here, so every test that would shell out
+stubs the subprocess boundary and asserts on the command that *would* run. The
+two behaviours that actually cost a run of the optimizer get the most
+attention: that a stale OpenFOAM result can never survive into the next
+candidate, and that a failed stage is reported rather than raised past the
+worker.
+"""
+
+import json
+import subprocess
+from pathlib import Path
+
+import pytest
+
+from eigenfrequencies.adapters.dtoo.machine_yaml import (
+    BCTemplate,
+    MachineAdapterConfig,
+)
+from eigenfrequencies.config import CFDConfig
+from eigenfrequencies.hydroflow import physics
+from eigenfrequencies.hydroflow.physics import Runtime, StageError
+
+
+def machine(**overrides) -> MachineAdapterConfig:
+    """A machine config with the fields the stages read."""
+    kwargs = dict(
+        name="naca",
+        case_dir="/does/not/exist/naca",
+        state="init",
+        mech_volume="gridGmsh",
+        adjust_plugin="",
+        design={},
+        bc_template=BCTemplate("foil_clamp"),
+    )
+    kwargs.update(overrides)
+    return MachineAdapterConfig(**kwargs)
+
+
+class TestRuntimeResolution:
+    def test_auto_runs_in_process_when_the_module_is_importable(self):
+        runtime = Runtime.resolve(
+            {}, probe_module="json", image="i", container="c", setup=(), timeout=1.0
+        )
+        assert runtime.kind == "inprocess"
+
+    def test_auto_falls_back_to_docker_when_it_is_not(self):
+        runtime = Runtime.resolve(
+            {},
+            probe_module="a_module_that_is_not_installed",
+            image="i",
+            container="c",
+            setup=(),
+            timeout=1.0,
+        )
+        assert runtime.kind == "docker"
+
+    def test_explicit_runtime_wins_over_detection(self):
+        runtime = Runtime.resolve(
+            {"runtime": "enroot"},
+            probe_module="json",
+            image="i",
+            container="c",
+            setup=(),
+            timeout=1.0,
+        )
+        assert runtime.kind == "enroot"
+
+    def test_unknown_runtime_is_rejected(self):
+        with pytest.raises(StageError, match="unknown runtime"):
+            Runtime.resolve(
+                {"runtime": "podman"},
+                probe_module="json",
+                image="i",
+                container="c",
+                setup=(),
+                timeout=1.0,
+            )
+
+
+class TestRuntimeCommand:
+    def test_docker_sources_both_environments_before_the_interpreter(self):
+        cmd = Runtime(kind="docker", image="img", setup=physics.DTOO_SETUP).command(
+            ["python3.13", "/x/run.py"], workdir="/w"
+        )
+        script = cmd[-1]
+        # Without both sources dtOOPythonSWIG fails on libPstream / libTKFeat.
+        assert "openfoam2606/etc/bashrc" in script
+        assert "/dtOO-install/bin/env.sh" in script
+        assert script.index("bashrc") < script.index("python3.13")
+
+    def test_mounts_map_host_paths_onto_themselves(self, tmp_path):
+        cmd = Runtime(kind="docker", image="img").command(
+            ["true"], workdir=tmp_path, mounts=[tmp_path]
+        )
+        assert f"{tmp_path.resolve()}:{tmp_path.resolve()}" in cmd
+
+    def test_missing_mount_sources_are_skipped(self, tmp_path):
+        # The dtOO case directory lives inside the image, not on the host.
+        cmd = Runtime(kind="docker", image="img").command(
+            ["true"], workdir=tmp_path, mounts=[tmp_path / "absent"]
+        )
+        assert "-v" not in cmd
+
+    def test_enroot_uses_the_container_name_and_changes_directory(self, tmp_path):
+        cmd = Runtime(kind="enroot", container="pyxis_dtoo").command(
+            ["true"], workdir=tmp_path, mounts=[tmp_path]
+        )
+        assert cmd[:2] == ["enroot", "start"]
+        assert "pyxis_dtoo" in cmd
+        assert cmd[-1].startswith(f"cd {tmp_path.resolve()}")
+
+    def test_environment_is_exported_inside_the_shell(self):
+        cmd = Runtime(kind="native").command(
+            ["true"], workdir="/w", env={"DTOO_CASE_DIR": "/a b"}
+        )
+        assert "export DTOO_CASE_DIR='/a b'" in cmd[-1]
+
+    def test_in_process_runtime_has_no_command(self):
+        with pytest.raises(StageError, match="no shell command"):
+            Runtime(kind="inprocess").command(["true"], workdir="/w")
+
+
+class TestWorkDir:
+    def test_prefers_the_candidate_scratch_dir(self, tmp_path):
+        scratch = tmp_path / "island-000-initial-000"
+        assert physics.work_dir({}, {"scratch_dir": str(scratch)}) == scratch
+        assert scratch.is_dir()
+
+    def test_explicit_option_overrides_the_context(self, tmp_path):
+        chosen = physics.work_dir(
+            {"work_dir": str(tmp_path / "here")}, {"scratch_dir": str(tmp_path / "there")}
+        )
+        assert chosen == tmp_path / "here"
+
+
+class TestCaseDirResolution:
+    def test_container_falls_back_to_the_image_path(self):
+        runtime = Runtime(kind="docker")
+        assert physics._case_dir(machine(), {}, runtime) == "/dtOO/build/test/naca"
+
+    def test_host_path_is_kept_when_it_exists(self, tmp_path):
+        cfg = machine(case_dir=str(tmp_path))
+        assert physics._case_dir(cfg, {}, Runtime(kind="docker")) == str(tmp_path)
+
+    def test_option_overrides_everything(self):
+        chosen = physics._case_dir(
+            machine(), {"case_dir": "/opt/cases/naca"}, Runtime(kind="docker")
+        )
+        assert chosen == "/opt/cases/naca"
+
+
+class TestExportMesh:
+    def test_container_run_writes_a_spec_and_returns_the_mesh(self, tmp_path, monkeypatch):
+        recorded = {}
+
+        def fake_run(cmd, **kwargs):
+            recorded["cmd"] = cmd
+            # The container writes the mesh; stand in for it.
+            (tmp_path / "mesh" / "naca.msh").write_text("mesh", encoding="utf-8")
+            return ""
+
+        monkeypatch.setattr(physics, "_run", fake_run)
+        msh, meta = export_with(tmp_path, {"dtoo": {"runtime": "docker"}})
+
+        spec = json.loads((tmp_path / "mesh" / "dtoo_spec.json").read_text())
+        assert spec["design"] == {"cV_bladeLength": 1.0}
+        assert spec["state"] == "init"
+        assert spec["output_msh"] == msh
+        assert "dtoo-export" in recorded["cmd"][-1]
+        assert meta["runtime"] == "docker"
+
+    def test_a_stale_mesh_is_removed_before_the_build(self, tmp_path, monkeypatch):
+        stale = tmp_path / "mesh" / "naca.msh"
+        stale.parent.mkdir(parents=True)
+        stale.write_text("previous candidate", encoding="utf-8")
+
+        monkeypatch.setattr(physics, "_run", lambda cmd, **kw: "")
+        with pytest.raises(StageError, match="no mesh at"):
+            export_with(tmp_path, {"dtoo": {"runtime": "docker"}})
+        assert not stale.exists()
+
+    def test_the_dtoo_trace_is_dropped_after_a_successful_export(self, tmp_path, monkeypatch):
+        """It is ~39 MB per tistos candidate — twice the mesh it produced."""
+
+        def fake_run(cmd, **kwargs):
+            mesh = tmp_path / "mesh"
+            (mesh / "naca.msh").write_text("mesh", encoding="utf-8")
+            (mesh / "dtoo_build.log").write_text("x" * 4096, encoding="utf-8")
+            return ""
+
+        monkeypatch.setattr(physics, "_run", fake_run)
+        _, meta = export_with(tmp_path, {"dtoo": {"runtime": "docker"}})
+
+        assert not (tmp_path / "mesh" / "dtoo_build.log").exists()
+        assert meta["dtoo_log_bytes"] == 4096, "its size is still reported"
+
+    def test_the_trace_is_kept_on_request(self, tmp_path, monkeypatch):
+        def fake_run(cmd, **kwargs):
+            mesh = tmp_path / "mesh"
+            (mesh / "naca.msh").write_text("mesh", encoding="utf-8")
+            (mesh / "dtoo_build.log").write_text("trace", encoding="utf-8")
+            return ""
+
+        monkeypatch.setattr(physics, "_run", fake_run)
+        export_with(tmp_path, {"dtoo": {"runtime": "docker", "keep_build_log": True}})
+        assert (tmp_path / "mesh" / "dtoo_build.log").exists()
+
+    def test_the_trace_survives_a_failed_export(self, tmp_path, monkeypatch):
+        """The one log worth reading is the one from the export that broke."""
+
+        def fake_run(cmd, **kwargs):
+            (tmp_path / "mesh" / "dtoo_build.log").write_text("segfault", encoding="utf-8")
+            return ""
+
+        monkeypatch.setattr(physics, "_run", fake_run)
+        with pytest.raises(StageError, match="no mesh at"):
+            export_with(tmp_path, {"dtoo": {"runtime": "docker"}})
+        assert (tmp_path / "mesh" / "dtoo_build.log").read_text() == "segfault"
+
+    def test_dtoo_failure_becomes_a_stage_error(self, tmp_path, monkeypatch):
+        def fail(cmd, **kwargs):
+            raise StageError("dtoo export: exit 1\nsegfault")
+
+        monkeypatch.setattr(physics, "_run", fail)
+        with pytest.raises(StageError, match="segfault"):
+            export_with(tmp_path, {"dtoo": {"runtime": "docker"}})
+
+
+def export_with(tmp_path: Path, options: dict):
+    return physics.export_mesh(
+        machine(), {"cV_bladeLength": 1.0}, options, tmp_path
+    )
+
+
+class TestStaleResultCleanup:
+    """The frozen-CFD guard: simpleFoam skips the solve if endTime exists."""
+
+    def test_time_steps_and_post_processing_are_removed(self, tmp_path):
+        for name in ("0", "100", "500", "postProcessing", "constant", "system"):
+            (tmp_path / name).mkdir()
+        removed = physics._clear_stale_results(tmp_path)
+
+        assert sorted(removed) == ["100", "500", "postProcessing"]
+        assert (tmp_path / "0").is_dir(), "initial conditions must survive"
+        assert (tmp_path / "constant").is_dir()
+        assert (tmp_path / "system").is_dir()
+
+    def test_fractional_time_directories_are_removed_too(self, tmp_path):
+        (tmp_path / "0.5").mkdir()
+        assert physics._clear_stale_results(tmp_path) == ["0.5"]
+
+    def test_nothing_to_clear_is_not_an_error(self, tmp_path):
+        assert physics._clear_stale_results(tmp_path / "absent") == []
+
+
+class TestCfdProcs:
+    def test_uses_the_orchestrator_rank_budget(self):
+        assert physics._cfd_procs({}, {"resources": {"mpi_ranks": 4}}) == 4
+
+    def test_option_overrides_the_context(self):
+        assert physics._cfd_procs({"procs": 2}, {"resources": {"mpi_ranks": 4}}) == 2
+
+    def test_falls_back_to_slurm_then_to_one(self, monkeypatch):
+        monkeypatch.delenv("SLURM_CPUS_PER_TASK", raising=False)
+        assert physics._cfd_procs({}, None) == 1
+        monkeypatch.setenv("SLURM_CPUS_PER_TASK", "8")
+        assert physics._cfd_procs({}, {}) == 8
+
+
+class TestRunCfdStage:
+    def test_a_failed_build_is_reported_not_raised(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(
+            physics,
+            "build_cfd_case",
+            lambda *a, **kw: (_ for _ in ()).throw(StageError("cfd build: exit 1")),
+        )
+        result = physics.run_cfd_stage(
+            machine(), {}, {"work_dir": str(tmp_path)}, CFDConfig(n_rpm=72.0)
+        )
+        assert result["ok"] is False
+        assert "cfd build" in result["error"]
+        # Same shape as a reader failure, so the worker has one failure path.
+        assert result["eta"] == result["vcav"] == result["dH"] == 0.0
+
+    def test_solve_metadata_is_merged_into_the_reader_result(self, tmp_path, monkeypatch):
+        case_dir = tmp_path / "tistos_ru_of_n_hydroflow"
+        case_dir.mkdir()
+        monkeypatch.setattr(physics, "build_cfd_case", lambda *a, **kw: case_dir)
+        monkeypatch.setattr(
+            physics, "solve_cfd", lambda *a, **kw: {"mpi_ranks": 3, "cleared_artifacts": ["500"]}
+        )
+        monkeypatch.setattr(
+            "eigenfrequencies.io.cfd_eval.evaluate_cfd",
+            lambda d, cfg: {"ok": True, "eta": -0.9, "vcav": 0.0, "dH": -2.4, "P": 1.0, "Q": 1.0},
+        )
+        result = physics.run_cfd_stage(
+            machine(), {}, {"work_dir": str(tmp_path)}, CFDConfig(n_rpm=72.0)
+        )
+        assert result["ok"] is True
+        assert result["mpi_ranks"] == 3
+        assert result["cleared_artifacts"] == ["500"]
+        assert result["work_dir"] == str(tmp_path)
+
+
+class TestSolveCfd:
+    def test_the_case_is_cleaned_before_the_solver_starts(self, tmp_path, monkeypatch):
+        directory = tmp_path
+        (directory / "tistos_files").mkdir(parents=True)
+        (directory / "tistos_files" / "sbatch.tistos_ru_of.sh").write_text("#!/bin/sh\n")
+        case_dir = directory / "case"
+        (case_dir / "500").mkdir(parents=True)
+        (case_dir / "postProcessing").mkdir()
+
+        order = []
+
+        def fake_run(cmd, **kwargs):
+            order.append(sorted(p.name for p in case_dir.iterdir()))
+            return ""
+
+        monkeypatch.setattr(physics, "_run", fake_run)
+        meta = physics.solve_cfd(
+            case_dir, {"dtoo": {"runtime": "native"}, "cfd": {"procs": 2}}, directory
+        )
+        assert order == [[]], "solver must start on a case with no results in it"
+        assert sorted(meta["cleared_artifacts"]) == ["500", "postProcessing"]
+        assert meta["mpi_ranks"] == 2
+
+    def test_a_missing_solve_script_is_a_stage_error(self, tmp_path):
+        with pytest.raises(StageError, match="solve script not found"):
+            physics.solve_cfd(tmp_path, {"dtoo": {"runtime": "native"}}, tmp_path)
+
+
+class TestRunHelper:
+    def test_timeout_is_reported_with_the_stage_name(self, tmp_path, monkeypatch):
+        def timeout(*args, **kwargs):
+            raise subprocess.TimeoutExpired(cmd="sleep", timeout=1.0, output="partial")
+
+        monkeypatch.setattr(subprocess, "run", timeout)
+        with pytest.raises(StageError, match="cfd solve: timed out"):
+            physics._run(
+                ["sleep", "2"], stage="cfd solve", timeout=1.0, log_path=tmp_path / "l.log"
+            )
+        assert (tmp_path / "l.log").read_text() == "partial"
+
+    def test_a_non_zero_exit_carries_the_log_tail(self, tmp_path):
+        with pytest.raises(StageError, match="boom"):
+            physics._run(
+                ["sh", "-c", "echo boom; exit 3"],
+                stage="cfd build",
+                timeout=30.0,
+                log_path=tmp_path / "l.log",
+            )
+        assert "boom" in (tmp_path / "l.log").read_text()
+
+    def test_output_is_returned_and_logged_on_success(self, tmp_path):
+        out = physics._run(
+            ["sh", "-c", "echo CFD_CASE_DIR /x"],
+            stage="cfd build",
+            timeout=30.0,
+            log_path=tmp_path / "l.log",
+        )
+        assert "CFD_CASE_DIR /x" in out
+
+    def test_missing_result_line_is_a_stage_error(self):
+        with pytest.raises(StageError, match="no RESULT_JSON line"):
+            physics._parse_result_line("nothing here\n", stage="modal solve")
+
+
+class TestEntryPoint:
+    def test_modal_failure_is_reported_on_the_result_line(self, tmp_path, capsys):
+        spec = tmp_path / "spec.json"
+        spec.write_text(json.dumps({"msh_path": str(tmp_path / "absent.msh")}))
+
+        assert physics.main(["modal", str(spec)]) == 1
+        payload = physics._parse_result_line(capsys.readouterr().out, stage="modal solve")
+        assert payload["ok"] is False
+        assert payload["error"]
+
+    def test_usage_error_without_a_stage(self):
+        assert physics.main([]) == 2

@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Union
 
 from eigenfrequencies.adapters.dtoo.machine_yaml import MachineAdapterConfig, load_machine_yaml
-from eigenfrequencies.bc.builders import clamp, foil_clamp, free_free
+from eigenfrequencies.bc.builders import from_template
 from eigenfrequencies.config import BCConfig
 
 
@@ -59,19 +59,7 @@ class DtooAdapter:
         * ``free_free`` → ``free_free()`` (no clamp)
         """
         template = self.config.bc_template
-        t = template.type
-        params = template.params
-
-        if t == "hub_clamp":
-            return clamp(**params)
-        if t == "foil_clamp":
-            return foil_clamp(**params)
-        if t == "free_free":
-            return free_free()
-
-        raise ValueError(
-            f"Unknown bc_template.type {t!r}; expected hub_clamp, foil_clamp, or free_free"
-        )
+        return from_template(template.type, template.params)
 
     def design_bounds(self) -> Dict[str, Tuple[float, float]]:
         """Return ``{label: (min, max)}`` for every design parameter."""

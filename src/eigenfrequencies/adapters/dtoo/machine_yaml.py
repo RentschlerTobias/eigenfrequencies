@@ -16,6 +16,41 @@ import yaml
 
 from eigenfrequencies.config_yaml import ConfigError
 
+#: Environment override for the machine catalog location.
+MACHINES_DIR_ENV = "EIGENFREQUENCIES_MACHINES_DIR"
+
+
+def machines_dir() -> Path:
+    """Locate ``adapters/machines/``.
+
+    The catalog lives at the repository root, outside ``src/``, so it is not
+    installed with the package. Resolution order: the environment override,
+    then the repo root inferred from this file. Set the override when the
+    package is installed away from its checkout — inside the enroot container
+    on the cluster, for instance.
+    """
+    override = os.environ.get(MACHINES_DIR_ENV)
+    if override:
+        return Path(override)
+    # src/eigenfrequencies/adapters/dtoo/machine_yaml.py -> repo root is four up.
+    return Path(__file__).resolve().parents[4] / "adapters" / "machines"
+
+
+def machine_yaml_path(machine: str) -> Path:
+    """Resolve a machine name to its catalog entry.
+
+    Raises:
+        FileNotFoundError: naming the path that was tried, so a misconfigured
+            container says which directory it looked in.
+    """
+    path = machines_dir() / f"{machine}.yaml"
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"machine catalog entry not found: {path}. Set ${MACHINES_DIR_ENV} "
+            f"or pass options.machine_yaml."
+        )
+    return path
+
 
 @dataclass
 class DesignBounds:

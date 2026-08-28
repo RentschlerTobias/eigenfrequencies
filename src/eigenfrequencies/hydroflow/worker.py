@@ -7,7 +7,9 @@ Invoked by hydroflow-opt's SubprocessBackend through the command built in
 
 Contract (.omo/notes/hydroflow-contract.md):
 
-* request carries ``candidate.id`` and ``candidate.parameters`` (name -> value)
+* request carries ``candidate.id`` and ``candidate.parameters`` (name -> value),
+  the ``[case.options]`` table as ``case.options``, and a ``context`` block whose
+  ``scratch_dir`` is reserved for this one candidate
 * result must echo it as ``candidate_id`` — a mismatch is scored as failed
 * ``status`` is "success" or "failed", ``objective`` a float or null,
   ``metadata`` an object (never a scalar), ``error`` a string or null
@@ -60,18 +62,32 @@ def _failed(
     return 0
 
 
-def evaluate(machine: str, parameters: dict[str, float], options: dict[str, Any]) -> tuple:
+def evaluate(
+    machine: str,
+    parameters: dict[str, float],
+    options: dict[str, Any],
+    context: dict[str, Any] | None = None,
+) -> tuple:
     """Run the physics for one design.
+
+    Args:
+        machine: machine name, resolved to a catalog YAML.
+        parameters: candidate design vector.
+        options: the ``case.options`` table from the request.
+        context: the request's ``context`` block. Carries ``scratch_dir`` — the
+            directory hydroflow-opt reserved for *this* candidate — and the
+            resource budget, so it decides where the evaluation runs and with
+            how many ranks.
 
     Returns ``(objective, timings, metadata)``. Raises on any failure; the
     caller turns that into a failed result.
     """
     from eigenfrequencies.adapters.dtoo import load_machine_yaml
+    from eigenfrequencies.adapters.dtoo.machine_yaml import machine_yaml_path
     from eigenfrequencies.config import CFDConfig, ObjectiveConfig, OptimizationConfig
-    from eigenfrequencies.hydroflow.case import machines_dir
     from eigenfrequencies.penalty.objective import combined_objective, resonance_term
 
-    yaml_path = options.get("machine_yaml") or machines_dir() / f"{machine}.yaml"
+    yaml_path = options.get("machine_yaml") or machine_yaml_path(machine)
     machine_cfg = load_machine_yaml(yaml_path)
 
     unknown = set(parameters) - set(machine_cfg.design)
@@ -106,10 +122,11 @@ def evaluate(machine: str, parameters: dict[str, float], options: dict[str, Any]
     if run_modal:
         from eigenfrequencies.hydroflow.physics import run_modal_stage
 
-        started = time.perf_counter()
-        frequencies, mesh_meta = run_modal_stage(machine_cfg, parameters, options)
+        frequencies, mesh_meta = run_modal_stage(machine_cfg, parameters, options, context)
+        # The stage times its two halves itself; deriving one from the other
+        # would report a negative duration whenever the clocks disagree.
         timings[_STAGE_MESH] = mesh_meta.pop("mesh_seconds", 0.0)
-        timings[_STAGE_MODAL] = time.perf_counter() - started - timings[_STAGE_MESH]
+        timings[_STAGE_MODAL] = mesh_meta.pop("modal_seconds", 0.0)
         metadata["mesh"] = mesh_meta
         metadata["frequencies_hz"] = [float(f) for f in frequencies]
 
@@ -118,7 +135,7 @@ def evaluate(machine: str, parameters: dict[str, float], options: dict[str, Any]
         from eigenfrequencies.hydroflow.physics import run_cfd_stage
 
         started = time.perf_counter()
-        cfd = run_cfd_stage(machine_cfg, parameters, options, cfd_cfg)
+        cfd = run_cfd_stage(machine_cfg, parameters, options, cfd_cfg, context)
         timings[_STAGE_CFD] = time.perf_counter() - started
         if not cfd.get("ok"):
             raise RuntimeError(f"CFD evaluation failed: {cfd.get('error')}")
@@ -153,13 +170,17 @@ def main(argv: list[str] | None = None) -> int:
         candidate = request["candidate"]
         candidate_id = candidate["id"]
         parameters = {str(k): float(v) for k, v in candidate["parameters"].items()}
-        options = request.get("options") or {}
+        # The orchestrator nests the case table: request.case.options, not
+        # request.options (runner.py:69-82). Reading the wrong key silently
+        # discards every setting from [case.options].
+        options = (request.get("case") or {}).get("options") or {}
+        context = request.get("context") or {}
     except Exception as exc:  # noqa: BLE001 - a malformed request is still a result
         return _failed(result_path, candidate_id, f"{type(exc).__name__}: {exc}")
 
     started = time.perf_counter()
     try:
-        objective, timings, metadata = evaluate(args.machine, parameters, options)
+        objective, timings, metadata = evaluate(args.machine, parameters, options, context)
     except Exception as exc:  # noqa: BLE001 - report, never crash the optimizer
         return _failed(
             result_path,

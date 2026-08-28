@@ -5,6 +5,7 @@ from eigenfrequencies.bc.builders import (
     clamp,
     foil_clamp,
     free_free,
+    from_template,
     hub_clamp,
 )
 
@@ -13,5 +14,6 @@ __all__ = [
     "clamp",
     "foil_clamp",
     "free_free",
+    "from_template",
     "hub_clamp",
 ]

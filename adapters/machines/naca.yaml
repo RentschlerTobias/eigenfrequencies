@@ -10,6 +10,15 @@
 # Mesh scale factor: 1.0 — dtOO mesh is assumed to be in metres (physical units).
 # BC template: foil_clamp — axial-plane clamp at the foil root surface (z=0),
 # simulating a disc validator with the blade root constrained.
+#
+# CFD-ONLY (verified 2026-08-28). The geometry export works — dtOO builds
+# gridGmsh in the container in seconds — but the result is the *fluid* channel
+# grid and it mixes hexahedra with prisms. dolfinx 0.11 refuses a function
+# space on a mixed-topology mesh ("Multiple index maps of this dimension"), so
+# run_modal_stage cannot use this machine. The case defines no second bounded
+# volume: gridGmsh and ru_gridGmsh are the only two, both CFD grids. A modal
+# naca run needs a tetrahedral mech volume added to the dtOO case first, the
+# way tistos has ruWithRounding_mechMesh (quadratic tets, reads fine).
 
 name: naca
 case_dir: dtOO/test/naca

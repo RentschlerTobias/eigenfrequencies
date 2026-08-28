@@ -9,7 +9,6 @@ the ``hydroflow_opt.cases`` group.
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -18,24 +17,14 @@ from hydroflow_opt.models import ParameterSpace
 
 from eigenfrequencies.adapters.dtoo import load_machine_yaml
 
-#: Environment override for the machine catalog location.
-MACHINES_DIR_ENV = "EIGENFREQUENCIES_MACHINES_DIR"
-
-
-def machines_dir() -> Path:
-    """Locate ``adapters/machines/``.
-
-    The catalog lives at the repository root, outside ``src/``, so it is not
-    installed with the package. Resolution order: the environment override,
-    then the repo root inferred from this file. Set the override when the
-    package is installed away from its checkout — inside the enroot container
-    on the cluster, for instance.
-    """
-    override = os.environ.get(MACHINES_DIR_ENV)
-    if override:
-        return Path(override)
-    # src/eigenfrequencies/hydroflow/case.py -> repo root is three levels up.
-    return Path(__file__).resolve().parents[3] / "adapters" / "machines"
+# The catalog lookup lives with the YAML loader: the worker needs it too, and
+# importing it from here would drag hydroflow_opt into every environment that
+# only runs the physics (T8/Q9 keeps the optimizer out of the conda env).
+from eigenfrequencies.adapters.dtoo.machine_yaml import (  # noqa: F401 - re-export
+    MACHINES_DIR_ENV,
+    machine_yaml_path,
+    machines_dir,
+)
 
 
 class MachineCasePlugin:
@@ -104,14 +93,7 @@ class MachineCasePlugin:
         explicit = options.get("machine_yaml")
         if explicit:
             return Path(explicit)
-        machine = options.get("machine", self.machine)
-        path = machines_dir() / f"{machine}.yaml"
-        if not path.is_file():
-            raise FileNotFoundError(
-                f"machine catalog entry not found: {path}. Set ${MACHINES_DIR_ENV} "
-                f"or pass options.machine_yaml."
-            )
-        return path
+        return machine_yaml_path(options.get("machine", self.machine))
 
 
 class TistosCase(MachineCasePlugin):
