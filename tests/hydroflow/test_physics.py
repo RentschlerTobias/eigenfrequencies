@@ -247,6 +247,20 @@ class TestStaleResultCleanup:
         assert (tmp_path / "constant").is_dir()
         assert (tmp_path / "system").is_dir()
 
+    def test_a_leftover_decomposition_is_removed(self, tmp_path):
+        """decomposePar aborts on one — or silently reuses the wrong mesh.
+
+        The solve script deletes processor* on its way out, so a leftover only
+        exists after a run that did not finish. Observed for real: "Case is
+        already decomposed with 2 domains", exit 1, before simpleFoam ever ran.
+        """
+        for name in ("processors2", "processor0", "processor1", "constant"):
+            (tmp_path / name).mkdir()
+        removed = physics._clear_stale_results(tmp_path)
+
+        assert sorted(removed) == ["processor0", "processor1", "processors2"]
+        assert (tmp_path / "constant").is_dir()
+
     def test_fractional_time_directories_are_removed_too(self, tmp_path):
         (tmp_path / "0.5").mkdir()
         assert physics._clear_stale_results(tmp_path) == ["0.5"]

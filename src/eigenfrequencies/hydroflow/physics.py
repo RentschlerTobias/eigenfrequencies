@@ -132,7 +132,16 @@ _RUNTIME_KINDS = ("auto", "inprocess", "native", "docker", "enroot")
 #: typo. A silently ignored ``w_resonanc`` is how a comparison run ends up
 #: incomparable without anyone noticing.
 CFD_STAGE_KEYS = frozenset(
-    {"stage_dir", "state", "case_name", "procs", "timeout", "solve_script"}
+    {
+        "stage_dir",
+        "state",
+        "case_name",
+        "procs",
+        "timeout",
+        "solve_script",
+        "mpi_launcher",
+        "env",
+    }
 )
 
 
@@ -708,19 +717,28 @@ def _stage_case_inputs(stage: Path, directory: Path) -> None:
 
 
 def _clear_stale_results(case_dir: Path) -> list[str]:
-    """Remove every written time step and ``postProcessing/`` from *case_dir*.
+    """Remove every written time step, ``postProcessing/`` and decomposition.
 
     This is the fix for the frozen CFD objective: simpleFoam resumes from the
     latest time, so with ``500/`` already present it reports "completed" without
     solving, and ``evaluate_cfd`` then reads the *previous* design's
     ``postProcessing/``. Time ``0/`` holds the initial conditions and stays.
+
+    ``processor*`` goes too. The de_framework script deletes the decomposition
+    on its way out, so it only survives a run that did *not* finish — a
+    timeout, an OOM kill, a crash. decomposePar then refuses outright ("Case is
+    already decomposed with N domains"), and on a rerun with the same rank
+    count it would instead silently reuse a decomposition of the *previous*
+    candidate's mesh. Same failure as the frozen results, one directory over.
     """
     removed = []
     for entry in sorted(case_dir.iterdir()) if case_dir.is_dir() else []:
         if not entry.is_dir():
             continue
-        stale = entry.name == "postProcessing" or (
-            _is_time_dir(entry.name) and float(entry.name) != 0.0
+        stale = (
+            entry.name == "postProcessing"
+            or entry.name.startswith("processor")
+            or (_is_time_dir(entry.name) and float(entry.name) != 0.0)
         )
         if stale:
             shutil.rmtree(entry)
@@ -871,11 +889,24 @@ def solve_cfd(
     if not script.is_file():
         raise StageError(f"cfd solve script not found: {script}")
 
+    # bwUniCluster provides mpiexec, the dtOO container only mpirun (openmpi4);
+    # the solve script honours MPI_LAUNCHER and defaults to mpiexec, so the
+    # cluster path stays the de_framework original.
+    env = {}
+    if cfd_opts.get("mpi_launcher"):
+        env["MPI_LAUNCHER"] = str(cfd_opts["mpi_launcher"])
+    # Free-form passthrough for whatever the local MPI insists on — OpenMPI
+    # wants OMPI_ALLOW_RUN_AS_ROOT inside a root container, a cluster build may
+    # want its own pinning or fabric variables.
+    for key, value in (cfd_opts.get("env") or {}).items():
+        env[str(key)] = str(value)
+
     _run(
         runtime.command(
             ["sh", "-e", str(script), str(case_dir), str(procs)],
             workdir=directory,
             mounts=[_repo_root(), directory],
+            env=env,
         ),
         stage="cfd solve",
         timeout=runtime.timeout,
@@ -883,6 +914,7 @@ def solve_cfd(
     )
     return {
         "cfd_runtime": runtime.kind,
+        "mpi_launcher": env.get("MPI_LAUNCHER", "mpiexec"),
         "mpi_ranks": procs,
         "cleared_artifacts": removed,
         "case_dir": str(case_dir),
