@@ -8,7 +8,7 @@
 # [USER] Set an absolute workspace path. A relative one is resolved against
 # *this file's* directory, so the default writes into the repo checkout.
 # The scratch directory is redirected to node-local $TMPDIR by the submit script.
-directory = "runs/tistos-cfd-only"
+directory = "$WS/runs/tistos-cfd-only"
 
 [case]
 name = "tistos"
@@ -23,7 +23,7 @@ n_rpm = 72.0
 # compute node. dtOOPythonSWIG needs both environments sourced — physics.py
 # does that itself.
 runtime = "enroot"
-container = "~/enroot-images/dtOO-opensuse.sqsh"
+container = "$WS/enroot-images/dtOO.sqsh"
 case_dir = "/dtOO/build/test/tistos"
 timeout = 1800
 

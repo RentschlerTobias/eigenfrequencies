@@ -18,6 +18,15 @@
 # import dies with "failed to mount overlay: ... Invalid argument" after the
 # download has already finished.
 
+# ── Python ────────────────────────────────────────────────────────────────
+# The system python3 is 3.9; hydroflow-opt needs >=3.11,<3.14. Loaded here so
+# the login shell and every sbatch job that sources this file agree.
+PYTHON_MODULE="${PYTHON_MODULE:-devel/python/3.13.3-gnu-14.2}"
+if command -v module >/dev/null 2>&1; then
+    module load "$PYTHON_MODULE" 2>/dev/null || \
+        echo "cluster_env: could not load $PYTHON_MODULE" >&2
+fi
+
 # ── Workspace ─────────────────────────────────────────────────────────────
 WS_NAME="${WS_NAME:-eigenfreq}"
 if [ -z "${WS:-}" ]; then

@@ -111,6 +111,14 @@ class TestRuntimeCommand:
         assert "pyxis_dtoo" in cmd
         assert cmd[-1].startswith(f"cd {tmp_path.resolve()}")
 
+    def test_a_variable_in_the_container_path_is_expanded(self, monkeypatch):
+        """TOML expands nothing and execve expands nothing, so this has to."""
+        monkeypatch.setenv("WS", "/pfs/work9/ws")
+        cmd = Runtime(kind="enroot", container="$WS/enroot-images/dtOO.sqsh").command(
+            ["true"], workdir="/w"
+        )
+        assert "/pfs/work9/ws/enroot-images/dtOO.sqsh" in cmd
+
     def test_a_tilde_in_the_container_path_is_expanded(self):
         """Nothing between here and execve expands it, and enroot then reports
         a container it cannot find — from a config line that looks correct."""

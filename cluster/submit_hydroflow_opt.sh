@@ -114,32 +114,36 @@ fi
 # One candidate leaves a 21 MB mesh and a decomposed OpenFOAM case behind. That
 # belongs on $TMPDIR, not on the shared workspace. Results are unaffected: the
 # orchestrator writes them to [run].directory.
-RUN_CONFIG="$CONFIG"
+# The run directory is always rewritten, never left as written. hydroflow-opt
+# resolves a relative path against the *config file's* parent (config.py:74-79)
+# and expands no variables at all, so "$WS/runs/x" would be taken literally —
+# results would land in a directory called '$WS' inside the repo.
+RENDER_DIR="${TMPDIR:-/tmp}"
+RUN_CONFIG="$RENDER_DIR/$(basename "$CONFIG")"
+CONFIG_DIR="$(cd "$(dirname "$CONFIG")" && pwd)"
+RAW_RUN_DIR="$("$VENV/bin/python" -c \
+    'import sys,tomllib;print(tomllib.load(open(sys.argv[1],"rb"))["run"]["directory"])' \
+    "$CONFIG")"
+ABS_RUN_DIR="$(eval echo "$RAW_RUN_DIR")"          # expands $WS / $HOME / ~
+case "$ABS_RUN_DIR" in
+    /*) : ;;
+    *)  ABS_RUN_DIR="$CONFIG_DIR/$ABS_RUN_DIR" ;;
+esac
+mkdir -p "$ABS_RUN_DIR"
+
+sed -e "s|^directory *=.*|directory = \"$ABS_RUN_DIR\"|" "$CONFIG" > "$RUN_CONFIG"
+echo "[submit] results  -> $ABS_RUN_DIR"
+
+# Scratch on node-local disk: one candidate leaves a 21 MB mesh and a decomposed
+# OpenFOAM case behind, which does not belong on the shared workspace.
 if [[ -n "${TMPDIR:-}" && "${KEEP_SCRATCH:-0}" != "1" ]]; then
-    RUN_CONFIG="$TMPDIR/$(basename "$CONFIG")"
     SCRATCH="$TMPDIR/hydroflow-scratch"
     mkdir -p "$SCRATCH"
-
-    # hydroflow-opt resolves relative paths against the *config file's* parent
-    # (config.py:74-79). Moving the config to $TMPDIR would therefore move the
-    # results there too — onto a disk that is wiped when the job ends. Pin the
-    # run directory to an absolute path first.
-    CONFIG_DIR="$(cd "$(dirname "$CONFIG")" && pwd)"
-    REL_RUN_DIR="$("$VENV/bin/python" -c \
-        'import sys,tomllib;print(tomllib.load(open(sys.argv[1],"rb"))["run"]["directory"])' \
-        "$CONFIG")"
-    case "$REL_RUN_DIR" in
-        /*) ABS_RUN_DIR="$REL_RUN_DIR" ;;
-        *)  ABS_RUN_DIR="$CONFIG_DIR/$REL_RUN_DIR" ;;
-    esac
-
-    sed -e "s|^directory *=.*|directory = \"$ABS_RUN_DIR\"|" \
-        -e "s|^scratch_directory *=.*|scratch_directory = \"$SCRATCH\"|" \
-        "$CONFIG" > "$RUN_CONFIG"
-    if ! grep -q '^scratch_directory' "$RUN_CONFIG"; then
+    if grep -q '^scratch_directory' "$RUN_CONFIG"; then
+        sed -i "s|^scratch_directory *=.*|scratch_directory = \"$SCRATCH\"|" "$RUN_CONFIG"
+    else
         sed -i "0,/^\[run\]/s|^\[run\]|[run]\nscratch_directory = \"$SCRATCH\"|" "$RUN_CONFIG"
     fi
-    echo "[submit] results  -> $ABS_RUN_DIR"
     echo "[submit] scratch  -> $SCRATCH (KEEP_SCRATCH=1 to disable)"
 fi
 

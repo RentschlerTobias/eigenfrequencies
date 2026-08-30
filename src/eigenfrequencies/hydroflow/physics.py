@@ -262,7 +262,7 @@ class Runtime:
         # Same reason as the mounts: "~/enroot-images/x.sqsh" reaches execve
         # unexpanded and enroot then reports a container it cannot find.
         cmd += [
-            os.path.expanduser(self.container),
+            _expand(self.container),
             "bash",
             "-c",
             f"cd {shlex.quote(str(workdir))}; {script}",
@@ -280,6 +280,15 @@ def _module_available(name: str) -> bool:
         return False
 
 
+def _expand(path: str | Path) -> str:
+    """Expand ``~`` and ``$VARS`` in a path written by hand into a TOML.
+
+    Neither TOML nor execve does this: a config saying ``$WS/enroot-images/x.sqsh``
+    reaches enroot verbatim and it reports a container it cannot find.
+    """
+    return os.path.expandvars(os.path.expanduser(str(path)))
+
+
 def _existing_paths(paths: Sequence[str | Path]) -> list[str]:
     """Absolute, deduplicated, order-preserving list of the paths that exist."""
     seen: list[str] = []
@@ -288,7 +297,7 @@ def _existing_paths(paths: Sequence[str | Path]) -> list[str]:
             continue
         # expanduser: these come from a TOML written by hand, and there is no
         # shell between here and execve to expand a leading ~.
-        resolved = str(Path(path).expanduser().resolve())
+        resolved = str(Path(_expand(path)).resolve())
         if resolved not in seen and os.path.exists(resolved):
             seen.append(resolved)
     return seen
@@ -388,7 +397,7 @@ def _case_dir(machine_cfg, dtoo_opts: dict[str, Any], runtime: Runtime) -> str:
     """
     explicit = dtoo_opts.get("case_dir")
     if explicit:
-        return os.path.expanduser(str(explicit))
+        return _expand(explicit)
     case_dir = os.path.expanduser(machine_cfg.case_dir)
     if runtime.containerized and not os.path.isdir(case_dir):
         return f"{CONTAINER_CASE_ROOT}/{machine_cfg.name}"
@@ -603,7 +612,7 @@ def solve_modal(
     pythonpath = modal_opts.get("pythonpath") or []
     if isinstance(pythonpath, str):
         pythonpath = [pythonpath]
-    pythonpath = [str(Path(p).expanduser()) for p in pythonpath]
+    pythonpath = [_expand(p) for p in pythonpath]
     if pythonpath:
         extra_mounts += pythonpath
         # Appended, never assigned: the dolfinx image keeps its own dolfinx on
@@ -726,7 +735,7 @@ CFD_CASE_MARKER = "CFD_CASE_DIR "
 def _stage_dir(options_cfd: dict[str, Any]) -> Path:
     """Directory holding ``tistos_files/``, ``xml/`` and the inlet boundary data."""
     explicit = options_cfd.get("stage_dir")
-    path = Path(explicit) if explicit else _repo_root() / "turbine_runner" / "cfd"
+    path = Path(_expand(explicit)) if explicit else _repo_root() / "turbine_runner" / "cfd"
     if not path.is_dir():
         raise StageError(f"cfd stage directory not found: {path}")
     return path

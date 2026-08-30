@@ -23,7 +23,7 @@
 
 [run]
 # [USER] Absolute workspace path. A relative one resolves against this file.
-directory = "runs/tistos-smoke"
+directory = "$WS/runs/tistos-smoke"
 
 [case]
 name = "tistos"
@@ -34,7 +34,7 @@ n_rpm = 72.0
 
 [case.options.dtoo]
 runtime = "enroot"
-container = "~/enroot-images/dtOO-opensuse.sqsh"
+container = "$WS/enroot-images/dtOO.sqsh"
 case_dir = "/dtOO/build/test/tistos"
 timeout = 900
 
@@ -45,9 +45,9 @@ runtime = "enroot"
 # it; the directory below supplies gmsh in 17 MB from the shared filesystem and
 # is mounted automatically. Verified to return frequencies identical to the
 # custom-built image.
-container = "~/enroot-images/dolfinx.sqsh"
+container = "$WS/enroot-images/dolfinx.sqsh"
 # [USER] python3 -m pip install --target ~/pylibs gmsh   (on the login node)
-pythonpath = ["~/pylibs"]
+pythonpath = ["$HOME/pylibs"]
 timeout = 1200
 
 [case.options.modal.solver]

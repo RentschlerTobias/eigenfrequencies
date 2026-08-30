@@ -10,7 +10,7 @@
 [run]
 # [USER] Set an absolute workspace path. A relative one is resolved against
 # *this file's* directory, so the default writes into the repo checkout.
-directory = "runs/tistos-combined"
+directory = "$WS/runs/tistos-combined"
 
 [case]
 name = "tistos"
@@ -22,7 +22,7 @@ n_rpm = 72.0
 
 [case.options.dtoo]
 runtime = "enroot"
-container = "~/enroot-images/dtOO-opensuse.sqsh"
+container = "$WS/enroot-images/dtOO.sqsh"
 case_dir = "/dtOO/build/test/tistos"
 timeout = 1800
 
@@ -30,9 +30,9 @@ timeout = 1800
 runtime = "enroot"
 # Stock dolfinx from Docker Hub; gmsh comes from a mounted pip --target dir.
 # See cluster/enroot_fenicsx_import.md — no image has to be built or copied.
-container = "~/enroot-images/dolfinx.sqsh"
+container = "$WS/enroot-images/dolfinx.sqsh"
 # [USER] python3 -m pip install --target ~/pylibs gmsh   (login node)
-pythonpath = ["~/pylibs"]
+pythonpath = ["$HOME/pylibs"]
 timeout = 7200
 
 [case.options.modal.solver]
