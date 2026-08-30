@@ -87,10 +87,11 @@ if (( CFG_ISLANDS > CFG_CONC )); then
     exit 1
 fi
 
-# ~28.6 GB peak per modal solve, carried over from the validation case. Only a
-# warning: it is an estimate, not a measurement of tistos, and cfd_only does no
-# modal solve at all. The first run turns it into a real number.
-MODAL_GB="${MODAL_PEAK_GB:-29}"
+# ~10 GB peak per modal solve: MUMPS' own figure for the tistos matrix at P2,
+# 545247 DOFs, measured rather than extrapolated (INFOG(22) = 10169 MB, see
+# .omo/evidence/task-modal-memory.md). Still only a warning — a different mesh
+# or element degree moves it, and cfd_only does no modal solve at all.
+MODAL_GB="${MODAL_PEAK_GB:-11}"
 if grep -qE 'eval_mode *= *"(combined|resonance_only)"' "$CONFIG"; then
     NEEDED=$(( CFG_CONC * MODAL_GB ))
     if (( NEEDED > ALLOC_MEM_GB )); then

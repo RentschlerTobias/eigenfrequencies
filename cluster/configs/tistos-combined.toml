@@ -60,8 +60,10 @@ w_resonance = 1.0
 
 [resources]
 # [USER] Sized for a 40-core / 96 GB node; the submit script verifies it.
-# Both stages run per candidate, so memory binds as in the freq-only run, but
-# mpi_ranks has to stay ≥ 1 for simpleFoam: 3 × 4 × 1 = 12 ≤ 40.
+# ~10 GB per modal solve, measured on the real tistos matrix at P2 (545247
+# DOFs) — see .omo/evidence/task-modal-memory.md. Three concurrent candidates
+# sit at ~30 GB of 96 plus the CFD case, so memory does not bind. mpi_ranks
+# stays ≥ 1 for simpleFoam: 3 × 4 × 1 = 12 ≤ 40.
 available_cpus = 40
 concurrent_evaluations = 3
 mpi_ranks = 4

@@ -1,121 +1,140 @@
 # Cluster Deployment — bwUniCluster 3.0
 
-Eigenfrequencies runs on bwUniCluster 3.0 using two disjoint software stacks: dtOO + OpenFOAM for geometry and CFD, and FEniCSx (inside an enroot container) for the modal solve. This document covers the practical details of submitting jobs, managing containers, and understanding provenance.
+The optimization runs on a single node: `hydroflow-opt` drives the search on the
+host, and every candidate is evaluated inside containers — dtOO + OpenFOAM for
+geometry and CFD, FEniCSx for the modal solve. This document covers submitting
+those runs and reading their results.
 
-## Two stacks on the cluster
+> The older Differential-Evolution path (`submit_de_*.sh`, `run_de.sh`, Pyro5
+> workers, `de_state_*.json`) is still in `cluster/` but is **not** what the
+> three comparison runs use. It predates hydroflow-opt and keeps no per-candidate
+> isolation, which is what let a stale OpenFOAM case freeze the CFD objective
+> across two runs. Prefer the path below.
 
-| Stack | Provider | How it is accessed |
-|-------|----------|-------------------|
-| dtOO + OpenFOAM | `source ~/pe` | Host environment (module `py313-dtoo`) |
-| FEniCSx / dolfinx | `pyxis_fenicsx` | enroot container from `docker://dolfinx/dolfinx:stable` |
+## Two containers, no host environment
 
-They do not live in one environment. The DE orchestrator spawns dtOO/OpenFOAM work on the host and FEniCSx work inside the container.
+| Stack | Image | Container | Built by |
+|---|---|---|---|
+| dtOO + OpenFOAM 2606 | `atismer/dtoo-opensuse:stable` | `~/enroot-images/dtOO-opensuse.sqsh` | pulled, `cluster/export_dtoo_enroot.sh` |
+| FEniCSx + gmsh | built from `docker/fenicsx.Dockerfile` | `~/enroot-images/fenicsx.sqsh` | `cluster/export_fenicsx_enroot.sh` |
 
-## Enroot / Pyxis container
+The FEniCSx image is **built, not pulled**: plain `dolfinx/dolfinx:stable` has
+no `gmsh` Python module, and without it the modal stage cannot read a mesh at
+all.
 
-The `pyxis_fenicsx` container is pre-imported on the cluster from the official `dolfinx/dolfinx:stable` Docker image. You do not build it yourself.
+Import instructions, smoke tests and the driving venv:
+`cluster/enroot_dtoo_import.md` and `cluster/enroot_fenicsx_import.md`. Run both
+smoke tests before queueing anything long — the FEniCSx one solves rather than
+only importing.
 
-Quick sanity check:
+`source ~/pe` is no longer needed. Everything dtOO touches happens inside its
+container, which sources `/usr/lib/openfoam/openfoam2606/etc/bashrc` **and**
+`/dtOO-install/bin/env.sh` itself; the SWIG bindings fail to load without both.
 
-```bash
-enroot start -m "$PWD:/workspace" pyxis_fenicsx \
-    bash -c 'python3 -c "import dolfinx; print(dolfinx.__version__)"'
-```
-
-For clusters without enroot/Pyxis, an Apptainer definition is kept at `cluster/apptainer_fenicsx.def`. Build it on a machine with `apptainer` + `fakeroot`:
-
-```bash
-apptainer build eigenfrequencies-fenicsx.sif cluster/apptainer_fenicsx.def
-```
-
-## `source ~/pe` for dtOO
-
-Every sbatch script that touches dtOO or OpenFOAM must source the vendor environment:
-
-```bash
-source ~/pe
-```
-
-This sets `pyDtOO`, `dtOOPythonSWIG`, `simpleFoam`, and related paths. It also exports:
+## Submitting a run
 
 ```bash
-export OSLO_LOCK_PATH=/tmp
-export FOAM_SIGFPE=0
+sbatch cluster/submit_hydroflow_opt.sh cluster/configs/tistos-cfd-only.toml
 ```
 
-## sbatch scripts
+`cluster/submit_hydroflow_opt.sh` does three things before spending the
+allocation:
 
-Three production sbatch wrappers live under `cluster/`. All source `cluster/_submit_de_common.sh` for the shared body.
+1. **Checks the resources against reality.** hydroflow-opt validates
+   `concurrent × ranks × threads ≤ available_cpus` when it loads the config, but
+   it cannot know what SLURM granted. A config claiming 40 cores in a 20-core
+   allocation would pass its check and then oversubscribe the node. This exits 1
+   instead.
+2. **Moves scratch to `$TMPDIR`.** One candidate leaves a 21 MB mesh and a
+   decomposed OpenFOAM case behind. The run directory is pinned to an absolute
+   path first — hydroflow-opt resolves relative paths against the config file,
+   so a config copied to `$TMPDIR` would take the results with it onto a disk
+   that is wiped at job end.
+3. **Warns on the memory budget.** ~10 GB per modal solve, measured on the
+   tistos matrix at P2 (see below).
 
-| Script | Purpose | Default partition | Default nodes × tasks |
-|--------|---------|-------------------|----------------------|
-| `submit_de_cfd_only.sh` | CFD objective only (`EVAL_MODE=cfd_only`) | `cpu_il` | 4 × 4 |
-| `submit_de_combined.sh` | CFD + resonance penalty (`EVAL_MODE=combined`) | `cpu_il` | 4 × 4 |
-| `submit_de.sh` | Legacy wrapper (`EVAL_MODE=combined`, `RUN_TAG=legacy`) | `dev_cpu_il` | 8 × 32 |
+`DRY_RUN=1` stops after validation — resources, config, case discovery and
+scratch layout all checked, nothing evaluated. Worth doing once on a login node.
 
-### Example: smoke test
+## The three runs
+
+`cluster/configs/` holds one config per run; they differ in **exactly one
+line**, `eval_mode`. Population, generations, islands and seed are identical so
+the runs stay comparable candidate by candidate. See
+`cluster/configs/README.md`.
+
+**Order matters: `cfd_only` first.** It is the cheapest — no modal solve — and
+it is the one that proves the CFD objective varies at all.
+
+## Sizing a run
+
+| Quantity | Value | Source |
+|---|---|---|
+| tistos at P2 | 545 247 DOFs | 181 749 nodes × 3 |
+| Modal solve, per candidate | ~10 GB | MUMPS INFOG(22) = 10 169 MB, measured |
+| Three concurrent | ~30 GB of 96 | — |
+
+Memory does not bind on a 96 GB node; the cores do. The modal configs run
+`mpi_ranks = 1` with `threads_per_rank = 12`, so three concurrent evaluations
+occupy 36 of 40 cores. More concurrency means fewer threads each, not more
+memory.
+
+Reproduce or re-measure for another mesh with:
 
 ```bash
-sbatch --partition=dev_cpu_il --nodes=6 --time=00:30:00 \
-       --export=ALL,DE_MAX_GEN=1 cluster/submit_de_cfd_only.sh
+python3 cluster/measure_modal_memory.py --mumps <mesh.msh> --machine tistos --no-limit
 ```
 
-### Example: production run with resume
+It asks MUMPS what the factorization costs rather than extrapolating peak RSS
+from small problems, which understates the requirement — see
+`.omo/evidence/task-modal-memory.md` and `docs/solver_backends.md`.
+
+## After a run
 
 ```bash
-sbatch --partition=cpu_il --nodes=4 --ntasks-per-node=4 --cpus-per-task=16 \
-       --time=08:00:00 \
-       --export=ALL,DE_POP_SIZE=16,DE_MAX_GEN=20,DE_STATE_FILE=turbine_runner/de_state_cfd_only.json \
-       cluster/submit_de_cfd_only.sh
+python3 cluster/summarize_run.py runs/tistos-cfd-only
 ```
 
-### Partition reference
+Exit code 0 means every metric varied and nothing failed. A metric reported as
+`FROZEN` took **one** value across every candidate: that is not convergence, it
+is the failure that invalidated runs 6039132/6039133. `Q` is deliberately not
+checked — it comes from the mapped inlet profile and is an input, not a result.
+
+## Run layout
+
+```
+<run_dir>/
+├── config.toml            # copy of the effective input
+├── manifest.json          # parameter space, provenance, evaluation ids
+├── summary.json           # {total, succeeded, failed}
+├── results.jsonl          # one result per line — what summarize_run.py reads
+├── evaluations/<candidate_id>/
+│   ├── request.json  result.json  outcome.json
+│   └── stdout.log  stderr.log
+└── optimization/
+    ├── checkpoint.json    # written after init and after each generation
+    ├── history.jsonl      # one line per generation
+    └── champions.json  final-populations.json
+```
+
+Resume an interrupted run with `hydroflow-opt resume <run_dir>`.
+
+## Provenance
+
+Every result carries a provenance block: git commit, config hash, UTC timestamp
+and the versions of dolfinx, PETSc and SLEPc where available. The element degree
+that actually ran is in the result metadata and in the solver log — P1
+overestimates bending-dominated frequencies by 15–20 %, so it is worth checking
+that a run used what it meant to.
+
+## Partition reference
 
 | Partition | Nodes | Cores/Node | RAM/Node | Max time | Use case |
-|-----------|-------|------------|----------|----------|----------|
+|---|---|---|---|---|---|
 | `dev_cpu_il` | 8 | 64 | 256 GiB | 30 min | Smoke tests |
 | `cpu_il` | 272 | 64 | 256 GiB | 72 h | Production |
 | `highmem` | 5 | 96 | 2304 GiB | 72 h | Large P2 solves |
 
-## Islands and parallelism
-
-In the DE (Differential Evolution) context:
-
-- **Islands** = diversity, not parallelism. Each island evolves its own population. Island migration is planned but not yet implemented.
-- **Evaluator parallelism** maps to `SLURM_NTASKS`. Each worker runs one design evaluation independently. The population size should match the total task count for best throughput.
-
-The CLI accepts `--islands` and `--workers`, but `islands > 1` is not yet supported:
-
-```bash
-eigenfrequencies optimize --config my.yaml --optimizer de --islands 1 --workers 8
-```
-
-## Provenance
-
-Every run writes provenance metadata into the result JSON. The provenance block includes:
-
-- Git commit hash
-- Config file hash
-- Timestamp (UTC)
-- Software versions (dolfinx, PETSc, SLEPc where available)
-
-This makes every optimization result reproducible. When resuming from a checkpoint (`DE_STATE_FILE`), the provenance of the original run is preserved in the history file.
-
-## File layout on the cluster
-
-```
-$REPO_ROOT/
-├── cluster/
-│   ├── _submit_de_common.sh      # shared body (sourced, not submitted)
-│   ├── submit_de_cfd_only.sh    # CFD-only variant
-│   ├── submit_de_combined.sh    # combined variant
-│   ├── submit_de.sh             # legacy wrapper
-│   ├── run_de.sh                # single-node dev runner
-│   └── apptainer_fenicsx.def    # fallback Singularity image
-├── server_logs/
-│   └── <RUN_TAG>/               # per-variant logs and worker URIs
-├── turbine_runner/
-│   ├── de_state_<RUN_TAG>.json  # checkpoint
-│   └── de_history_<RUN_TAG>.jsonl  # generation history
-└── data/                        # copied to $TMPDIR per node at start
-```
+[USER] Verify against `sinfo -o "%P %c %m %l"` — the `#SBATCH` lines in
+`submit_hydroflow_opt.sh` are written for a 40-core / 96 GB node and must match
+the partition you use.
