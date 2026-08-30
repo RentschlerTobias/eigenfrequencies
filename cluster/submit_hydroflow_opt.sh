@@ -6,7 +6,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=40
 #SBATCH --mem=90G
-#SBATCH --partition=cpu_il
+#SBATCH --partition=dev_cpu_il
 #
 # One hydroflow-opt optimization on a single node.
 #
