@@ -1,0 +1,31 @@
+========================================
+[submit] host=uc2n601.localdomain job=6743849
+[submit] config=cluster/configs/tistos-smoke.toml
+[submit] repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies
+[submit] venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+========================================
+[submit] config:     cpus=64 concurrent=2 ranks=1 threads=32 islands=1 mode=run
+[submit] allocation: cpus=64 mem=240G
+[submit] results  -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke
+[submit] scratch  -> /scratch/slurm_tmpdir/job_6743849/hydroflow-scratch (KEEP_SCRATCH=1 to disable)
+[submit] staging dtOO.sqsh -> /scratch/slurm_tmpdir/job_6743849/enroot-images
+[submit] images   -> /scratch/slurm_tmpdir/job_6743849/enroot-images (5.4G)
+[submit] ---- check ----
+configuration ok: case=tistos
+[submit] ---- run ----
+[2026-08-30T23:47:08.575] error: *** JOB 6743849 ON uc2n601 CANCELLED AT 2026-08-30T23:47:08 DUE to SIGNAL Terminated ***
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n601
+Job ID: 6743849
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: CANCELLED (exit code 0)
+Nodes: 1
+Cores per node: 64
+CPU Utilized: 00:00:04
+CPU Efficiency: 0.01% of 09:58:24 core-walltime
+Job Wall-clock time: 00:09:21
+Memory Utilized: 769.91 MB
+Memory Efficiency: 0.31% of 240.00 GB (240.00 GB/node)

@@ -1,0 +1,46 @@
+========================================
+[submit] host=uc2n680.localdomain job=6743939
+[submit] config=cluster/configs/tistos-freq-only.toml
+[submit] repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies
+[submit] venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+========================================
+[submit] config:     cpus=64 concurrent=8 ranks=1 threads=8 islands=4 mode=optimize
+[submit] allocation: cpus=64 mem=240G
+[submit] results  -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-freq-only
+[submit] scratch  -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-freq-only/scratch (stable, so resume can reuse results)
+[submit] staging dolfinx.sqsh -> /scratch/slurm_tmpdir/job_6743939/enroot-images
+[submit] staging dtOO.sqsh -> /scratch/slurm_tmpdir/job_6743939/enroot-images
+[submit] images   -> /scratch/slurm_tmpdir/job_6743939/enroot-images (8.0G)
+[submit] ---- check ----
+configuration ok: case=tistos
+[submit] ---- optimize ----
+Traceback (most recent call last):
+  File "/home/st/st_us-042020/st_ac136362/venvs/hydroflow/bin/hydroflow-opt", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/st/st_us-042020/st_ac136362/venvs/hydroflow/lib/python3.13/site-packages/hydroflow_opt/cli.py", line 54, in main
+    else run_optimization(config, config_path=args.config)
+         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/st/st_us-042020/st_ac136362/venvs/hydroflow/lib/python3.13/site-packages/hydroflow_opt/runner.py", line 192, in run_optimization
+    _prepare_new_optimization_run(config, config_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/st/st_us-042020/st_ac136362/venvs/hydroflow/lib/python3.13/site-packages/hydroflow_opt/runner.py", line 533, in _prepare_new_optimization_run
+    raise ValueError(
+        f"optimization run directory is not empty: {config.run_dir}"
+    )
+ValueError: optimization run directory is not empty: /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-freq-only
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n680
+Job ID: 6743939
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 64
+CPU Utilized: 00:00:05
+CPU Efficiency: 0.39% of 00:21:20 core-walltime
+Job Wall-clock time: 00:00:20
+Memory Utilized: 34.85 MB
+Memory Efficiency: 0.01% of 240.00 GB (240.00 GB/node)
