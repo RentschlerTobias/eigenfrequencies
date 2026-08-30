@@ -4,16 +4,17 @@
 #SBATCH --time=48:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=64
-#SBATCH --mem=240G
-#SBATCH --partition=dev_cpu_il
+#SBATCH --cpus-per-task=96
+#SBATCH --mem=370G
+#SBATCH --partition=cpu
 #
 # One hydroflow-opt optimization on a single node.
 #
 #   sbatch cluster/submit_hydroflow_opt.sh cluster/configs/tistos-cfd-only.toml
 #
-# Sized for cpu_il / dev_cpu_il: Intel Xeon Platinum 8358, 64 cores, 256 GiB,
-# 1.8 TB local NVMe. [USER] Other partitions differ — the script verifies the
+# Sized for the cpu partition: AMD EPYC 9454, 96 cores, 384 GiB, 3.84 TB local
+# NVMe. hydroflow-opt has only a SubprocessBackend, so a run lives on ONE node —
+# more nodes would sit idle; a bigger node and more concurrency are the levers. [USER] Other partitions differ — the script verifies the
 # #SBATCH lines against the config's [resources] before starting anything, so a
 # mismatch costs seconds instead of a run.
 #

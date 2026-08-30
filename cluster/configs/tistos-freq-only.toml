@@ -56,13 +56,14 @@ margin_hz = 5.0
 margin_fraction = 0.05
 
 [resources]
-# cpu_il: 64 cores, 256 GiB. Memory does not bind — MUMPS needs ~10 GB per
-# modal solve, measured on the real tistos matrix at P2 (545247 DOFs), so eight
-# concurrent are ~80 GB of 256. The cores bind: 8 x 1 x 8 = 64.
-available_cpus = 64
-concurrent_evaluations = 8
+# cpu partition: AMD EPYC 9454, 96 cores, 384 GiB. The binding factor is
+# neither memory nor threads but concurrency: the dtOO export is single-threaded
+# gmsh and appears to dominate an evaluation, so extra threads per candidate sit
+# idle through it. 16 concurrent x ~10 GB is 160 GB of 384, with room to spare.
+available_cpus = 96
+concurrent_evaluations = 16
 mpi_ranks = 1
-threads_per_rank = 8
+threads_per_rank = 6
 
 [optimization]
 # Identical in all three configs. Sized for the problem, not for a walltime:

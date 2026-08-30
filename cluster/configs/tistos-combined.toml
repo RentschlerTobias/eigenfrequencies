@@ -67,12 +67,13 @@ w_head = 1.0
 w_resonance = 1.0
 
 [resources]
-# cpu_il: 64 cores, 256 GiB. ~10 GB per modal solve (measured) plus the CFD
-# case, so eight concurrent candidates leave memory ample. The cores bind:
-# 8 × 8 × 1 = 64, with eight MPI ranks each for simpleFoam.
-available_cpus = 64
-concurrent_evaluations = 8
-mpi_ranks = 8
+# cpu partition: AMD EPYC 9454, 96 cores, 384 GiB. The binding factor is
+# neither memory nor threads but concurrency: the dtOO export is single-threaded
+# gmsh and appears to dominate an evaluation, so extra threads per candidate sit
+# idle through it. 16 concurrent x ~10 GB is 160 GB of 384, with room to spare.
+available_cpus = 96
+concurrent_evaluations = 16
+mpi_ranks = 6
 threads_per_rank = 1
 
 [optimization]
