@@ -1,0 +1,23 @@
+========================================
+[dtOO-enroot-smoke] host=uc2n601.localdomain
+[dtOO-enroot-smoke] image=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/enroot-images/dtOO.sqsh
+[dtOO-enroot-smoke] job=6743828
+========================================
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+[2026-08-30T23:34:38.009] error: *** JOB 6743828 ON uc2n601 CANCELLED AT 2026-08-30T23:34:38 DUE TO TIME LIMIT ***
+[2026-08-30T23:34:38.011] error: *** STEP 6743828.0 ON uc2n601 CANCELLED AT 2026-08-30T23:34:38 DUE TO TIME LIMIT ***
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n601
+Job ID: 6743828
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: TIMEOUT (exit code 0)
+Nodes: 1
+Cores per node: 2
+CPU Utilized: 00:00:00
+CPU Efficiency: 0.00% of 00:10:44 core-walltime
+Job Wall-clock time: 00:05:22
+Memory Utilized: 345.09 MB
+Memory Efficiency: 8.63% of 3.91 GB (1.95 GB/core)

@@ -1,0 +1,24 @@
+========================================
+[dtOO-enroot-smoke] host=uc2n601.localdomain
+[dtOO-enroot-smoke] image=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/enroot-images/dtOO.sqsh
+[dtOO-enroot-smoke] job=6743814
+========================================
+/usr/lib/openfoam/openfoam2606/etc/config.sh/functions: line 75: hostname: command not found
+[container] starting on 
+/usr/lib/openfoam/openfoam2606/etc/bashrc: line 184: WM_PROJECT_SITE: unbound variable
+srun: error: uc2n601: task 0: Exited with exit code 1
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n601
+Job ID: 6743814
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 2
+CPU Utilized: 00:00:00
+CPU Efficiency: 0.00% of 00:00:20 core-walltime
+Job Wall-clock time: 00:00:10
+Memory Utilized: 42.83 MB
+Memory Efficiency: 1.07% of 3.91 GB (1.95 GB/core)

@@ -1,0 +1,23 @@
+========================================
+[fenicsx-enroot-smoke] host=uc2n601.localdomain
+[fenicsx-enroot-smoke] image=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/enroot-images/dolfinx.sqsh
+[fenicsx-enroot-smoke] repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies
+[fenicsx-enroot-smoke] job=6743829
+========================================
+[fenicsx-enroot-smoke] ERROR: enroot image not found: /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/enroot-images/dolfinx.sqsh
+[fenicsx-enroot-smoke] Run the import steps in cluster/enroot_fenicsx_import.md first.
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n601
+Job ID: 6743829
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 4
+CPU Utilized: 00:00:00
+CPU Efficiency: 0.00% of 00:00:36 core-walltime
+Job Wall-clock time: 00:00:09
+Memory Utilized: 34.85 MB
+Memory Efficiency: 0.44% of 7.81 GB (1.95 GB/core)
