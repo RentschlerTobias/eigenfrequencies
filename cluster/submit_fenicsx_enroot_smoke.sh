@@ -18,7 +18,7 @@
 
 set -euo pipefail
 
-ENROOT_IMAGE="${ENROOT_IMAGE:-$HOME/enroot-images/dolfinx.sqsh}"
+ENROOT_IMAGE="${ENROOT_IMAGE:-${WS:-$HOME}/enroot-images/dolfinx.sqsh}"
 # The stock dolfinx image has no gmsh; a pip --target directory supplies it.
 # Leave empty when using the self-contained image built from the Dockerfile.
 PYLIBS="${PYLIBS:-$HOME/pylibs}"

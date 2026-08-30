@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-ENROOT_IMAGE="${ENROOT_IMAGE:-$HOME/enroot-images/dtOO-opensuse.sqsh}"
+ENROOT_IMAGE="${ENROOT_IMAGE:-${WS:-$HOME}/enroot-images/dtOO.sqsh}"
 
 echo "========================================"
 echo "[dtOO-enroot-smoke] host=$(hostname)"
