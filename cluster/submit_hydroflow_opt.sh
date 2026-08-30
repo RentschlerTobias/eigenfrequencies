@@ -4,7 +4,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=96
+#SBATCH --exclusive
 #SBATCH --mem=0
 #SBATCH --partition=cpu
 #
@@ -15,8 +15,9 @@
 # --mem=0 asks for the whole node's memory, whatever the partition has: 384 GiB
 # on cpu, 256 on cpu_il. A fixed figure is rejected outright on the smaller one
 # ("Memory required by task is not available") before the job is ever queued.
-# --cpus-per-task is sized for cpu (96); the script scales the config down to
-# whatever the allocation actually grants. hydroflow-opt has only a SubprocessBackend, so a run lives on ONE node —
+# --exclusive for the same reason: a fixed --cpus-per-task=96 is rejected on a
+# 64-core node. Taking the whole node works on either, and the script scales the
+# config down to however many cores the allocation actually grants. hydroflow-opt has only a SubprocessBackend, so a run lives on ONE node —
 # more nodes would sit idle; a bigger node and more concurrency are the levers. [USER] Other partitions differ — the script verifies the
 # #SBATCH lines against the config's [resources] before starting anything, so a
 # mismatch costs seconds instead of a run.
