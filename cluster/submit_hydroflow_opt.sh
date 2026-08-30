@@ -129,7 +129,9 @@ case "$ABS_RUN_DIR" in
     /*) : ;;
     *)  ABS_RUN_DIR="$CONFIG_DIR/$ABS_RUN_DIR" ;;
 esac
-mkdir -p "$ABS_RUN_DIR"
+# Deliberately NOT created here: hydroflow-opt refuses to start an optimization
+# in a directory that already has anything in it, and it makes the directory
+# itself.
 
 sed -e "s|^directory *=.*|directory = \"$ABS_RUN_DIR\"|" "$CONFIG" > "$RUN_CONFIG"
 echo "[submit] results  -> $ABS_RUN_DIR"
@@ -141,7 +143,9 @@ echo "[submit] results  -> $ABS_RUN_DIR"
 #
 # The heavy per-candidate artifacts still go to node-local disk: the worker
 # reads case.options.local_scratch and works in $TMPDIR/<candidate-id>.
-SCRATCH="$ABS_RUN_DIR/scratch"
+# Beside the run directory, not inside it — anything inside makes
+# `optimize` abort with "optimization run directory is not empty".
+SCRATCH="${ABS_RUN_DIR}-scratch"
 mkdir -p "$SCRATCH"
 if grep -q '^scratch_directory' "$RUN_CONFIG"; then
     sed -i "s|^scratch_directory *=.*|scratch_directory = \"$SCRATCH\"|" "$RUN_CONFIG"
