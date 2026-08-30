@@ -29,13 +29,14 @@ fi
 # Run the import test inside the container.
 # Both environment files must be sourced before python3.13, otherwise shared
 # libraries (libPstream.so, libTKFeat.so.7.9) are not found.
+# No `set -euo pipefail` inside: OpenFOAM's bashrc reads unset variables
+# (WM_PROJECT_SITE), so `set -u` aborts before dtOO is ever imported, and the
+# image gets blamed for a bug in this script. The python exit code decides,
+# exactly as the production path in physics.py does it.
 srun -n1 -N1 enroot start --root "$ENROOT_IMAGE" bash -c '
-    set -euo pipefail
-    echo "[container] starting on $(hostname)"
     source /usr/lib/openfoam/openfoam2606/etc/bashrc
     source /dtOO-install/bin/env.sh
     python3.13 -c "import dtOOPythonSWIG; print(\"dtOOPythonSWIG imported ok\")"
-    echo "[container] EXIT=0"
 '
 
 EXIT_CODE=$?

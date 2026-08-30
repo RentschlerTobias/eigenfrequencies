@@ -58,7 +58,8 @@ srun -n1 -N1 enroot start --root \
     ${PYLIBS:+--mount "$PYLIBS:$PYLIBS"} \
     "$ENROOT_IMAGE" \
     bash -c "
-        set -euo pipefail
+        # No `set -euo pipefail`: sourcing an OpenFOAM or dolfinx environment
+        # reads unset variables, and `set -u` aborts before anything runs.
         export HOME=/tmp DOLFINX_CACHE_DIR=/tmp XDG_RUNTIME_DIR=/tmp TMPDIR=/tmp
         # Appended, not assigned: the image keeps its own dolfinx on PYTHONPATH.
         [ -n "$PYLIBS" ] && export PYTHONPATH="$PYLIBS:\$PYTHONPATH"
