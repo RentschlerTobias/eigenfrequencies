@@ -258,7 +258,14 @@ class Runtime:
         cmd = ["enroot", "start"]
         for path in bind:
             cmd += ["-m", f"{path}:{path}"]
-        cmd += list(self.args)
+        extra = list(self.args)
+        # Both images run as root internally — dtOO sources its environment from
+        # /dtOO-install, dolfinx keeps its packages in /usr. Without --root
+        # enroot cannot drop privileges and refuses to mount the image at all:
+        # "mount: drop permissions failed" and the container never starts.
+        if "--root" not in extra:
+            extra.insert(0, "--root")
+        cmd += extra
         # Same reason as the mounts: "~/enroot-images/x.sqsh" reaches execve
         # unexpanded and enroot then reports a container it cannot find.
         cmd += [

@@ -111,6 +111,18 @@ class TestRuntimeCommand:
         assert "pyxis_dtoo" in cmd
         assert cmd[-1].startswith(f"cd {tmp_path.resolve()}")
 
+    def test_enroot_runs_as_root_by_default(self):
+        """Without it enroot cannot drop privileges and refuses to mount at all:
+        "mount: drop permissions failed", and the container never starts."""
+        cmd = Runtime(kind="enroot", container="/x.sqsh").command(["true"], workdir="/w")
+        assert cmd[:3] == ["enroot", "start", "--root"]
+
+    def test_explicit_args_are_not_duplicated(self):
+        cmd = Runtime(kind="enroot", container="/x.sqsh", args=("--root",)).command(
+            ["true"], workdir="/w"
+        )
+        assert cmd.count("--root") == 1
+
     def test_a_variable_in_the_container_path_is_expanded(self, monkeypatch):
         """TOML expands nothing and execve expands nothing, so this has to."""
         monkeypatch.setenv("WS", "/pfs/work9/ws")
