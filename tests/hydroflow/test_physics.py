@@ -111,6 +111,15 @@ class TestRuntimeCommand:
         assert "pyxis_dtoo" in cmd
         assert cmd[-1].startswith(f"cd {tmp_path.resolve()}")
 
+    def test_a_tilde_in_the_container_path_is_expanded(self):
+        """Nothing between here and execve expands it, and enroot then reports
+        a container it cannot find — from a config line that looks correct."""
+        cmd = Runtime(kind="enroot", container="~/enroot-images/x.sqsh").command(
+            ["true"], workdir="/w"
+        )
+        assert not any(a.startswith("~") for a in cmd)
+        assert any(a.endswith("/enroot-images/x.sqsh") for a in cmd)
+
     def test_environment_is_exported_inside_the_shell(self):
         cmd = Runtime(kind="native").command(
             ["true"], workdir="/w", env={"DTOO_CASE_DIR": "/a b"}
@@ -232,6 +241,57 @@ def export_with(tmp_path: Path, options: dict):
     return physics.export_mesh(
         machine(), {"cV_bladeLength": 1.0}, options, tmp_path
     )
+
+
+class TestModalRuntimeExtras:
+    """Mounts and PYTHONPATH, which is what lets the stock dolfinx image serve.
+
+    The published dolfinx image has no gmsh, so the modal stage could not read a
+    mesh in it. A `pip install --target` directory mounted from the host supplies
+    it in 17 MB, and then nothing has to be built, pushed or copied to reach the
+    cluster.
+    """
+
+    def _capture(self, tmp_path, monkeypatch, options):
+        seen = {}
+
+        def fake_run(cmd, **kwargs):
+            seen["cmd"] = cmd
+            return physics.RESULT_MARKER + '{"ok": true, "frequencies_hz": [1.0]}'
+
+        monkeypatch.setattr(physics, "_run", fake_run)
+        physics.solve_modal(str(tmp_path / "m.msh"), machine(), options, tmp_path)
+        return seen["cmd"]
+
+    def test_pythonpath_is_appended_never_assigned(self, tmp_path, monkeypatch):
+        """Assigning it hides the image's own dolfinx and breaks the import."""
+        cmd = self._capture(
+            tmp_path,
+            monkeypatch,
+            {"modal": {"runtime": "docker", "pythonpath": ["/opt/pylibs"]}},
+        )
+        script = cmd[-1]
+        assert "export PYTHONPATH=/opt/pylibs:$PYTHONPATH" in script
+
+    def test_the_pythonpath_directory_is_mounted(self, tmp_path, monkeypatch):
+        libs = tmp_path / "pylibs"
+        libs.mkdir()
+        cmd = self._capture(
+            tmp_path,
+            monkeypatch,
+            {"modal": {"runtime": "docker", "pythonpath": [str(libs)]}},
+        )
+        assert f"{libs}:{libs}" in cmd
+
+    def test_extra_mounts_are_passed_through(self, tmp_path, monkeypatch):
+        extra = tmp_path / "shared"
+        extra.mkdir()
+        cmd = self._capture(
+            tmp_path,
+            monkeypatch,
+            {"modal": {"runtime": "docker", "mounts": [str(extra)]}},
+        )
+        assert f"{extra}:{extra}" in cmd
 
 
 class TestStaleResultCleanup:

@@ -26,7 +26,11 @@ timeout = 1800
 # The image must carry gmsh on top of dolfinx — the plain dolfinx image cannot
 # read a .msh. cluster/export_fenicsx_enroot.sh builds and ships the right one.
 runtime = "enroot"
-container = "~/enroot-images/fenicsx.sqsh"
+# Stock dolfinx from Docker Hub; gmsh comes from a mounted pip --target dir.
+# See cluster/enroot_fenicsx_import.md — no image has to be built or copied.
+container = "~/enroot-images/dolfinx.sqsh"
+# [USER] python3 -m pip install --target ~/pylibs gmsh   (login node)
+pythonpath = ["~/pylibs"]
 timeout = 7200
 
 [case.options.modal.solver]

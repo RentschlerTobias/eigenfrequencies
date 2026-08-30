@@ -13,14 +13,26 @@ those runs and reading their results.
 
 ## Two containers, no host environment
 
-| Stack | Image | Container | Built by |
-|---|---|---|---|
-| dtOO + OpenFOAM 2606 | `atismer/dtoo-opensuse:stable` | `~/enroot-images/dtOO-opensuse.sqsh` | pulled, `cluster/export_dtoo_enroot.sh` |
-| FEniCSx + gmsh | built from `docker/fenicsx.Dockerfile` | `~/enroot-images/fenicsx.sqsh` | `cluster/export_fenicsx_enroot.sh` |
+Both are imported straight from Docker Hub — nothing is built, pushed or
+copied:
 
-The FEniCSx image is **built, not pulled**: plain `dolfinx/dolfinx:stable` has
-no `gmsh` Python module, and without it the modal stage cannot read a mesh at
-all.
+```bash
+mkdir -p ~/enroot-images && cd ~/enroot-images
+enroot import -o dtOO-opensuse.sqsh docker://atismer/dtoo-opensuse:stable
+enroot import -o dolfinx.sqsh       docker://dolfinx/dolfinx:stable
+python3 -m pip install --target ~/pylibs gmsh    # 17 MB, on a login node
+```
+
+The stock dolfinx image has no `gmsh`, and without it the modal stage cannot
+read a mesh. That is what `~/pylibs` is for: the configs name it under
+`[case.options.modal] pythonpath`, it gets mounted automatically, and it is
+**appended** to `PYTHONPATH` rather than assigned — the image keeps its own
+dolfinx on that variable, so overwriting it breaks `import dolfinx` inside an
+image that plainly has it. Verified to return frequencies identical to a
+custom-built image.
+
+A self-contained image is still available via `docker/fenicsx.Dockerfile` and
+`cluster/export_fenicsx_enroot.sh`, at the cost of moving 1.6 GB.
 
 Import instructions, smoke tests and the driving venv:
 `cluster/enroot_dtoo_import.md` and `cluster/enroot_fenicsx_import.md`. Run both

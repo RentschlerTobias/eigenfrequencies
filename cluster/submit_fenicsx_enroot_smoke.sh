@@ -18,7 +18,10 @@
 
 set -euo pipefail
 
-ENROOT_IMAGE="${ENROOT_IMAGE:-$HOME/enroot-images/fenicsx.sqsh}"
+ENROOT_IMAGE="${ENROOT_IMAGE:-$HOME/enroot-images/dolfinx.sqsh}"
+# The stock dolfinx image has no gmsh; a pip --target directory supplies it.
+# Leave empty when using the self-contained image built from the Dockerfile.
+PYLIBS="${PYLIBS:-$HOME/pylibs}"
 REPO="${EIGENFREQUENCIES_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 echo "========================================"
@@ -52,10 +55,13 @@ echo "[fenicsx-enroot-smoke] spec: $SPEC"
 srun -n1 -N1 enroot start --root \
     --mount "$REPO:$REPO" \
     --mount "$(dirname "$SPEC"):$(dirname "$SPEC")" \
+    ${PYLIBS:+--mount "$PYLIBS:$PYLIBS"} \
     "$ENROOT_IMAGE" \
     bash -c "
         set -euo pipefail
         export HOME=/tmp DOLFINX_CACHE_DIR=/tmp XDG_RUNTIME_DIR=/tmp TMPDIR=/tmp
+        # Appended, not assigned: the image keeps its own dolfinx on PYTHONPATH.
+        [ -n "$PYLIBS" ] && export PYTHONPATH="$PYLIBS:\$PYTHONPATH"
         echo '[container] starting on \$(hostname)'
         python3 $REPO/src/eigenfrequencies/hydroflow/physics.py modal $SPEC
         echo '[container] EXIT=0'

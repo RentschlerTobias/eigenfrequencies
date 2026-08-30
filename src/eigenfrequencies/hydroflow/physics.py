@@ -73,6 +73,7 @@ installed and is reached through a ``sys.path`` bootstrap.
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import os
 import shlex
@@ -258,7 +259,14 @@ class Runtime:
         for path in bind:
             cmd += ["-m", f"{path}:{path}"]
         cmd += list(self.args)
-        cmd += [self.container, "bash", "-c", f"cd {shlex.quote(str(workdir))}; {script}"]
+        # Same reason as the mounts: "~/enroot-images/x.sqsh" reaches execve
+        # unexpanded and enroot then reports a container it cannot find.
+        cmd += [
+            os.path.expanduser(self.container),
+            "bash",
+            "-c",
+            f"cd {shlex.quote(str(workdir))}; {script}",
+        ]
         return cmd
 
 
@@ -278,7 +286,9 @@ def _existing_paths(paths: Sequence[str | Path]) -> list[str]:
     for path in paths:
         if not path:
             continue
-        resolved = str(Path(path).resolve())
+        # expanduser: these come from a TOML written by hand, and there is no
+        # shell between here and execve to expand a leading ~.
+        resolved = str(Path(path).expanduser().resolve())
         if resolved not in seen and os.path.exists(resolved):
             seen.append(resolved)
     return seen
@@ -584,6 +594,27 @@ def solve_modal(
         python="python3",  # the dolfinx image is not on the dtOO interpreter
     )
 
+    # Extra host directories to mount, and Python packages to reach from them.
+    # This is what lets the *stock* dolfinx image serve the modal stage: it has
+    # no gmsh, but a 17 MB `pip install --target` directory mounted from the
+    # shared filesystem supplies it, and then no custom image has to be built,
+    # pushed or copied to the cluster at all.
+    extra_mounts = [str(m) for m in (modal_opts.get("mounts") or [])]
+    pythonpath = modal_opts.get("pythonpath") or []
+    if isinstance(pythonpath, str):
+        pythonpath = [pythonpath]
+    pythonpath = [str(Path(p).expanduser()) for p in pythonpath]
+    if pythonpath:
+        extra_mounts += pythonpath
+        # Appended, never assigned: the dolfinx image keeps its own dolfinx on
+        # PYTHONPATH, and overwriting it makes `import dolfinx` fail inside an
+        # image that plainly has it.
+        runtime = dataclasses.replace(
+            runtime,
+            setup=tuple(runtime.setup)
+            + (f"export PYTHONPATH={':'.join(pythonpath)}:$PYTHONPATH",),
+        )
+
     template = machine_cfg.bc_template
     bc_cfg = from_template(template.type, template.params)
     _apply_overrides(bc_cfg, _section(modal_opts, "bc"), label="modal.bc")
@@ -619,7 +650,7 @@ def solve_modal(
             runtime.command(
                 argv,
                 workdir=directory,
-                mounts=[_repo_root(), directory, Path(msh_path).parent],
+                mounts=[_repo_root(), directory, Path(msh_path).parent, *extra_mounts],
             ),
             stage="modal solve",
             timeout=runtime.timeout,

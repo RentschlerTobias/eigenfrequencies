@@ -40,7 +40,14 @@ timeout = 900
 
 [case.options.modal]
 runtime = "enroot"
-container = "~/enroot-images/fenicsx.sqsh"
+# The STOCK dolfinx image, imported straight from Docker Hub — no build, no
+# push, no 1.6 GB copy. It lacks gmsh, so the modal stage cannot read a mesh in
+# it; the directory below supplies gmsh in 17 MB from the shared filesystem and
+# is mounted automatically. Verified to return frequencies identical to the
+# custom-built image.
+container = "~/enroot-images/dolfinx.sqsh"
+# [USER] python3 -m pip install --target ~/pylibs gmsh   (on the login node)
+pythonpath = ["~/pylibs"]
 timeout = 1200
 
 [case.options.modal.solver]
