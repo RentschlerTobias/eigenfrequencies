@@ -43,6 +43,12 @@ fi
 export ENROOT_TEMP_PATH="${ENROOT_TEMP_PATH:-/tmp/$USER-enroot}"
 mkdir -p "$ENROOT_TEMP_PATH"
 
+# mksquashfs on the login node defaults to lzo, which the squashfuse on the
+# compute nodes cannot read: the image imports fine and then fails at the first
+# `enroot start` with "Squashfs image uses lzo compression, this version
+# supports only xz, zlib, lz4, zstd". zstd is supported and just as fast.
+export ENROOT_SQUASH_OPTIONS="${ENROOT_SQUASH_OPTIONS:--comp zstd -noD}"
+
 # ── ssh-agent ─────────────────────────────────────────────────────────────
 # Reuse a running agent across logins instead of starting one per shell: the
 # socket is remembered in a fixed file, so a second login finds the first agent.
