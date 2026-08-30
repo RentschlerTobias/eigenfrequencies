@@ -122,6 +122,12 @@ class ModalSolver:
             domain, ("Lagrange", self.solver.element_degree, (3,))
         )
         self.V = V
+        # Say which discretization ran. P1 overestimates bending-dominated
+        # frequencies by 15-20%, and a run that quietly used it is
+        # indistinguishable afterwards from one that meant to.
+        degree = self.solver.element_degree
+        note = " (P1 overestimates bending modes 15-20%)" if degree == 1 else ""
+        print(f"[solver] element degree P{degree}{note}")
 
         u = ufl.TrialFunction(V)
         v = ufl.TestFunction(V)

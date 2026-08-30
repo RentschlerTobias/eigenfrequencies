@@ -29,7 +29,7 @@
     "tolerance": 1e-06,
     "freq_min": 0.0,
     "freq_max": 2000.0,
-    "element_degree": 1,
+    "element_degree": 2,
     "solver_backend": "scipy"
   },
   "DesignConfig": {

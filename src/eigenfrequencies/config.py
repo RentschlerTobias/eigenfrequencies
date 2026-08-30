@@ -96,11 +96,13 @@ class SolverConfig:
         tolerance: Eigensolver tolerance
         freq_min: Lower frequency of interest in Hz (reporting only)
         freq_max: Upper frequency of interest in Hz (reporting only)
-        element_degree: Displacement element degree. P1 (=1) keeps the runner
-            mesh (~80k nodes -> ~240k DOFs) within memory but overestimates
-            bending-dominated eigenfrequencies ~15-20% on thin structures
-            (measured against experiment on the test-case disc); use 2
-            (quadratic, ~1M DOFs, needs ~8 GB+) for validation-grade runs.
+        element_degree: Displacement element degree. **Defaults to 2.** P1 (=1)
+            is cheaper but overestimates bending-dominated eigenfrequencies
+            ~15-20% on thin structures (measured against experiment on the
+            test-case disc), and nothing downstream can tell an intentional P1
+            from a forgotten one — the value only ever surfaces in the result
+            metadata. A wrong answer that looks right is worse than a slow one,
+            so P1 has to be asked for.
         solver_backend: "scipy" (eigsh on CSR slices) or "slepc" (PETSc/SLEPc
             shift-invert + MUMPS factorization, scales past ~1M DOFs). Both
             support every BC mode and agree to machine precision on the same
@@ -112,7 +114,7 @@ class SolverConfig:
     tolerance: float = 1e-6
     freq_min: float = 0.0
     freq_max: float = 2000.0
-    element_degree: int = 1
+    element_degree: int = 2
     solver_backend: str = "scipy"
 
 
