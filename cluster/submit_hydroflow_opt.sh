@@ -146,6 +146,24 @@ if [[ -n "${TMPDIR:-}" && "${KEEP_SCRATCH:-0}" != "1" ]]; then
     echo "[submit] scratch  -> $SCRATCH (KEEP_SCRATCH=1 to disable)"
 fi
 
+# ── Images onto node-local disk ───────────────────────────────────────────
+# Read through squashfuse from the parallel filesystem, the dtOO export ran past
+# its 900 s timeout — the same export takes ~300 s when the image is local. The
+# nodes have 1.8 TB of NVMe; copying 5.5 GB once beats every evaluation paying
+# for it, and with eight concurrent candidates they would all pay at once.
+export ENROOT_IMAGES="${ENROOT_IMAGES:-$WS/enroot-images}"
+if [[ -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" ]]; then
+    LOCAL_IMAGES="$TMPDIR/enroot-images"
+    mkdir -p "$LOCAL_IMAGES"
+    for img in "$ENROOT_IMAGES"/*.sqsh; do
+        [[ -f "$img" ]] || continue
+        echo "[submit] staging $(basename "$img") -> $LOCAL_IMAGES"
+        cp "$img" "$LOCAL_IMAGES/" || { echo "[submit] staging failed" >&2; exit 1; }
+    done
+    export ENROOT_IMAGES="$LOCAL_IMAGES"
+    echo "[submit] images   -> $ENROOT_IMAGES ($(du -sh "$LOCAL_IMAGES" | cut -f1))"
+fi
+
 # The case plugin resolves the machine catalog relative to the installed
 # package; point it at this checkout so an installed copy still finds tistos.yaml.
 export EIGENFREQUENCIES_MACHINES_DIR="$REPO/adapters/machines"

@@ -49,6 +49,12 @@ mkdir -p "$ENROOT_TEMP_PATH"
 # supports only xz, zlib, lz4, zstd". zstd is supported and just as fast.
 export ENROOT_SQUASH_OPTIONS="${ENROOT_SQUASH_OPTIONS:--comp zstd -noD}"
 
+# Where the configs look for the images. submit_hydroflow_opt.sh overrides this
+# with a node-local copy: read through squashfuse from a parallel filesystem,
+# the dtOO export took longer than its 900 s timeout, while the same export
+# needs ~300 s locally.
+export ENROOT_IMAGES="${ENROOT_IMAGES:-$WS/enroot-images}"
+
 # ── ssh-agent ─────────────────────────────────────────────────────────────
 # Reuse a running agent across logins instead of starting one per shell: the
 # socket is remembered in a fixed file, so a second login finds the first agent.

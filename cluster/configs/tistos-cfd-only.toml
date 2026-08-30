@@ -23,7 +23,7 @@ n_rpm = 72.0
 # compute node. dtOOPythonSWIG needs both environments sourced — physics.py
 # does that itself.
 runtime = "enroot"
-container = "$WS/enroot-images/dtOO.sqsh"
+container = "$ENROOT_IMAGES/dtOO.sqsh"
 case_dir = "/dtOO/build/test/tistos"
 timeout = 1800
 
