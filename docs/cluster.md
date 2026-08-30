@@ -86,10 +86,10 @@ it is the one that proves the CFD objective varies at all.
 | Modal solve, per candidate | ~10 GB | MUMPS INFOG(22) = 10 169 MB, measured |
 | Three concurrent | ~30 GB of 96 | — |
 
-Memory does not bind on a 96 GB node; the cores do. The modal configs run
-`mpi_ranks = 1` with `threads_per_rank = 12`, so three concurrent evaluations
-occupy 36 of 40 cores. More concurrency means fewer threads each, not more
-memory.
+Memory does not bind on a 256 GiB node; the cores do. `cpu_il` and `dev_cpu_il`
+are Intel Xeon Platinum 8358, **64 cores, 256 GiB**, 1.8 TB local NVMe. The
+modal configs run eight concurrent evaluations with eight threads each — 64
+cores, ~80 GB. More concurrency means fewer threads each, not more memory.
 
 Reproduce or re-measure for another mesh with:
 

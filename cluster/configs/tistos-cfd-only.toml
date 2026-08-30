@@ -33,13 +33,12 @@ timeout = 1800
 timeout = 3600
 
 [resources]
-# [USER] Sized for a 40-core / 96 GB node; submit_hydroflow_opt.sh verifies it
-# against the real allocation. cfd_only has no modal solve and is therefore not
-# memory-bound — once the first run reports its peak, concurrent_evaluations
-# can go up.
-available_cpus = 40
-concurrent_evaluations = 3
-mpi_ranks = 4
+# cpu_il: 64 cores, 256 GiB; submit_hydroflow_opt.sh verifies this against the
+# real allocation. No modal solve here, so memory is not a concern at all — the
+# cores bind: 8 × 8 × 1 = 64, eight MPI ranks each for simpleFoam.
+available_cpus = 64
+concurrent_evaluations = 8
+mpi_ranks = 8
 threads_per_rank = 1
 
 [optimization]

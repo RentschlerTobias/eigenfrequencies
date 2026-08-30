@@ -52,15 +52,13 @@ margin_hz = 5.0
 margin_fraction = 0.05
 
 [resources]
-# [USER] Sized for a 40-core / 96 GB node; the submit script verifies it.
-# Memory does NOT bind: MUMPS needs ~10 GB per modal solve, measured on the
-# real tistos matrix at P2 (545247 DOFs) — see .omo/evidence/task-modal-memory.md.
-# Three concurrent solves are ~30 GB of 96. The cores are the constraint:
-# 3 x 1 x 12 = 36 of 40. More concurrency means fewer threads each.
-available_cpus = 40
-concurrent_evaluations = 3
+# cpu_il: 64 cores, 256 GiB. Memory does not bind — MUMPS needs ~10 GB per
+# modal solve, measured on the real tistos matrix at P2 (545247 DOFs), so eight
+# concurrent are ~80 GB of 256. The cores bind: 8 x 1 x 8 = 64.
+available_cpus = 64
+concurrent_evaluations = 8
 mpi_ranks = 1
-threads_per_rank = 12
+threads_per_rank = 8
 
 [optimization]
 # Identical in all three configs.

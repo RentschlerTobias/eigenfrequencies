@@ -4,19 +4,18 @@
 #SBATCH --time=48:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=40
-#SBATCH --mem=90G
+#SBATCH --cpus-per-task=64
+#SBATCH --mem=240G
 #SBATCH --partition=dev_cpu_il
 #
 # One hydroflow-opt optimization on a single node.
 #
 #   sbatch cluster/submit_hydroflow_opt.sh cluster/configs/tistos-cfd-only.toml
 #
-# [USER] The four #SBATCH resource lines above are sized for a 40-core / 96 GB
-# node and must match the partition you actually use — check with
-# `sinfo -o "%P %c %m %l"`. They have to agree with the [resources] table of the
-# config; this script verifies that before starting anything, so a mismatch
-# costs seconds instead of a run.
+# Sized for cpu_il / dev_cpu_il: Intel Xeon Platinum 8358, 64 cores, 256 GiB,
+# 1.8 TB local NVMe. [USER] Other partitions differ — the script verifies the
+# #SBATCH lines against the config's [resources] before starting anything, so a
+# mismatch costs seconds instead of a run.
 #
 # Run order matters: cfd-only, then freq-only, then combined. See
 # cluster/configs/README.md.
