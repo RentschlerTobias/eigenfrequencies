@@ -55,17 +55,26 @@ fi
 # but it has no idea what SLURM actually granted. A config claiming 40 cores in
 # a 20-core allocation passes its check and then oversubscribes the node.
 
-read -r CFG_CPUS CFG_CONC CFG_RANKS CFG_THREADS CFG_ISLANDS <<<"$(
+read -r CFG_CPUS CFG_CONC CFG_RANKS CFG_THREADS CFG_ISLANDS CFG_MODE <<<"$(
     "$VENV/bin/python" - "$CONFIG" <<'PY'
 import sys, tomllib
 raw = tomllib.load(open(sys.argv[1], "rb"))
 res = raw.get("resources", {})
 opt = raw.get("optimization", {})
+# The two hydroflow-opt entry points take different configs: `optimize` needs an
+# [optimization] table, `run` needs [[candidate]] entries. Picking the wrong one
+# fails after the allocation is already granted, so let the config decide.
+mode = "optimize" if "optimization" in raw else ("run" if raw.get("candidate") else "none")
 print(res.get("available_cpus", 1), res.get("concurrent_evaluations", 1),
       res.get("mpi_ranks", 1), res.get("threads_per_rank", 1),
-      opt.get("islands", 1))
+      opt.get("islands", 1), mode)
 PY
 )"
+
+if [[ "$CFG_MODE" == "none" ]]; then
+    echo "[submit] ERROR: $CONFIG has neither [optimization] nor [[candidate]]." >&2
+    exit 1
+fi
 
 ALLOC_CPUS="${SLURM_CPUS_PER_TASK:-${SLURM_CPUS_ON_NODE:-$(nproc)}}"
 if [[ -n "${SLURM_MEM_PER_NODE:-}" ]]; then
@@ -74,7 +83,7 @@ else
     ALLOC_MEM_GB=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo) / 1024 / 1024 ))
 fi
 
-echo "[submit] config:     cpus=$CFG_CPUS concurrent=$CFG_CONC ranks=$CFG_RANKS threads=$CFG_THREADS islands=$CFG_ISLANDS"
+echo "[submit] config:     cpus=$CFG_CPUS concurrent=$CFG_CONC ranks=$CFG_RANKS threads=$CFG_THREADS islands=$CFG_ISLANDS mode=$CFG_MODE"
 echo "[submit] allocation: cpus=$ALLOC_CPUS mem=${ALLOC_MEM_GB}G"
 
 if (( CFG_CPUS > ALLOC_CPUS )); then
@@ -82,7 +91,7 @@ if (( CFG_CPUS > ALLOC_CPUS )); then
     echo "[submit] Fix [resources].available_cpus or --cpus-per-task." >&2
     exit 1
 fi
-if (( CFG_ISLANDS > CFG_CONC )); then
+if [[ "$CFG_MODE" == "optimize" ]] && (( CFG_ISLANDS > CFG_CONC )); then
     echo "[submit] ERROR: islands ($CFG_ISLANDS) > concurrent_evaluations ($CFG_CONC)." >&2
     exit 1
 fi
@@ -150,8 +159,8 @@ if [[ "${DRY_RUN:-0}" == "1" ]]; then
     exit 0
 fi
 
-echo "[submit] ---- optimize ----"
-"$VENV/bin/hydroflow-opt" optimize "$RUN_CONFIG"
+echo "[submit] ---- $CFG_MODE ----"
+"$VENV/bin/hydroflow-opt" "$CFG_MODE" "$RUN_CONFIG"
 EXIT_CODE=$?
 
 echo "[submit] hydroflow-opt exit code: $EXIT_CODE"

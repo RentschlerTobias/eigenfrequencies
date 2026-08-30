@@ -1,0 +1,135 @@
+# tistos — 30-minute cluster smoke test. NOT one of the three comparison runs.
+#
+# Two explicit candidates through the full modal chain, sized for a dev_cpu_il
+# node (64 cores, 256 GB, 30 min walltime). Its purpose is to shake out the
+# cluster path *before* committing to a production queue, where a 24-48 h job
+# waits 5-7 days — realistically one attempt before the deadline.
+#
+#   sbatch --partition=dev_cpu_il --time=00:30:00 \
+#          cluster/submit_hydroflow_opt.sh cluster/configs/tistos-smoke.toml
+#
+# The submit script detects explicit candidates and calls `hydroflow-opt run`,
+# which evaluates exactly these two designs and stops. No optimization table.
+#
+# The same two designs ran locally on 2026-08-28, so the numbers are directly
+# comparable: the geometry export produced a 21.8 MB mesh for baseline and
+# 23.8 MB for midpoint (different md5), and MUMPS factored the P2 system in
+# 209 s on two cores. What this run adds is the enroot path and real timings —
+# which is what the production walltime has to be based on.
+#
+# resonance_only, not cfd_only: no simpleFoam, so it comfortably fits 30 min.
+# Run a cfd_only variant as a second job — that is the one that historically
+# broke, and there are idle nodes to do both at once.
+
+[run]
+# [USER] Absolute workspace path. A relative one resolves against this file.
+directory = "runs/tistos-smoke"
+
+[case]
+name = "tistos"
+
+[case.options]
+eval_mode = "resonance_only"
+n_rpm = 72.0
+
+[case.options.dtoo]
+runtime = "enroot"
+container = "~/enroot-images/dtOO-opensuse.sqsh"
+case_dir = "/dtOO/build/test/tistos"
+timeout = 900
+
+[case.options.modal]
+runtime = "enroot"
+container = "~/enroot-images/fenicsx.sqsh"
+timeout = 1200
+
+[case.options.modal.solver]
+element_degree = 2
+solver_backend = "slepc"
+num_eigenvalues = 10
+
+[case.options.optimization]
+Z_guidevanes = 18
+max_harmonic = 6
+margin_hz = 5.0
+margin_fraction = 0.05
+
+[resources]
+# [USER] dev_cpu_il: 64 cores, 256 GB. Memory does not bind at ~10 GB per modal
+# solve; the cores do — 2 × 1 × 32 = 64.
+available_cpus = 64
+concurrent_evaluations = 2
+mpi_ranks = 1
+threads_per_rank = 32
+
+# The labels carry dots, so every key has to be quoted: TOML would
+# otherwise read cV_ru_t_le_a_0.5 as a nested key under cV_ru_t_le_a_0
+# and fail with "Cannot overwrite a value".
+
+[[candidate]]
+id = "baseline"
+[candidate.parameters]
+"cV_ru_alpha_1_ex_0.0" = 0.004872982423868022
+"cV_ru_alpha_1_ex_0.5" = -0.11506513546824179
+"cV_ru_alpha_1_ex_1.0" = -0.015079716192407971
+"cV_ru_alpha_2_ex_0.0" = 0.03402273030531863
+"cV_ru_alpha_2_ex_0.5" = 0.03875801072398795
+"cV_ru_alpha_2_ex_1.0" = -0.06818810955839917
+"cV_ru_offsetM_ex_0.0" = 1.4337715415968637
+"cV_ru_offsetM_ex_0.5" = 1.3086522283750657
+"cV_ru_offsetM_ex_1.0" = 1.3286597825110331
+"cV_ru_ratio_0.0" = 0.5155095255375718
+"cV_ru_ratio_0.5" = 0.40202440411861723
+"cV_ru_ratio_1.0" = 0.5354515688199649
+"cV_ru_offsetPhiR_ex_0.0" = 0.04571841251056208
+"cV_ru_offsetPhiR_ex_0.5" = -0.0026510870865109615
+"cV_ru_offsetPhiR_ex_1.0" = 0.04602043523346666
+"cV_ru_bladeLength_0.0" = 0.40400214390547823
+"cV_ru_bladeLength_0.5" = 0.6833682636796429
+"cV_ru_bladeLength_1.0" = 1.098288373885862
+"cV_ru_t_le_a_0" = 0.04333963143275606
+"cV_ru_t_le_a_0.5" = 0.05970486035898813
+"cV_ru_t_le_a_1" = 0.027243502852337103
+"cV_ru_t_mid_a_0" = 0.014698095985221829
+"cV_ru_t_mid_a_0.5" = 0.028962957830934426
+"cV_ru_t_mid_a_1" = 0.04796504902806092
+"cV_ru_t_te_a_0" = 0.01577708084197574
+"cV_ru_t_te_a_0.5" = 0.01945021940488333
+"cV_ru_t_te_a_1" = 0.009023193367017956
+"cV_ru_u_mid_a_0" = 0.42832406190006633
+"cV_ru_u_mid_a_0.5" = 0.41227246166708625
+"cV_ru_u_mid_a_1" = 0.4671394674924954
+
+[[candidate]]
+id = "midpoint"
+[candidate.parameters]
+"cV_ru_alpha_1_ex_0.0" = -0.065
+"cV_ru_alpha_1_ex_0.5" = -0.1
+"cV_ru_alpha_1_ex_1.0" = -0.1
+"cV_ru_alpha_2_ex_0.0" = 0.010000000000000002
+"cV_ru_alpha_2_ex_0.5" = 0.010000000000000002
+"cV_ru_alpha_2_ex_1.0" = -0.0049999999999999975
+"cV_ru_offsetM_ex_0.0" = 1.25
+"cV_ru_offsetM_ex_0.5" = 1.25
+"cV_ru_offsetM_ex_1.0" = 1.25
+"cV_ru_ratio_0.0" = 0.5
+"cV_ru_ratio_0.5" = 0.5
+"cV_ru_ratio_1.0" = 0.5
+"cV_ru_offsetPhiR_ex_0.0" = 0.0
+"cV_ru_offsetPhiR_ex_0.5" = 0.0
+"cV_ru_offsetPhiR_ex_1.0" = 0.0
+"cV_ru_bladeLength_0.0" = 0.6000000000000001
+"cV_ru_bladeLength_0.5" = 0.8
+"cV_ru_bladeLength_1.0" = 1.05
+"cV_ru_t_le_a_0" = 0.0325
+"cV_ru_t_le_a_0.5" = 0.0325
+"cV_ru_t_le_a_1" = 0.0325
+"cV_ru_t_mid_a_0" = 0.0325
+"cV_ru_t_mid_a_0.5" = 0.0325
+"cV_ru_t_mid_a_1" = 0.0325
+"cV_ru_t_te_a_0" = 0.0325
+"cV_ru_t_te_a_0.5" = 0.0325
+"cV_ru_t_te_a_1" = 0.0325
+"cV_ru_u_mid_a_0" = 0.5
+"cV_ru_u_mid_a_0.5" = 0.5
+"cV_ru_u_mid_a_1" = 0.5
