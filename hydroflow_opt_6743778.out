@@ -1,0 +1,29 @@
+========================================
+[submit] host=uc2n653.localdomain job=6743778
+[submit] config=cluster/configs/tistos-smoke.toml
+[submit] repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies
+[submit] venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+========================================
+[submit] config:     cpus=64 concurrent=2 ranks=1 threads=32 islands=1 mode=run
+[submit] allocation: cpus=64 mem=240G
+[submit] results  -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke
+[submit] scratch  -> /scratch/slurm_tmpdir/job_6743778/hydroflow-scratch (KEEP_SCRATCH=1 to disable)
+[submit] ---- check ----
+configuration ok: case=tistos
+[submit] ---- run ----
+run complete: 0/2 succeeded, results=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke/results.jsonl
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n653
+Job ID: 6743778
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 64
+CPU Utilized: 00:00:08
+CPU Efficiency: 0.83% of 00:16:00 core-walltime
+Job Wall-clock time: 00:00:15
+Memory Utilized: 34.86 MB
+Memory Efficiency: 0.01% of 240.00 GB (240.00 GB/node)
