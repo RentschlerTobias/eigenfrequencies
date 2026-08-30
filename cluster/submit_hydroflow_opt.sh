@@ -86,10 +86,28 @@ fi
 echo "[submit] config:     cpus=$CFG_CPUS concurrent=$CFG_CONC ranks=$CFG_RANKS threads=$CFG_THREADS islands=$CFG_ISLANDS mode=$CFG_MODE"
 echo "[submit] allocation: cpus=$ALLOC_CPUS mem=${ALLOC_MEM_GB}G"
 
+# A config sized for a bigger partition is scaled down rather than rejected.
+# Parallelism decides wall time, not results: the seed, the population and the
+# candidates are unchanged, so the same config is valid on any partition and you
+# can submit wherever nodes happen to be free.
 if (( CFG_CPUS > ALLOC_CPUS )); then
-    echo "[submit] ERROR: config claims $CFG_CPUS cpus, allocation has $ALLOC_CPUS." >&2
-    echo "[submit] Fix [resources].available_cpus or --cpus-per-task." >&2
-    exit 1
+    NEW_THREADS=$(( ALLOC_CPUS / (CFG_CONC * CFG_RANKS) ))
+    NEW_CONC=$CFG_CONC
+    if (( NEW_THREADS < 1 )); then
+        NEW_THREADS=1
+        NEW_CONC=$(( ALLOC_CPUS / CFG_RANKS ))
+        # islands must not exceed concurrent_evaluations (runner.py:519-526).
+        (( NEW_CONC < CFG_ISLANDS )) && NEW_CONC=$CFG_ISLANDS
+    fi
+    echo "[submit] scaling to the allocation: cpus $CFG_CPUS -> $ALLOC_CPUS," \
+         "concurrent $CFG_CONC -> $NEW_CONC, threads $CFG_THREADS -> $NEW_THREADS"
+    if (( NEW_CONC * CFG_RANKS * NEW_THREADS > ALLOC_CPUS )); then
+        echo "[submit] ERROR: cannot fit $CFG_ISLANDS islands x $CFG_RANKS ranks" \
+             "into $ALLOC_CPUS cpus. Lower optimization.islands or mpi_ranks." >&2
+        exit 1
+    fi
+    CFG_CPUS=$ALLOC_CPUS; CFG_CONC=$NEW_CONC; CFG_THREADS=$NEW_THREADS
+    SCALE_RESOURCES=1
 fi
 if [[ "$CFG_MODE" == "optimize" ]] && (( CFG_ISLANDS > CFG_CONC )); then
     echo "[submit] ERROR: islands ($CFG_ISLANDS) > concurrent_evaluations ($CFG_CONC)." >&2
@@ -134,6 +152,11 @@ esac
 # itself.
 
 sed -e "s|^directory *=.*|directory = \"$ABS_RUN_DIR\"|" "$CONFIG" > "$RUN_CONFIG"
+if [[ "${SCALE_RESOURCES:-0}" == "1" ]]; then
+    sed -i -e "s|^available_cpus *=.*|available_cpus = $CFG_CPUS|" \
+           -e "s|^concurrent_evaluations *=.*|concurrent_evaluations = $CFG_CONC|" \
+           -e "s|^threads_per_rank *=.*|threads_per_rank = $CFG_THREADS|" "$RUN_CONFIG"
+fi
 echo "[submit] results  -> $ABS_RUN_DIR"
 
 # The orchestrator's scratch directory stays on the workspace, stable across
