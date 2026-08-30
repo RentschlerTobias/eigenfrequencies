@@ -376,10 +376,23 @@ def work_dir(options: dict[str, Any], context: dict[str, Any] | None) -> Path:
     from ever sharing an OpenFOAM case.
     """
     explicit = options.get("work_dir")
+    scratch = (context or {}).get("scratch_dir")
+    local = options.get("local_scratch")
+
     if explicit:
-        path = Path(explicit)
-    elif context and context.get("scratch_dir"):
-        path = Path(str(context["scratch_dir"]))
+        path = Path(_expand(explicit))
+    elif local and scratch:
+        # Heavy artifacts onto node-local disk, keeping the candidate id from
+        # the orchestrator's path so two candidates still cannot collide.
+        #
+        # The orchestrator's own scratch_dir must stay put: it is part of the
+        # request, and the request is the cache key that lets `resume` reuse a
+        # finished evaluation (runner.py:130-147). Point scratch_directory at
+        # $TMPDIR and every resumed job sees a different key, discards every
+        # result and recomputes the lot.
+        path = Path(_expand(local)) / Path(str(scratch)).name
+    elif scratch:
+        path = Path(str(scratch))
     else:
         path = Path(tempfile.mkdtemp(prefix="eigenfrequencies-eval-"))
     path.mkdir(parents=True, exist_ok=True)

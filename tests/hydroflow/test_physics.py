@@ -157,6 +157,19 @@ class TestWorkDir:
         assert physics.work_dir({}, {"scratch_dir": str(scratch)}) == scratch
         assert scratch.is_dir()
 
+    def test_local_scratch_keeps_the_candidate_id(self, tmp_path):
+        """Heavy artifacts go node-local, the orchestrator's path stays put.
+
+        That path is part of the request, and the request is the cache key that
+        lets `resume` reuse a finished evaluation. Redirecting it per job would
+        make every resumed run recompute everything.
+        """
+        chosen = physics.work_dir(
+            {"local_scratch": str(tmp_path / "nvme")},
+            {"scratch_dir": "/pfs/ws/runs/x/scratch/island-000-trial-007"},
+        )
+        assert chosen == tmp_path / "nvme" / "island-000-trial-007"
+
     def test_explicit_option_overrides_the_context(self, tmp_path):
         chosen = physics.work_dir(
             {"work_dir": str(tmp_path / "here")}, {"scratch_dir": str(tmp_path / "there")}

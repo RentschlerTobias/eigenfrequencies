@@ -12,6 +12,10 @@ directory = "$WS/runs/tistos-freq-only"
 name = "tistos"
 
 [case.options]
+# Heavy artifacts (21 MB mesh, decomposed OpenFOAM case) onto node-local NVMe.
+# The orchestrator's own scratch stays on the workspace so `resume` can reuse
+# finished evaluations — see cluster/submit_hydroflow_opt.sh.
+local_scratch = "$TMPDIR"
 # The one line that differs between the three runs.
 eval_mode = "resonance_only"
 n_rpm = 72.0
@@ -61,10 +65,20 @@ mpi_ranks = 1
 threads_per_rank = 8
 
 [optimization]
-# Identical in all three configs.
-islands = 2
-population_size = 8
-generations = 10
+# Identical in all three configs. Sized for the problem, not for a walltime:
+# a job killed at 48 h is resumed by the next one from its last checkpoint, and
+# every finished evaluation is reused rather than recomputed.
+#
+# 30 design parameters. Differential evolution wants a population of roughly
+# 5-10x the dimension; 8 individuals could not form meaningful difference
+# vectors and would converge on the initial population rather than the
+# objective. 60 is 2x the dimension — still lean, but a different regime.
+#
+# Total evaluations = islands × population_size × (generations + 1)
+#                   = 4 × 60 × 13 = 3120.
+islands = 4
+population_size = 60
+generations = 12
 differential_weight = 0.8
 crossover_rate = 0.9
 seed = 20260911

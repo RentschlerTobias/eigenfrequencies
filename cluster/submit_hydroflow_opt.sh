@@ -133,18 +133,21 @@ mkdir -p "$ABS_RUN_DIR"
 sed -e "s|^directory *=.*|directory = \"$ABS_RUN_DIR\"|" "$CONFIG" > "$RUN_CONFIG"
 echo "[submit] results  -> $ABS_RUN_DIR"
 
-# Scratch on node-local disk: one candidate leaves a 21 MB mesh and a decomposed
-# OpenFOAM case behind, which does not belong on the shared workspace.
-if [[ -n "${TMPDIR:-}" && "${KEEP_SCRATCH:-0}" != "1" ]]; then
-    SCRATCH="$TMPDIR/hydroflow-scratch"
-    mkdir -p "$SCRATCH"
-    if grep -q '^scratch_directory' "$RUN_CONFIG"; then
-        sed -i "s|^scratch_directory *=.*|scratch_directory = \"$SCRATCH\"|" "$RUN_CONFIG"
-    else
-        sed -i "0,/^\[run\]/s|^\[run\]|[run]\nscratch_directory = \"$SCRATCH\"|" "$RUN_CONFIG"
-    fi
-    echo "[submit] scratch  -> $SCRATCH (KEEP_SCRATCH=1 to disable)"
+# The orchestrator's scratch directory stays on the workspace, stable across
+# jobs. It is part of every request, and the request is the cache key that lets
+# `resume` reuse a finished evaluation instead of recomputing it — pointed at
+# $TMPDIR it would differ in every job and resume would save nothing.
+#
+# The heavy per-candidate artifacts still go to node-local disk: the worker
+# reads case.options.local_scratch and works in $TMPDIR/<candidate-id>.
+SCRATCH="$ABS_RUN_DIR/scratch"
+mkdir -p "$SCRATCH"
+if grep -q '^scratch_directory' "$RUN_CONFIG"; then
+    sed -i "s|^scratch_directory *=.*|scratch_directory = \"$SCRATCH\"|" "$RUN_CONFIG"
+else
+    sed -i "0,/^\[run\]/s|^\[run\]|[run]\nscratch_directory = \"$SCRATCH\"|" "$RUN_CONFIG"
 fi
+echo "[submit] scratch  -> $SCRATCH (stable, so resume can reuse results)"
 
 # ── Images onto node-local disk ───────────────────────────────────────────
 # Read through squashfuse from the parallel filesystem, the dtOO export ran past
@@ -180,8 +183,17 @@ if [[ "${DRY_RUN:-0}" == "1" ]]; then
     exit 0
 fi
 
-echo "[submit] ---- $CFG_MODE ----"
-"$VENV/bin/hydroflow-opt" "$CFG_MODE" "$RUN_CONFIG"
+# A run directory with a manifest is an interrupted optimization, not a new one.
+# Resuming picks up at the last checkpoint and reuses every evaluation that
+# finished, so a walltime kill costs at most the generation in progress — and
+# the population can be sized for the problem instead of for 48 hours.
+if [[ "$CFG_MODE" == "optimize" && -f "$ABS_RUN_DIR/manifest.json" ]]; then
+    echo "[submit] ---- resume ----"
+    "$VENV/bin/hydroflow-opt" resume "$ABS_RUN_DIR"
+else
+    echo "[submit] ---- $CFG_MODE ----"
+    "$VENV/bin/hydroflow-opt" "$CFG_MODE" "$RUN_CONFIG"
+fi
 EXIT_CODE=$?
 
 echo "[submit] hydroflow-opt exit code: $EXIT_CODE"

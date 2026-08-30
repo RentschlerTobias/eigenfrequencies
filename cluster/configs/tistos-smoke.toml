@@ -29,6 +29,10 @@ directory = "$WS/runs/tistos-smoke"
 name = "tistos"
 
 [case.options]
+# Heavy artifacts (21 MB mesh, decomposed OpenFOAM case) onto node-local NVMe.
+# The orchestrator's own scratch stays on the workspace so `resume` can reuse
+# finished evaluations — see cluster/submit_hydroflow_opt.sh.
+local_scratch = "$TMPDIR"
 eval_mode = "resonance_only"
 n_rpm = 72.0
 
