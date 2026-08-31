@@ -60,15 +60,15 @@ TIMEOUT="${TIMEOUT:-1800}"
 echo "=== log:     $LOG"
 echo "=== watch:   tail -f $LOG"
 echo "=== timeout: ${TIMEOUT}s, Ctrl-C works"
-echo "=== dtoo_cfd_build.py prints CreateStates and CreateMeshes separately;"
-echo "=== the gap between those lines is the split we are after."
+echo "=== the two dtOO phases run directly and unbuffered, with a timestamp"
+echo "=== after each: env ready, state written, CreateStates, CreateMeshes."
 
 START=$(date +%s)
 timeout "$TIMEOUT" enroot start --root \
     -m "$REPO:$REPO" \
     -m "$WORK:$WORK" \
     "$IMAGE" \
-    bash -c "cd $WORK; source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; python3.13 $REPO/turbine_runner/dtoo_cfd_build.py design.json $STATE tistos_ru_of" \
+    bash -c "cd $WORK; source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; date +'[t] %T env ready'; python3.13 -u -c \"import sys; sys.path.insert(0,'$REPO/turbine_runner'); import dtoo_cfd_build as b; b._write_state_xml('$STATE', {})\"; date +'[t] %T state written'; python3.13 -u -c \"import sys; sys.path.insert(0,'.'); from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateStates('$STATE')\"; date +'[t] %T CreateStates done'; python3.13 -u -c \"import sys; sys.path.insert(0,'.'); from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateMeshes('$STATE','tistos_ru_of')\"; date +'[t] %T CreateMeshes done'" \
     > "$LOG" 2>&1
 STATUS=$?
 ELAPSED=$(( $(date +%s) - START ))
