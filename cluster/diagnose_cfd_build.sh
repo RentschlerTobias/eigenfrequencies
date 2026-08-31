@@ -59,28 +59,33 @@ echo "=== dtOO build (live). dtoo_cfd_build.py prints CreateStates and"
 echo "=== CreateMeshes separately, so the gap between those lines is the split."
 echo "=== heartbeat every ${HEARTBEAT}s; set HEARTBEAT=0 to silence it."
 
+# The container runs in the FOREGROUND so Ctrl-C reaches it. Backgrounding it
+# to make room for the heartbeat meant Ctrl-C killed only this script while the
+# container kept running and kept writing to the terminal.
 START=$(date +%s)
+
+if [[ "$HEARTBEAT" != "0" ]]; then
+    (
+        while true; do
+            sleep "$HEARTBEAT"
+            ELAPSED=$(( $(date +%s) - START ))
+            LATEST=$(ls -t "$WORK" 2>/dev/null | head -3 | tr '\n' ' ')
+            echo "[t] $(date +%T) ${ELAPSED}s elapsed, newest: $LATEST"
+        done
+    ) &
+    HEARTBEAT_PID=$!
+    trap 'kill "$HEARTBEAT_PID" 2>/dev/null' EXIT INT TERM
+fi
+
 enroot start --root \
     -m "$REPO:$REPO" \
     -m "$WORK:$WORK" \
     "$IMAGE" \
-    bash "$WORK/inner.sh" &
-BUILD_PID=$!
-
-if [[ "$HEARTBEAT" != "0" ]]; then
-    while kill -0 "$BUILD_PID" 2>/dev/null; do
-        sleep "$HEARTBEAT"
-        kill -0 "$BUILD_PID" 2>/dev/null || break
-        ELAPSED=$(( $(date +%s) - START ))
-        # What exists so far says more than the elapsed time alone: the case
-        # directory appears once CreateMeshes starts writing.
-        LATEST=$(ls -t "$WORK" 2>/dev/null | head -3 | tr '\n' ' ')
-        echo "[t] $(date +%T) ${ELAPSED}s elapsed, newest in work dir: $LATEST"
-    done
-fi
-
-wait "$BUILD_PID"
+    bash "$WORK/inner.sh"
 STATUS=$?
+
+[[ -n "${HEARTBEAT_PID:-}" ]] && kill "$HEARTBEAT_PID" 2>/dev/null
+
 echo "=== build exited with $STATUS after $(( $(date +%s) - START ))s"
 
 echo "=== what was produced"
