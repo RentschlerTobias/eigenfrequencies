@@ -51,42 +51,42 @@ python3.13 "$REPO/turbine_runner/dtoo_cfd_build.py" design.json "$STATE" tistos_
 echo "[t] \$(date +%T) build finished with status \$?"
 INNER
 
-# A heartbeat while it runs. dtOO is silent for minutes at a time, and silence
-# is indistinguishable from a hang — which is exactly the question here.
-HEARTBEAT="${HEARTBEAT:-30}"
+# Output goes to a file, never to the terminal, and the container runs in the
+# FOREGROUND. Both are deliberate, and both were wrong in the first version:
+#
+#   * backgrounding it put the container out of reach of Ctrl-C, so interrupting
+#     killed only this script while the container kept writing to the terminal;
+#   * streaming to the terminal made the session unusable — you cannot read what
+#     you are typing, so you cannot even stop it.
+#
+# Foreground plus redirection gives both back: Ctrl-C works, the terminal stays
+# readable, and the log survives the interrupt. Watch it from a second window.
+LOG="${LOG:-$WORK/build.log}"
+TIMEOUT="${TIMEOUT:-1800}"
 
-echo "=== dtOO build (live). dtoo_cfd_build.py prints CreateStates and"
-echo "=== CreateMeshes separately, so the gap between those lines is the split."
-echo "=== heartbeat every ${HEARTBEAT}s; set HEARTBEAT=0 to silence it."
+echo "=== log:     $LOG"
+echo "=== watch:   tail -f $LOG"
+echo "=== timeout: ${TIMEOUT}s, Ctrl-C works"
+echo "=== dtoo_cfd_build.py prints CreateStates and CreateMeshes separately;"
+echo "=== the gap between those lines is the split we are after."
 
-# The container runs in the FOREGROUND so Ctrl-C reaches it. Backgrounding it
-# to make room for the heartbeat meant Ctrl-C killed only this script while the
-# container kept running and kept writing to the terminal.
 START=$(date +%s)
-
-if [[ "$HEARTBEAT" != "0" ]]; then
-    (
-        while true; do
-            sleep "$HEARTBEAT"
-            ELAPSED=$(( $(date +%s) - START ))
-            LATEST=$(ls -t "$WORK" 2>/dev/null | head -3 | tr '\n' ' ')
-            echo "[t] $(date +%T) ${ELAPSED}s elapsed, newest: $LATEST"
-        done
-    ) &
-    HEARTBEAT_PID=$!
-    trap 'kill "$HEARTBEAT_PID" 2>/dev/null' EXIT INT TERM
-fi
-
-enroot start --root \
+timeout "$TIMEOUT" enroot start --root \
     -m "$REPO:$REPO" \
     -m "$WORK:$WORK" \
     "$IMAGE" \
-    bash "$WORK/inner.sh"
+    bash "$WORK/inner.sh" > "$LOG" 2>&1
 STATUS=$?
+ELAPSED=$(( $(date +%s) - START ))
 
-[[ -n "${HEARTBEAT_PID:-}" ]] && kill "$HEARTBEAT_PID" 2>/dev/null
+if (( STATUS == 124 )); then
+    echo "=== TIMED OUT after ${ELAPSED}s — the same wall the production run hit"
+else
+    echo "=== exited with $STATUS after ${ELAPSED}s"
+fi
 
-echo "=== build exited with $STATUS after $(( $(date +%s) - START ))s"
+echo "=== timestamps from the log"
+grep -E "^\[t\]|^\[cfd\]" "$LOG" || tail -5 "$LOG"
 
 echo "=== what was produced"
 du -sh "$WORK"/* 2>/dev/null | sort -rh | head
