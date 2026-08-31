@@ -10,7 +10,11 @@
 #
 # What we are trying to find out: the de_framework builds mesh *and* solve in
 # ~15 minutes on a single core (start_de.py: cores_per_cfd = 1), while our build
-# alone exceeds 1800 s. The timings printed below say which part accounts for it.
+# alone exceeds 1800 s. The timestamps below say which part accounts for it.
+#
+# The in-container script is written to a file rather than passed as a quoted
+# string. Two levels of quoting around a multi-line body is how the first
+# version of this ended up echoing its own first line several hundred times.
 
 set -uo pipefail
 
@@ -32,25 +36,28 @@ cd "$WORK"
 
 # The case inputs have to sit next to the case: machine.xml includes ./xml/...
 # relative to the working directory.
-echo "=== staging case inputs"
-time cp -r "$REPO"/turbine_runner/cfd/{tistos_files,xml,boundaryData_RU_INLET} .
+cp -r "$REPO"/turbine_runner/cfd/{tistos_files,xml,boundaryData_RU_INLET} .
 
 # Empty design = the template geometry, which is what candidate "baseline" uses.
 echo '{}' > design.json
 
-echo "=== container start + dtOO build (live output)"
+cat > "$WORK/inner.sh" <<INNER
+cd "$WORK"
+echo "[t] \$(date +%T) container up"
+source /usr/lib/openfoam/openfoam2606/etc/bashrc
+source /dtOO-install/bin/env.sh
+echo "[t] \$(date +%T) environments sourced"
+python3.13 "$REPO/turbine_runner/dtoo_cfd_build.py" design.json "$STATE" tistos_ru_of
+echo "[t] \$(date +%T) build finished with status \$?"
+INNER
+
+echo "=== dtOO build (live). dtoo_cfd_build.py prints CreateStates and"
+echo "=== CreateMeshes separately, so the gap between those lines is the split."
 time enroot start --root \
     -m "$REPO:$REPO" \
     -m "$WORK:$WORK" \
     "$IMAGE" \
-    bash -c "
-        cd $WORK
-        echo '--- sourcing environments'
-        time { source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; }
-        echo '--- dtoo_cfd_build.py'
-        time python3.13 $REPO/turbine_runner/dtoo_cfd_build.py design.json $STATE tistos_ru_of
-    "
+    bash "$WORK/inner.sh"
 
 echo "=== what was produced"
-ls -la "$WORK"
 du -sh "$WORK"/* 2>/dev/null | sort -rh | head
