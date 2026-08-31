@@ -54,6 +54,22 @@ echo '{}' > design.json
 #
 # Foreground plus redirection gives both back: Ctrl-C works, the terminal stays
 # readable, and the log survives the interrupt. Watch it from a second window.
+# The image goes onto node-local disk first, exactly as the production submit
+# script does. Read through squashfuse from the parallel filesystem, merely
+# sourcing the OpenFOAM environment touches hundreds of small files — the first
+# dtOO smoke test spent 5:22 at 0% CPU and printed nothing at all, which is
+# waiting on I/O, not computing. Set STAGE=0 to measure the unstaged case.
+if [[ "${STAGE:-1}" == "1" ]]; then
+    LOCAL_IMAGES="${TMPDIR:-/tmp}/diag-images"
+    mkdir -p "$LOCAL_IMAGES"
+    if [[ ! -f "$LOCAL_IMAGES/dtOO.sqsh" ]]; then
+        echo "=== staging image to node-local disk"
+        time cp "$IMAGE" "$LOCAL_IMAGES/"
+    fi
+    IMAGE="$LOCAL_IMAGES/dtOO.sqsh"
+    echo "=== using staged image: $IMAGE"
+fi
+
 LOG="${LOG:-$WORK/build.log}"
 TIMEOUT="${TIMEOUT:-1800}"
 
@@ -63,6 +79,14 @@ echo "=== timeout: ${TIMEOUT}s, Ctrl-C works"
 echo "=== the two dtOO phases run directly and unbuffered, with a timestamp"
 echo "=== after each: env ready, state written, CreateStates, CreateMeshes."
 
+echo "=== step 1: container start + sourcing only (should be seconds)"
+time timeout 600 enroot start --root \
+    -m "$WORK:$WORK" \
+    "$IMAGE" \
+    bash -c "source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; echo SOURCED-OK"
+echo "=== step 1 exit: $?"
+
+echo "=== step 2: the dtOO phases"
 START=$(date +%s)
 timeout "$TIMEOUT" enroot start --root \
     -m "$REPO:$REPO" \
