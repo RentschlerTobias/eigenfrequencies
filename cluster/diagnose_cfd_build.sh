@@ -51,13 +51,37 @@ python3.13 "$REPO/turbine_runner/dtoo_cfd_build.py" design.json "$STATE" tistos_
 echo "[t] \$(date +%T) build finished with status \$?"
 INNER
 
+# A heartbeat while it runs. dtOO is silent for minutes at a time, and silence
+# is indistinguishable from a hang — which is exactly the question here.
+HEARTBEAT="${HEARTBEAT:-30}"
+
 echo "=== dtOO build (live). dtoo_cfd_build.py prints CreateStates and"
 echo "=== CreateMeshes separately, so the gap between those lines is the split."
-time enroot start --root \
+echo "=== heartbeat every ${HEARTBEAT}s; set HEARTBEAT=0 to silence it."
+
+START=$(date +%s)
+enroot start --root \
     -m "$REPO:$REPO" \
     -m "$WORK:$WORK" \
     "$IMAGE" \
-    bash "$WORK/inner.sh"
+    bash "$WORK/inner.sh" &
+BUILD_PID=$!
+
+if [[ "$HEARTBEAT" != "0" ]]; then
+    while kill -0 "$BUILD_PID" 2>/dev/null; do
+        sleep "$HEARTBEAT"
+        kill -0 "$BUILD_PID" 2>/dev/null || break
+        ELAPSED=$(( $(date +%s) - START ))
+        # What exists so far says more than the elapsed time alone: the case
+        # directory appears once CreateMeshes starts writing.
+        LATEST=$(ls -t "$WORK" 2>/dev/null | head -3 | tr '\n' ' ')
+        echo "[t] $(date +%T) ${ELAPSED}s elapsed, newest in work dir: $LATEST"
+    done
+fi
+
+wait "$BUILD_PID"
+STATUS=$?
+echo "=== build exited with $STATUS after $(( $(date +%s) - START ))s"
 
 echo "=== what was produced"
 du -sh "$WORK"/* 2>/dev/null | sort -rh | head
