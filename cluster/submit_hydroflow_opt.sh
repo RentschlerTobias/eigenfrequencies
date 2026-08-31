@@ -180,22 +180,29 @@ else
 fi
 echo "[submit] scratch  -> $SCRATCH (stable, so resume can reuse results)"
 
-# ── Images onto node-local disk ───────────────────────────────────────────
-# Read through squashfuse from the parallel filesystem, the dtOO export ran past
-# its 900 s timeout — the same export takes ~300 s when the image is local. The
-# nodes have 1.8 TB of NVMe; copying 5.5 GB once beats every evaluation paying
-# for it, and with eight concurrent candidates they would all pay at once.
+# ── Images unpacked onto node-local disk ──────────────────────────────────
+# enroot mounts a .sqsh through squashfuse — a userspace FUSE mount that
+# decompresses every read in a single process. Measured on a compute node:
+# squashfuse at 37% CPU while dtOO's CreateStates, which takes 8 seconds against
+# an unpacked image, had not finished after 20 minutes. Copying the .sqsh to
+# local disk removed the Lustre latency but not the FUSE layer.
+#
+# `enroot create` unpacks the image into a plain directory once per job. It
+# costs ~7 GB of the node's NVMe and a couple of minutes, against every file
+# read of every candidate paying decompression otherwise.
 export ENROOT_IMAGES="${ENROOT_IMAGES:-$WS/enroot-images}"
 if [[ -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" ]]; then
-    LOCAL_IMAGES="$TMPDIR/enroot-images"
-    mkdir -p "$LOCAL_IMAGES"
+    export ENROOT_DATA_PATH="$TMPDIR/enroot-data"
+    mkdir -p "$ENROOT_DATA_PATH"
     for img in "$ENROOT_IMAGES"/*.sqsh; do
         [[ -f "$img" ]] || continue
-        echo "[submit] staging $(basename "$img") -> $LOCAL_IMAGES"
-        cp "$img" "$LOCAL_IMAGES/" || { echo "[submit] staging failed" >&2; exit 1; }
+        name="$(basename "$img" .sqsh)"
+        echo "[submit] unpacking $name"
+        enroot create --name "$name" "$img" || {
+            echo "[submit] enroot create failed for $name" >&2; exit 1; }
     done
-    export ENROOT_IMAGES="$LOCAL_IMAGES"
-    echo "[submit] images   -> $ENROOT_IMAGES ($(du -sh "$LOCAL_IMAGES" | cut -f1))"
+    echo "[submit] containers -> $ENROOT_DATA_PATH ($(du -sh "$ENROOT_DATA_PATH" | cut -f1))"
+    echo "[submit] configs must name the container, not a path: dtOO / dolfinx"
 fi
 
 # The case plugin resolves the machine catalog relative to the installed

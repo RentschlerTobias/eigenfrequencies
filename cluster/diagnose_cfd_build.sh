@@ -54,20 +54,25 @@ echo '{}' > design.json
 #
 # Foreground plus redirection gives both back: Ctrl-C works, the terminal stays
 # readable, and the log survives the interrupt. Watch it from a second window.
-# The image goes onto node-local disk first, exactly as the production submit
-# script does. Read through squashfuse from the parallel filesystem, merely
-# sourcing the OpenFOAM environment touches hundreds of small files — the first
-# dtOO smoke test spent 5:22 at 0% CPU and printed nothing at all, which is
-# waiting on I/O, not computing. Set STAGE=0 to measure the unstaged case.
-if [[ "${STAGE:-1}" == "1" ]]; then
-    LOCAL_IMAGES="${TMPDIR:-/tmp}/diag-images"
-    mkdir -p "$LOCAL_IMAGES"
-    if [[ ! -f "$LOCAL_IMAGES/dtOO.sqsh" ]]; then
-        echo "=== staging image to node-local disk"
-        time cp "$IMAGE" "$LOCAL_IMAGES/"
+# The image is UNPACKED, not mounted. enroot mounts a .sqsh through squashfuse,
+# a userspace FUSE mount that decompresses every read in one process: measured
+# at 37% CPU on a compute node while CreateStates, 8 seconds against an unpacked
+# image, had not finished after 20 minutes. `enroot create` writes a plain
+# directory once and the reads become ordinary filesystem reads.
+# Set UNPACK=0 to measure the mounted case deliberately.
+CONTAINER="${CONTAINER:-dtOO-diag}"
+if [[ "${UNPACK:-1}" == "1" ]]; then
+    export ENROOT_DATA_PATH="${TMPDIR:-/tmp}/diag-enroot-data"
+    mkdir -p "$ENROOT_DATA_PATH"
+    if [[ ! -d "$ENROOT_DATA_PATH/$CONTAINER" ]]; then
+        echo "=== unpacking image (once, a few minutes)"
+        time enroot create --name "$CONTAINER" "$IMAGE" || exit 1
     fi
-    IMAGE="$LOCAL_IMAGES/dtOO.sqsh"
-    echo "=== using staged image: $IMAGE"
+    TARGET="$CONTAINER"
+    echo "=== using unpacked container: $ENROOT_DATA_PATH/$CONTAINER"
+else
+    TARGET="$IMAGE"
+    echo "=== using mounted image (squashfuse): $IMAGE"
 fi
 
 LOG="${LOG:-$WORK/build.log}"
@@ -82,7 +87,7 @@ echo "=== after each: env ready, state written, CreateStates, CreateMeshes."
 echo "=== step 1: container start + sourcing only (should be seconds)"
 time timeout 600 enroot start --root \
     -m "$WORK:$WORK" \
-    "$IMAGE" \
+    "$TARGET" \
     bash -c "source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; echo SOURCED-OK"
 echo "=== step 1 exit: $?"
 
@@ -91,7 +96,7 @@ START=$(date +%s)
 timeout "$TIMEOUT" enroot start --root \
     -m "$REPO:$REPO" \
     -m "$WORK:$WORK" \
-    "$IMAGE" \
+    "$TARGET" \
     bash -c "cd $WORK; source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; date +'[t] %T env ready'; python3.13 -u -c \"import sys; sys.path.insert(0,'$REPO/turbine_runner'); import dtoo_cfd_build as b; b._write_state_xml('$STATE', {})\"; date +'[t] %T state written'; python3.13 -u -c \"import sys; sys.path.insert(0,'.'); from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateStates('$STATE')\"; date +'[t] %T CreateStates done'; python3.13 -u -c \"import sys; sys.path.insert(0,'.'); from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateMeshes('$STATE','tistos_ru_of')\"; date +'[t] %T CreateMeshes done'" \
     > "$LOG" 2>&1
 STATUS=$?

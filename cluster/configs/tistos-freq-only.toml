@@ -22,7 +22,7 @@ n_rpm = 72.0
 
 [case.options.dtoo]
 runtime = "enroot"
-container = "$ENROOT_IMAGES/dtOO.sqsh"
+container = "dtOO"
 case_dir = "/dtOO/build/test/tistos"
 timeout = 1800
 
@@ -32,7 +32,7 @@ timeout = 1800
 runtime = "enroot"
 # Stock dolfinx from Docker Hub; gmsh comes from a mounted pip --target dir.
 # See cluster/enroot_fenicsx_import.md — no image has to be built or copied.
-container = "$ENROOT_IMAGES/dolfinx.sqsh"
+container = "dolfinx"
 # [USER] python3 -m pip install --target ~/pylibs gmsh   (login node)
 pythonpath = ["$HOME/pylibs"]
 timeout = 7200

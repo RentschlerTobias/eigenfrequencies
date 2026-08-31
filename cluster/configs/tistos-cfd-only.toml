@@ -23,11 +23,13 @@ eval_mode = "cfd_only"
 n_rpm = 72.0
 
 [case.options.dtoo]
-# Explicit: the auto-detection falls back to docker, which does not exist on a
-# compute node. dtOOPythonSWIG needs both environments sourced — physics.py
-# does that itself.
+# A container NAME, not a path to a .sqsh: the submit script unpacks the images
+# with `enroot create` because mounting them through squashfuse decompresses
+# every read in one userspace process — dtOO's CreateStates went from 8 seconds
+# to over 20 minutes. Explicit runtime because auto-detection falls back to
+# docker, which does not exist on a compute node.
 runtime = "enroot"
-container = "$ENROOT_IMAGES/dtOO.sqsh"
+container = "dtOO"
 case_dir = "/dtOO/build/test/tistos"
 timeout = 1800
 
