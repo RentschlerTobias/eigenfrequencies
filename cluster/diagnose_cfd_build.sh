@@ -12,9 +12,12 @@
 # ~15 minutes on a single core (start_de.py: cores_per_cfd = 1), while our build
 # alone exceeds 1800 s. The timestamps below say which part accounts for it.
 #
-# The in-container script is written to a file rather than passed as a quoted
-# string. Two levels of quoting around a multi-line body is how the first
-# version of this ended up echoing its own first line several hundred times.
+# The command is ONE `bash -c` line with the steps joined by ';', exactly as
+# physics.py builds it. Not a script file: OpenFOAM's etc/bashrc locates itself
+# through BASH_SOURCE, and when sourced from a script that points at *our*
+# script, which it then sources again — an infinite loop that prints the first
+# line forever. With `bash -c` there is no BASH_SOURCE and the problem does not
+# arise, which is why the production path never hit it.
 
 set -uo pipefail
 
@@ -41,16 +44,6 @@ cp -r "$REPO"/turbine_runner/cfd/{tistos_files,xml,boundaryData_RU_INLET} .
 # Empty design = the template geometry, which is what candidate "baseline" uses.
 echo '{}' > design.json
 
-cat > "$WORK/inner.sh" <<INNER
-cd "$WORK"
-echo "[t] \$(date +%T) container up"
-source /usr/lib/openfoam/openfoam2606/etc/bashrc
-source /dtOO-install/bin/env.sh
-echo "[t] \$(date +%T) environments sourced"
-python3.13 "$REPO/turbine_runner/dtoo_cfd_build.py" design.json "$STATE" tistos_ru_of
-echo "[t] \$(date +%T) build finished with status \$?"
-INNER
-
 # Output goes to a file, never to the terminal, and the container runs in the
 # FOREGROUND. Both are deliberate, and both were wrong in the first version:
 #
@@ -75,7 +68,8 @@ timeout "$TIMEOUT" enroot start --root \
     -m "$REPO:$REPO" \
     -m "$WORK:$WORK" \
     "$IMAGE" \
-    bash "$WORK/inner.sh" > "$LOG" 2>&1
+    bash -c "cd $WORK; source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; python3.13 $REPO/turbine_runner/dtoo_cfd_build.py design.json $STATE tistos_ru_of" \
+    > "$LOG" 2>&1
 STATUS=$?
 ELAPSED=$(( $(date +%s) - START ))
 
@@ -85,8 +79,10 @@ else
     echo "=== exited with $STATUS after ${ELAPSED}s"
 fi
 
-echo "=== timestamps from the log"
-grep -E "^\[t\]|^\[cfd\]" "$LOG" || tail -5 "$LOG"
+echo "=== progress markers from the log"
+grep -E "^\[cfd\]" "$LOG" || tail -20 "$LOG"
+echo "=== when each artifact appeared (the CreateStates/CreateMeshes split)"
+ls -lt --time-style=+%T "$WORK" | head
 
 echo "=== what was produced"
 du -sh "$WORK"/* 2>/dev/null | sort -rh | head
