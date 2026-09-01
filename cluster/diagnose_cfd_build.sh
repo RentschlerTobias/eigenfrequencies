@@ -45,6 +45,11 @@ cd "$WORK" || exit 1
 : > "$WORK/.writable" || { echo "$WORK is not writable" >&2; exit 1; }
 rm -f "$WORK/.writable"
 
+# A stable name for the newest run, so the second window does not have to copy a
+# path containing a PID.
+LATEST="${TMPDIR:-/tmp}/cfd-diagnose-latest"
+ln -sfn "$WORK" "$LATEST" 2>/dev/null || true
+
 # The case inputs have to sit next to the case: machine.xml includes ./xml/...
 # relative to the working directory.
 cp -r "$REPO"/turbine_runner/cfd/{tistos_files,xml,boundaryData_RU_INLET} . || exit 1
@@ -87,7 +92,7 @@ LOG="${LOG:-$WORK/build.log}"
 TIMEOUT="${TIMEOUT:-1800}"
 
 echo "=== log:     $LOG"
-echo "=== watch:   tail -f $LOG"
+echo "=== watch:   tail -F $LATEST/build.log   (stable path)"
 echo "=== timeout: ${TIMEOUT}s, Ctrl-C works"
 echo "=== the two dtOO phases run directly and unbuffered, with a timestamp"
 echo "=== after each: env ready, state written, CreateStates, CreateMeshes."
