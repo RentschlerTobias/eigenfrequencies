@@ -24,7 +24,12 @@ set -uo pipefail
 REPO="${EIGENFREQUENCIES_REPO:-$HOME/eigenfrequencies}"
 IMAGES="${ENROOT_IMAGES:-${WS:?set WS or ENROOT_IMAGES}/enroot-images}"
 IMAGE="$IMAGES/dtOO.sqsh"
-WORK="${WORK:-${TMPDIR:-/tmp}/cfd-diagnose}"
+# A fresh directory per run. The container runs as real root where enroot is
+# installed with its setuid helper, so it leaves root-owned files behind in any
+# bind-mounted directory — and a later `rm -rf` as your own user cannot remove
+# them. Reusing the path meant the log redirection failed with "Permission
+# denied" and the whole step silently did not run.
+WORK="${WORK:-${TMPDIR:-/tmp}/cfd-diagnose-$$}"
 STATE="${STATE:-diag}"
 
 [[ -f "$IMAGE" ]] || { echo "no image at $IMAGE" >&2; exit 1; }
@@ -33,13 +38,16 @@ echo "=== repo=$REPO"
 echo "=== image=$IMAGE"
 echo "=== work=$WORK"
 
-rm -rf "$WORK"
-mkdir -p "$WORK"
-cd "$WORK"
+mkdir -p "$WORK" || { echo "cannot create $WORK" >&2; exit 1; }
+cd "$WORK" || exit 1
+# Fail loudly rather than stumbling on: without this the script ran to the log
+# redirection before anyone noticed the setup had not worked.
+: > "$WORK/.writable" || { echo "$WORK is not writable" >&2; exit 1; }
+rm -f "$WORK/.writable"
 
 # The case inputs have to sit next to the case: machine.xml includes ./xml/...
 # relative to the working directory.
-cp -r "$REPO"/turbine_runner/cfd/{tistos_files,xml,boundaryData_RU_INLET} .
+cp -r "$REPO"/turbine_runner/cfd/{tistos_files,xml,boundaryData_RU_INLET} . || exit 1
 
 # Empty design = the template geometry, which is what candidate "baseline" uses.
 echo '{}' > design.json
