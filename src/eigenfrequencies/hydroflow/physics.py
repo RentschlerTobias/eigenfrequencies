@@ -237,7 +237,12 @@ class Runtime:
         lines = list(self.setup)
         for key, value in (env or {}).items():
             lines.append(f"export {key}={shlex.quote(str(value))}")
-        lines.append(shlex.join(str(a) for a in argv))
+        # `exec`, not a plain call: sourcing OpenFOAM's bashrc leaves the shell
+        # in a state where it runs its own command string a SECOND time — same
+        # PID, sequentially, verified against the image. Every dtOO build and
+        # every modal solve was doing its work twice. After exec there is no
+        # shell left to repeat anything.
+        lines.append("exec " + shlex.join(str(a) for a in argv))
         # ';' rather than '&&': sourcing an OpenFOAM bashrc reports a non-zero
         # status on a noisy shell, and the exit code that matters is the last
         # command's.

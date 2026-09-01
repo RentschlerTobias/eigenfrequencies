@@ -96,7 +96,7 @@ echo "=== step 1: container start + sourcing only (should be seconds)"
 time timeout 600 enroot start --root \
     -m "$WORK:$WORK" \
     "$TARGET" \
-    bash -c "source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; echo SOURCED-OK"
+    bash -c "source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; exec echo SOURCED-OK"
 echo "=== step 1 exit: $?"
 
 echo "=== step 2: the dtOO phases"
@@ -105,7 +105,7 @@ timeout "$TIMEOUT" enroot start --root \
     -m "$REPO:$REPO" \
     -m "$WORK:$WORK" \
     "$TARGET" \
-    bash -c "cd $WORK; source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; date +'[t] %T env ready'; python3.13 -u -c \"import sys; sys.path.insert(0,'$REPO/turbine_runner'); import dtoo_cfd_build as b; b._write_state_xml('$STATE', {})\"; date +'[t] %T state written'; python3.13 -u -c \"import sys; sys.path.insert(0,'.'); from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateStates('$STATE')\"; date +'[t] %T CreateStates done'; python3.13 -u -c \"import sys; sys.path.insert(0,'.'); from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateMeshes('$STATE','tistos_ru_of')\"; date +'[t] %T CreateMeshes done'" \
+    bash -c "cd $WORK; source /usr/lib/openfoam/openfoam2606/etc/bashrc; source /dtOO-install/bin/env.sh; date +'[t] %T env ready'; python3.13 -u -c \"import sys; sys.path.insert(0,'$REPO/turbine_runner'); import dtoo_cfd_build as b; b._write_state_xml('$STATE', {})\"; date +'[t] %T state written'; python3.13 -u -c \"import sys; sys.path.insert(0,'.'); from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateStates('$STATE')\"; date +'[t] %T CreateStates done'; python3.13 -u -c \"import sys; sys.path.insert(0,'.'); from tistos_files.createStatesAndMeshes import *; createStatesAndMeshes().CreateMeshes('$STATE','tistos_ru_of')\"; date +'[t] %T CreateMeshes done'; exec true" \
     > "$LOG" 2>&1
 STATUS=$?
 ELAPSED=$(( $(date +%s) - START ))

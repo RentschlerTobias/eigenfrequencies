@@ -90,6 +90,15 @@ class TestRuntimeCommand:
         assert "/dtOO-install/bin/env.sh" in script
         assert script.index("bashrc") < script.index("python3.13")
 
+    def test_the_payload_is_exec(self):
+        """Sourcing OpenFOAM's bashrc makes the shell run its command string a
+        second time — same PID, sequentially. Every build was done twice until
+        exec left no shell behind to repeat it."""
+        cmd = Runtime(kind="docker", image="img", setup=physics.DTOO_SETUP).command(
+            ["python3.13", "/x/run.py"], workdir="/w"
+        )
+        assert cmd[-1].rstrip().endswith("exec python3.13 /x/run.py")
+
     def test_mounts_map_host_paths_onto_themselves(self, tmp_path):
         cmd = Runtime(kind="docker", image="img").command(
             ["true"], workdir=tmp_path, mounts=[tmp_path]
