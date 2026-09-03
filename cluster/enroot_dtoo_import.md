@@ -32,18 +32,23 @@ log.
 
 ## 2. Transfer the tarball to the cluster `[USER]`
 
+The target is the **workspace**, not `$HOME`: that is where the jobs look
+(`cluster_env.sh:56`, `submit_hydroflow_opt.sh` staging block). Print the path
+on a login node first, then substitute it for `<WS>` below:
+
+```bash
+source ~/eigenfrequencies/cluster/cluster_env.sh && echo "$WS/enroot-images"
+```
+
 Replace `st_ac136362` with your bwUniCluster account:
 
 ```bash
 scp ./enroot-images/atismer_dtoo-opensuse_stable.tar.gz \
-    st_ac136362@bwunicluster.scc.kit.edu:/home/st/st_us-042020/st_ac136362/enroot-images/
+    st_ac136362@bwunicluster.scc.kit.edu:"<WS>/enroot-images/"
 ```
 
-If the target directory does not exist, create it first:
-
-```bash
-ssh st_ac136362@bwunicluster.scc.kit.edu mkdir -p enroot-images
-```
+`cluster_env.sh` creates that directory when it is sourced, so it exists after
+the command above.
 
 ---
 
@@ -52,10 +57,21 @@ ssh st_ac136362@bwunicluster.scc.kit.edu mkdir -p enroot-images
 Log in to a bwUniCluster login node and run:
 
 ```bash
-mkdir -p ~/enroot-images
-cd ~/enroot-images
-enroot import -o dtOO-opensuse.sqsh docker-archive://atismer_dtoo-opensuse_stable.tar.gz
+source ~/eigenfrequencies/cluster/cluster_env.sh
+cd "$ENROOT_IMAGES"
+enroot import -o "$ENROOT_IMAGES/dtOO.sqsh" docker-archive://atismer_dtoo-opensuse_stable.tar.gz
 ```
+
+**Source `cluster_env.sh` first, always.** It sets
+`ENROOT_SQUASH_OPTIONS="-comp zstd -noD"` — without it `mksquashfs` defaults to
+lzo, and an lzo image imports fine but is unreadable on every compute node. It
+also sets `ENROOT_IMAGES=$WS/enroot-images`, which is the one directory the jobs
+look in.
+
+The file name matters as much as the location: the submit script derives the
+container name from the basename (`dtOO.sqsh` → `dtOO`) and the configs ask for
+`container = "dtOO"`. A `dtOO-opensuse.sqsh` yields a container called
+`dtOO-opensuse` that nothing ever starts.
 
 Expected output: a `.sqsh` file is created with no error.
 
@@ -65,7 +81,7 @@ cluster's enroot version:
 ```bash
 # Uncompress first, then import the plain tar.
 gunzip -c atismer_dtoo-opensuse_stable.tar.gz > atismer_dtoo-opensuse_stable.tar
-enroot import -o dtOO-opensuse.sqsh docker-archive://atismer_dtoo-opensuse_stable.tar
+enroot import -o "$ENROOT_IMAGES/dtOO.sqsh" docker-archive://atismer_dtoo-opensuse_stable.tar
 ```
 
 ---
@@ -133,7 +149,7 @@ scripts with:
 srun -n1 -N1 enroot start --root \
     --mount "$CASE_DIR:/case:ro" \
     --mount "$WORK_DIR:/work:rw" \
-    ~/enroot-images/dtOO-opensuse.sqsh \
+    "$WS/enroot-images/dtOO.sqsh" \
     bash -c 'source /usr/lib/openfoam/openfoam2606/etc/bashrc && \
              source /dtOO-install/bin/env.sh && \
              python3.13 /work/run_dtoo_task.py'

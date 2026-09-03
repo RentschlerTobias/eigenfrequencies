@@ -12,10 +12,17 @@ Both images live on Docker Hub, and enroot imports from a registry directly. No
 `scp`, no registry account, no 3.9 GB through your laptop:
 
 ```bash
-mkdir -p ~/enroot-images && cd ~/enroot-images
-enroot import -o dtOO-opensuse.sqsh docker://atismer/dtoo-opensuse:stable
-enroot import -o dolfinx.sqsh       docker://dolfinx/dolfinx:stable
+source ~/eigenfrequencies/cluster/cluster_env.sh
+enroot import -o "$ENROOT_IMAGES/dtOO.sqsh"    docker://atismer/dtoo-opensuse:stable
+enroot import -o "$ENROOT_IMAGES/dolfinx.sqsh" docker://dolfinx/dolfinx:stable
 ```
+
+**Source `cluster_env.sh` first, always.** It sets
+`ENROOT_SQUASH_OPTIONS="-comp zstd -noD"` (the default is lzo, which imports
+fine and is then unreadable on every compute node) and points `ENROOT_IMAGES`
+at `$WS/enroot-images`, the one directory the jobs look in. The file names are
+what the container names are derived from — `dtOO.sqsh` → `dtOO`, exactly what
+`container = "dtOO"` in the configs asks for.
 
 Git is the wrong tool for this and always was: these are multi-GB binary layers
 that would sit in the history forever, which is why `enroot-images/` is in
@@ -37,8 +44,10 @@ The configs point at it:
 
 ```toml
 [case.options.modal]
-container = "~/enroot-images/dolfinx.sqsh"
-pythonpath = ["~/pylibs"]
+# A container NAME, not a path: the submit script unpacks every .sqsh in
+# $ENROOT_IMAGES with `enroot create` and starts it by that name.
+container = "dolfinx"
+pythonpath = ["$HOME/pylibs"]
 ```
 
 `pythonpath` is mounted into the container automatically and **appended** to the
@@ -59,10 +68,15 @@ works and is tested, but it needs a machine with Docker, a way to move 1.6 GB to
 the cluster, and it embeds a copy of the repository in the image. Prefer the
 route above unless you need the package installed inside the container.
 
+`<WS>` is what `echo "$WS/enroot-images"` prints on a login node with
+`cluster_env.sh` sourced — a literal path here, because the local shell running
+`scp` knows nothing about the cluster's variables.
+
 ```bash
 bash cluster/export_fenicsx_enroot.sh ./enroot-images
-scp ./enroot-images/eigenfrequencies-fenicsx.tar.gz <cluster>:~/enroot-images/
-enroot import -o fenicsx.sqsh docker-archive://eigenfrequencies-fenicsx.tar.gz
+scp ./enroot-images/eigenfrequencies-fenicsx.tar.gz <cluster>:"<WS>/enroot-images/"
+# then, on the login node, with cluster_env.sh sourced:
+enroot import -o "$ENROOT_IMAGES/fenicsx.sqsh" docker-archive://eigenfrequencies-fenicsx.tar.gz
 ```
 
 ## Smoke test `[USER]`
@@ -77,8 +91,9 @@ unit-box fixture, a few hundred DOFs and seconds of work. A green run ends with
 a `RESULT_JSON` line carrying five frequencies. If that works, gmsh, dolfinx,
 the eigensolver and the mount layout are all correct.
 
-Set `ENROOT_IMAGE=~/enroot-images/dolfinx.sqsh` and `PYLIBS=~/pylibs` if you
-took the stock-image route.
+Set `ENROOT_IMAGE="$WS/enroot-images/dolfinx.sqsh"` and `PYLIBS="$HOME/pylibs"`
+if you took the stock-image route — those are the script's defaults once
+`cluster_env.sh` is sourced, so usually nothing has to be set at all.
 
 ## Troubleshooting
 

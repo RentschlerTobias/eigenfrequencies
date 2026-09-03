@@ -7,9 +7,12 @@
 # Default OUTPUT_DIR: ./enroot-images (created if missing)
 #
 # The resulting .tar.gz can be transferred to bwUniCluster 3.0 and imported via:
-#   enroot import -c dtOO-opensuse.sqsh -x dtOO-opensuse.tar.gz
+#   enroot import -c dtOO.sqsh -x dtOO-opensuse.tar.gz
 # or (if enroot supports direct docker-archive import):
-#   enroot import -o dtOO-opensuse.sqsh docker-archive://dtOO-opensuse.tar.gz
+#   enroot import -o dtOO.sqsh docker-archive://dtOO-opensuse.tar.gz
+#
+# The image file must be called dtOO.sqsh: the submit script derives the
+# container name from the basename, and the configs ask for container = "dtOO".
 
 set -euo pipefail
 
@@ -46,8 +49,9 @@ SIZE="$(du -h "$TAR_GZ" | cut -f1)"
 echo "[export] Done. Size: $SIZE"
 echo "[export]"
 echo "[export] Next steps (user-dependent, cluster-side):"
-echo "[export]   1. scp $TAR_GZ bwunicluster:/path/to/your/enroot-images/"
-echo "[export]   2. On cluster: enroot import -o dtOO-opensuse.sqsh docker-archive://${TAG_SAFE}.tar.gz"
+echo "[export]   1. scp $TAR_GZ bwunicluster:\"\$WS/enroot-images/\"   (\$WS from cluster_env.sh)"
+echo "[export]   2. On cluster, with cluster_env.sh sourced (zstd, not lzo):"
+echo "[export]      enroot import -o \"\$ENROOT_IMAGES/dtOO.sqsh\" docker-archive://${TAG_SAFE}.tar.gz"
 echo "[export]   3. Run smoke test: sbatch cluster/submit_dtoo_enroot_smoke.sh"
 echo "[export]"
 echo "[export] See cluster/enroot_dtoo_import.md for full bwUniCluster 3.0 instructions."
