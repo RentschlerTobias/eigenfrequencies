@@ -263,14 +263,18 @@ fi
 # Resuming picks up at the last checkpoint and reuses every evaluation that
 # finished, so a walltime kill costs at most the generation in progress — and
 # the population can be sized for the problem instead of for 48 hours.
+#
+# `|| EXIT_CODE=$?` rather than a bare capture afterwards: under `set -e` a
+# failing hydroflow-opt ends the script right there and the post-mortem echo
+# below — the one line that says what happened — never reaches the .out.
+EXIT_CODE=0
 if [[ "$CFG_MODE" == "optimize" && -f "$ABS_RUN_DIR/manifest.json" ]]; then
     echo "[submit] ---- resume ----"
-    "$VENV/bin/hydroflow-opt" resume "$ABS_RUN_DIR"
+    "$VENV/bin/hydroflow-opt" resume "$ABS_RUN_DIR" || EXIT_CODE=$?
 else
     echo "[submit] ---- $CFG_MODE ----"
-    "$VENV/bin/hydroflow-opt" "$CFG_MODE" "$RUN_CONFIG"
+    "$VENV/bin/hydroflow-opt" "$CFG_MODE" "$RUN_CONFIG" || EXIT_CODE=$?
 fi
-EXIT_CODE=$?
 
 echo "[submit] hydroflow-opt exit code: $EXIT_CODE"
 echo "[submit]"

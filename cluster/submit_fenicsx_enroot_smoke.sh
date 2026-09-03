@@ -52,6 +52,9 @@ echo "[fenicsx-enroot-smoke] spec: $SPEC"
 # resolve unchanged in the container.
 # HOME/TMPDIR/XDG_RUNTIME_DIR point at /tmp because PMIx otherwise falls back
 # to /run/user/$UID, which is unwritable in a batch allocation.
+# `|| EXIT_CODE=$?`: with `set -e` a failing container would end the script
+# before the echo below, losing the exit code exactly when it is needed.
+EXIT_CODE=0
 srun -n1 -N1 enroot start --root \
     --mount "$REPO:$REPO" \
     --mount "$(dirname "$SPEC"):$(dirname "$SPEC")" \
@@ -66,9 +69,8 @@ srun -n1 -N1 enroot start --root \
         echo '[container] starting on \$(hostname)'
         python3 $REPO/src/eigenfrequencies/hydroflow/physics.py modal $SPEC
         echo '[container] EXIT=0'
-    "
+    " || EXIT_CODE=$?
 
-EXIT_CODE=$?
 echo "[fenicsx-enroot-smoke] container exit code: $EXIT_CODE"
 echo "[fenicsx-enroot-smoke] a green run prints a RESULT_JSON line with 5 frequencies"
 exit $EXIT_CODE

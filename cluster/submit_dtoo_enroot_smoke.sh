@@ -33,12 +33,14 @@ fi
 # (WM_PROJECT_SITE), so `set -u` aborts before dtOO is ever imported, and the
 # image gets blamed for a bug in this script. The python exit code decides,
 # exactly as the production path in physics.py does it.
+# `|| EXIT_CODE=$?`: with `set -e` a failing container would end the script
+# before the echo below, losing the exit code exactly when it is needed.
+EXIT_CODE=0
 srun -n1 -N1 enroot start --root "$ENROOT_IMAGE" bash -c '
     source /usr/lib/openfoam/openfoam2606/etc/bashrc
     source /dtOO-install/bin/env.sh
     python3.13 -c "import dtOOPythonSWIG; print(\"dtOOPythonSWIG imported ok\")"
-'
+' || EXIT_CODE=$?
 
-EXIT_CODE=$?
 echo "[dtOO-enroot-smoke] container exit code: $EXIT_CODE"
 exit $EXIT_CODE
