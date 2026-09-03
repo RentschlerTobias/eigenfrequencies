@@ -51,6 +51,10 @@ num_eigenvalues = 10
 
 [case.options.cfd]
 timeout = 3600
+# Same reason as in tistos-cfd-only.toml: only mpirun exists in the dtOO
+# container, and OpenMPI needs both variables to run as root under enroot.
+mpi_launcher = "mpirun"
+env = { OMPI_ALLOW_RUN_AS_ROOT = "1", OMPI_ALLOW_RUN_AS_ROOT_CONFIRM = "1" }
 
 [case.options.optimization]
 Z_guidevanes = 18

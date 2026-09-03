@@ -37,6 +37,12 @@ timeout = 1800
 # procs is left unset on purpose: the worker then takes resources.mpi_ranks,
 # which is the number hydroflow-opt validated against the CPU budget.
 timeout = 3600
+# The solve script defaults to ${MPI_LAUNCHER:-mpiexec}, and the dtOO container
+# has only mpirun (openmpi4) — without this line the CFD stage fails instantly.
+# enroot cannot drop privileges, so the container runs as root and OpenMPI
+# refuses to launch until both variables say it may.
+mpi_launcher = "mpirun"
+env = { OMPI_ALLOW_RUN_AS_ROOT = "1", OMPI_ALLOW_RUN_AS_ROOT_CONFIRM = "1" }
 
 [resources]
 # cpu partition: AMD EPYC 9454, 96 cores, 384 GiB. The binding factor is
