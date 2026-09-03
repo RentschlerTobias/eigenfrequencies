@@ -191,19 +191,57 @@ echo "[submit] scratch  -> $SCRATCH (stable, so resume can reuse results)"
 # costs ~7 GB of the node's NVMe and a couple of minutes, against every file
 # read of every candidate paying decompression otherwise.
 export ENROOT_IMAGES="${ENROOT_IMAGES:-$WS/enroot-images}"
-if [[ -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" ]]; then
+if [[ "${DRY_RUN:-0}" != "1" && -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" ]]; then
     export ENROOT_DATA_PATH="$TMPDIR/enroot-data"
     mkdir -p "$ENROOT_DATA_PATH"
+    n_images=0
     for img in "$ENROOT_IMAGES"/*.sqsh; do
+        # An unmatched glob reaches the loop as the literal pattern. Without the
+        # counter below that is silent: no container is created, no error is
+        # raised, and the first candidate dies on a container it cannot find.
         [[ -f "$img" ]] || continue
+        n_images=$((n_images + 1))
         name="$(basename "$img" .sqsh)"
         echo "[submit] unpacking $name"
         enroot create --name "$name" "$img" || {
             echo "[submit] enroot create failed for $name" >&2; exit 1; }
     done
+    if (( n_images == 0 )); then
+        echo "[submit] ERROR: no .sqsh found in $ENROOT_IMAGES — import per" >&2
+        echo "[submit]        cluster/enroot_dtoo_import.md and cluster/enroot_fenicsx_import.md" >&2
+        exit 1
+    fi
     echo "[submit] containers -> $ENROOT_DATA_PATH ($(du -sh "$ENROOT_DATA_PATH" | cut -f1))"
     echo "[submit] configs must name the container, not a path: dtOO / dolfinx"
+else
+    # A warning, not an error: the documented login-node DRY_RUN (see the
+    # "Order of work" section of cluster/enroot_fenicsx_import.md) runs without
+    # a TMPDIR and must keep working.
+    echo "[submit] WARNING: image staging skipped (DRY_RUN=${DRY_RUN:-0}, TMPDIR=${TMPDIR:-<unset>}, STAGE_IMAGES=${STAGE_IMAGES:-1})." >&2
+    echo "[submit]          enroot start by NAME then needs its containers from elsewhere." >&2
 fi
+
+# Every container NAME a config asks for needs a matching .sqsh basename, or the
+# run dies at the first candidate with a cryptic enroot error. Checked outside
+# the staging branch on purpose, so a login-node DRY_RUN catches it too.
+WANTED_CONTAINERS="$("$VENV/bin/python" - "$RUN_CONFIG" <<'PY'
+import sys, tomllib
+raw = tomllib.load(open(sys.argv[1], "rb"))
+opts = raw.get("case", {}).get("options", {})
+for sec in ("dtoo", "modal", "cfd"):
+    want = (opts.get(sec) or {}).get("container")
+    if want and "/" not in str(want):
+        print(want)
+PY
+)"
+while read -r want; do
+    [[ -z "$want" ]] && continue
+    if [[ ! -f "$ENROOT_IMAGES/$want.sqsh" ]]; then
+        echo "[submit] ERROR: config wants container '$want' but $ENROOT_IMAGES/$want.sqsh is missing." >&2
+        echo "[submit]        Have: $(find "$ENROOT_IMAGES" -maxdepth 1 -name '*.sqsh' -printf '%f ' 2>/dev/null)" >&2
+        exit 1
+    fi
+done <<< "$WANTED_CONTAINERS"
 
 # The case plugin resolves the machine catalog relative to the installed
 # package; point it at this checkout so an installed copy still finds tistos.yaml.
