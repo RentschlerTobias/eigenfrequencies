@@ -86,7 +86,9 @@ env = { OMPI_ALLOW_RUN_AS_ROOT = "1", OMPI_ALLOW_RUN_AS_ROOT_CONFIRM = "1" }
 - **Mehr MPI-Ranks helfen nicht.** Die dtOO-Phase (`CreateStates`/`CreateMeshes`) ist einfädiges gmsh; die Rankzahl wirkt erst im simpleFoam-Solve dahinter.
 - **Konsequenz für die Produktion:** der `dtoo`-Timeout in allen drei Produktions-Configs steht auf 1800 s. Ungebremst eingereicht wären alle 3120 Evaluationen dort hineingelaufen — 48 h Rechenzeit nach 5–7 Tagen Queue, ohne ein einziges verwertbares Ergebnis. Der Smoke-Gate vor der Produktion hat genau das abgefangen.
 
-**Nächster Schritt:** `cluster/diagnose_cfd_build.sh` in einer Allocation laufen lassen. Es zerlegt den Build in Phasen mit Zeitstempeln (`env ready`, `state written`, `CreateStates done`, `CreateMeshes done`) und sagt damit, welche Phase die Zeit frisst. Erst danach lohnt jede weitere Fix-Diskussion.
+**Aufgelöst am 2026-09-04.** Zwei gestapelte Defekte im eigenen Code: ein `cd` vor dem Sourcen der OpenFOAM-bashrc schickte die Container-Shell in eine Endlosschleife (`519ebf1`), und Mounts wurden über Symlinks aufgelöst, während die Kommandozeile die ursprüngliche Schreibweise behielt (`135ec9d`). Danach läuft der dtOO-Export in **144 s** und erzeugt ein 22,3-MB-Netz; der Fehler ist eine Stufe weitergewandert (`cfd solve: exit 127`, fehlende OpenFOAM-Bibliotheken). Vollständige Untersuchung inklusive der widerlegten Hypothesen: **`docs/cluster-container-shell-investigation.md`**.
+
+**Ursprünglich vorgesehener nächster Schritt:** `cluster/diagnose_cfd_build.sh` in einer Allocation laufen lassen. Es zerlegt den Build in Phasen mit Zeitstempeln (`env ready`, `state written`, `CreateStates done`, `CreateMeshes done`) und sagt damit, welche Phase die Zeit frisst. Erst danach lohnt jede weitere Fix-Diskussion.
 
 ### P1-1: Glob-Miss im Staging bleibt still
 
