@@ -188,8 +188,15 @@ echo "[submit] scratch  -> $SCRATCH (stable, so resume can reuse results)"
 # local disk removed the Lustre latency but not the FUSE layer.
 #
 # `enroot create` unpacks the image into a plain directory once per job. It
-# costs ~7 GB of the node's NVMe and a couple of minutes, against every file
-# read of every candidate paying decompression otherwise.
+# costs ~7 GB of the node's NVMe and 8 seconds — measured 2026-09-04, the 5.8 GB
+# dtOO image from the workspace onto node-local scratch, cold; a warm repeat took
+# 3.8 s. That is the whole per-job price, against every file read of every
+# candidate paying decompression otherwise.
+#
+# It also settles the recurring idea of a shared unpacked store on the workspace
+# ($WS/enroot-data, one create ever): it would trade these 8 seconds for 48 hours
+# of container reads over a parallel filesystem, which is the bottleneck this
+# script exists to avoid.
 export ENROOT_IMAGES="${ENROOT_IMAGES:-$WS/enroot-images}"
 if [[ "${DRY_RUN:-0}" != "1" && -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" ]]; then
     export ENROOT_DATA_PATH="$TMPDIR/enroot-data"
