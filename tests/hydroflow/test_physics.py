@@ -507,7 +507,24 @@ class TestRunHelper:
             physics._run(
                 ["sleep", "2"], stage="cfd solve", timeout=1.0, log_path=tmp_path / "l.log"
             )
-        assert (tmp_path / "l.log").read_text() == "partial"
+        # The command line heads every stage log, a timed-out one included.
+        log = (tmp_path / "l.log").read_text()
+        assert log.startswith("$ sleep 2\n")
+        assert log.endswith("partial")
+
+    def test_the_log_and_the_error_both_name_the_command(self, tmp_path):
+        """A failing container stage often produces no output whatsoever, and
+        "exit 127" on its own is not actionable. The command is assembled from a
+        config, a machine YAML, a runtime and three mount lists — reconstructing
+        it by hand costs an allocation."""
+        with pytest.raises(StageError, match=r"command: sh -c 'exit 127'"):
+            physics._run(
+                ["sh", "-c", "exit 127"],
+                stage="cfd solve",
+                timeout=10.0,
+                log_path=tmp_path / "l.log",
+            )
+        assert (tmp_path / "l.log").read_text().startswith("$ sh -c 'exit 127'\n")
 
     def test_a_non_zero_exit_carries_the_log_tail(self, tmp_path):
         with pytest.raises(StageError, match="boom"):

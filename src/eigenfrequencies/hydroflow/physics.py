@@ -354,6 +354,11 @@ def _run(cmd: Sequence[str], *, stage: str, timeout: float, log_path: Path) -> s
             all the orchestrator ever shows of a failed candidate.
     """
     log_path.parent.mkdir(parents=True, exist_ok=True)
+    # The exact argv, first line of every stage log. A container stage that
+    # fails leaves output that says what broke but never what was run, and the
+    # command is assembled from a config, a machine YAML, a runtime and three
+    # mount lists — reconstructing it by hand costs an allocation each time.
+    header = f"$ {shlex.join(str(a) for a in cmd)}\n\n"
     try:
         proc = subprocess.run(
             list(cmd),
@@ -368,13 +373,16 @@ def _run(cmd: Sequence[str], *, stage: str, timeout: float, log_path: Path) -> s
         output = exc.output or ""
         if isinstance(output, bytes):
             output = output.decode("utf-8", "replace")
-        log_path.write_text(output, encoding="utf-8")
+        log_path.write_text(header + output, encoding="utf-8")
         raise StageError(f"{stage}: timed out after {timeout:g} s") from exc
 
-    log_path.write_text(proc.stdout, encoding="utf-8")
+    log_path.write_text(header + proc.stdout, encoding="utf-8")
     if proc.returncode != 0:
+        # The command goes into the error too: a failing container stage often
+        # produces no output at all, and "exit 127" on its own says nothing.
         raise StageError(
-            f"{stage}: exit {proc.returncode}\n{_tail(proc.stdout)}"
+            f"{stage}: exit {proc.returncode}\n"
+            f"command: {shlex.join(str(a) for a in cmd)}\n{_tail(proc.stdout)}"
         )
     return proc.stdout
 
