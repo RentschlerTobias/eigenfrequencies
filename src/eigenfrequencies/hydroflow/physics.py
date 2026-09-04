@@ -287,6 +287,11 @@ class Runtime:
         if "--root" not in extra:
             extra.insert(0, "--root")
         cmd += extra
+        # Replace the image's command script, which eval's whatever it is handed
+        # and thereby both mangles the quoting and runs everything twice.
+        rc = _enroot_rc()
+        if rc and "--rc" not in extra:
+            cmd += ["--rc", rc]
         # Same reason as the mounts: "~/enroot-images/x.sqsh" reaches execve
         # unexpanded and enroot then reports a container it cannot find.
         cmd += [
@@ -427,6 +432,24 @@ def work_dir(options: dict[str, Any], context: dict[str, Any] | None) -> Path:
         path = Path(tempfile.mkdtemp(prefix="eigenfrequencies-eval-"))
     path.mkdir(parents=True, exist_ok=True)
     return path
+
+
+def _enroot_rc() -> str | None:
+    """Command script for ``enroot start --rc``, or None if it is not there.
+
+    The image's own command script receives our command as positional
+    parameters and sources OpenFOAM's configuration, which ``eval``s them: the
+    quoting is destroyed and everything runs twice. ``cluster/enroot_rc.sh``
+    replaces it with a bare ``exec "$@"``. See that file for the measurements.
+
+    The path has to resolve inside the container, which it does because every
+    stage mounts the repository root at its own path.
+    """
+    override = os.environ.get("EIGENFREQUENCIES_ENROOT_RC")
+    if override:
+        return _expand(override)
+    path = _repo_root() / "cluster" / "enroot_rc.sh"
+    return str(path) if path.is_file() else None
 
 
 def _repo_root() -> Path:

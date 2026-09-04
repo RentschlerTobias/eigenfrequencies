@@ -156,6 +156,19 @@ class TestRuntimeCommand:
             assert script.index("openfoam2606/etc/bashrc") < cd, kind
             assert script.index("/dtOO-install/bin/env.sh") < cd, kind
 
+    def test_enroot_replaces_the_image_command_script(self, monkeypatch, tmp_path):
+        """The dtOO image's command script sources OpenFOAM's configuration,
+        which eval's the parameters it was handed: quoting is destroyed and
+        every command runs twice. `checkMesh` then ran before its environment
+        existed, failed on libfiniteVolume.so, and that first run decided the
+        exit code."""
+        rc = tmp_path / "rc.sh"
+        rc.write_text('exec "$@"\n')
+        monkeypatch.setenv("EIGENFREQUENCIES_ENROOT_RC", str(rc))
+        cmd = Runtime(kind="enroot", container="dtOO").command(["true"], workdir="/w")
+        assert cmd[cmd.index("--rc") + 1] == str(rc)
+        assert cmd.index("--rc") < cmd.index("dtOO")
+
     def test_enroot_runs_as_root_by_default(self):
         """Without it enroot cannot drop privileges and refuses to mount at all:
         "mount: drop permissions failed", and the container never starts."""
