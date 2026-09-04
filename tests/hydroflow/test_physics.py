@@ -105,6 +105,21 @@ class TestRuntimeCommand:
         )
         assert f"{tmp_path.resolve()}:{tmp_path.resolve()}" in cmd
 
+    def test_a_symlinked_mount_keeps_the_name_the_command_line_uses(self, tmp_path):
+        """bwUniCluster's $HOME is a symlink (/home/st/<user> →
+        /pfs/data6/home/st/<user>). Resolving the mount while argv keeps the
+        symlinked spelling mounts one path and asks for another: the build died
+        with "can't open file" on a script that was plainly there on the host."""
+        real = tmp_path / "real"
+        real.mkdir()
+        link = tmp_path / "link"
+        link.symlink_to(real)
+        cmd = Runtime(kind="enroot", container="dtOO").command(
+            [f"{link}/run.py"], workdir=link, mounts=[link]
+        )
+        assert f"{link}:{link}" in cmd
+        assert not any(str(real) in part for part in cmd)
+
     def test_missing_mount_sources_are_skipped(self, tmp_path):
         # The dtOO case directory lives inside the image, not on the host.
         cmd = Runtime(kind="docker", image="img").command(

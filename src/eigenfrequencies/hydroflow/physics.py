@@ -318,16 +318,25 @@ def _expand(path: str | Path) -> str:
 
 
 def _existing_paths(paths: Sequence[str | Path]) -> list[str]:
-    """Absolute, deduplicated, order-preserving list of the paths that exist."""
+    """Absolute, deduplicated, order-preserving list of the paths that exist.
+
+    ``abspath``, deliberately not ``resolve``: a mount has to land on the same
+    path string the command line uses, and symlinks break that. On bwUniCluster
+    ``$HOME`` is a symlink (``/home/st/<user>`` → ``/pfs/data6/home/st/<user>``),
+    so resolving mounted ``/pfs/data6/…/eigenfrequencies`` onto itself while the
+    argv still said ``/home/st/…/eigenfrequencies/turbine_runner/dtoo_cfd_build.py``
+    — a path that then does not exist inside the container. The build died with
+    "can't open file", pointing at a file that was plainly there on the host.
+    """
     seen: list[str] = []
     for path in paths:
         if not path:
             continue
         # expanduser: these come from a TOML written by hand, and there is no
         # shell between here and execve to expand a leading ~.
-        resolved = str(Path(_expand(path)).resolve())
-        if resolved not in seen and os.path.exists(resolved):
-            seen.append(resolved)
+        absolute = os.path.abspath(_expand(path))
+        if absolute not in seen and os.path.exists(absolute):
+            seen.append(absolute)
     return seen
 
 
