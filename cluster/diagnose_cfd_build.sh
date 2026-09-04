@@ -8,9 +8,18 @@
 # which disappears with the job — so a stage that takes 30 minutes and then times
 # out leaves nothing behind to explain itself.
 #
-# What we are trying to find out: the de_framework builds mesh *and* solve in
-# ~15 minutes on a single core (start_de.py: cores_per_cfd = 1), while our build
-# alone exceeds 1800 s. The timestamps below say which part accounts for it.
+# What we are trying to find out: the de_framework puts the same tistos case —
+# 3D, 30 parameters — through mesh *and* solve for several individuals at once
+# inside a 30-minute dev_cpu_il window, while our build alone exceeds 1800 s.
+# Its sizing is 2 cores per CFD with many CFDs side by side, not one core:
+# hydroFoil_bwRSE4HPC/start.sh asks for --ntasks-per-node=32 --cpus-per-task=2
+# at --time=00:25:00, and hydroFoil.py:1045 sets numberOfSubdomains =
+# cpus_per_task. (An earlier version of this comment cited start_de.py's
+# cores_per_cfd = 1 — that file instantiates hydroFoil_problem(), the 2D
+# predecessor, so the figure never applied to tistos.)
+#
+# More MPI ranks cannot fix this: the dtOO phase is single-threaded gmsh. The
+# timestamps below say which part accounts for the time.
 #
 # The command is ONE `bash -c` line with the steps joined by ';', exactly as
 # physics.py builds it. Not a script file: OpenFOAM's etc/bashrc locates itself

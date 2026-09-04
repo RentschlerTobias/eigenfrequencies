@@ -76,6 +76,18 @@ env = { OMPI_ALLOW_RUN_AS_ROOT = "1", OMPI_ALLOW_RUN_AS_ROOT_CONFIRM = "1" }
 - Import-Doku (`cluster/enroot_dtoo_import.md`) erzeugt aber `dtOO-opensuse.sqsh` → Container hieße `dtOO-opensuse` → `enroot start dtOO` in `physics.py` findet nichts (Name-basiert, kein `.sqsh`-Fallback). Stiller Fail erst beim ersten Kandidaten, kryptische Fehlermeldung.
 - Auf dem Cluster verifizieren: `ls $WS/enroot-images/` — heißt die Datei `dtOO.sqsh`? Falls nicht: umbenennen oder Import-Doku anpassen (eigene Datei, kein Third-party-Konflikt).
 
+### P0-3: dtOO-Build/Mesh überschreitet sein 1800-s-Timeout — der eigentliche Blocker
+
+**Nachgetragen am 2026-09-04.** Dieser Punkt fehlte in v2, obwohl `cluster/diagnose_cfd_build.sh` (12 Commits, letzter = HEAD `1a2b75a`) unmittelbar vor dem Schreiben dieses Dokuments die aktive Arbeitslinie war. Die Fix-Planung lief deshalb an ihm vorbei.
+
+- **Messung 2026-09-04:** `cluster/configs/tistos-smoke-cfd.toml` interaktiv auf uc2n601, Allocation 128 Kerne, 2 Kandidaten nebenläufig mit je 6 Ranks, 19:08–19:25:50. Ergebnis nach 17 Minuten: beide Kandidatenverzeichnisse enthalten ausschließlich `request.json` (Zeitstempel 19:08), kein `results.jsonl`, kein Artefakt. Beide Evaluationen hingen die volle Zeit in der dtOO-Phase.
+- **Referenz de_framework:** derselbe tistos-Fall (3D, 30 Parameter) läuft dort Mesh **und** Solve für mehrere Individuen gleichzeitig innerhalb eines 30-Minuten-Fensters auf `dev_cpu_il` (Angabe Tobias Rentschler, 2026-09-04). Dimensionierung: 2 Kerne pro CFD, viele CFDs nebeneinander — `hydroFoil_bwRSE4HPC/start.sh` (`--ntasks-per-node=32`, `--cpus-per-task=2`, `--time=00:25:00`), `hydroFoil.py:1045` setzt `numberOfSubdomains = cpus_per_task`.
+- Der frühere Vergleichswert „~15 min auf einem Kern, `start_de.py: cores_per_cfd = 1`" im Kopf des Diagnose-Scripts war falsch zugeordnet: jene Datei instanziiert `hydroFoil_problem()`, den 2D-Vorläufer mit 3 Parametern. Korrigiert am 2026-09-04.
+- **Mehr MPI-Ranks helfen nicht.** Die dtOO-Phase (`CreateStates`/`CreateMeshes`) ist einfädiges gmsh; die Rankzahl wirkt erst im simpleFoam-Solve dahinter.
+- **Konsequenz für die Produktion:** der `dtoo`-Timeout in allen drei Produktions-Configs steht auf 1800 s. Ungebremst eingereicht wären alle 3120 Evaluationen dort hineingelaufen — 48 h Rechenzeit nach 5–7 Tagen Queue, ohne ein einziges verwertbares Ergebnis. Der Smoke-Gate vor der Produktion hat genau das abgefangen.
+
+**Nächster Schritt:** `cluster/diagnose_cfd_build.sh` in einer Allocation laufen lassen. Es zerlegt den Build in Phasen mit Zeitstempeln (`env ready`, `state written`, `CreateStates done`, `CreateMeshes done`) und sagt damit, welche Phase die Zeit frisst. Erst danach lohnt jede weitere Fix-Diskussion.
+
 ### P1-1: Glob-Miss im Staging bleibt still
 
 - `submit_hydroflow_opt.sh:197–198`: matcht `$ENROOT_IMAGES/*.sqsh` nichts (leeres/falsches Verzeichnis), überspringt `[[ -f "$img" ]] || continue` die Literal-Glob-Zeile lautlos — es entsteht **kein** Container, kein Fehler. Erster `enroot start` failt dann kryptisch.
@@ -126,7 +138,10 @@ env = { OMPI_ALLOW_RUN_AS_ROOT = "1", OMPI_ALLOW_RUN_AS_ROOT_CONFIRM = "1" }
 
 ## 6. Vorgeschlagene Reihenfolge für den Fix-Plan
 
-1. **Cluster-Diagnostik ohne Code-Änderung** (P2-2): `results.jsonl`, Image-Namen, dolfinx-Import, `enroot create`-Dauer. — Entscheidet über P0-2, P1-2, P1-3.
+**Stand 2026-09-04:** Die Schritte 1–3 sind erledigt (Branch `fix/bwuni-enroot-hardening`); P0-2, P1-1, P1-2, P1-3 und P2-1 bis P2-3 sind abgeräumt oder durch Messung entschieden. Die Reihenfolge unten wird deshalb von **P0-3** angeführt: solange der dtOO-Build sein Timeout reißt, ist jeder Produktionslauf sinnlos, und alle übrigen Punkte sind bereits gelöst.
+
+0. **P0-3 diagnostizieren** — `cluster/diagnose_cfd_build.sh`, Phasenzeiten für den dtOO-Build. Blockiert alles Weitere.
+1. **Cluster-Diagnostik ohne Code-Änderung** (P2-2): `results.jsonl`, Image-Namen, dolfinx-Import, `enroot create`-Dauer. — Entscheidet über P0-2, P1-2, P1-3. *(erledigt 2026-09-04: Images korrekt benannt, `enroot create` = 8 s)*
 2. **Config-Fix cfd-only** (P0-1): `mpi_launcher` + OMPI-Env. Klein, blockierend für den ersten Produktionslauf.
 3. **Submit-Script-Härtung** (P1-1, P2-1, ggf. P0-2 als Namens-Check im Script: gewünschter Container-Name gegen vorhandene `.sqsh`-Namen matchen und laut failen).
 4. **Staging-Entscheidung** (P1-2) erst nach Messung.
