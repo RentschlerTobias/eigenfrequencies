@@ -16,7 +16,15 @@ directory = "$WS/runs/tistos-smoke-cfd"
 name = "tistos"
 
 [case.options]
-local_scratch = "$TMPDIR"
+# The workspace, NOT $TMPDIR — deliberately different from the production
+# configs. Every stage log physics.py writes (logs/cfd_build.log,
+# logs/cfd_solve.log) and every OpenFOAM log the solve script leaves behind
+# lands in the candidate's working directory. On node-local scratch all of it
+# is deleted the moment the allocation ends, which cost three debugging rounds:
+# the run reported "cfd solve: exit 127" and the file that says why was already
+# gone. A smoke exists to be read afterwards, so it trades node-local I/O for
+# evidence that survives. The production configs keep $TMPDIR.
+local_scratch = "$WS/runs/tistos-smoke-cfd-local"
 eval_mode = "cfd_only"
 n_rpm = 72.0
 
