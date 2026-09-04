@@ -181,16 +181,33 @@ Measured directly, without any sourcing:
   `reconstructPar`. **`mpiexec` is absent** — which confirms v2 §4 P0-1 and the
   `mpi_launcher = "mpirun"` config fix.
 
-**Open hypothesis, not yet tested:** since the image supplies the OpenFOAM
-environment by itself, the OpenFOAM line in `DTOO_SETUP` may be droppable
-entirely, keeping only `/dtOO-install/bin/env.sh`. That would remove the eval
-trigger and with it both the loop and the mangled `LD_LIBRARY_PATH`. The test is
+### The setup lines are not the culprit
 
-```bash
-enroot start --root dtOO bash -c 'source /dtOO-install/bin/env.sh; checkMesh -help >/dev/null && echo CHECKMESH-OK'
-```
+`cluster/probe_solve_env.sh` ran `checkMesh -help` in six combinations of
+`--rc` and setup lines:
 
-`CHECKMESH-OK` printed once means the setup can lose the bashrc.
+| variant | marker | count | loader error |
+|---|---|---|---|
+| no-setup-no-rc | yes | 2 | no |
+| no-setup-with-rc | yes | 2 | no |
+| dtoo-only-with-rc | yes | 1 | no |
+| foam-only-with-rc | yes | 1 | no |
+| both-with-rc | yes | 1 | no |
+| both-no-rc | yes | 1 | no |
+
+**`checkMesh` works in every one of them**, including `both-no-rc`, which is
+what production did before `e3d28b7`. So sourcing the OpenFOAM bashrc does not
+cost the library path, and the hypothesis that `DTOO_SETUP` should lose that
+line is unsupported.
+
+What distinguishes the real solve from every variant above is that it does not
+call `checkMesh` directly: it runs `sh -e <script> <case_dir> <procs>`, and the
+script calls `checkMesh` from there. That path has never been observed.
+
+This is where the investigation stopped for lack of an allocation. The next run
+will say more by itself: since `9b5108c` every stage log opens with the exact
+argv, and `StageError` carries it too, so `results.json` names the command that
+failed instead of only its exit code.
 
 ---
 
@@ -207,6 +224,7 @@ Recorded because each one looked convincing and cost time.
 | W5 | 17 minutes without a result means the case is heavy and `dev_cpu_il`'s 30-minute limit is too small | **Wrong.** It was the loop of R1. The export takes 144 s. |
 | W6 | The 2-D `naca` case can serve as a cheap test vehicle for the same chain | **Not possible as it stands.** `turbine_runner/cfd/` contains only `tistos_files`, `xml` and `boundaryData_RU_INLET`. There is no OpenFOAM case for naca — the geometry export would work (`adapters/machines/naca.yaml`: "builds gridGmsh in the container in seconds"), the solve has nothing to run. |
 | W7 | `timeout <n> <cmd> \| tail -3` is a safe way to bound a looping command | **Wrong, and it cost three inconclusive rounds.** `timeout` signals the process, the container keeps the pipe's write end open, `tail` never sees EOF and prints nothing. Redirect to a file and inspect the file instead. |
+| W9 | Sourcing OpenFOAM's bashrc removes the main library directory from `LD_LIBRARY_PATH`, so dropping it from `DTOO_SETUP` fixes the solve | **Wrong.** `cluster/probe_solve_env.sh` runs `checkMesh` fine in all six combinations of `--rc` and setup lines, `both-no-rc` included. The difference in the real solve is `sh -e <script>`, not the setup. |
 | W8 | The reference framework runs one CFD per core (`start_de.py: cores_per_cfd = 1`) | **Wrong file.** That `start_de.py` instantiates `hydroFoil_problem()`, the 2-D predecessor with 3 parameters. The HPC variant asks for `--ntasks-per-node=32 --cpus-per-task=2` and sets `numberOfSubdomains = cpus_per_task`: **2 cores per CFD, many CFDs side by side**. The 32 is concurrency, not ranks. |
 
 ---
