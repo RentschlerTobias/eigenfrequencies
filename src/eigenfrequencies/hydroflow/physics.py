@@ -235,6 +235,18 @@ class Runtime:
             raise StageError("in-process runtime has no shell command")
 
         lines = list(self.setup)
+        # The `cd` belongs AFTER the setup, never before it. Sourcing OpenFOAM's
+        # bashrc from a shell that has already changed directory sends it into an
+        # endless re-execution loop: it reprints everything up to the source
+        # several times a second and never returns, so the stage produces no
+        # artifact, no log line and no error — it just sits there until its
+        # timeout. Measured on bwUniCluster with
+        # cluster/probe_openfoam_cd_order.sh: `cd` first loops, both environments
+        # sourced first and `cd` afterwards completes in well under a second.
+        # Sourcing the OpenFOAM bashrc *alone* hangs too; the dtOO env.sh after
+        # it is what leaves the shell usable, so the two belong together and
+        # ahead of everything else.
+        lines.append(f"cd {shlex.quote(str(workdir))}")
         for key, value in (env or {}).items():
             lines.append(f"export {key}={shlex.quote(str(value))}")
         # `exec`, not a plain call: sourcing OpenFOAM's bashrc leaves the shell
@@ -249,10 +261,14 @@ class Runtime:
         script = "; ".join(lines)
 
         if self.kind == "native":
-            return ["bash", "-lc", f"cd {shlex.quote(str(workdir))}; {script}"]
+            return ["bash", "-lc", script]
 
         bind = _existing_paths(mounts)
         if self.kind == "docker":
+            # `-w` puts the shell in the workdir before it starts, so the setup
+            # sources from there — the very situation that loops under enroot.
+            # Left as it is because no cluster path uses docker; revisit if one
+            # ever does.
             cmd = ["docker", "run", "--rm", "-w", str(workdir)]
             for path in bind:
                 cmd += ["-v", f"{path}:{path}"]
@@ -277,7 +293,7 @@ class Runtime:
             _expand(self.container),
             "bash",
             "-c",
-            f"cd {shlex.quote(str(workdir))}; {script}",
+            script,
         ]
         return cmd
 

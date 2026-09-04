@@ -118,7 +118,28 @@ class TestRuntimeCommand:
         )
         assert cmd[:2] == ["enroot", "start"]
         assert "pyxis_dtoo" in cmd
-        assert cmd[-1].startswith(f"cd {tmp_path.resolve()}")
+        assert f"cd {tmp_path.resolve()}" in cmd[-1]
+
+    def test_the_directory_change_comes_after_the_environment_setup(self, tmp_path):
+        """A `cd` *before* sourcing OpenFOAM's bashrc sends the container shell
+        into an endless re-execution loop: it reprints everything up to the
+        source several times a second and never returns, so the stage yields no
+        artifact, no log line and no error until its timeout expires. That is
+        why no candidate had ever completed on the cluster. Measured with
+        cluster/probe_openfoam_cd_order.sh — sourcing both environments first
+        and changing directory afterwards finishes in well under a second."""
+        for kind, kwargs in (
+            ("enroot", {"container": "dtOO"}),
+            ("native", {}),
+            ("docker", {"image": "img"}),
+        ):
+            script = (
+                Runtime(kind=kind, setup=physics.DTOO_SETUP, **kwargs)
+                .command(["true"], workdir=tmp_path)[-1]
+            )
+            cd = script.index(f"cd {tmp_path.resolve()}")
+            assert script.index("openfoam2606/etc/bashrc") < cd, kind
+            assert script.index("/dtOO-install/bin/env.sh") < cd, kind
 
     def test_enroot_runs_as_root_by_default(self):
         """Without it enroot cannot drop privileges and refuses to mount at all:
