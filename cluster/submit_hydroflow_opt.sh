@@ -209,6 +209,15 @@ if [[ "${DRY_RUN:-0}" != "1" && -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" 
         [[ -f "$img" ]] || continue
         n_images=$((n_images + 1))
         name="$(basename "$img" .sqsh)"
+        # Already unpacked is a success, not a collision. A batch job gets a
+        # fresh $TMPDIR and never sees this, but an interactive session that
+        # sourced cluster/interactive_setup.sh — or simply ran this script
+        # twice — otherwise dies on "File already exists" before evaluating
+        # anything.
+        if enroot list 2>/dev/null | grep -qxF "$name"; then
+            echo "[submit] $name already unpacked in $ENROOT_DATA_PATH — skipping"
+            continue
+        fi
         echo "[submit] unpacking $name"
         enroot create --name "$name" "$img" || {
             echo "[submit] enroot create failed for $name" >&2; exit 1; }
