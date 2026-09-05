@@ -220,8 +220,22 @@ rebuilding them, concludes the environment is already set up — which it is, th
 image exports it — and puts nothing back. `checkMesh` then cannot load
 `libfiniteVolume.so`, and `sh -e` aborts with 127 before writing anything.
 
-`DTOO_SETUP` therefore keeps only `/dtOO-install/bin/env.sh`, which prepends and
-leaves the image's own paths intact.
+The first attempt — `DTOO_SETUP` keeping only `/dtOO-install/bin/env.sh` — broke
+the *build* instead: `cfd_build.log` fell from 3388 lines to 30 and ended with
+
+```
+ImportError: libTKFeat.so.7.9: cannot open shared object file
+```
+
+The dtOO environment alone does not put OpenCASCADE on the library path either;
+it needs what the bashrc leaves behind. So the two stages genuinely need
+different environments, and treating them as one was the underlying mistake:
+
+- **build** (`python3.13 dtoo_cfd_build.py`, imports `dtOOPythonSWIG`) keeps
+  `DTOO_SETUP`, both sources, in that order.
+- **solve** (`sh -e sbatch.tistos_ru_of.sh`, imports nothing, runs only OpenFOAM
+  binaries) uses `CFD_SOLVE_SETUP = ()` — no setup at all, because the image
+  already configures OpenFOAM and sourcing its bashrc undoes that.
 
 Note this contradicts W9 above, which was drawn from `probe_solve_env.sh`: there
 `checkMesh` survived the same two source lines. The difference between the two

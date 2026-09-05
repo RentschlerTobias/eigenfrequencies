@@ -97,25 +97,35 @@ DTOO_CONTAINER = "pyxis_dtoo"
 FENICSX_IMAGE = "dolfinx/dolfinx:stable"
 FENICSX_CONTAINER = "pyxis_fenicsx"
 
-#: Only the dtOO environment, on purpose. The image already exports a complete
-#: OpenFOAM environment — ``enroot start --root dtOO checkMesh -help`` runs with
-#: no setup at all, and ``LD_LIBRARY_PATH`` already carries
-#: ``…/platforms/linux64GccDPInt32Opt/lib``. Sourcing OpenFOAM's own bashrc on
-#: top of that *removes* those entries: the bashrc strips its own paths before
-#: rebuilding them, decides the environment is already set up and puts nothing
-#: back. Measured 2026-09-04 with ``cluster/probe_solve_shell.sh``, after both
-#: sources::
+#: For the stages that import ``dtOOPythonSWIG``. Both sources are required and
+#: in this order: with neither the import fails on ``libPstream.so``, with only
+#: OpenFOAM on ``libTKFeat.so.7.9`` — and with only the dtOO ``env.sh`` on
+#: ``libTKFeat.so.7.9`` as well (measured 2026-09-04, the geometry export died
+#: after 30 log lines). The dtOO environment alone does not put OpenCASCADE on
+#: the library path; it needs what the bashrc leaves behind.
+DTOO_SETUP = (
+    "source /usr/lib/openfoam/openfoam2606/etc/bashrc",
+    "source /dtOO-install/bin/env.sh",
+)
+
+#: For the CFD solve, which imports nothing: it runs checkMesh, decomposePar,
+#: mpirun, simpleFoam and reconstructPar, all of them OpenFOAM binaries that the
+#: image already configures. ``enroot start --root dtOO checkMesh -help`` works
+#: with no setup whatsoever, and ``LD_LIBRARY_PATH`` arrives carrying
+#: ``…/platforms/linux64GccDPInt32Opt/lib``.
+#:
+#: Sourcing OpenFOAM's bashrc on top of that *removes* those entries — it strips
+#: its own paths before rebuilding them, concludes the environment is already
+#: set up, and puts nothing back. Measured with ``cluster/probe_solve_shell.sh``,
+#: after ``DTOO_SETUP``::
 #:
 #:     LD=/dtOO-install/lib:/usr/lib64:…:…/openmpi4/lib64:…/linux64GccDPInt32Opt/lib/dummy
 #:
-#: — every OpenFOAM entry gone except ``lib/dummy``, so ``checkMesh`` died with
-#: ``libfiniteVolume.so: cannot open shared object file`` and the solve stage
-#: reported nothing but ``exit 127``.
-#:
-#: ``/dtOO-install/bin/env.sh`` stays: without it ``import dtOOPythonSWIG``
-#: fails on ``libTKFeat.so.7.9``, and it only ever prepends, so it leaves the
-#: image's own paths intact.
-DTOO_SETUP = ("source /dtOO-install/bin/env.sh",)
+#: Every OpenFOAM entry gone except ``lib/dummy``. ``checkMesh`` then failed on
+#: ``libfiniteVolume.so`` and the stage reported a bare ``exit 127`` with an
+#: empty log, because the solve script redirects each command into its own
+#: ``log.<name>`` inside the case directory.
+CFD_SOLVE_SETUP: tuple[str, ...] = ()
 
 #: DOLFINx/PMIx falls back to /run/user/$UID otherwise, which is unwritable in
 #: a batch allocation — that is what made every worker fail on uc2n601.
@@ -1009,7 +1019,10 @@ def solve_cfd(
         probe_module="dtOOPythonSWIG",
         image=DTOO_IMAGE,
         container=DTOO_CONTAINER,
-        setup=DTOO_SETUP,
+        # Not DTOO_SETUP: this stage imports nothing and only runs OpenFOAM
+        # binaries, which the image configures by itself. Sourcing OpenFOAM's
+        # bashrc here strips the library path instead of setting it up.
+        setup=CFD_SOLVE_SETUP,
         timeout=float(cfd_opts.get("timeout", os.environ.get("CFD_TIMEOUT", 1800))),
     )
     if runtime.kind == "inprocess":
