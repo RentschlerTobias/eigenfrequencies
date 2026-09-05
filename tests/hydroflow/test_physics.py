@@ -80,15 +80,22 @@ class TestRuntimeResolution:
 
 
 class TestRuntimeCommand:
-    def test_docker_sources_both_environments_before_the_interpreter(self):
+    def test_the_dtoo_environment_is_sourced_before_the_interpreter(self):
         cmd = Runtime(kind="docker", image="img", setup=physics.DTOO_SETUP).command(
             ["python3.13", "/x/run.py"], workdir="/w"
         )
         script = cmd[-1]
-        # Without both sources dtOOPythonSWIG fails on libPstream / libTKFeat.
-        assert "openfoam2606/etc/bashrc" in script
+        # Without it, `import dtOOPythonSWIG` fails on libTKFeat.so.7.9.
         assert "/dtOO-install/bin/env.sh" in script
-        assert script.index("bashrc") < script.index("python3.13")
+        assert script.index("/dtOO-install/bin/env.sh") < script.index("python3.13")
+
+    def test_openfoam_is_not_sourced_on_top_of_the_image_environment(self):
+        """The image exports a complete OpenFOAM environment; sourcing its bashrc
+        again strips the library entries and puts nothing back, leaving only
+        `lib/dummy` behind. checkMesh then dies on libfiniteVolume.so and the
+        solve reports a bare `exit 127`. Measured with
+        cluster/probe_solve_shell.sh."""
+        assert not any("openfoam" in line for line in physics.DTOO_SETUP)
 
     def test_the_payload_is_exec(self):
         """Sourcing OpenFOAM's bashrc makes the shell run its command string a
@@ -153,7 +160,6 @@ class TestRuntimeCommand:
                 .command(["true"], workdir=tmp_path)[-1]
             )
             cd = script.index(f"cd {tmp_path.resolve()}")
-            assert script.index("openfoam2606/etc/bashrc") < cd, kind
             assert script.index("/dtOO-install/bin/env.sh") < cd, kind
 
     def test_enroot_replaces_the_image_command_script(self, monkeypatch, tmp_path):

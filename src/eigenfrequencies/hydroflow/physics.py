@@ -97,12 +97,25 @@ DTOO_CONTAINER = "pyxis_dtoo"
 FENICSX_IMAGE = "dolfinx/dolfinx:stable"
 FENICSX_CONTAINER = "pyxis_fenicsx"
 
-#: Both sources are required — with neither, ``import dtOOPythonSWIG`` fails on
-#: ``libPstream.so``; with only OpenFOAM, on ``libTKFeat.so.7.9``.
-DTOO_SETUP = (
-    "source /usr/lib/openfoam/openfoam2606/etc/bashrc",
-    "source /dtOO-install/bin/env.sh",
-)
+#: Only the dtOO environment, on purpose. The image already exports a complete
+#: OpenFOAM environment — ``enroot start --root dtOO checkMesh -help`` runs with
+#: no setup at all, and ``LD_LIBRARY_PATH`` already carries
+#: ``…/platforms/linux64GccDPInt32Opt/lib``. Sourcing OpenFOAM's own bashrc on
+#: top of that *removes* those entries: the bashrc strips its own paths before
+#: rebuilding them, decides the environment is already set up and puts nothing
+#: back. Measured 2026-09-04 with ``cluster/probe_solve_shell.sh``, after both
+#: sources::
+#:
+#:     LD=/dtOO-install/lib:/usr/lib64:…:…/openmpi4/lib64:…/linux64GccDPInt32Opt/lib/dummy
+#:
+#: — every OpenFOAM entry gone except ``lib/dummy``, so ``checkMesh`` died with
+#: ``libfiniteVolume.so: cannot open shared object file`` and the solve stage
+#: reported nothing but ``exit 127``.
+#:
+#: ``/dtOO-install/bin/env.sh`` stays: without it ``import dtOOPythonSWIG``
+#: fails on ``libTKFeat.so.7.9``, and it only ever prepends, so it leaves the
+#: image's own paths intact.
+DTOO_SETUP = ("source /dtOO-install/bin/env.sh",)
 
 #: DOLFINx/PMIx falls back to /run/user/$UID otherwise, which is unwritable in
 #: a batch allocation — that is what made every worker fail on uc2n601.
