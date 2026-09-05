@@ -1,31 +1,31 @@
 #!/usr/bin/env bash
-# Probe: where does the CFD solve lose OpenFOAM's library path?
+# Probe: which ingredient of the solve invocation costs OpenFOAM its library path?
 #
 #     bash cluster/probe_solve_shell.sh
 #
 # Run it on a compute node with the dtOO container unpacked
 # (`source cluster/interactive_setup.sh` does that).
 #
-# The geometry export works; the solve dies with
+# Established so far:
 #
-#     checkMesh: error while loading shared libraries: libfiniteVolume.so
+#   * `enroot start --root dtOO checkMesh -help` works. The image configures
+#     OpenFOAM by itself and LD_LIBRARY_PATH arrives complete.
+#   * the production solve fails with
+#     `checkMesh: error while loading shared libraries: libfiniteVolume.so`,
+#     and it still does with no setup lines at all.
 #
-# and cluster/probe_solve_env.sh already showed that `checkMesh` loads fine in
-# every combination of --rc and setup lines when called from bash. One
-# difference to every working case is left: the solve is the only stage that
-# hands its payload to `sh` (physics.py: ["sh", "-e", script, case_dir, procs]),
-# while the build runs python3.13 through the identical wrapper.
+# So the cause is one of the remaining differences: the two mounts, the replaced
+# command script (--rc), the cd into the candidate directory, or the exports.
+# Each row below adds one of them to the bare call that works. The first row
+# that turns `foam-lib` to NO is the culprit.
 #
-# Every variant below reproduces the production invocation exactly — the same two
-# mounts, --root, --rc, both source lines, the cd and the three exports — and
-# varies only what comes after `exec`. What matters per variant: does
-# LD_LIBRARY_PATH still carry the OpenFOAM lib directory, and does checkMesh
-# actually start.
+# Payload is the same everywhere: report LD_LIBRARY_PATH, then try to start
+# checkMesh and report its exit status.
 
 CONTAINER="${CONTAINER:-dtOO}"
+FOAM_LIB="platforms/linux64GccDPInt32Opt/lib"
 FOAM="${FOAM:-/usr/lib/openfoam/openfoam2606/etc/bashrc}"
 DTOO_ENV="${DTOO_ENV:-/dtOO-install/bin/env.sh}"
-FOAM_LIB="platforms/linux64GccDPInt32Opt/lib"
 LIMIT="${LIMIT:-60}"
 OUT="${TMPDIR:-/tmp}/probe-solve-shell"
 REPO="${EIGENFREQUENCIES_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
@@ -38,58 +38,46 @@ if ! enroot list 2>/dev/null | grep -qx "$CONTAINER"; then
 fi
 [ -f "$RC" ] || { echo "no command script at $RC" >&2; exit 1; }
 
-# The candidate directory of the last real run, so the mounts and the working
-# directory are the ones production uses. Falls back to a scratch directory.
 WORK="${WORK:-$WS/runs/tistos-smoke-cfd-local/baseline}"
-if [ ! -d "$WORK" ]; then
-    WORK="$OUT/work"
-    echo "note: no candidate directory from a previous run, using $WORK"
-fi
+[ -d "$WORK" ] || { WORK="$OUT/work"; echo "note: using $WORK"; }
 mkdir -p "$OUT" "$WORK"
 
-# A script file for the variant that runs one, mirroring `sh -e <script>`.
-cat > "$OUT/inner.sh" <<EOF
-echo "LD=\$LD_LIBRARY_PATH"
-checkMesh -help >/dev/null 2>&1
-echo "rc=\$?"
-EOF
+REPORT='echo LD=$LD_LIBRARY_PATH; checkMesh -help >/dev/null 2>&1; echo rc=$?'
+EXPORTS='export MPI_LAUNCHER=mpirun; export OMPI_ALLOW_RUN_AS_ROOT=1; export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1; '
 
 echo "container=$CONTAINER  work=$WORK  logs=$OUT"
 echo
-printf '%-14s %-10s %-10s %s\n' "variant" "foam-lib" "checkMesh" "note"
-printf '%-14s %-10s %-10s %s\n' "-------------" "--------" "---------" "----"
+printf '%-22s %-10s %-10s %s\n' "variant" "foam-lib" "checkMesh" "first LD entries"
+printf '%-22s %-10s %-10s %s\n' "----------------------" "--------" "---------" "----------------"
 
+# $1 label, $2 "yes"/"no" mounts, $3 "yes"/"no" --rc, $4 prefix inside bash -c
 probe() {
-    label="$1"; payload="$2"
+    label="$1"; mounts="$2"; use_rc="$3"; prefix="$4"
     log="$OUT/$label.log"
 
-    timeout "$LIMIT" enroot start \
-        -m "$REPO:$REPO" -m "$WORK:$WORK" \
-        --root --rc "$RC" "$CONTAINER" \
-        bash -c ". $FOAM; . $DTOO_ENV; cd $WORK; export MPI_LAUNCHER=mpirun; export OMPI_ALLOW_RUN_AS_ROOT=1; export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1; $payload" \
-        > "$log" 2>&1
+    args=()
+    [ "$mounts" = "yes" ] && args+=(-m "$REPO:$REPO" -m "$WORK:$WORK")
+    args+=(--root)
+    [ "$use_rc" = "yes" ] && args+=(--rc "$RC")
 
-    if grep -q "LD=.*$FOAM_LIB\(:\|$\)" "$log"; then lib="yes"; else lib="NO"; fi
+    timeout "$LIMIT" enroot start "${args[@]}" "$CONTAINER" \
+        bash -c "${prefix}${REPORT}" > "$log" 2>&1
+
+    if grep -q "LD=.*$FOAM_LIB\(:\|\$\)" "$log"; then lib="yes"; else lib="NO"; fi
     if grep -q "^rc=0" "$log"; then run="yes"; else run="NO"; fi
-    note="$(grep -m1 -E "loading shared libraries|not found|^/bin/sh|busybox|dash|bash" "$log" | cut -c1-46)"
-    printf '%-14s %-10s %-10s %s\n' "$label" "$lib" "$run" "$note"
+    head="$(grep -m1 '^LD=' "$log" | cut -c1-60)"
+    printf '%-22s %-10s %-10s %s\n' "$label" "$lib" "$run" "${head:-<no LD line>}"
 }
 
-# Is the environment intact in the shell that production builds?
-probe "bash-c" "exec bash -c 'echo LD=\$LD_LIBRARY_PATH; checkMesh -help >/dev/null 2>&1; echo rc=\$?'"
-
-# Does `sh -c` lose it? This is the shell the solve script runs in.
-probe "sh-c" "exec sh -c 'echo LD=\$LD_LIBRARY_PATH; checkMesh -help >/dev/null 2>&1; echo rc=\$?'"
-
-# `sh -e <file>` — exactly how the solve script is invoked.
-probe "sh-script" "exec sh -e $OUT/inner.sh"
-
-# What is /bin/sh in this image?
-probe "sh-identity" "exec sh -c 'echo LD=\$LD_LIBRARY_PATH; ls -l /bin/sh; readlink -f /bin/sh; echo rc=0'"
+probe "bare"              "no"  "no"  ""
+probe "rc"                "no"  "yes" ""
+probe "mounts"            "yes" "no"  ""
+probe "mounts+rc"         "yes" "yes" ""
+probe "mounts+rc+cd"      "yes" "yes" "cd $WORK; "
+probe "production"        "yes" "yes" "cd $WORK; $EXPORTS"
+probe "production+setup"  "yes" "yes" ". $FOAM; . $DTOO_ENV; cd $WORK; $EXPORTS"
 
 echo
 echo "logs in $OUT"
 echo
-echo "foam-lib yes for bash-c and NO for sh-c  -> sh drops it; run the solve script with bash."
-echo "foam-lib yes everywhere but checkMesh NO -> not the shell; look at the working directory"
-echo "                                            and the mounts in the per-variant logs."
+echo "The first row with foam-lib NO names the ingredient that costs the library path."
