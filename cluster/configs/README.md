@@ -41,6 +41,16 @@ concurrent_evaluations × mpi_ranks × threads_per_rank ≤ available_cpus
 optimization.islands                                  ≤ concurrent_evaluations
 ```
 
+## Smoke debug
+
+The two smoke configs (`tistos-smoke-cfd.toml` and `tistos-smoke-cfd-native.toml`)
+are meant for quick CFD-only iteration on `dev_cpu_il`. Submit them through
+`cluster/debug_dev.sh` instead of invoking `submit_hydroflow_opt.sh` directly:
+the harness archives the previous run, collects every produced log into
+`cluster/logs/<jobid>/`, and prints a machine-readable summary. Because the logs
+are written into the repository they remain readable after the allocation ends,
+unlike the production configs that redirect stage output to node-local `$TMPDIR`.
+
 ## Eigensolver: a config switch, not a fork in the physics
 
 The plan called for "P2 + SLEPc", and SLEPc used to reject anything but a

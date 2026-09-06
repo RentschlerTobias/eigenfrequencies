@@ -62,6 +62,7 @@ All of it lives in `cluster/` and is meant to be re-run.
 | `enroot_rc.sh` | The replacement container command script (`exec "$@"`), see R5. |
 | `configs/tistos-smoke-cfd.toml` | 2-candidate `cfd_only` smoke, solve in the container. |
 | `configs/tistos-smoke-cfd-native.toml` | Same, but the solve runs from the cluster's OpenFOAM module. |
+| `debug_dev.sh` | One-command dev-node debug run; writes `cluster/logs/<jobid>/{slurm.out, stage-logs, error-excerpts.txt, double-execution-count.txt}`. |
 
 ---
 
@@ -295,12 +296,16 @@ Each looked convincing and cost time.
 
 1. **Read the native-solve failure.** `tistos-smoke-cfd-native.toml` ended 0/2
    with no stage logs; the `error` field of its `results.jsonl` has not been
-   looked at.
+   looked at. Instrumented by `debug_dev.sh` — the harness copies
+   `results.jsonl` into `cluster/logs/<jobid>/` and writes
+   `error-excerpts.txt` with every failing candidate's error text.
 2. **Tighten `probe_solve_shell.sh`'s verdict** to require *every* execution to
    report `rc=0`, and to count executions per variant. The current logic hid the
-   failing pass.
+   failing pass. Fixed in commit 1314e5f. When `EVAL_CONFIG=cfd`, the harness runs the
+   probe and collects its logs under `cluster/logs/<jobid>/probe-solve-shell/`.
 3. **Confirm or refute the surviving double execution** with the `grep -c '^rc='`
-   command in §5.
+   command in §5. Instrumented by `debug_dev.sh` — the harness runs the count
+   and writes `cluster/logs/<jobid>/double-execution-count.txt`.
 4. **Make the smoke scripts mirror production** — `enroot create`, then start by
    name.
 5. **Three unread job logs** on the cluster: `hydroflow_opt_6743978/79/80.out`,
