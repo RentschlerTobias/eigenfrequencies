@@ -77,6 +77,20 @@ probe "mounts+rc+cd"      "yes" "yes" "cd $WORK; "
 probe "production"        "yes" "yes" "cd $WORK; $EXPORTS"
 probe "production+setup"  "yes" "yes" ". $FOAM; . $DTOO_ENV; cd $WORK; $EXPORTS"
 
+# The real solve does not call checkMesh itself: it hands a script to `sh -e`,
+# and that script changes into the OpenFOAM case directory before running
+# anything. Two directory changes in two shells — the part the rows above never
+# covered.
+CASE="$(find "$WORK" -maxdepth 1 -type d -name 'tistos_ru_of_*' | head -1)"
+if [ -n "$CASE" ]; then
+    printf 'echo LD=$LD_LIBRARY_PATH\ncheckMesh -help >/dev/null 2>&1\necho rc=$?\n' > "$OUT/plain.sh"
+    printf 'cd %s\necho LD=$LD_LIBRARY_PATH\ncheckMesh -help >/dev/null 2>&1\necho rc=$?\n' "$CASE" > "$OUT/incase.sh"
+    probe "sh-file"           "yes" "yes" "cd $WORK; $EXPORTS exec sh -e $OUT/plain.sh; "
+    probe "sh-file-in-case"   "yes" "yes" "cd $WORK; $EXPORTS exec sh -e $OUT/incase.sh; "
+else
+    echo "note: no tistos_ru_of_* case directory under $WORK — skipping the sh-file rows"
+fi
+
 echo
 echo "logs in $OUT"
 echo
