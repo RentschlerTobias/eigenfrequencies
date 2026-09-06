@@ -20,14 +20,17 @@
 # that turns `foam-lib` to NO is the culprit.
 #
 # Payload is the same everywhere: report LD_LIBRARY_PATH, then try to start
-# checkMesh and report its exit status.
+# checkMesh and report its exit status. Each row reports how many times the
+# payload ran and how many of those runs had rc=0; the row is PASS only when
+# the payload ran at least once and every run exited 0, and the script exits
+# 1 overall if any row is FAIL.
 
 CONTAINER="${CONTAINER:-dtOO}"
 FOAM_LIB="platforms/linux64GccDPInt32Opt/lib"
 FOAM="${FOAM:-/usr/lib/openfoam/openfoam2606/etc/bashrc}"
 DTOO_ENV="${DTOO_ENV:-/dtOO-install/bin/env.sh}"
 LIMIT="${LIMIT:-60}"
-OUT="${TMPDIR:-/tmp}/probe-solve-shell"
+OUT="${PROBE_OUT:-${TMPDIR:-/tmp}/probe-solve-shell}"
 REPO="${EIGENFREQUENCIES_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 RC="$REPO/cluster/enroot_rc.sh"
 
@@ -47,8 +50,30 @@ EXPORTS='export MPI_LAUNCHER=mpirun; export OMPI_ALLOW_RUN_AS_ROOT=1; export OMP
 
 echo "container=$CONTAINER  work=$WORK  logs=$OUT"
 echo
-printf '%-22s %-10s %-10s %s\n' "variant" "foam-lib" "checkMesh" "first LD entries"
-printf '%-22s %-10s %-10s %s\n' "----------------------" "--------" "---------" "----------------"
+printf '%-22s %-10s %-11s %-5s %-14s %s\n' "variant" "foam-lib" "executions" "rc0" "VERDICT" "first LD entries"
+printf '%-22s %-10s %-11s %-5s %-14s %s\n' "----------------------" "--------" "-----------" "----" "--------------" "----------------"
+
+# Aggregate verdict across all probes: any FAIL -> overall exit 1.
+ANY_FAIL=0
+
+# $1 = log file. Prints "executions=<n>  rc0=<k>  VERDICT=PASS|FAIL" to stdout.
+# Returns 0 iff n>=1 and every "^rc=" line equals 0; returns 1 otherwise.
+# Self-contained: only $1 and grep are referenced, so sed extraction works.
+verdict_of() {
+    local log="$1"
+    local n k
+    n="$(grep -c '^rc=' "$log" 2>/dev/null || true)"
+    k="$(grep -c '^rc=0$' "$log" 2>/dev/null || true)"
+    n="${n:-0}"
+    k="${k:-0}"
+    if [ "$n" -ge 1 ] && [ "$n" -eq "$k" ]; then
+        printf 'executions=%s  rc0=%s  VERDICT=PASS\n' "$n" "$k"
+        return 0
+    else
+        printf 'executions=%s  rc0=%s  VERDICT=FAIL\n' "$n" "$k"
+        return 1
+    fi
+}
 
 # $1 label, $2 "yes"/"no" mounts, $3 "yes"/"no" --rc, $4 prefix inside bash -c
 probe() {
@@ -64,9 +89,16 @@ probe() {
         bash -c "${prefix}${REPORT}" > "$log" 2>&1
 
     if grep -q "LD=.*$FOAM_LIB\(:\|\$\)" "$log"; then lib="yes"; else lib="NO"; fi
-    if grep -q "^rc=0" "$log"; then run="yes"; else run="NO"; fi
+    summary="$(verdict_of "$log")"
+    vrc=$?
+    [ "$vrc" -ne 0 ] && ANY_FAIL=1
+    execs="${summary#executions=}"
+    execs="${execs%  rc0=*}"
+    rc0="${summary#*  rc0=}"
+    rc0="${rc0%  VERDICT=*}"
+    verdict="${summary##*VERDICT=}"
     head="$(grep -m1 '^LD=' "$log" | cut -c1-60)"
-    printf '%-22s %-10s %-10s %s\n' "$label" "$lib" "$run" "${head:-<no LD line>}"
+    printf '%-22s %-10s %-11s %-5s %-14s %s\n' "$label" "$lib" "$execs" "$rc0" "$verdict" "${head:-<no LD line>}"
 }
 
 probe "bare"              "no"  "no"  ""
@@ -98,3 +130,5 @@ echo
 echo "logs in $OUT"
 echo
 echo "The first row with foam-lib NO names the ingredient that costs the library path."
+
+exit "$ANY_FAIL"
