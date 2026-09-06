@@ -109,10 +109,13 @@ PY
     fi
 }
 
-# Per-stage log summary in rerun_smoke.sh style.
+# Per-stage log summary in rerun_smoke.sh style, with PASS|FAIL token.
+# Status is FAIL when the first line matches /error|fail|traceback/i — the
+# first line of a stage log is the exact command that ran, so a traceback or
+# an explicit failure marker there means the stage did not complete cleanly.
 stage_summary() {
     local scratch="$1"
-    local log candidate
+    local log candidate first_line status
     if [ -z "$scratch" ] || [ ! -d "$scratch" ]; then
         echo "stage_logs=none"
         return
@@ -122,8 +125,13 @@ stage_summary() {
         for log in "$candidate"logs/*.log; do
             [ -f "$log" ] || continue
             local rel="${log#"$scratch"/}"
-            echo "stage: $rel ($(wc -l < "$log") lines)"
-            head -1 "$log" | cut -c1-200 | sed 's/^/  /'
+            first_line="$(head -1 "$log" 2>/dev/null || true)"
+            status="PASS"
+            if printf '%s' "$first_line" | grep -qiE 'error|fail|traceback'; then
+                status="FAIL"
+            fi
+            echo "stage: $rel ($(wc -l < "$log") lines) $status"
+            printf '%s\n' "$first_line" | cut -c1-200 | sed 's/^/  /'
         done
     done
 }
@@ -144,6 +152,94 @@ print_summary() {
     echo "submit_exit=${EXIT_CODE:-SKIPPED}"
     echo "probe_rc=${PROBE_RC:-SKIPPED}"
     stage_summary "${LOCAL_SCRATCH:-}"
+}
+
+# Post-run evidence extraction: results.jsonl error texts, the double-execution
+# grep count from probe logs, and a suggested git commit command. Best-effort:
+# every step is guarded so a missing artefact never aborts the harness.
+collect_evidence() {
+    local logdir="$1"
+    local excerpt_file="${logdir}/error-excerpts.txt"
+    local count_file="${logdir}/double-execution-count.txt"
+
+    # (a) Resolve results.jsonl: primary $RUN_DIR/results.jsonl; fallback to any
+    # single match one level under $WS/runs/ for the selected $BASENAME, which
+    # covers the case where RUN_DIR was not exported.
+    local results_path=""
+    if [ -n "${RUN_DIR:-}" ] && [ -f "${RUN_DIR}/results.jsonl" ]; then
+        results_path="${RUN_DIR}/results.jsonl"
+    else
+        local ws_root="${WS:-/nonexistent}"
+        local glob_pat="${ws_root}/runs/${BASENAME:-*}/results.jsonl"
+        # shellcheck disable=SC2086
+        for cand in $glob_pat; do
+            if [ -f "$cand" ]; then
+                results_path="$cand"
+                break
+            fi
+        done
+    fi
+
+    if [ -z "$results_path" ]; then
+        printf 'no results.jsonl found under %s/runs/%s/results.jsonl (or %s)\n' \
+            "${WS:-.}" "${BASENAME:-.}" "${RUN_DIR:-.}" \
+            > "$excerpt_file" 2>/dev/null || true
+    else
+        python3 - "$results_path" "$excerpt_file" <<'PY' || true
+import json
+import sys
+
+results_path = sys.argv[1]
+excerpt_file = sys.argv[2]
+failed = 0
+
+with open(excerpt_file, "w", encoding="utf-8") as out:
+    with open(results_path, encoding="utf-8") as fh:
+        for i, line in enumerate(fh):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except Exception as exc:
+                print("# malformed json at line {}: {}".format(i + 1, exc),
+                      file=sys.stderr)
+                continue
+            err = rec.get("error")
+            if not err:
+                continue
+            cid = rec.get("id") or rec.get("candidate") or "index {}".format(i)
+            out.write("candidate: {}\n".format(cid))
+            out.write(str(err))
+            out.write("\n\n")
+            failed += 1
+
+if failed == 0:
+    with open(excerpt_file, "w", encoding="utf-8") as out:
+        out.write("no failed evaluations\n")
+PY
+    fi
+
+    # (b) Double-execution count from probe logs. grep -c exits 1 when every
+    # count is 0; || true keeps the file written and the harness from aborting.
+    local probe_dir="${logdir}/probe-solve-shell"
+    if [ -d "$probe_dir" ] && compgen -G "${probe_dir}/*.log" >/dev/null; then
+        grep -c '^rc=' "${probe_dir}/"*.log | tee "$count_file" >/dev/null || true
+    elif [ "$EVAL_CONFIG" = "cfd" ]; then
+        printf 'probe logs missing (probe ran? check slurm .err)\n' \
+            > "$count_file" 2>/dev/null || true
+    else
+        printf 'probe not run (enroot-only diagnostic)\n' \
+            > "$count_file" 2>/dev/null || true
+    fi
+
+    # (c) Suggested commit (printed; never executed). `git add cluster/logs`
+    # covers the latest/ typechange to symlink that an `<jobid>`-scoped add
+    # would miss.
+    printf 'git add cluster/logs && git commit -m %s\n' \
+        "'cluster debug: ${EVAL_CONFIG} smoke ${SLURM_JOB_ID}'"
+
+    return 0
 }
 
 # Archive any stale artifacts for this config before the new run.
@@ -197,10 +293,8 @@ if [ -n "${RUN_DIR:-}" ] && [ -f "$RUN_DIR/results.jsonl" ]; then
     cp "$RUN_DIR/results.jsonl" "$LOG_DIR/" 2>/dev/null || true
 fi
 
-# Post-run evidence extraction (todo 4) is called only when defined.
-if declare -F collect_evidence >/dev/null; then
-    collect_evidence "$LOG_DIR"
-fi
+# Post-run evidence extraction (todo 4). Best-effort: never aborts the run.
+collect_evidence "$LOG_DIR"
 
 print_summary "$SLURM_JOB_ID"
 
