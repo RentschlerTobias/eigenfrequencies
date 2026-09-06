@@ -41,6 +41,21 @@ timeout = 3600
 mpi_launcher = "mpirun"
 env = { OMPI_ALLOW_RUN_AS_ROOT = "1", OMPI_ALLOW_RUN_AS_ROOT_CONFIRM = "1" }
 
+# The solve needs no dtOO — checkMesh, decomposePar, the launcher, simpleFoam
+# and reconstructPar are plain OpenFOAM, and bwUniCluster ships v2606, the same
+# version the image carries. Swapping the three lines above for the four below
+# runs it on the host instead of in the container, which is also the way to a
+# site-tuned build. Everything the stage touches sits on the filesystem, so
+# nothing else changes.
+#
+#   runtime = "native"
+#   setup = ["module load cae/openfoam/v2606"]
+#   mpi_launcher = "mpiexec"   # the cluster has mpiexec; the container does not
+#   timeout = 3600
+#
+# `[case.options.cfd]` overrides `[case.options.dtoo]` for this stage only; the
+# geometry export stays in the container either way, because it does need dtOO.
+
 [resources]
 # dev_cpu_il: 64 cores. 2 concurrent x 6 ranks x 1 thread = 12 — the dtOO
 # export is single-threaded gmsh, the ranks serve simpleFoam.

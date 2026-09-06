@@ -1014,8 +1014,21 @@ def solve_cfd(
     """
     cfd_opts = _section(options, "cfd")
     dtoo_opts = _section(options, "dtoo")
+    # The cfd section wins over the dtoo one, so the solve can be pointed
+    # somewhere else entirely. It needs no dtOO: checkMesh, decomposePar, the
+    # MPI launcher, simpleFoam and reconstructPar are plain OpenFOAM, so a
+    # cluster module works as well as the image — and better where the site
+    # ships a tuned build. `[case.options.cfd]` with
+    #
+    #     runtime = "native"
+    #     setup = ["module load cae/openfoam/v2606"]
+    #     mpi_launcher = "mpiexec"
+    #
+    # runs the solve on the host; everything the stage reads and writes lives on
+    # the filesystem either way. Without those keys it stays in the dtOO
+    # container, as before.
     runtime = runtime or Runtime.resolve(
-        dtoo_opts,
+        {**dtoo_opts, **cfd_opts},
         probe_module="dtOOPythonSWIG",
         image=DTOO_IMAGE,
         container=DTOO_CONTAINER,

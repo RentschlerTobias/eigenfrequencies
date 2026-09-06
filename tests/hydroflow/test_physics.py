@@ -506,6 +506,51 @@ class TestSolveCfd:
         with pytest.raises(StageError, match="solve script not found"):
             physics.solve_cfd(tmp_path, {"dtoo": {"runtime": "native"}}, tmp_path)
 
+    def test_the_cfd_section_can_send_the_solve_outside_the_container(
+        self, tmp_path, monkeypatch
+    ):
+        """The solve needs no dtOO — checkMesh, decomposePar, the MPI launcher,
+        simpleFoam and reconstructPar are plain OpenFOAM. A site that ships its
+        own build (bwUniCluster has cae/openfoam/v2606, the image's version)
+        can have it instead of the container."""
+        (tmp_path / "tistos_files").mkdir(parents=True)
+        (tmp_path / "tistos_files" / "sbatch.tistos_ru_of.sh").write_text("#!/bin/sh\n")
+        seen = []
+        monkeypatch.setattr(physics, "_run", lambda cmd, **kw: seen.append(cmd) or "")
+
+        physics.solve_cfd(
+            tmp_path / "case",
+            {
+                "dtoo": {"runtime": "enroot", "container": "dtOO"},
+                "cfd": {
+                    "runtime": "native",
+                    "setup": ["module load cae/openfoam/v2606"],
+                    "procs": 2,
+                },
+            },
+            tmp_path,
+        )
+        cmd = seen[0]
+        assert cmd[0] == "bash", "native runtime, not the container"
+        assert "enroot" not in cmd
+        assert "module load cae/openfoam/v2606" in cmd[-1]
+
+    def test_without_a_cfd_runtime_the_solve_stays_in_the_dtoo_container(
+        self, tmp_path, monkeypatch
+    ):
+        (tmp_path / "tistos_files").mkdir(parents=True)
+        (tmp_path / "tistos_files" / "sbatch.tistos_ru_of.sh").write_text("#!/bin/sh\n")
+        seen = []
+        monkeypatch.setattr(physics, "_run", lambda cmd, **kw: seen.append(cmd) or "")
+
+        physics.solve_cfd(
+            tmp_path / "case",
+            {"dtoo": {"runtime": "enroot", "container": "dtOO"}, "cfd": {"procs": 2}},
+            tmp_path,
+        )
+        assert seen[0][:2] == ["enroot", "start"]
+        assert "dtOO" in seen[0]
+
 
 class TestRunHelper:
     def test_timeout_is_reported_with_the_stage_name(self, tmp_path, monkeypatch):
