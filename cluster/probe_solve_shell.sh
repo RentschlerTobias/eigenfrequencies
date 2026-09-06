@@ -81,12 +81,15 @@ probe "production+setup"  "yes" "yes" ". $FOAM; . $DTOO_ENV; cd $WORK; $EXPORTS"
 # and that script changes into the OpenFOAM case directory before running
 # anything. Two directory changes in two shells — the part the rows above never
 # covered.
+# The scripts go under $WORK, not $OUT: only $WORK and $REPO are mounted, and a
+# script the container cannot see fails with 127 and no output — the same
+# signature as the bug, from a different cause. That mistake cost one round.
 CASE="$(find "$WORK" -maxdepth 1 -type d -name 'tistos_ru_of_*' | head -1)"
 if [ -n "$CASE" ]; then
-    printf 'echo LD=$LD_LIBRARY_PATH\ncheckMesh -help >/dev/null 2>&1\necho rc=$?\n' > "$OUT/plain.sh"
-    printf 'cd %s\necho LD=$LD_LIBRARY_PATH\ncheckMesh -help >/dev/null 2>&1\necho rc=$?\n' "$CASE" > "$OUT/incase.sh"
-    probe "sh-file"           "yes" "yes" "cd $WORK; $EXPORTS exec sh -e $OUT/plain.sh; "
-    probe "sh-file-in-case"   "yes" "yes" "cd $WORK; $EXPORTS exec sh -e $OUT/incase.sh; "
+    printf 'echo LD=$LD_LIBRARY_PATH\ncheckMesh -help >/dev/null 2>&1\necho rc=$?\n' > "$WORK/probe-plain.sh"
+    printf 'cd %s\necho LD=$LD_LIBRARY_PATH\ncheckMesh -help >/dev/null 2>&1\necho rc=$?\n' "$CASE" > "$WORK/probe-incase.sh"
+    probe "sh-file"           "yes" "yes" "cd $WORK; $EXPORTS exec sh -e $WORK/probe-plain.sh; "
+    probe "sh-file-in-case"   "yes" "yes" "cd $WORK; $EXPORTS exec sh -e $WORK/probe-incase.sh; "
 else
     echo "note: no tistos_ru_of_* case directory under $WORK — skipping the sh-file rows"
 fi
