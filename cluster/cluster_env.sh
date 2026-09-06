@@ -58,23 +58,26 @@ export ENROOT_IMAGES="${ENROOT_IMAGES:-$WS/enroot-images}"
 # ── ssh-agent ─────────────────────────────────────────────────────────────
 # Reuse a running agent across logins instead of starting one per shell: the
 # socket is remembered in a fixed file, so a second login finds the first agent.
-SSH_ENV="$HOME/.ssh/agent-env"
-_agent_alive() { [ -n "${SSH_AUTH_SOCK:-}" ] && ssh-add -l >/dev/null 2>&1; }
+# Batch jobs (SLURM_JOB_ID set) skip this — no socket to export, no TTY for passphrase prompts.
+if [ -z "${SLURM_JOB_ID:-}" ]; then
+    SSH_ENV="$HOME/.ssh/agent-env"
+    _agent_alive() { [ -n "${SSH_AUTH_SOCK:-}" ] && ssh-add -l >/dev/null 2>&1; }
 
-if ! _agent_alive; then
-    [ -f "$SSH_ENV" ] && . "$SSH_ENV" >/dev/null
-fi
-if ! _agent_alive && ! ssh-add -l 2>&1 | grep -q "no identities"; then
-    # No usable agent: start one and remember where it lives.
-    ssh-agent -s > "$SSH_ENV" 2>/dev/null
-    chmod 600 "$SSH_ENV"
-    . "$SSH_ENV" >/dev/null
-fi
-# Add the key only if the agent holds none — otherwise every login re-prompts.
-if ssh-add -l 2>&1 | grep -q "no identities"; then
-    for key in "$HOME/.ssh/id_ed25519" "$HOME/.ssh/id_rsa"; do
-        [ -f "$key" ] && ssh-add "$key" 2>/dev/null && break
-    done
+    if ! _agent_alive; then
+        [ -f "$SSH_ENV" ] && . "$SSH_ENV" >/dev/null
+    fi
+    if ! _agent_alive && ! ssh-add -l 2>&1 | grep -q "no identities"; then
+        # No usable agent: start one and remember where it lives.
+        ssh-agent -s > "$SSH_ENV" 2>/dev/null
+        chmod 600 "$SSH_ENV"
+        . "$SSH_ENV" >/dev/null
+    fi
+    # Add the key only if the agent holds none — otherwise every login re-prompts.
+    if ssh-add -l 2>&1 | grep -q "no identities"; then
+        for key in "$HOME/.ssh/id_ed25519" "$HOME/.ssh/id_rsa"; do
+            [ -f "$key" ] && ssh-add "$key" 2>/dev/null && break
+        done
+    fi
 fi
 
 # ── git identity ──────────────────────────────────────────────────────────
