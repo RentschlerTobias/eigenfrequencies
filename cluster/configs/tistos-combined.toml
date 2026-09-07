@@ -50,11 +50,18 @@ solver_backend = "slepc"
 num_eigenvalues = 10
 
 [case.options.cfd]
+# Same native-on-host pattern as tistos-cfd-only.toml (proven by smoke job
+# 6819840): host openmpi from the module dependencies provides mpiexec, runs as
+# the normal user, so no OMPI_ALLOW_RUN_AS_ROOT env. The module only sets
+# $FOAM_INIT, and foamInit is absent from PATH after a bare module load, hence
+# the fallback (probe: cluster/logs/6819095/diagnosis/).
+runtime = "native"
+setup = [
+    "module load cae/openfoam/v2412",
+    "command -v foamInit >/dev/null && foamInit || source $FOAM_INIT",
+]
 timeout = 3600
-# Same reason as in tistos-cfd-only.toml: only mpirun exists in the dtOO
-# container, and OpenMPI needs both variables to run as root under enroot.
-mpi_launcher = "mpirun"
-env = { OMPI_ALLOW_RUN_AS_ROOT = "1", OMPI_ALLOW_RUN_AS_ROOT_CONFIRM = "1" }
+mpi_launcher = "mpiexec"
 
 [case.options.optimization]
 Z_guidevanes = 18
@@ -71,7 +78,7 @@ w_head = 1.0
 w_resonance = 1.0
 
 [resources]
-# cpu partition: AMD EPYC 9454, 96 cores, 384 GiB. The binding factor is
+# cpu_il partition: AMD EPYC 9454, 96 cores, 256 GiB. The binding factor is
 # neither memory nor threads but concurrency: the dtOO export is single-threaded
 # gmsh and appears to dominate an evaluation, so extra threads per candidate sit
 # idle through it. 16 concurrent x ~10 GB is 160 GB of 384, with room to spare.
@@ -90,11 +97,18 @@ threads_per_rank = 1
 # vectors and would converge on the initial population rather than the
 # objective. 60 is 2x the dimension — still lean, but a different regime.
 #
+# 24 generations: sized to outlast the 48 h walltime at 16 concurrent
+# evaluations (415 s per candidate measured at concurrency 2, 500-900 s
+# expected at 16x, the modal solves add more on top). A walltime kill costs
+# only the generation in progress; resume reuses every finished evaluation.
 # Total evaluations = islands × population_size × (generations + 1)
-#                   = 4 × 60 × 13 = 3120.
+#                   = 4 × 60 × 25 = 6000.
+#
+# tistos-cfd-only.toml is submitted with the generation count this run actually
+# reached, so the two runs compare at equal search depth.
 islands = 4
 population_size = 60
-generations = 12
+generations = 24
 differential_weight = 0.8
 crossover_rate = 0.9
 seed = 20260911
