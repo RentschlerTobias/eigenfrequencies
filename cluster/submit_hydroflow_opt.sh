@@ -93,7 +93,12 @@ echo "[submit] allocation: cpus=$ALLOC_CPUS mem=${ALLOC_MEM_GB}G"
 # Parallelism decides wall time, not results: the seed, the population and the
 # candidates are unchanged, so the same config is valid on any partition and you
 # can submit wherever nodes happen to be free.
-if (( CFG_CPUS > ALLOC_CPUS )); then
+# Outside a SLURM job (the documented login-node DRY_RUN) there is no
+# allocation to scale to: SLURM_CPUS_PER_TASK/SLURM_CPUS_ON_NODE are unset and
+# nproc falls back to the login cgroup limit (measured 1 on uc3n990), which
+# would nonsense-scale the config to a single core and reject a perfectly
+# valid parallelism. Scaling only makes sense inside the job itself.
+if [[ -n "${SLURM_JOB_ID:-}" ]] && (( CFG_CPUS > ALLOC_CPUS )); then
     NEW_THREADS=$(( ALLOC_CPUS / (CFG_CONC * CFG_RANKS) ))
     NEW_CONC=$CFG_CONC
     if (( NEW_THREADS < 1 )); then
