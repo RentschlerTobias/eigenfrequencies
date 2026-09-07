@@ -47,9 +47,10 @@ mpi_ranks = 6
 threads_per_rank = 1
 
 [optimization]
-# Minimal DE budget for a 30-minute run. ~24 evaluations total, well under the
-# ~40 evaluations the node can finish in 30 min at 10x concurrency × ~415 s/eval.
-islands = 1
+# Tiny DE budget for a 30-minute run, intentionally NOT sized to finish: the
+# walltime kill is the test, and a second resubmit verifies resume. ~32
+# evaluations across 2 islands (2 × 8 × 2) before the 30 min limit.
+islands = 2
 population_size = 8
 generations = 2
 differential_weight = 0.8
