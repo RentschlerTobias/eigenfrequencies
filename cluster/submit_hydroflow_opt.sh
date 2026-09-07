@@ -261,7 +261,10 @@ if [[ "${DRY_RUN:-0}" != "1" && -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" 
         echo "[submit]        cluster/enroot_dtoo_import.md and cluster/enroot_fenicsx_import.md" >&2
         exit 1
     fi
-    echo "[submit] containers -> $ENROOT_DATA_PATH ($(du -sh "$ENROOT_DATA_PATH" | cut -f1))"
+    # 2>/dev/null: the shared tree accumulates container-internal dirs with
+    # permissions the host user cannot traverse (e.g. island work dirs of
+    # running jobs); du then spams "Permission denied" without failing.
+    echo "[submit] containers -> $ENROOT_DATA_PATH ($(du -sh "$ENROOT_DATA_PATH" 2>/dev/null | cut -f1))"
     echo "[submit] configs must name the container, not a path: dtOO / dolfinx"
 else
     # A warning, not an error: the documented login-node DRY_RUN (see the
