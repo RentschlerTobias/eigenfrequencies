@@ -1,0 +1,7 @@
+total 24
+drwx------ 5 st_ac136362 st_us-042020 4096 Sep  7 11:36 .
+drwxr-xr-x 7 st_ac136362 st_us-042020 4096 Sep  7 11:36 ..
+drwxr-xr-x 2 st_ac136362 st_us-042020 4096 Sep  7 11:36 0
+drwxr-xr-x 4 st_ac136362 st_us-042020 4096 Sep  7 11:36 constant
+-rw-r--r-- 1 st_ac136362 st_us-042020  170 Sep  7 11:36 log.checkMesh
+drwx------ 2 st_ac136362 st_us-042020 4096 Sep  7 11:36 system
