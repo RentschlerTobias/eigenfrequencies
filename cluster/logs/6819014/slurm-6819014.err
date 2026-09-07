@@ -1,0 +1,22 @@
+[INFO] Extracting squashfs filesystem...
+Parallel unsquashfs: Using 1 processor
+75572 inodes (95363 blocks) to write
+
+
+created 73599 files
+created 6667 directories
+created 1968 symlinks
+created 0 devices
+created 0 fifos
+created 0 sockets
+[INFO] Extracting squashfs filesystem...
+Parallel unsquashfs: Using 1 processor
+116920 inodes (152828 blocks) to write
+
+
+created 99140 files
+created 16404 directories
+created 11804 symlinks
+created 0 devices
+created 0 fifos
+created 0 sockets

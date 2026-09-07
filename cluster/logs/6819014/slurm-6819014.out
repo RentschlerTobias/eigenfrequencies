@@ -1,0 +1,56 @@
+WS=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq  images=dolfinx.sqsh dtOO.sqsh 
+repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies  venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+ssh-agent: Error connecting to agent: No such file or directory
+WS=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq
+ENROOT_IMAGES=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/enroot-images
+ENROOT_DATA_PATH=/scratch/slurm_tmpdir/job_6819014/enroot-data
+EIGENFREQUENCIES_REPO=/home/st/st_us-042020/st_ac136362/eigenfrequencies
+========================================
+[submit] host=uc2n606.localdomain job=6819014
+[submit] config=/home/st/st_us-042020/st_ac136362/eigenfrequencies/cluster/configs/tistos-smoke-cfd-native.toml
+[submit] repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies
+[submit] venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+========================================
+[submit] config:     cpus=64 concurrent=2 ranks=6 threads=1 islands=1 mode=run
+[submit] allocation: cpus=12 mem=251G
+[submit] scaling to the allocation: cpus 64 -> 12, concurrent 2 -> 2, threads 1 -> 1
+[submit] results  -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke-cfd-native
+[submit] scratch  -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke-cfd-native-scratch (stable, so resume can reuse results)
+[submit] unpacking dolfinx
+[submit] unpacking dtOO
+[submit] containers -> /scratch/slurm_tmpdir/job_6819014/enroot-data (9.6G)
+[submit] configs must name the container, not a path: dtOO / dolfinx
+[submit] ---- check ----
+configuration ok: case=tistos
+[submit] ---- run ----
+run complete: 0/2 succeeded, results=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke-cfd-native/results.jsonl
+[submit] hydroflow-opt exit code: 1
+[submit]
+[submit] Sanity gate before anyone looks at the result — a metric with a
+[submit] unique count of 1 across all generations is frozen, not converged:
+[submit]   python3 /home/st/st_us-042020/st_ac136362/eigenfrequencies/cluster/summarize_run.py <run_dir>
+git add cluster/logs && git commit -m 'cluster debug: native smoke 6819014'
+=== debug_dev summary (job=6819014) ===
+eval_config=native
+config=/home/st/st_us-042020/st_ac136362/eigenfrequencies/cluster/configs/tistos-smoke-cfd-native.toml
+run_dir=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke-cfd-native
+local_scratch=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke-cfd-native-local
+log_dir=/home/st/st_us-042020/st_ac136362/eigenfrequencies/cluster/logs/6819014
+submit_exit=1
+probe_rc=SKIPPED
+stage_logs=none
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n606
+Job ID: 6819014
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 12
+CPU Utilized: 00:00:21
+CPU Efficiency: 6.25% of 00:05:36 core-walltime
+Job Wall-clock time: 00:00:28
+Memory Utilized: 426.02 MB
+Memory Efficiency: 1.78% of 23.44 GB (1.95 GB/core)

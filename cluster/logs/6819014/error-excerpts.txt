@@ -1,0 +1,6 @@
+candidate: index 0
+ValueError: options.cfd has no field 'runtime'; known: design_head, end_time, g, n_rpm, omega, operating_point, post_folder, rho
+
+candidate: index 1
+ValueError: options.cfd has no field 'runtime'; known: design_head, end_time, g, n_rpm, omega, operating_point, post_folder, rho
+
