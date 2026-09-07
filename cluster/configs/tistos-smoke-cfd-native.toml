@@ -43,7 +43,18 @@ timeout = 1800
 # The host, not the container. `runtime` and `setup` override the dtoo section
 # for this stage only; the geometry export above stays containerised.
 runtime = "native"
-setup = ["module load cae/openfoam/v2606"]
+# The OpenFOAM module only sets $FOAM_INIT plus compiler/MPI dependencies; the
+# OpenFOAM binaries (checkMesh, decomposePar, simpleFoam, ...) land on PATH only
+# after `source $FOAM_INIT`. Probed 2026-09-07:
+# cluster/logs/6819095/diagnosis/module-openfoam-probe.txt shows the bare
+# `module load cae/openfoam/v2606` leaves checkMesh missing (exit 127 at
+# sbatch.tistos_ru_of.sh:21), while pe-probe.txt shows the ~/pe pattern
+# (module load v2412 + source $FOAM_INIT) provides all four binaries. v2412 is
+# also the version the production CFD runs used (cluster/env_notes.md).
+setup = [
+    "module load cae/openfoam/v2412",
+    "source $FOAM_INIT",
+]
 # The cluster provides mpiexec, the dtOO container only mpirun — which is why
 # the containerised config says the opposite. No OMPI_ALLOW_RUN_AS_ROOT either:
 # nothing runs as root out here.
