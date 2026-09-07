@@ -1,0 +1,57 @@
+# tistos — CFD only, dev_cpu_il 30-minute optimization smoke.
+#
+# Mirrors tistos-cfd-only.toml but with a tiny differential-evolution budget so
+# the run completes inside the 30 min walltime of dev_cpu_il. Purpose: validate
+# the full optimize loop (geometry export, native CFD solve, resume manifest)
+# while cpu_il production jobs sit in the Priority queue.
+#
+# Submit with:
+#   sbatch --partition=dev_cpu_il --time=00:30:00 \
+#          cluster/submit_hydroflow_opt.sh cluster/configs/tistos-cfd-only-dev.toml
+
+[run]
+directory = "$WS/runs/tistos-cfd-only-dev"
+
+[case]
+name = "tistos"
+
+[case.options]
+local_scratch = "$TMPDIR"
+eval_mode = "cfd_only"
+n_rpm = 72.0
+
+[case.options.dtoo]
+runtime = "enroot"
+container = "dtOO"
+case_dir = "/dtOO/build/test/tistos"
+timeout = 1800
+
+[case.options.cfd]
+# Native on the host, mirroring the proven smoke pattern
+# (cluster/configs/tistos-smoke-cfd-native.toml, job 6819840: 2/2 success).
+runtime = "native"
+setup = [
+    "module load cae/openfoam/v2412",
+    "command -v foamInit >/dev/null && foamInit || source $FOAM_INIT",
+]
+timeout = 3600
+mpi_launcher = "mpiexec"
+
+[resources]
+# dev_cpu_il partition: 64 cores, 256 GiB, 30 min walltime. Same sizing as
+# tistos-cfd-only.toml (production) because the submit command overrides the
+# partition and walltime; the config only describes the per-node CPU budget.
+available_cpus = 64
+concurrent_evaluations = 10
+mpi_ranks = 6
+threads_per_rank = 1
+
+[optimization]
+# Minimal DE budget for a 30-minute run. ~24 evaluations total, well under the
+# ~40 evaluations the node can finish in 30 min at 10x concurrency × ~415 s/eval.
+islands = 1
+population_size = 8
+generations = 2
+differential_weight = 0.8
+crossover_rate = 0.9
+seed = 20260911
