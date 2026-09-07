@@ -188,26 +188,36 @@ else
 fi
 echo "[submit] scratch  -> $SCRATCH (stable, so resume can reuse results)"
 
-# ── Images unpacked onto node-local disk ──────────────────────────────────
+# ── Images unpacked into a shared workspace cache ──────────────────────────
 # enroot mounts a .sqsh through squashfuse — a userspace FUSE mount that
 # decompresses every read in a single process. Measured on a compute node:
 # squashfuse at 37% CPU while dtOO's CreateStates, which takes 8 seconds against
 # an unpacked image, had not finished after 20 minutes. Copying the .sqsh to
 # local disk removed the Lustre latency but not the FUSE layer.
 #
-# `enroot create` unpacks the image into a plain directory once per job. It
-# costs ~7 GB of the node's NVMe and 8 seconds — measured 2026-09-04, the 5.8 GB
-# dtOO image from the workspace onto node-local scratch, cold; a warm repeat took
-# 3.8 s. That is the whole per-job price, against every file read of every
-# candidate paying decompression otherwise.
-#
-# It also settles the recurring idea of a shared unpacked store on the workspace
-# ($WS/enroot-data, one create ever): it would trade these 8 seconds for 48 hours
-# of container reads over a parallel filesystem, which is the bottleneck this
-# script exists to avoid.
+# The unpack itself is the expensive part. Measured 2026-09-07 on job 6822816
+# (dev_cpu_il): unpacking 9.6 GB of .sqsh from Lustre took roughly 20 of the 30
+# budgeted minutes (sacct: 20 s CPU over 30 min wall — pure IO wait), and the
+# earlier "8 s cold, 3.8 s warm" measurement of 2026-09-04 did not reproduce.
+# Jobs therefore unpack into one persistent store on the workspace and pay each
+# image once ever: the next job — including every resume resubmission — skips
+# finished containers outright. This supersedes the per-job $TMPDIR layout and
+# the earlier rejection of a shared store, which rested on the 8 s figure.
+# Runtime trade-off: container reads cross Lustre instead of node-local NVMe;
+# if a stage turns IO-bound again, the fallback is copying the unpacked tree
+# to $TMPDIR at job start — a plain file copy, no re-unpacking.
 export ENROOT_IMAGES="${ENROOT_IMAGES:-$WS/enroot-images}"
 if [[ "${DRY_RUN:-0}" != "1" && -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" ]]; then
-    export ENROOT_DATA_PATH="$TMPDIR/enroot-data"
+    # Persistent and shared across jobs and nodes, so the "already unpacked"
+    # check below is what makes resubmissions cheap. Enroot reads the data
+    # path from the environment on every call; a hard set here overrides an
+    # ENROOT_DATA_PATH exported by cluster/interactive_setup.sh, which points
+    # at the login node's $TMPDIR and must not leak into a batch job.
+    if [[ -z "${WS:-}" ]]; then
+        echo "[submit] ERROR: \$WS is not set — the shared enroot cache lives under \$WS" >&2
+        exit 1
+    fi
+    export ENROOT_DATA_PATH="$WS/enroot-data"
     mkdir -p "$ENROOT_DATA_PATH"
     n_images=0
     for img in "$ENROOT_IMAGES"/*.sqsh; do
@@ -217,18 +227,34 @@ if [[ "${DRY_RUN:-0}" != "1" && -n "${TMPDIR:-}" && "${STAGE_IMAGES:-1}" == "1" 
         [[ -f "$img" ]] || continue
         n_images=$((n_images + 1))
         name="$(basename "$img" .sqsh)"
-        # Already unpacked is a success, not a collision. A batch job gets a
-        # fresh $TMPDIR and never sees this, but an interactive session that
-        # sourced cluster/interactive_setup.sh — or simply ran this script
-        # twice — otherwise dies on "File already exists" before evaluating
-        # anything.
+        # Already unpacked is a success, not a collision.
         if enroot list 2>/dev/null | grep -qxF "$name"; then
             echo "[submit] $name already unpacked in $ENROOT_DATA_PATH — skipping"
             continue
         fi
-        echo "[submit] unpacking $name"
-        enroot create --name "$name" "$img" || {
+        echo "[submit] unpacking $name into the shared cache"
+        # Combined and cfd-only jobs can start on different nodes at the same
+        # time and both need dtOO. Two plain `enroot create` calls into one
+        # name would write into a single directory and corrupt it. Each job
+        # unpacks under a private name — the SLURM job id is globally unique,
+        # unlike a PID — and installs it with `mv -T`, an atomic rename that
+        # fails when the target already exists. The loser deletes its copy and
+        # continues on the winner's. A job killed mid-unpack leaves its
+        # private directory behind; remove orphans manually with
+        # `rm -rf $WS/enroot-data/*.<jobid>`.
+        tmp_name="$name.${SLURM_JOB_ID:-$$}"
+        enroot create --name "$tmp_name" "$img" || {
             echo "[submit] enroot create failed for $name" >&2; exit 1; }
+        if mv -T "$ENROOT_DATA_PATH/$tmp_name" "$ENROOT_DATA_PATH/$name" 2>/dev/null; then
+            enroot list 2>/dev/null | grep -qxF "$name" || {
+                echo "[submit] ERROR: $name installed but not listed by enroot —" >&2
+                echo "[submit]        container name metadata mismatch, investigate $ENROOT_DATA_PATH" >&2
+                exit 1
+            }
+        else
+            rm -rf "$ENROOT_DATA_PATH/$tmp_name"
+            echo "[submit] $name was installed by a parallel job — using theirs"
+        fi
     done
     if (( n_images == 0 )); then
         echo "[submit] ERROR: no .sqsh found in $ENROOT_IMAGES — import per" >&2
