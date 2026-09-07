@@ -1,0 +1,21 @@
+$ bash -lc 'module load cae/openfoam/v2412; source $FOAM_INIT; cd /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke-cfd-native-local/midpoint; export MPI_LAUNCHER=mpiexec; exec sh -e /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke-cfd-native-local/midpoint/tistos_files/sbatch.tistos_ru_of.sh /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-smoke-cfd-native-local/midpoint/tistos_ru_of_n_hydroflow 6'
+
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+WS=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq  images=dolfinx.sqsh dtOO.sqsh 
+repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies  venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+ssh-agent: Error connecting to agent: No such file or directory
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+
+The following have been reloaded with a version change:
+  1) compiler/gnu/14.2 => compiler/gnu/15.2
+
