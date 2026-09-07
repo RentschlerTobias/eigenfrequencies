@@ -4,19 +4,25 @@
 #SBATCH --time=48:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --exclusive
+#SBATCH --cpus-per-task=60
+#SBATCH --mem=200G
 #SBATCH --partition=cpu_il
 #
 # One hydroflow-opt optimization on a single node.
 #
 #   sbatch cluster/submit_hydroflow_opt.sh cluster/configs/tistos-cfd-only.toml
 #
-# No --mem at all. A fixed figure is rejected outright on the smaller partition
-# ("Memory required by task is not available"), and --mem=0 is not accepted
-# everywhere either. --exclusive grants the node and its memory on both.
-# --exclusive for the same reason: a fixed --cpus-per-task=96 is rejected on a
-# 64-core node. Taking the whole node works on either, and the script scales the
-# config down to however many cores the allocation actually grants. hydroflow-opt has only a SubprocessBackend, so a run lives on ONE node —
+# Explicit counts instead of --exclusive. cpu_il nodes have 64 cores and
+# 256 GiB (bwHPC wiki), so --cpus-per-task=60 and --mem=200G fit with margin;
+# 60 is exactly what the configs need at 10 concurrent evaluations x 6 ranks.
+# Rationale: the two production jobs sat PENDING with (Priority) next to idle
+# cpu_il nodes, and the user has seen explicitly sized requests slot in where
+# whole-node holds did not. If the cluster enforces one job per node anyway,
+# the request degrades gracefully to the same allocation. The script scales
+# the config down to the granted cores (SLURM_CPUS_PER_TASK) either way.
+# A fixed figure was previously rejected on the smaller dev partition
+# ("Memory required by task is not available"), which is why --exclusive was
+# there; production runs only on cpu_il now, so the explicit figures are safe. hydroflow-opt has only a SubprocessBackend, so a run lives on ONE node —
 # more nodes would sit idle; a bigger node and more concurrency are the levers. [USER] Other partitions differ — the script verifies the
 # #SBATCH lines against the config's [resources] before starting anything, so a
 # mismatch costs seconds instead of a run.
