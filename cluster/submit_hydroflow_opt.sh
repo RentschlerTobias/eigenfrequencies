@@ -4,25 +4,22 @@
 #SBATCH --time=48:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=60
-#SBATCH --mem=200G
+#SBATCH --exclusive
 #SBATCH --partition=cpu_il
 #
 # One hydroflow-opt optimization on a single node.
 #
 #   sbatch cluster/submit_hydroflow_opt.sh cluster/configs/tistos-cfd-only.toml
 #
-# Explicit counts instead of --exclusive. cpu_il nodes have 64 cores and
-# 256 GiB (bwHPC wiki), so --cpus-per-task=60 and --mem=200G fit with margin;
-# 60 is exactly what the configs need at 10 concurrent evaluations x 6 ranks.
-# Rationale: the two production jobs sat PENDING with (Priority) next to idle
-# cpu_il nodes, and the user has seen explicitly sized requests slot in where
-# whole-node holds did not. If the cluster enforces one job per node anyway,
-# the request degrades gracefully to the same allocation. The script scales
-# the config down to the granted cores (SLURM_CPUS_PER_TASK) either way.
-# A fixed figure was previously rejected on the smaller dev partition
-# ("Memory required by task is not available"), which is why --exclusive was
-# there; production runs only on cpu_il now, so the explicit figures are safe. hydroflow-opt has only a SubprocessBackend, so a run lives on ONE node —
+# --exclusive grants the whole node (cores and memory). Fixed figures are
+# rejected on some partitions ("Memory required by task is not available" on
+# the smaller dev partition; a 96-core request on 64-core cpu_il nodes), so
+# taking the whole node is the robust default and the script scales the config
+# down to whatever the allocation grants. An explicit --cpus-per-task=60
+# --mem=200G variant was tried (commit 36beb19) and reverted: with ~200 job
+# IDs of queue growth between submissions, the (Priority) hold was plain
+# queue volume, not a resource-fit problem, so a smaller request cannot jump
+# the line either. hydroflow-opt has only a SubprocessBackend, so a run lives on ONE node —
 # more nodes would sit idle; a bigger node and more concurrency are the levers. [USER] Other partitions differ — the script verifies the
 # #SBATCH lines against the config's [resources] before starting anything, so a
 # mismatch costs seconds instead of a run.
