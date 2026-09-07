@@ -149,24 +149,35 @@ RESULT_MARKER = "RESULT_JSON "
 
 _RUNTIME_KINDS = ("auto", "inprocess", "native", "docker", "enroot")
 
+#: Everything :meth:`Runtime.resolve` reads out of an options section. Kept as
+#: one list so a section that may carry a runtime does not have to repeat it.
+RUNTIME_KEYS = frozenset(
+    {"runtime", "image", "container", "python", "setup", "args", "timeout"}
+)
+
 #: Keys under ``[case.options.cfd]`` that belong to *this* module rather than to
 #: :class:`eigenfrequencies.config.CFDConfig`. The table has two readers — the
 #: worker fills the physical operating point from it, the CFD stage its
 #: plumbing — and without this list neither could tell a foreign key from a
 #: typo. A silently ignored ``w_resonanc`` is how a comparison run ends up
 #: incomparable without anyone noticing.
+#:
+#: ``RUNTIME_KEYS`` is part of it because the solve resolves its runtime from
+#: the cfd section overlaid on the dtoo one, so the section may send that stage
+#: to a different runtime — the host's OpenFOAM module rather than the
+#: container, say. Leaving them out rejected the config with
+#: ``options.cfd has no field 'runtime'`` before any stage started (job 6819014).
 CFD_STAGE_KEYS = frozenset(
     {
         "stage_dir",
         "state",
         "case_name",
         "procs",
-        "timeout",
         "solve_script",
         "mpi_launcher",
         "env",
     }
-)
+) | RUNTIME_KEYS
 
 
 class StageError(RuntimeError):

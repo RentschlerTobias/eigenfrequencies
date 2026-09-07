@@ -228,3 +228,48 @@ class TestFailurePath:
             worker.main(["--machine", "naca", str(write_request(tmp_path)), str(result_path)]) == 0
         )
         assert json.loads(result_path.read_text())["status"] == "success"
+
+
+class TestCfdSectionKeys:
+    """``[case.options.cfd]`` is read twice: by the worker for the operating
+    point, by the CFD stage for its plumbing. Anything the CFDConfig dataclass
+    does not declare and ``CFD_STAGE_KEYS`` does not claim is a typo and is
+    rejected — which is what catches ``w_resonanc`` before a run finishes and
+    turns out incomparable."""
+
+    def _cfd_config(self):
+        from eigenfrequencies.config import CFDConfig
+
+        return CFDConfig(n_rpm=72.0)
+
+    def test_a_runtime_override_is_accepted(self):
+        """The solve resolves its runtime from the cfd section overlaid on the
+        dtoo one, so the section may send that stage to the host's OpenFOAM
+        module instead of the container. Job 6819014 died on
+        `options.cfd has no field 'runtime'` before any stage started."""
+        cfg = self._cfd_config()
+        worker._override(
+            cfg,
+            {
+                "runtime": "native",
+                "setup": ["module load cae/openfoam/v2606"],
+                "mpi_launcher": "mpiexec",
+                "timeout": 3600,
+            },
+            section="cfd",
+        )
+
+    def test_the_shipped_cfd_configs_all_validate(self):
+        """The configs in cluster/configs are what actually gets submitted."""
+        import tomllib
+
+        for path in sorted((Path(__file__).parents[2] / "cluster" / "configs").glob("*.toml")):
+            raw = tomllib.load(open(path, "rb"))
+            cfd = raw.get("case", {}).get("options", {}).get("cfd")
+            if cfd is None:
+                continue
+            worker._override(self._cfd_config(), cfd, section="cfd")
+
+    def test_a_typo_is_still_rejected(self):
+        with pytest.raises(ValueError, match="has no field 'desgin_head'"):
+            worker._override(self._cfd_config(), {"desgin_head": 1.0}, section="cfd")
