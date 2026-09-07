@@ -5,7 +5,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --exclusive
-#SBATCH --partition=cpu
+#SBATCH --partition=cpu_il
 #
 # One hydroflow-opt optimization on a single node.
 #
