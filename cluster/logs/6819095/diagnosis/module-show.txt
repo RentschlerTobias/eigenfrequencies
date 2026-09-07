@@ -1,0 +1,50 @@
+== module show ==
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+WS=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq  images=dolfinx.sqsh dtOO.sqsh 
+repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies  venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+ssh-agent: 256 SHA256:lmXRPbtzYHLYITImm3omehfhzYCN6Hrv5v3rw7GneOc st_ac136362@uc3n990.localdomain (ED25519)
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+   /opt/bwhpc/common/modulefiles/cae/openfoam/v2606.lua:
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+setenv("FOAM_VERSION","v2606")
+setenv("FOAM_INST_DIR","/opt/bwhpc/common/cae/openfoam/v2606")
+setenv("FOAM_INIT","/opt/bwhpc/common/cae/openfoam/v2606/OpenFOAM-v2606/etc/bashrc")
+setenv("FOAM_DOC_DIR","/opt/bwhpc/common/cae/openfoam/v2606/OpenFOAM-v2606/doc/Guides")
+setenv("FOAM_EXA_DIR","/opt/bwhpc/common/cae/openfoam/v2606/OpenFOAM-v2606/tutorials")
+setenv("FOAM_BPR_URL","https://wiki.bwhpc.de/e/OpenFoam")
+set_alias("foamInit","source $FOAM_INIT")
+load("compiler/gnu/15.2","mpi/openmpi/5.0.8-gnu-15.2")
+conflict("cae/openfoam")
+whatis("Open Source CFD Toolbox OpenFOAM version v2606")
+help([[The OpenFOAM (Open Field Operation and Manipulation) CFD Toolbox can simulate anything
+from complex fluid flows involving chemical reactions, turbulence and heat transfer, to
+solid dynamics, electromagnetics and the pricing of financial options.
+
+Don't forget to initialize OpenFOAM with:
+
+   source $FOAM_INIT
+
+or simply:
+
+   foamInit
+
+Local documentation in:
+   $FOAM_DOC_DIR
+
+Tutorial examples in:
+   $FOAM_TUTORIALS
+
+Online documentation in:
+   ]],[[
+https://wiki.bwhpc.de/e/OpenFoam]],[[
+
+Homepage:
+   https://www.openfoam.org
+
+In case of problems, please contact 'bwunicluster-hotline(at)lists.kit.edu',
+or create a ticket at 'https://bw-support.scc.kit.edu/'
+]])
+
+exit=0

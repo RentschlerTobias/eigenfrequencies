@@ -1,0 +1,25 @@
+== module load cae/openfoam/v2606, login shell ==
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+WS=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq  images=dolfinx.sqsh dtOO.sqsh 
+repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies  venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+ssh-agent: 256 SHA256:lmXRPbtzYHLYITImm3omehfhzYCN6Hrv5v3rw7GneOc st_ac136362@uc3n990.localdomain (ED25519)
+
+Don't forget to initialize OpenFOAM with:
+
+	source $FOAM_INIT
+
+or simply:
+
+	foamInit
+
+
+The following have been reloaded with a version change:
+  1) compiler/gnu/14.2 => compiler/gnu/15.2
+
+FOAM_INIT=/opt/bwhpc/common/cae/openfoam/v2606/OpenFOAM-v2606/etc/bashrc
+WM_PROJECT_DIR=
+/software/bwhpc/common/mpi/openmpi/5.0.8-gnu-15.2/bin/mpiexec
+PATH=/opt/bwhpc/common/devel/cuda/12.8/bin:/software/bwhpc/common/mpi/openmpi/5.0.8-gnu-15.2/bin:/opt/bwhpc/common/compiler/gnu/15.2.0/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/lib/python3.13/site-packages/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/bin:/opt/bwhpc/common/devel/python/3.13.3_gnu_14.2/python_gnu_packages/bin:/software/all/bin:/home/st/st_us-042020/st_ac136362/.local/bin:/home/st/st_us-042020/st_ac136362/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+exit=0

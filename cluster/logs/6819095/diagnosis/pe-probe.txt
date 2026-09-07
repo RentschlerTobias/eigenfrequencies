@@ -1,0 +1,51 @@
+== content of ~/pe ==
+#!/bin/bash
+
+for i in cae/openfoam/v2412 devel/python/3.13.3-gnu-14.2
+do
+  module load $i
+done
+
+export WM_PROJECT_DIR=/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM/v2412
+
+source "$FOAM_INIT"
+
+export DTOO_EXTERNLIBS=~/dtOO/install
+export FOAMFINE_DIR=~/foamFine
+
+export PYTHONPATH=~/dtOO/install/tools:$PYTHONPATH
+export PYTHONPATH=~/dtOO/install/scripts/python:$PYTHONPATH
+export LD_LIBRARY_PATH=~/dtOO/install/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=~/dtOO/install/lib64:$LD_LIBRARY_PATH
+
+source ~/py313-dtoo/bin/activate
+
+alias dtoo-cmake-conf="\
+  cmake \
+  -DPython3_EXECUTABLE=python3 \
+  -DCMAKE_INSTALL_PREFIX=$DTOO_EXTERNLIBS \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  -DDTOO_OCC_78=ON \
+  .."
+
+export OSLO_LOCK_PATH=~/oslo-lock
+
+export PYRO_HOST=`hostname`
+export PYRO_NS_HOST=`hostname`
+export PYRO_NS_BCPORT=8291
+export PYRO_NS_PORT=8389
+
+REPO=/home/st/st_us-042020/st_ac136362/eigen/eigenfrequencies
+
+== source ~/pe, then command -v ==
+bash: Agent: command not found
+bash: Agent: command not found
+bash: Agent: command not found
+WS=/pfs/work9/workspace/scratch/st_ac136362-eigenfreq  images=dolfinx.sqsh dtOO.sqsh 
+repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies  venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+ssh-agent: 256 SHA256:lmXRPbtzYHLYITImm3omehfhzYCN6Hrv5v3rw7GneOc st_ac136362@uc3n990.localdomain (ED25519)
+/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin/checkMesh
+/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin/simpleFoam
+/opt/bwhpc/common/cae/openfoam/v2412/OpenFOAM-v2412/platforms/linux64GccDPInt32Opt/bin/decomposePar
+/software/bwhpc/common/mpi/openmpi/5.0.8-gnu-15.2/bin/mpiexec
+exit=0
