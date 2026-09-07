@@ -45,15 +45,17 @@ timeout = 1800
 runtime = "native"
 # The OpenFOAM module only sets $FOAM_INIT plus compiler/MPI dependencies; the
 # OpenFOAM binaries (checkMesh, decomposePar, simpleFoam, ...) land on PATH only
-# after `source $FOAM_INIT`. Probed 2026-09-07:
-# cluster/logs/6819095/diagnosis/module-openfoam-probe.txt shows the bare
-# `module load cae/openfoam/v2606` leaves checkMesh missing (exit 127 at
-# sbatch.tistos_ru_of.sh:21), while pe-probe.txt shows the ~/pe pattern
-# (module load v2412 + source $FOAM_INIT) provides all four binaries. v2412 is
-# also the version the production CFD runs used (cluster/env_notes.md).
+# after OpenFOAM is initialized. The cluster docs recommend `foamInit`, but the
+# 2026-09-07 probe (cluster/logs/6819095/diagnosis/module-openfoam-probe.txt)
+# shows `foamInit` is NOT on PATH after a bare module load, so the documented
+# command is tried first and the `source $FOAM_INIT` pattern from ~/pe
+# (pe-probe.txt, proven with v2412, the production CFD version per
+# cluster/env_notes.md) serves as fallback. A bare `module load
+# cae/openfoam/v2606` was the original cause of the exit 127 at
+# sbatch.tistos_ru_of.sh:21 in job 6819095.
 setup = [
     "module load cae/openfoam/v2412",
-    "source $FOAM_INIT",
+    "command -v foamInit >/dev/null && foamInit || source $FOAM_INIT",
 ]
 # The cluster provides mpiexec, the dtOO container only mpirun — which is why
 # the containerised config says the opposite. No OMPI_ALLOW_RUN_AS_ROOT either:
