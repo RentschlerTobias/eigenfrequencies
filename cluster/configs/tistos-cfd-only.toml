@@ -53,12 +53,14 @@ timeout = 3600
 mpi_launcher = "mpiexec"
 
 [resources]
-# cpu_il partition: AMD EPYC 9454, 96 cores, 256 GiB. The binding factor is
-# neither memory nor threads but concurrency: the dtOO export is single-threaded
-# gmsh and appears to dominate an evaluation, so extra threads per candidate sit
-# idle through it. 16 concurrent x ~10 GB is 160 GB of 384, with room to spare.
-available_cpus = 96
-concurrent_evaluations = 16
+# cpu_il partition: 64 cores, 256 GiB (bwUniCluster 3.0 hardware page — the
+# 96-core EPYC 9454 nodes belong to the plain cpu partition). The binding factor
+# is neither memory nor threads but concurrency: the dtOO export is single-
+# threaded gmsh and appears to dominate an evaluation, so extra threads per
+# candidate sit idle through it. 10 concurrent x 6 ranks = 60 of 64 cores;
+# memory stays far below 256 GiB.
+available_cpus = 64
+concurrent_evaluations = 10
 mpi_ranks = 6
 threads_per_rank = 1
 
