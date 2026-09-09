@@ -1,0 +1,91 @@
+# tistos — resonance only, dev_cpu_il 30-minute optimization smoke.
+#
+# Mirrors tistos-freq-only.toml but with the tiny differential-evolution budget
+# of tistos-cfd-only-dev.toml. Purpose: prove the MODAL chain end to end —
+# dtOO geometry export, gmsh reading the .msh inside the stock dolfinx image,
+# SLEPc/MUMPS returning frequencies, and the resume manifest — in one 30-minute
+# dev slot instead of waiting days in the cpu_il Priority queue for
+# tistos-freq-only.toml to start.
+#
+# This is the config the CFD dev smoke cannot stand in for: cfd_only carries no
+# [case.options.modal] at all and runs zero modal solves, so a healthy
+# tistos-cfd-only-dev run says nothing about the freq half.
+#
+# Submit with:
+#   sbatch --partition=dev_cpu_il --time=00:30:00 \
+#          cluster/submit_hydroflow_opt.sh cluster/configs/tistos-freq-only-dev.toml
+
+[run]
+directory = "$WS/runs/tistos-freq-only-dev"
+
+[case]
+name = "tistos"
+
+[case.options]
+# The workspace, NOT $TMPDIR — deliberately different from the production
+# configs, for the same reason tistos-smoke-cfd-native.toml does it: logs/
+# modal.log and logs/dtoo_export.log are the only evidence of a modal failure,
+# and node-local scratch deletes them the moment the allocation ends. That cost
+# three debugging rounds on the CFD side. A smoke exists to be read afterwards.
+local_scratch = "$WS/runs/tistos-freq-only-dev-local"
+# The one line that differs between the three dev configs.
+eval_mode = "resonance_only"
+n_rpm = 72.0
+
+[case.options.dtoo]
+runtime = "enroot"
+container = "dtOO"
+case_dir = "/dtOO/build/test/tistos"
+timeout = 1800
+
+[case.options.modal]
+runtime = "enroot"
+# Stock dolfinx from Docker Hub; gmsh comes from a mounted pip --target dir.
+# See cluster/enroot_fenicsx_import.md — no image has to be built or copied.
+container = "dolfinx"
+# [USER] python3 -m pip install --target ~/pylibs gmsh   (login node)
+# Without gmsh the image cannot read a .msh and every candidate fails.
+# submit_hydroflow_opt.sh checks this directory before the first evaluation.
+pythonpath = ["$HOME/pylibs"]
+# 1200 s, not the production 7200: a solve that has not finished inside the
+# 30 min walltime cannot be observed anyway, and a timeout is a readable
+# failure while a walltime kill leaves nothing to look at.
+timeout = 1200
+
+[case.options.modal.solver]
+# Identical to tistos-freq-only.toml — the point is to exercise the production
+# solver path, not a cheaper stand-in that proves nothing about it.
+element_degree = 2
+solver_backend = "slepc"
+num_eigenvalues = 10
+
+[case.options.optimization]
+# The forbidden band: harmonics of the blade-passing frequency
+# f_bp = Z_guidevanes × n_rpm / 60.
+Z_guidevanes = 18
+max_harmonic = 6
+margin_hz = 5.0
+margin_fraction = 0.05
+
+[resources]
+# dev_cpu_il: 64 cores, 256 GiB. Here MEMORY binds, not cores: ~10 GB peak per
+# modal solve (MUMPS INFOG(22) = 10169 MB for tistos at P2, 545247 DOFs — a
+# measurement, see .omo/evidence/task-modal-memory.md). 2 concurrent × 1 rank ×
+# 6 threads = 12 of 64 cores; the dtOO export is single-threaded gmsh and
+# dominates an evaluation, so more threads would sit idle through it.
+available_cpus = 64
+concurrent_evaluations = 2
+mpi_ranks = 1
+threads_per_rank = 6
+
+[optimization]
+# Same tiny budget as tistos-cfd-only-dev.toml, and intentionally NOT sized to
+# finish: the walltime kill is part of the test, and a second submission of the
+# same config verifies that resume reuses the finished evaluations. islands = 2
+# must stay <= concurrent_evaluations, which submit_hydroflow_opt.sh checks.
+islands = 2
+population_size = 8
+generations = 2
+differential_weight = 0.8
+crossover_rate = 0.9
+seed = 20260911

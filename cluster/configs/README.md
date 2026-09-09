@@ -20,6 +20,62 @@ that shows up after hours instead of after days. The sanity gate is the
 `unique` count per metric over all generations; a frozen metric has a count
 of 1. That check is what exposed runs 6039132/6039133.
 
+## The dev mirrors — validate the chain before queueing 48 hours
+
+Each production config has a `-dev` twin sized for one 30-minute `dev_cpu_il`
+slot. Same physics, same seed, a tiny DE budget:
+
+| Dev config | Mirrors | Proves |
+|---|---|---|
+| `tistos-cfd-only-dev.toml` | `tistos-cfd-only.toml` | dtOO export + native OpenFOAM solve |
+| `tistos-freq-only-dev.toml` | `tistos-freq-only.toml` | dtOO export + gmsh in dolfinx + SLEPc |
+| `tistos-combined-dev.toml` | `tistos-combined.toml` | both stages in one evaluation |
+
+They differ from their production twin only in `eval_mode`'s neighbours: the DE
+budget, `local_scratch`, and `modal.timeout`. The physics tables — `modal`,
+`modal.solver`, `optimization`, `objective`, `cfd`, `dtoo` — are byte-identical,
+because a dev run that exercised a cheaper solver would prove nothing about the
+run it is meant to de-risk.
+
+**Same order as production: cfd, then freq, then combined.** A `combined`
+failure is only diagnosable once each half has passed alone. And note what a
+`cfd_only` run cannot tell you: it carries no `[case.options.modal]` and runs
+zero modal solves, so a green cfd-only dev run says nothing about the freq half.
+
+```bash
+# on a login node first — costs nothing, catches config and gmsh mistakes
+DRY_RUN=1 cluster/submit_hydroflow_opt.sh cluster/configs/tistos-freq-only-dev.toml
+
+sbatch --partition=dev_cpu_il --time=00:30:00 \
+       cluster/submit_hydroflow_opt.sh cluster/configs/tistos-freq-only-dev.toml
+```
+
+The dev configs are *not* sized to finish: the walltime kill is part of the test,
+and submitting the same config a second time verifies that `resume` reuses the
+finished evaluations instead of recomputing them.
+
+Unlike the production configs they keep `local_scratch` on `$WS`, so
+`logs/modal.log` and `logs/cfd_solve.log` survive the allocation — the one thing
+a post-mortem needs and node-local `$TMPDIR` deletes.
+
+## Watching a run that has not finished
+
+`hydroflow-opt` writes `results.jsonl` and `summary.json` **once**, after the
+last generation. A running run — and every walltime-killed one — has neither, and
+prints nothing to the job's `.out` between start and finish. The per-candidate
+`evaluations/<id>/outcome.json` files are the live signal, and
+`cluster/summarize_run.py` reads them automatically when `results.jsonl` is
+absent:
+
+```bash
+RUN=$WS/runs/tistos-freq-only-dev
+ls $RUN/evaluations/*/outcome.json | wc -l      # finished evaluations
+python3 cluster/summarize_run.py $RUN            # the gate, mid-run
+```
+
+It labels such a run `PARTIAL RUN` and never reports a bare `pass` for it — but
+it still FAILs on a frozen metric, which is frozen at ten candidates too.
+
 ## Before submitting
 
 The two blocks marked `[USER]` in each file:

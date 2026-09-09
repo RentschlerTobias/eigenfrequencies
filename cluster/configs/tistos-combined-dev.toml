@@ -1,0 +1,97 @@
+# tistos — CFD + resonance, dev_cpu_il 30-minute optimization smoke.
+#
+# Mirrors tistos-combined.toml with the tiny differential-evolution budget of
+# tistos-cfd-only-dev.toml. This is the config that actually answers "does
+# cfd+freq run?" — both stages in one evaluation, the native OpenFOAM solve on
+# the host and the modal solve in the dolfinx container, combined into one
+# objective. Run it LAST of the three dev configs: it can only be diagnosed once
+# tistos-cfd-only-dev and tistos-freq-only-dev have each passed on their own.
+#
+# Submit with:
+#   sbatch --partition=dev_cpu_il --time=00:30:00 \
+#          cluster/submit_hydroflow_opt.sh cluster/configs/tistos-combined-dev.toml
+
+[run]
+directory = "$WS/runs/tistos-combined-dev"
+
+[case]
+name = "tistos"
+
+[case.options]
+# The workspace, NOT $TMPDIR — see tistos-freq-only-dev.toml. With two stages
+# per candidate there are twice as many logs worth keeping (dtoo_export.log,
+# modal.log, cfd_build.log, cfd_solve.log), and a combined failure is exactly
+# the one where you need to know WHICH stage broke.
+local_scratch = "$WS/runs/tistos-combined-dev-local"
+# The one line that differs between the three dev configs.
+eval_mode = "combined"
+n_rpm = 72.0
+
+[case.options.dtoo]
+runtime = "enroot"
+container = "dtOO"
+case_dir = "/dtOO/build/test/tistos"
+timeout = 1800
+
+[case.options.modal]
+runtime = "enroot"
+container = "dolfinx"
+# [USER] python3 -m pip install --target ~/pylibs gmsh   (login node)
+pythonpath = ["$HOME/pylibs"]
+timeout = 1200
+
+[case.options.modal.solver]
+element_degree = 2
+solver_backend = "slepc"
+num_eigenvalues = 10
+
+[case.options.cfd]
+# Native on the host, the pattern proven by smoke job 6819840 (2/2 success) and
+# by tistos-cfd-only-dev. The geometry export stays containerised; only this
+# stage leaves the container. The module sets $FOAM_INIT but does not put
+# foamInit on PATH (probe: cluster/logs/6819095/diagnosis/), hence the fallback.
+runtime = "native"
+setup = [
+    "module load cae/openfoam/v2412",
+    "command -v foamInit >/dev/null && foamInit || source $FOAM_INIT",
+]
+timeout = 3600
+mpi_launcher = "mpiexec"
+
+[case.options.optimization]
+Z_guidevanes = 18
+max_harmonic = 6
+margin_hz = 5.0
+margin_fraction = 0.05
+
+[case.options.objective]
+# Identical to tistos-combined.toml. Changing any weight makes a run
+# incomparable to the other two, so the dev config must not "simplify" them.
+w_eta = 1.0
+w_cav = 1.0
+w_head = 1.0
+w_resonance = 1.0
+
+[resources]
+# dev_cpu_il: 64 cores, 256 GiB. A combined candidate pays both stages, so both
+# limits apply: ~10 GB per modal solve (2 × 10 GB is nothing against 256 GiB)
+# and 6 MPI ranks for simpleFoam. 2 concurrent × 6 ranks × 1 thread = 12 of 64.
+# Concurrency stays at 2 rather than the production 10 because a 30-minute slot
+# will not finish a generation either way, and 2 keeps the per-candidate logs
+# few enough to read.
+available_cpus = 64
+concurrent_evaluations = 2
+mpi_ranks = 6
+threads_per_rank = 1
+
+[optimization]
+# Same tiny budget as the other two dev configs; not sized to finish. A
+# combined candidate is the most expensive of the three, so expect fewer
+# completed evaluations here than in the cfd-only dev run — that is the point of
+# resume, not a failure.
+islands = 2
+population_size = 8
+generations = 2
+differential_weight = 0.8
+crossover_rate = 0.9
+seed = 20260911
