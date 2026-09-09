@@ -296,6 +296,57 @@ while read -r want; do
     fi
 done <<< "$WANTED_CONTAINERS"
 
+# The modal stage has one prerequisite that is not a container: gmsh. The stock
+# dolfinx image cannot read a .msh without it, and it arrives as a mounted
+# `pip install --target` directory listed in case.options.modal.pythonpath — a
+# [USER] step nobody is reminded of. Unchecked it fails at the FIRST candidate
+# and then at every following one, with the reason buried in a per-candidate
+# logs/modal.log that node-local scratch deletes when the allocation ends. A
+# 48-hour allocation can be spent entirely on that.
+#
+# Only configs with a [case.options.modal] table are affected; cfd_only emits
+# nothing here. Expansion matches physics.py:_expand (expandvars ∘ expanduser),
+# so "$HOME/pylibs" is checked as the stage will resolve it.
+MODAL_PYTHONPATH="$("$VENV/bin/python" - "$RUN_CONFIG" <<'PY'
+import os, sys, tomllib
+raw = tomllib.load(open(sys.argv[1], "rb"))
+modal = (raw.get("case", {}).get("options", {}) or {}).get("modal") or {}
+entries = modal.get("pythonpath") or []
+if isinstance(entries, str):
+    entries = [entries]
+for entry in entries:
+    print(os.path.expandvars(os.path.expanduser(str(entry))))
+PY
+)"
+if [[ -n "${MODAL_PYTHONPATH//[[:space:]]/}" ]]; then
+    HAVE_GMSH=0
+    while read -r dir; do
+        [[ -z "$dir" ]] && continue
+        if [[ ! -d "$dir" ]]; then
+            echo "[submit] ERROR: case.options.modal.pythonpath lists '$dir', which is not a directory." >&2
+            echo "[submit]        Create it on a login node:" >&2
+            echo "[submit]          python3 -m pip install --target $dir gmsh" >&2
+            echo "[submit]        See cluster/enroot_fenicsx_import.md." >&2
+            exit 1
+        fi
+        # `pip install --target` drops gmsh as a top-level gmsh.py; a wheel that
+        # ships it as a package would give gmsh/__init__.py instead. Accept both
+        # rather than pinning the layout of a dependency we do not control.
+        if [[ -f "$dir/gmsh.py" || -f "$dir/gmsh/__init__.py" ]]; then
+            HAVE_GMSH=1
+        fi
+    done <<< "$MODAL_PYTHONPATH"
+    if (( HAVE_GMSH == 0 )); then
+        echo "[submit] ERROR: no gmsh found on case.options.modal.pythonpath." >&2
+        echo "[submit]        Searched: $(echo "$MODAL_PYTHONPATH" | tr '\n' ' ')" >&2
+        echo "[submit]        The stock dolfinx image cannot read a .msh without it," >&2
+        echo "[submit]        so every candidate would fail. Install it on a login node:" >&2
+        echo "[submit]          python3 -m pip install --target \$HOME/pylibs gmsh" >&2
+        exit 1
+    fi
+    echo "[submit] modal gmsh -> $(echo "$MODAL_PYTHONPATH" | tr '\n' ' ')"
+fi
+
 # The case plugin resolves the machine catalog relative to the installed
 # package; point it at this checkout so an installed copy still finds tistos.yaml.
 export EIGENFREQUENCIES_MACHINES_DIR="$REPO/adapters/machines"
