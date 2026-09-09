@@ -54,14 +54,29 @@ mpi_launcher = "mpiexec"
 
 [resources]
 # cpu_il partition: 64 cores, 256 GiB (bwUniCluster 3.0 hardware page — the
-# 96-core EPYC 9454 nodes belong to the plain cpu partition). The binding factor
-# is neither memory nor threads but concurrency: the dtOO export is single-
-# threaded gmsh and appears to dominate an evaluation, so extra threads per
-# candidate sit idle through it. 10 concurrent x 6 ranks = 60 of 64 cores;
-# memory stays far below 256 GiB.
+# 96-core EPYC 9454 nodes belong to the plain cpu partition).
+#
+# Sized from measurement, not from the intuition that OpenFOAM parallelises
+# well. It does — but it is a small part of a candidate. Job 6844xxx
+# (tistos-combined-dev, one candidate) split the stage for the first time:
+#
+#   cfd_build  224.1 s   single-threaded dtOO/gmsh — ignores mpi_ranks
+#   cfd_solve  134.5 s   simpleFoam                — scales with mpi_ranks
+#
+# Only 13.5% of a 995 s combined candidate responds to more ranks at all, so
+# ranks buy little and concurrency buys a lot. The mesh is ~60k cells: at the
+# previous 6 ranks that is 10k cells/rank, already the lower edge of where
+# OpenFOAM scales, and more ranks would divide it further.
+#
+# 16 x 4 x 1 = 64 cores exactly, against 10 x 6 x 1 = 60 before, and roughly
+# 1.5x the throughput. See docs/cluster-resource-sizing.md.
+#
+# mpi_ranks must stay identical to tistos-combined.toml: it decides the
+# decomposePar partitioning and therefore the CFD numbers, and the two runs are
+# only comparable while it matches.
 available_cpus = 64
-concurrent_evaluations = 10
-mpi_ranks = 6
+concurrent_evaluations = 16
+mpi_ranks = 4
 threads_per_rank = 1
 
 [optimization]
