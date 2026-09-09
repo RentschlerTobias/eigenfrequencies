@@ -281,6 +281,35 @@ class TestExportMesh:
         assert "dtoo-export" in recorded["cmd"][-1]
         assert meta["runtime"] == "docker"
 
+    def test_the_script_is_named_under_the_repo_root_that_is_mounted(
+        self, tmp_path, monkeypatch
+    ):
+        """The mount and the command line have to spell the repo the same way.
+
+        The mount comes from _repo_root(); the argv used to come from
+        Path(__file__).resolve(). On bwUniCluster $HOME is a symlink, so the two
+        disagreed and every containerized dtOO export died with "can't open
+        file" on a script that was plainly there — while cfd_only kept working,
+        because the CFD build composes its script path from _repo_root()
+        already. That asymmetry is why the failure only ever showed up in
+        resonance_only and combined runs.
+        """
+        recorded = {}
+
+        def fake_run(cmd, **kwargs):
+            recorded["cmd"] = cmd
+            (tmp_path / "mesh" / "naca.msh").write_text("mesh", encoding="utf-8")
+            return ""
+
+        monkeypatch.setattr(physics, "_run", fake_run)
+        monkeypatch.setenv("EIGENFREQUENCIES_REPO", "/mounted/repo")
+        export_with(tmp_path, {"dtoo": {"runtime": "docker"}})
+
+        script = "/mounted/repo/src/eigenfrequencies/hydroflow/physics.py"
+        assert script in recorded["cmd"][-1]
+        # The resolved path must not leak in: it is exactly what is not mounted.
+        assert str(Path(physics.__file__).resolve()) not in recorded["cmd"][-1]
+
     def test_a_stale_mesh_is_removed_before_the_build(self, tmp_path, monkeypatch):
         stale = tmp_path / "mesh" / "naca.msh"
         stale.parent.mkdir(parents=True)

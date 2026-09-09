@@ -502,6 +502,25 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+#: This file's location *under* :func:`_repo_root`, which is the only name a
+#: container knows it by.
+#:
+#: ``Path(__file__).resolve()`` must not be used to build a command line. The
+#: mount deliberately keeps the unresolved name (see :func:`_existing_paths`),
+#: and on bwUniCluster ``$HOME`` is a symlink, so a resolved argv asks for
+#: ``/pfs/data6/home/…`` inside a container that only has ``/home/st/…``
+#: mounted: "can't open file", pointing at a file plainly present on the host.
+#: The CFD build never hit this because it composes its script path from
+#: ``_repo_root()`` already; the dtOO export and the modal solve did, which is
+#: why cfd_only ran while every resonance_only candidate failed.
+_SELF_UNDER_REPO = Path(*Path(__file__).resolve().parts[-4:])
+
+
+def _self_path() -> str:
+    """This file, named the way the mount names it."""
+    return str(_repo_root() / _SELF_UNDER_REPO)
+
+
 def _case_dir(machine_cfg, dtoo_opts: dict[str, Any], runtime: Runtime) -> str:
     """dtOO case directory for this runtime.
 
@@ -612,7 +631,7 @@ def export_mesh(
     else:
         spec_path = mesh_dir / "dtoo_spec.json"
         spec_path.write_text(json.dumps(spec, indent=2), encoding="utf-8")
-        argv = [runtime.python, str(Path(__file__).resolve()), "dtoo-export", str(spec_path)]
+        argv = [runtime.python, _self_path(), "dtoo-export", str(spec_path)]
         _run(
             runtime.command(
                 argv,
@@ -769,7 +788,7 @@ def solve_modal(
         spec_path = directory / "mesh" / "modal_spec.json"
         spec_path.parent.mkdir(parents=True, exist_ok=True)
         spec_path.write_text(json.dumps(spec, indent=2), encoding="utf-8")
-        argv = [runtime.python, str(Path(__file__).resolve()), "modal", str(spec_path)]
+        argv = [runtime.python, _self_path(), "modal", str(spec_path)]
         output = _run(
             runtime.command(
                 argv,
