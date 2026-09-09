@@ -550,6 +550,45 @@ def _apply_overrides(cfg, overrides: dict[str, Any], *, label: str):
 # ── Stage 1: dtOO geometry export ─────────────────────────────────────────
 
 
+def _stage_case_dir(case_dir: str, destination: str) -> str:
+    """Copy the dtOO case next to the candidate and return the copy's path.
+
+    ``run_dtoo_export`` chdirs into the case directory and dtOO then opens
+    ``machineSave.xml`` with ``QIODevice::ReadWrite``. Two reasons that cannot
+    be the configured directory:
+
+    * In a container the case lives in the image (``/dtOO/build/test/tistos``)
+      and enroot mounts the rootfs read-only, so the parser dies with
+      "Failed to open fileName = machineSave.xml". Measured on the image: the
+      whole case is 1.8 MB, so copying it per candidate is nothing next to the
+      export it feeds.
+    * Even where the directory *is* writable, concurrent candidates would share
+      one machineSave.xml. That does not crash — it silently mixes state
+      between designs, which is the failure mode this project already paid for
+      once and which only shows up afterwards as a frozen metric.
+
+    The CFD stage has always worked this way; ``turbine_runner/optimize.py``
+    stages the case per worker and ``dtoo_cfd_build.py`` writes its state XML
+    into the candidate's own directory. Only the export path never adopted it.
+    """
+    import shutil
+
+    source = Path(case_dir)
+    if not source.is_dir():
+        raise StageError(f"dtoo case directory does not exist: {case_dir}")
+
+    target = Path(destination)
+    # Re-staged per candidate rather than reused: a copy left by an earlier
+    # candidate carries that candidate's written-back state.
+    if target.exists():
+        shutil.rmtree(target)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    # symlinks are dereferenced, not preserved: a copied symlink would still
+    # point into the read-only image, which is the very thing being escaped.
+    shutil.copytree(source, target)
+    return str(target)
+
+
 def _dtoo_export(spec: dict[str, Any]) -> str:
     """Run the dtOO export described by *spec*, return the mesh path.
 
@@ -561,9 +600,14 @@ def _dtoo_export(spec: dict[str, Any]) -> str:
     from eigenfrequencies.adapters.dtoo.export import run_dtoo_export
     from eigenfrequencies.adapters.dtoo.machine_yaml import MachineAdapterConfig
 
+    case_dir = spec["case_dir"]
+    stage_to = spec.get("stage_case_to")
+    if stage_to:
+        case_dir = _stage_case_dir(case_dir, stage_to)
+
     config = MachineAdapterConfig(
         name=spec["name"],
-        case_dir=spec["case_dir"],
+        case_dir=case_dir,
         state=spec["state"],
         mech_volume=spec["mech_volume"],
         adjust_plugin=spec.get("adjust_plugin", ""),
@@ -621,6 +665,10 @@ def export_mesh(
         "adjust_plugin": str(dtoo_opts.get("adjust_plugin", machine_cfg.adjust_plugin)),
         "design": {str(k): float(v) for k, v in parameters.items()},
         "output_msh": str(msh_path),
+        # Inside the candidate's own directory, which is mounted and writable
+        # in every runtime. See _stage_case_dir for why the configured case
+        # directory cannot be used directly.
+        "stage_case_to": str(directory / "dtoo-case"),
     }
 
     if runtime.kind == "inprocess":

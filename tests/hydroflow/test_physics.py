@@ -310,6 +310,92 @@ class TestExportMesh:
         # The resolved path must not leak in: it is exactly what is not mounted.
         assert str(Path(physics.__file__).resolve()) not in recorded["cmd"][-1]
 
+    def test_the_case_is_staged_into_the_candidate_directory(self, tmp_path, monkeypatch):
+        """dtOO chdirs into the case dir and opens machineSave.xml ReadWrite.
+
+        In a container that directory is in the image and enroot mounts the
+        rootfs read-only, so the parser died with "Failed to open fileName =
+        machineSave.xml". The spec therefore names a writable copy under the
+        candidate's own directory, which is mounted in every runtime.
+        """
+        recorded = {}
+
+        def fake_run(cmd, **kwargs):
+            recorded["cmd"] = cmd
+            (tmp_path / "mesh" / "naca.msh").write_text("mesh", encoding="utf-8")
+            return ""
+
+        monkeypatch.setattr(physics, "_run", fake_run)
+        export_with(tmp_path, {"dtoo": {"runtime": "docker"}})
+
+        spec = json.loads((tmp_path / "mesh" / "dtoo_spec.json").read_text())
+        assert spec["stage_case_to"] == str(tmp_path / "dtoo-case")
+
+    def test_staging_copies_the_case_and_leaves_the_source_alone(self, tmp_path):
+        source = tmp_path / "image-case"
+        (source / "xml").mkdir(parents=True)
+        (source / "machineSave.xml").write_text("state", encoding="utf-8")
+        (source / "xml" / "included.xml").write_text("inc", encoding="utf-8")
+
+        staged = Path(physics._stage_case_dir(str(source), str(tmp_path / "work")))
+
+        # The relative include has to survive, or dtOO cannot parse machine.xml.
+        assert (staged / "xml" / "included.xml").read_text() == "inc"
+        (staged / "machineSave.xml").write_text("written back", encoding="utf-8")
+        assert (source / "machineSave.xml").read_text() == "state"
+
+    def test_staging_replaces_a_previous_candidates_copy(self, tmp_path):
+        source = tmp_path / "image-case"
+        source.mkdir()
+        (source / "machineSave.xml").write_text("pristine", encoding="utf-8")
+        stale = tmp_path / "work"
+        stale.mkdir()
+        (stale / "machineSave.xml").write_text("previous candidate", encoding="utf-8")
+        (stale / "leftover.msh").write_text("old", encoding="utf-8")
+
+        staged = Path(physics._stage_case_dir(str(source), str(stale)))
+
+        assert (staged / "machineSave.xml").read_text() == "pristine"
+        assert not (staged / "leftover.msh").exists()
+
+    def test_staging_a_missing_case_says_so(self, tmp_path):
+        with pytest.raises(StageError, match="case directory does not exist"):
+            physics._stage_case_dir(str(tmp_path / "absent"), str(tmp_path / "work"))
+
+    def test_dtoo_is_handed_the_staged_copy_not_the_configured_case(
+        self, tmp_path, monkeypatch
+    ):
+        """The staging is worthless if the export still chdirs into the image."""
+        import eigenfrequencies.adapters.dtoo.export as dtoo_export
+
+        captured = {}
+
+        def fake_export(config, design, output_msh):
+            captured["case_dir"] = config.case_dir
+            return output_msh
+
+        monkeypatch.setattr(dtoo_export, "run_dtoo_export", fake_export)
+
+        source = tmp_path / "image-case"
+        source.mkdir()
+        (source / "machineSave.xml").write_text("state", encoding="utf-8")
+        staged = tmp_path / "candidate" / "dtoo-case"
+
+        physics._dtoo_export(
+            {
+                "name": "tistos",
+                "case_dir": str(source),
+                "state": "init",
+                "mech_volume": "vol",
+                "adjust_plugin": "",
+                "design": {},
+                "output_msh": str(tmp_path / "out.msh"),
+                "stage_case_to": str(staged),
+            }
+        )
+
+        assert captured["case_dir"] == str(staged)
+
     def test_a_stale_mesh_is_removed_before_the_build(self, tmp_path, monkeypatch):
         stale = tmp_path / "mesh" / "naca.msh"
         stale.parent.mkdir(parents=True)
