@@ -33,7 +33,10 @@ def stub_stages(monkeypatch):
 
     def cfd(machine_cfg, parameters, options, cfd_cfg, context=None):
         calls["cfd"] = {"parameters": dict(parameters), "options": options, "context": context}
-        return {"ok": True, "eta": -0.93, "vcav": 1e-7, "dH": -2.4, "P": 1.0, "Q": 0.5}
+        return {
+            "ok": True, "eta": -0.93, "vcav": 1e-7, "dH": -2.4, "P": 1.0, "Q": 0.5,
+            "build_seconds": 2.5, "solve_seconds": 7.5,
+        }
 
     monkeypatch.setattr("eigenfrequencies.hydroflow.physics.run_modal_stage", modal)
     monkeypatch.setattr("eigenfrequencies.hydroflow.physics.run_cfd_stage", cfd)
@@ -83,8 +86,22 @@ class TestSuccessPath:
         # negative as soon as the two clocks disagreed.
         assert timings["mesh"] == pytest.approx(1.5)
         assert timings["modal"] == pytest.approx(4.0)
-        assert set(timings) == {"mesh", "modal", "cfd", "total"}
+        # The CFD stage splits the same way. `cfd` stays the measured total, so
+        # it is not the sum of the two halves and older runs stay comparable.
+        assert timings["cfd_build"] == pytest.approx(2.5)
+        assert timings["cfd_solve"] == pytest.approx(7.5)
+        assert set(timings) == {
+            "mesh", "modal", "cfd", "cfd_build", "cfd_solve", "total"
+        }
         assert result["metadata"]["mesh"]["msh_path"] == "/tmp/x.msh"
+
+    def test_the_cfd_split_does_not_leak_into_the_reported_metrics(
+        self, tmp_path, stub_stages
+    ):
+        """The timings are popped, so metadata.cfd keeps only physics."""
+        result = run_worker(tmp_path, write_request(tmp_path))
+
+        assert set(result["metadata"]["cfd"]) == {"eta", "vcav", "dH", "P", "Q"}
 
     def test_cfd_only_skips_the_modal_solve(self, tmp_path, stub_stages):
         result = run_worker(tmp_path, write_request(tmp_path, options={"eval_mode": "cfd_only"}))

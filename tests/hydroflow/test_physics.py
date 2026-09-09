@@ -10,6 +10,7 @@ worker.
 
 import json
 import subprocess
+import time
 from pathlib import Path
 
 import pytest
@@ -592,6 +593,45 @@ class TestRunCfdStage:
         assert result["mpi_ranks"] == 3
         assert result["cleared_artifacts"] == ["500"]
         assert result["work_dir"] == str(tmp_path)
+
+    def test_the_build_and_the_solve_are_timed_apart(self, tmp_path, monkeypatch):
+        """One `cfd` total cannot say whether mpi_ranks or concurrency is the
+        lever: the dtOO build is single-threaded and ignores ranks, only
+        simpleFoam scales with them."""
+        case_dir = tmp_path / "case"
+        case_dir.mkdir()
+
+        def slow_build(*a, **kw):
+            time.sleep(0.05)
+            return case_dir
+
+        monkeypatch.setattr(physics, "build_cfd_case", slow_build)
+        monkeypatch.setattr(physics, "solve_cfd", lambda *a, **kw: {})
+        monkeypatch.setattr(
+            "eigenfrequencies.io.cfd_eval.evaluate_cfd",
+            lambda d, cfg: {"ok": True, "eta": -0.9, "vcav": 0.0, "dH": -2.4},
+        )
+        result = physics.run_cfd_stage(
+            machine(), {}, {"work_dir": str(tmp_path)}, CFDConfig(n_rpm=72.0)
+        )
+        assert result["build_seconds"] >= 0.05
+        assert result["solve_seconds"] < result["build_seconds"]
+
+    def test_a_failed_build_still_reports_how_long_it_ran(self, tmp_path, monkeypatch):
+        """A build that dies after ten minutes is a different problem from one
+        that dies at once, and the failure path is where that matters most."""
+
+        def slow_failing_build(*a, **kw):
+            time.sleep(0.05)
+            raise StageError("cfd build: exit 1")
+
+        monkeypatch.setattr(physics, "build_cfd_case", slow_failing_build)
+        result = physics.run_cfd_stage(
+            machine(), {}, {"work_dir": str(tmp_path)}, CFDConfig(n_rpm=72.0)
+        )
+        assert result["ok"] is False
+        assert result["build_seconds"] >= 0.05
+        assert result["solve_seconds"] == 0.0
 
 
 class TestSolveCfd:

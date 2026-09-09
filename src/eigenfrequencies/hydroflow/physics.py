@@ -571,8 +571,6 @@ def _stage_case_dir(case_dir: str, destination: str) -> str:
     stages the case per worker and ``dtoo_cfd_build.py`` writes its state XML
     into the candidate's own directory. Only the export path never adopted it.
     """
-    import shutil
-
     source = Path(case_dir)
     if not source.is_dir():
         raise StageError(f"dtoo case directory does not exist: {case_dir}")
@@ -1182,14 +1180,27 @@ def run_cfd_stage(
         failed), enriched with solve metadata. A failed build or solve is
         reported the same way rather than raised, so the worker records one
         failure shape whatever went wrong.
+
+        ``build_seconds`` and ``solve_seconds`` split the stage in two, the way
+        :func:`run_modal_stage` reports mesh and solve separately. They decide
+        how the CPU budget should be spent and could not be read off the single
+        ``cfd`` total: the dtOO case build is single-threaded gmsh and gains
+        nothing from ``mpi_ranks``, while only simpleFoam does. Timed even when
+        the stage fails — a build that dies after ten minutes is worth telling
+        apart from one that dies immediately.
     """
     from eigenfrequencies.io.cfd_eval import evaluate_cfd
 
     directory = work_dir(options, context)
+    build_seconds = 0.0
+    started = time.perf_counter()
     try:
         case_dir = build_cfd_case(machine_cfg, parameters, options, directory)
+        build_seconds = time.perf_counter() - started
+        started = time.perf_counter()
         meta = solve_cfd(case_dir, options, directory, context)
     except StageError as exc:
+        elapsed = time.perf_counter() - started
         return {
             "ok": False,
             "error": str(exc),
@@ -1199,11 +1210,17 @@ def run_cfd_stage(
             "P": 0.0,
             "Q": 0.0,
             "work_dir": str(directory),
+            # Whichever half was running when it failed carries the time; the
+            # other keeps whatever it had already measured.
+            "build_seconds": build_seconds or elapsed,
+            "solve_seconds": elapsed if build_seconds else 0.0,
         }
 
     result = evaluate_cfd(str(case_dir), cfd_cfg)
     result.update(meta)
     result["work_dir"] = str(directory)
+    result["build_seconds"] = build_seconds
+    result["solve_seconds"] = time.perf_counter() - started
     return result
 
 

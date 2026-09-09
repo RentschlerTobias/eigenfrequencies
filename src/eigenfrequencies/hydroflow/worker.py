@@ -31,6 +31,11 @@ from typing import Any
 _STAGE_MESH = "mesh"
 _STAGE_MODAL = "modal"
 _STAGE_CFD = "cfd"
+#: The two halves of the CFD stage. ``cfd`` stays the total so existing runs
+#: remain comparable; these split it into the part that scales with mpi_ranks
+#: and the single-threaded dtOO build that does not.
+_STAGE_CFD_BUILD = "cfd_build"
+_STAGE_CFD_SOLVE = "cfd_solve"
 
 
 def _write(result_path: Path, payload: dict[str, Any]) -> None:
@@ -162,6 +167,11 @@ def evaluate(
         started = time.perf_counter()
         cfd = run_cfd_stage(machine_cfg, parameters, options, cfd_cfg, context)
         timings[_STAGE_CFD] = time.perf_counter() - started
+        # The stage times its two halves itself, same as the modal one. They are
+        # what says whether mpi_ranks or concurrent_evaluations is the lever:
+        # the dtOO case build is single-threaded and ignores ranks entirely.
+        timings[_STAGE_CFD_BUILD] = cfd.pop("build_seconds", 0.0)
+        timings[_STAGE_CFD_SOLVE] = cfd.pop("solve_seconds", 0.0)
         if not cfd.get("ok"):
             raise RuntimeError(f"CFD evaluation failed: {cfd.get('error')}")
         metadata["cfd"] = {k: cfd[k] for k in ("eta", "vcav", "dH", "P", "Q") if k in cfd}
