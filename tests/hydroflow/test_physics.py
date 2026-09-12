@@ -755,6 +755,73 @@ class TestRunHelper:
         )
         assert "CFD_CASE_DIR /x" in out
 
+    def test_a_lost_rootfs_lock_is_retried(self, tmp_path, monkeypatch):
+        """enroot serialises container setup behind a per-container lock with a
+        30 s timeout. A generation dispatches up to concurrent_evaluations
+        candidates at once and every build starts the same dtOO container, so
+        the tail of the burst dies with "Could not acquire rootfs lock"
+        (measured in the sibling dataset pipeline: seven concurrent starts fine,
+        32 fatal). The retry must return the successful attempt's output."""
+        calls = []
+
+        def run(cmd, **kwargs):
+            calls.append(cmd)
+            if len(calls) == 1:
+                return subprocess.CompletedProcess(
+                    cmd, 1, stdout="[ERROR] Could not acquire rootfs lock\n"
+                )
+            return subprocess.CompletedProcess(cmd, 0, stdout="CFD_CASE_DIR /x\n")
+
+        monkeypatch.setattr(subprocess, "run", run)
+        monkeypatch.setattr(time, "sleep", lambda seconds: None)
+        out = physics._run(
+            ["enroot", "start", "dtOO"],
+            stage="cfd build",
+            timeout=30.0,
+            log_path=tmp_path / "l.log",
+        )
+        assert len(calls) == 2
+        assert "CFD_CASE_DIR /x" in out
+        assert "CFD_CASE_DIR /x" in (tmp_path / "l.log").read_text()
+
+    def test_other_failures_are_not_retried(self, tmp_path, monkeypatch):
+        calls = []
+
+        def run(cmd, **kwargs):
+            calls.append(cmd)
+            return subprocess.CompletedProcess(cmd, 1, stdout="PLC Error: boom\n")
+
+        monkeypatch.setattr(subprocess, "run", run)
+        monkeypatch.setattr(time, "sleep", lambda seconds: None)
+        with pytest.raises(StageError, match="boom"):
+            physics._run(
+                ["enroot", "start", "dtOO"],
+                stage="cfd build",
+                timeout=30.0,
+                log_path=tmp_path / "l.log",
+            )
+        assert len(calls) == 1
+
+    def test_a_persistent_rootfs_lock_loss_gives_up(self, tmp_path, monkeypatch):
+        calls = []
+
+        def run(cmd, **kwargs):
+            calls.append(cmd)
+            return subprocess.CompletedProcess(
+                cmd, 1, stdout="[ERROR] Could not acquire rootfs lock\n"
+            )
+
+        monkeypatch.setattr(subprocess, "run", run)
+        monkeypatch.setattr(time, "sleep", lambda seconds: None)
+        with pytest.raises(StageError, match="rootfs lock"):
+            physics._run(
+                ["enroot", "start", "dtOO"],
+                stage="cfd build",
+                timeout=30.0,
+                log_path=tmp_path / "l.log",
+            )
+        assert len(calls) == physics._ROOTFS_LOCK_ATTEMPTS
+
     def test_missing_result_line_is_a_stage_error(self):
         with pytest.raises(StageError, match="no RESULT_JSON line"):
             physics._parse_result_line("nothing here\n", stage="modal solve")

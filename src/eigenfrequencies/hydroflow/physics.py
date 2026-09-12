@@ -76,6 +76,7 @@ from __future__ import annotations
 import dataclasses
 import json
 import os
+import random
 import shlex
 import shutil
 import subprocess
@@ -379,6 +380,19 @@ def _existing_paths(paths: Sequence[str | Path]) -> list[str]:
     return seen
 
 
+#: enroot serialises the setup of a container behind a per-container lock
+#: (``$ENROOT_DATA_PATH/<name>/.lock``, acquired with ``flock -w 30``). The lock
+#: is released before the payload runs, but a generation dispatches up to
+#: ``concurrent_evaluations`` candidates at once and every build starts the same
+#: dtOO container, so a burst starves the tail: starts that wait longer than
+#: 30 s die with ``[ERROR] Could not acquire rootfs lock``. Measured in the
+#: sibling dataset pipeline: seven concurrent starts were fine, 32 lost most of
+#: them. The retry is safe — a losing start leaves nothing behind — and the
+#: growing jitter disperses the herd instead of replaying the same collision.
+_ROOTFS_LOCK_ATTEMPTS = 6
+_ROOTFS_LOCK_HINT = "Could not acquire rootfs lock"
+
+
 def _run(cmd: Sequence[str], *, stage: str, timeout: float, log_path: Path) -> str:
     """Run *cmd*, tee stdout+stderr into *log_path*, return the output.
 
@@ -393,32 +407,36 @@ def _run(cmd: Sequence[str], *, stage: str, timeout: float, log_path: Path) -> s
     # command is assembled from a config, a machine YAML, a runtime and three
     # mount lists — reconstructing it by hand costs an allocation each time.
     header = f"$ {shlex.join(str(a) for a in cmd)}\n\n"
-    try:
-        proc = subprocess.run(
-            list(cmd),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            timeout=timeout,
-        )
-    except FileNotFoundError as exc:
-        raise StageError(f"{stage}: cannot execute {cmd[0]!r} ({exc})") from exc
-    except subprocess.TimeoutExpired as exc:
-        output = exc.output or ""
-        if isinstance(output, bytes):
-            output = output.decode("utf-8", "replace")
-        log_path.write_text(header + output, encoding="utf-8")
-        raise StageError(f"{stage}: timed out after {timeout:g} s") from exc
+    for attempt in range(1, _ROOTFS_LOCK_ATTEMPTS + 1):
+        try:
+            proc = subprocess.run(
+                list(cmd),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                timeout=timeout,
+            )
+        except FileNotFoundError as exc:
+            raise StageError(f"{stage}: cannot execute {cmd[0]!r} ({exc})") from exc
+        except subprocess.TimeoutExpired as exc:
+            output = exc.output or ""
+            if isinstance(output, bytes):
+                output = output.decode("utf-8", "replace")
+            log_path.write_text(header + output, encoding="utf-8")
+            raise StageError(f"{stage}: timed out after {timeout:g} s") from exc
 
-    log_path.write_text(header + proc.stdout, encoding="utf-8")
-    if proc.returncode != 0:
+        log_path.write_text(header + proc.stdout, encoding="utf-8")
+        if proc.returncode == 0:
+            return proc.stdout
+        if attempt < _ROOTFS_LOCK_ATTEMPTS and _ROOTFS_LOCK_HINT in proc.stdout:
+            time.sleep(random.uniform(2.0, 12.0) * attempt)
+            continue
         # The command goes into the error too: a failing container stage often
         # produces no output at all, and "exit 127" on its own says nothing.
         raise StageError(
             f"{stage}: exit {proc.returncode}\n"
             f"command: {shlex.join(str(a) for a in cmd)}\n{_tail(proc.stdout)}"
         )
-    return proc.stdout
 
 
 def _tail(text: str, limit: int = 4000) -> str:
