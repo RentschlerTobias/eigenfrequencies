@@ -11,4 +11,5 @@ ENV PATH="/root/.local/bin:$PATH"
 # Copy repo and install package
 # rl extra excluded: d3rlpy/stable-baselines3 add ~500MB image bloat
 COPY . /src/eigenfrequencies
-RUN uv pip install --system -e ".[optimize,mcp,dev]"
+WORKDIR /src/eigenfrequencies
+RUN uv pip install --system --break-system-packages -e ".[optimize,mcp,dev]"
