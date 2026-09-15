@@ -1,8 +1,23 @@
 # Installation
 
-Eigenfrequencies is a Python package for structural modal analysis of hydraulic turbine runners. It depends on FEniCSx (dolfinx), which is distributed through conda-forge, not PyPI. The recommended install path uses conda for the heavy scientific stack and `uv` for fast Python package management.
+Eigenfrequencies is a Python package for structural modal analysis of hydraulic turbine runners. It depends on FEniCSx (dolfinx), which is distributed through conda-forge, not PyPI.
 
-## Primary path: conda + uv
+## Recommended: the pipeline image
+
+`duty/hydrostack` builds one Apptainer image containing this package together with dtOO + OpenFOAM, AlgoHex and torch, and it is the only path that gives you the whole pipeline in one place:
+
+```bash
+cd duty/hydrostack
+cp stack.conf.example stack.conf
+./install.sh --build
+./bin/stack-run cfd-opt profiles/local.toml --dry-run
+```
+
+See [`duty/hydrostack/README.md`](../../hydrostack/README.md). That image is also what makes the claim below — that the dtOO and FEniCSx stacks do not coexist — testable rather than merely inherited: the two live in one filesystem there, in separate venvs, kept apart by the per-stage setup constants in `src/eigenfrequencies/hydroflow/physics.py`.
+
+The paths below remain supported and are what the cluster runs today.
+
+## conda + uv
 
 1. Create the conda environment from the bundled spec:
 
@@ -56,3 +71,4 @@ enroot start -m "$PWD:/workspace" pyxis_fenicsx \
 
 - **PyPI-only install**: `dolfinx` is not on PyPI, so `pip install eigenfrequencies` without a conda environment will fail.
 - **System Python**: The package requires Python 3.11–3.13 and the conda-forge scientific stack. Do not attempt to install into a bare system Python.
+- **dtOO and FEniCSx in one conda environment**: they do not coexist there, which is why the cluster keeps them in separate containers. The pipeline image takes a different approach — one filesystem, two venvs, per-stage environments — rather than contradicting this.

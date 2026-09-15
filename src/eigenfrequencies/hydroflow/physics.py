@@ -148,12 +148,28 @@ CONTAINER_CASE_ROOT = "/dtOO/build/test"
 #: Marker line the in-container entry points print for the host to parse.
 RESULT_MARKER = "RESULT_JSON "
 
-_RUNTIME_KINDS = ("auto", "inprocess", "native", "docker", "enroot")
+_RUNTIME_KINDS = ("auto", "inprocess", "native", "docker", "enroot", "apptainer")
+
+#: Interpreter paths inside the pipeline Apptainer image (duty/hydrostack). The
+#: two stacks live in one filesystem but never in one process: dtOO needs the
+#: python3.13 venv with the SWIG bindings on its path, the modal solve needs
+#: the python3.12 that carries dolfinx. Keeping them apart is what stops
+#: OpenFOAM's MPI and dolfinx's MPI sharing an LD_LIBRARY_PATH.
+#:
+#: Selected per stage from the config rather than guessed from the runtime —
+#: ``[case.options.dtoo] python = "/opt/venv-dtoo/bin/python"`` — because a
+#: stage that silently picks the wrong interpreter fails deep inside an import
+#: rather than at configuration time. See hydrostack/profiles/*.toml.
+STACK_DTOO_PYTHON = "/opt/venv-dtoo/bin/python"
+STACK_SCI_PYTHON = "/opt/venv-sci/bin/python"
+
+#: Default location of the image, overridable per config via ``sif``.
+STACK_SIF = "$STACK_IMAGES/stack.sif"
 
 #: Everything :meth:`Runtime.resolve` reads out of an options section. Kept as
 #: one list so a section that may carry a runtime does not have to repeat it.
 RUNTIME_KEYS = frozenset(
-    {"runtime", "image", "container", "python", "setup", "args", "timeout"}
+    {"runtime", "image", "container", "sif", "python", "setup", "args", "timeout"}
 )
 
 #: Keys under ``[case.options.cfd]`` that belong to *this* module rather than to
@@ -190,22 +206,25 @@ class StageError(RuntimeError):
 
 @dataclass
 class Runtime:
-    """Where a stage runs: this interpreter, a shell, docker, or enroot.
+    """Where a stage runs: this interpreter, a shell, docker, enroot or apptainer.
 
     Attributes:
         kind: ``inprocess`` (call the code directly), ``native`` (a login shell
-            on this host), ``docker``, or ``enroot``.
+            on this host), ``docker``, ``enroot``, or ``apptainer``.
         image: docker image (``kind == "docker"``).
         container: enroot container name (``kind == "enroot"``).
+        sif: path to the .sif image (``kind == "apptainer"``).
         python: interpreter used inside the container.
         setup: shell lines sourced/exported before the command.
-        args: extra arguments for ``docker run`` / ``enroot start``.
+        args: extra arguments for ``docker run`` / ``enroot start`` /
+            ``apptainer exec``.
         timeout: seconds before the stage is killed.
     """
 
     kind: str
     image: str = ""
     container: str = ""
+    sif: str = STACK_SIF
     python: str = CONTAINER_PYTHON
     setup: tuple[str, ...] = ()
     args: tuple[str, ...] = ()
@@ -213,7 +232,7 @@ class Runtime:
 
     @property
     def containerized(self) -> bool:
-        return self.kind in ("docker", "enroot")
+        return self.kind in ("docker", "enroot", "apptainer")
 
     @classmethod
     def resolve(
@@ -245,6 +264,7 @@ class Runtime:
             kind=kind,
             image=str(section.get("image", image)),
             container=str(section.get("container", container)),
+            sif=str(section.get("sif", STACK_SIF)),
             python=str(section.get("python", python)),
             setup=tuple(section.get("setup", setup)),
             args=tuple(section.get("args", ())),
@@ -309,6 +329,27 @@ class Runtime:
                 cmd += ["-v", f"{path}:{path}"]
             cmd += list(self.args)
             cmd += [self.image, "bash", "-lc", script]
+            return cmd
+
+        if self.kind == "apptainer":
+            cmd = ["apptainer", "exec"]
+            for path in bind:
+                cmd += ["--bind", f"{path}:{path}"]
+            # Deliberately NO --pwd. The script does its own `cd`, and it does
+            # it AFTER the setup lines for the reason recorded above: entering
+            # the work directory before sourcing OpenFOAM's bashrc sends it
+            # into an endless re-execution loop. --pwd would reintroduce
+            # exactly the ordering that produces a stage with no artifact, no
+            # log line and no error until its timeout.
+            #
+            # Also deliberately NO --containall. This runtime is how a batch
+            # job drives the image; it needs the scratch and case directories
+            # that were just bound. Confining an *agent* is a different job,
+            # done by hydrostack/bin/stack-agent, which adds --containall and an
+            # explicit bind list. Conflating the two would either break the
+            # solve or weaken the sandbox.
+            cmd += list(self.args)
+            cmd += [_expand(self.sif), "bash", "-c", script]
             return cmd
 
         cmd = ["enroot", "start"]

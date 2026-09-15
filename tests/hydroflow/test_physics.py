@@ -79,6 +79,19 @@ class TestRuntimeResolution:
                 timeout=1.0,
             )
 
+    def test_apptainer_is_a_known_runtime(self):
+        runtime = Runtime.resolve(
+            {"runtime": "apptainer", "sif": "/images/stack.sif"},
+            probe_module="json",
+            image="i",
+            container="c",
+            setup=(),
+            timeout=1.0,
+        )
+        assert runtime.kind == "apptainer"
+        assert runtime.sif == "/images/stack.sif"
+        assert runtime.containerized
+
 
 class TestRuntimeCommand:
     def test_docker_sources_both_environments_before_the_interpreter(self):
@@ -159,6 +172,7 @@ class TestRuntimeCommand:
             ("enroot", {"container": "dtOO"}),
             ("native", {}),
             ("docker", {"image": "img"}),
+            ("apptainer", {"sif": "/images/stack.sif"}),
         ):
             script = (
                 Runtime(kind=kind, setup=physics.DTOO_SETUP, **kwargs)
@@ -166,6 +180,52 @@ class TestRuntimeCommand:
             )
             cd = script.index(f"cd {tmp_path.resolve()}")
             assert script.index("/dtOO-install/bin/env.sh") < cd, kind
+
+    def test_apptainer_execs_the_sif_with_host_paths_mapped_onto_themselves(
+        self, tmp_path
+    ):
+        cmd = Runtime(kind="apptainer", sif="/images/stack.sif").command(
+            ["true"], workdir=tmp_path, mounts=[tmp_path]
+        )
+        assert cmd[:2] == ["apptainer", "exec"]
+        assert "--bind" in cmd
+        assert f"{tmp_path.resolve()}:{tmp_path.resolve()}" in cmd
+        assert cmd[-3:-1] == ["bash", "-c"]
+        assert "/images/stack.sif" in cmd
+
+    def test_apptainer_does_not_set_the_working_directory_itself(self, tmp_path):
+        """--pwd would put the shell in the work directory BEFORE the setup
+        lines run, which is the exact ordering that hangs OpenFOAM's bashrc in
+        an endless re-execution loop. The `cd` belongs in the script, after the
+        setup — see test_the_directory_change_comes_after_the_environment_setup.
+        This guards against someone adding --pwd because it looks tidier."""
+        cmd = Runtime(kind="apptainer", sif="/images/stack.sif", setup=physics.DTOO_SETUP).command(
+            ["true"], workdir=tmp_path
+        )
+        assert "--pwd" not in cmd
+        assert f"cd {tmp_path.resolve()}" in cmd[-1]
+
+    def test_apptainer_expands_variables_in_the_image_path(self, monkeypatch, tmp_path):
+        """A config saying "$STACK_IMAGES/stack.sif" reaches execve unexpanded
+        and apptainer reports an image it cannot find — the same trap the
+        enroot path documents for container names."""
+        monkeypatch.setenv("STACK_IMAGES", str(tmp_path))
+        cmd = Runtime(kind="apptainer", sif="$STACK_IMAGES/stack.sif").command(
+            ["true"], workdir=tmp_path
+        )
+        assert f"{tmp_path}/stack.sif" in cmd
+        assert not any("$STACK_IMAGES" in part for part in cmd)
+
+    def test_apptainer_is_not_confined_here(self, tmp_path):
+        """Confining an agent and running a solve are different jobs. This
+        runtime drives the image from a batch job and needs the directories it
+        just bound; --containall would drop them. The sandbox lives in
+        hydrostack/bin/stack-agent, which adds --containall and its own bind
+        list."""
+        cmd = Runtime(kind="apptainer", sif="/images/stack.sif").command(
+            ["true"], workdir=tmp_path, mounts=[tmp_path]
+        )
+        assert "--containall" not in cmd
 
     def test_enroot_replaces_the_image_command_script(self, monkeypatch, tmp_path):
         """The dtOO image's command script sources OpenFOAM's configuration,

@@ -420,43 +420,43 @@ wheels = [
 
 [package.optional-dependencies]
 cublas = [
-    { name = "nvidia-cublas", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
-    { name = "nvidia-cuda-nvrtc", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-cublas", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
+    { name = "nvidia-cuda-nvrtc", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 cudart = [
-    { name = "nvidia-cuda-runtime", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-cuda-runtime", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 cufft = [
-    { name = "nvidia-cufft", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
-    { name = "nvidia-nvjitlink", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-cufft", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
+    { name = "nvidia-nvjitlink", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 cufile = [
-    { name = "nvidia-cufile", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')" },
+    { name = "nvidia-cufile", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 cupti = [
-    { name = "nvidia-cuda-cupti", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-cuda-cupti", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 curand = [
-    { name = "nvidia-curand", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-curand", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 cusolver = [
-    { name = "nvidia-cublas", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
-    { name = "nvidia-cusolver", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
-    { name = "nvidia-cusparse", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
-    { name = "nvidia-nvjitlink", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-cublas", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
+    { name = "nvidia-cusolver", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
+    { name = "nvidia-cusparse", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
+    { name = "nvidia-nvjitlink", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 cusparse = [
-    { name = "nvidia-cusparse", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
-    { name = "nvidia-nvjitlink", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-cusparse", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
+    { name = "nvidia-nvjitlink", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 nvjitlink = [
-    { name = "nvidia-nvjitlink", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-nvjitlink", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 nvrtc = [
-    { name = "nvidia-cuda-nvrtc", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-cuda-nvrtc", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 nvtx = [
-    { name = "nvidia-nvtx", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or (platform_machine == 'AMD64' and sys_platform == 'win32')" },
+    { name = "nvidia-nvtx", marker = "platform_machine == 'aarch64' or platform_machine == 'x86_64'" },
 ]
 
 [[package]]
@@ -570,6 +570,9 @@ dev = [
 dtoo = [
     { name = "pyro5" },
 ]
+hydroflow = [
+    { name = "hydroflow-opt" },
+]
 mcp = [
     { name = "fastmcp" },
     { name = "jsonschema" },
@@ -598,6 +601,7 @@ requires-dist = [
     { name = "fastmcp", marker = "extra == 'mcp'" },
     { name = "gymnasium", specifier = ">=1.3.0" },
     { name = "gymnasium", marker = "extra == 'rl'" },
+    { name = "hydroflow-opt", marker = "extra == 'hydroflow'" },
     { name = "jsonschema", marker = "extra == 'dev'" },
     { name = "jsonschema", marker = "extra == 'mcp'" },
     { name = "optuna", marker = "extra == 'optimize'", specifier = ">=4.9.0" },
@@ -611,7 +615,7 @@ requires-dist = [
     { name = "stable-baselines3", marker = "extra == 'rl'" },
     { name = "typer", specifier = ">=0.12.0" },
 ]
-provides-extras = ["dev", "optimize", "rl", "mcp", "dtoo"]
+provides-extras = ["dev", "optimize", "rl", "mcp", "dtoo", "hydroflow"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=9.1.1" }]
@@ -943,6 +947,20 @@ wheels = [
 ]
 
 [[package]]
+name = "hydroflow-opt"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "pygmo" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/48/75/373f4239b3be501f3ee3fa0c5f725673f108af69485f4a1c7e80eea2902b/hydroflow_opt-0.1.0.tar.gz", hash = "sha256:e03db500b7f2af2f35065f03af631424ab0b82c5930be7641c8fe27eda1eba81", size = 23077, upload-time = "2026-07-23T08:43:36.101Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/84/25a1a91493288ad8c94ba882b476d942b3efad0a9b8a6ff2b0d429354c22/hydroflow_opt-0.1.0-py3-none-any.whl", hash = "sha256:cca6f60071641995da3c3b08daeadce8ad3f56443fa017b654f47512a5e0783a", size = 18442, upload-time = "2026-07-23T08:43:35.063Z" },
+]
+
+[[package]]
 name = "idna"
 version = "3.18"
 source = { registry = "https://pypi.org/simple" }
@@ -956,7 +974,7 @@ name = "importlib-metadata"
 version = "9.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "zipp", marker = "python_full_version < '3.12'" },
+    { name = "zipp" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a9/01/15bb152d77b21318514a96f43af312635eb2500c96b55398d020c93d86ea/importlib_metadata-9.0.0.tar.gz", hash = "sha256:a4f57ab599e6a2e3016d7595cfd72eb4661a5106e787a95bcc90c7105b831efc", size = 56405, upload-time = "2026-03-20T06:42:56.999Z" }
 wheels = [
@@ -1952,6 +1970,32 @@ wheels = [
 ]
 
 [[package]]
+name = "pygmo"
+version = "2.19.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cloudpickle" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "scipy", version = "1.18.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6d/3e/d3cb51d657c66ad5915590c31674add669e19d4121f4fafebb259c89ede6/pygmo-2.19.8-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:562c476696ed4ef5471a03aa3484fcb998c5c59800603428a01d580e7d98a5f3", size = 15123008, upload-time = "2026-04-17T09:47:40.747Z" },
+    { url = "https://files.pythonhosted.org/packages/80/50/a4c277969a67c050bbc0beb9dac44a759a463586fcfe21f5a1c920151a3d/pygmo-2.19.8-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:88c3461ad87394bf3de04dc2fbbbe06a4239fd689cf078f684033c46b753ee02", size = 16582589, upload-time = "2026-04-17T09:47:43.306Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/38/271bafa70b6a8318e71298d95f7ab4f02158ab33839c39445d1192fa210b/pygmo-2.19.8-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:177da13ebd1bb8ff3a190fc0f64af3d4be736a2e40ba2dd2747ec60ed27f1847", size = 14941847, upload-time = "2026-04-12T16:23:33.078Z" },
+    { url = "https://files.pythonhosted.org/packages/29/ec/c79cf020d318e64bc5c55822ef68974bc5d0f5ef34ca18af6f8050c31993/pygmo-2.19.8-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:f0c05db4e3a4ba3c6b1476d13440a1aa885b6d7ce66e4d201f106ca56a52900f", size = 16373761, upload-time = "2026-04-12T16:23:36.137Z" },
+    { url = "https://files.pythonhosted.org/packages/dd/92/7417b31b5c376ce729f5e52145845cbd4f94228952df5ac471ae3818cf5d/pygmo-2.19.8-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:74d0de76d42b81b426f3ba657f96570f55a5d36d91ad05bf1785203ac7e47b14", size = 15123960, upload-time = "2026-04-17T09:47:45.937Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/44/4a10944fb74fe6f91811b69efc5cc44de161b7d55738785107b5450028ce/pygmo-2.19.8-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:31a2f7dc076d4206a622cd0eb1012bcb2bb2793f95c840d7112a39169ae78185", size = 16590386, upload-time = "2026-04-17T09:47:48.093Z" },
+    { url = "https://files.pythonhosted.org/packages/6d/19/e8960a5fa80722124df718de885bf0c6afee2baca989b30bcd5d0a2ef8dd/pygmo-2.19.8-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:ef5fd7d80eebc5d35a94405a34bceb3be171357baf90751d3f2bd565eda69058", size = 14948375, upload-time = "2026-04-12T16:23:39.995Z" },
+    { url = "https://files.pythonhosted.org/packages/14/95/c67133542d309bf68554d77f40ab6e5f05d890ac18ad92127a58d5cc7514/pygmo-2.19.8-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:3282e9ca010e18464f199bd8d4b2460d4cb75685d461afbac9b9eba4a2fa278e", size = 16382603, upload-time = "2026-04-12T16:23:42.89Z" },
+    { url = "https://files.pythonhosted.org/packages/cd/31/7495bf644981ecdf952e575634fe7d658fb4680f232f94ed7cc083412703/pygmo-2.19.8-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:ac5b25b6ef8aa338be977b13aa952976907e595df1980a5577e6a7f532c3c35a", size = 15124054, upload-time = "2026-04-17T09:47:51.846Z" },
+    { url = "https://files.pythonhosted.org/packages/e2/a4/30679e41e485e4cdda25c69e7e679ff5daae4c06c7faafc8b65d8cc375b7/pygmo-2.19.8-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:60396b133aba9321ee705e295da195230789e321ba2c8400009da836b728d6c4", size = 16588153, upload-time = "2026-04-17T09:47:54.457Z" },
+    { url = "https://files.pythonhosted.org/packages/21/bd/92bff9b0958a2ec7bda6d03bdb6f6a7858d864be4f5b85c212296623667f/pygmo-2.19.8-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:ff1a0a711a91edc91ffdbc2aaf62e8292be60b744d3333ebc31490888be60e36", size = 14949947, upload-time = "2026-04-12T16:23:46.78Z" },
+    { url = "https://files.pythonhosted.org/packages/62/66/2d79b3ebc8b47350504fe6b3eb45a55d7e6d077a84163a171474bd65d1ae/pygmo-2.19.8-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:a57c79b56fea25cc59dfc1ce8795a111a59124ba1245d05be5225b35e3fb346c", size = 16384085, upload-time = "2026-04-12T16:23:49.89Z" },
+]
+
+[[package]]
 name = "pyjwt"
 version = "2.13.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2330,7 +2374,7 @@ resolution-markers = [
     "python_full_version < '3.12'",
 ]
 dependencies = [
-    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7a/97/5a3609c4f8d58b039179648e62dd220f89864f56f7357f5d4f45c29eb2cc/scipy-1.17.1.tar.gz", hash = "sha256:95d8e012d8cb8816c226aef832200b1d45109ed4464303e997c5b13122b297c0", size = 30573822, upload-time = "2026-02-23T00:26:24.851Z" }
 wheels = [
@@ -2384,7 +2428,7 @@ resolution-markers = [
     "python_full_version >= '3.12'",
 ]
 dependencies = [
-    { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a7/25/c2700dfaf6442b4effaa91af24ebce5dc9d31bb4a69706313aae70d72cd0/scipy-1.18.0.tar.gz", hash = "sha256:67b2ad2ad54c72ca6d04975a9b2df8c3638c34ddd5b28738e94fc2b57929d378", size = 30774447, upload-time = "2026-06-19T15:01:43.456Z" }
 wheels = [
