@@ -1,0 +1,34 @@
+========================================
+[submit] host=uc2n857.localdomain job=6845492
+[submit] config=cluster/configs/tistos-combined.toml
+[submit] repo=/home/st/st_us-042020/st_ac136362/eigenfrequencies
+[submit] venv=/home/st/st_us-042020/st_ac136362/venvs/hydroflow
+========================================
+[submit] config:     cpus=64 concurrent=16 ranks=4 threads=1 islands=4 mode=optimize
+[submit] allocation: cpus=128 mem=251G
+[submit] results  -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-combined
+[submit] scratch  -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/runs/tistos-combined-scratch (stable, so resume can reuse results)
+[submit] dolfinx already unpacked in /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/enroot-data — skipping
+[submit] dtOO already unpacked in /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/enroot-data — skipping
+[submit] containers -> /pfs/work9/workspace/scratch/st_ac136362-eigenfreq/enroot-data (9.6G)
+[submit] configs must name the container, not a path: dtOO / dolfinx
+[submit] modal gmsh -> /home/st/st_us-042020/st_ac136362/pylibs 
+[submit] ---- check ----
+configuration ok: case=tistos
+[submit] ---- optimize ----
+[2026-09-17T07:17:47.468] error: *** JOB 6845492 ON uc2n857 CANCELLED AT 2026-09-17T07:17:47 DUE TO TIME LIMIT ***
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n857
+Job ID: 6845492
+Cluster: uc3
+User/Group: st_ac136362/st_us-042020
+State: TIMEOUT (exit code 0)
+Nodes: 1
+Cores per node: 128
+CPU Utilized: 00:00:35
+CPU Efficiency: 0.00% of 128-00:10:40 core-walltime
+Job Wall-clock time: 1-00:00:05
+Memory Utilized: 13.30 GB
+Memory Efficiency: 5.32% of 250.00 GB (1.95 GB/core)
