@@ -18,15 +18,14 @@ from typing import Optional, Tuple
 class MaterialConfig:
     """Runner material properties.
 
-    Defaults are structural steel. Unlike the beam demo (which used nu=0 to
-    match 1-D Euler-Bernoulli theory), a 3-D runner has no analytic reference,
-    so the physically correct Poisson ratio nu=0.30 is used.
+    Defaults are structural steel.
 
     Attributes:
         youngs_modulus: Young's modulus in Pa
         density: Material density in kg/m^3
         poisson_ratio: Poisson ratio (dimensionless)
     """
+
     youngs_modulus: float = 210e9
     density: float = 7850.0
     poisson_ratio: float = 0.30
@@ -34,25 +33,35 @@ class MaterialConfig:
 
 @dataclass
 class BCConfig:
-    """Coordinate-region clamp at the runner hub.
+    """
+    Which mesh nodes are fixed (u = 0) before the modal analysis.
 
-    The runner is fixed where it connects to the shaft. Because the dtOO mesh
-    lives in non-physical/scaled coordinates with an unknown axis, every value
-    here must be set from the axis-discovery diagnostic (see README) rather than
-    assumed. This is the runner analogue of ``demo/beam/solver.py`` apply_bc().
+    The clamp is a spatial region, not tied to any part label:
+
+    - radius_band: all nodes with radial distance <= hub_radius from
+      the rotation axis are fixed.
+      axial_min / axial_max (both inclusive, None = unlimited)
+      additionally restrict the clamp with AND.
+    - axial_plane: all nodes with |axial coordinate - plane_value| <=
+      plane_tol.
+    - free: nothing fixed; the 6 rigid-body modes are expected and
+      discarded.
+
+    The axis and hub region are not known from the mesh itself -- take them
+    from the axis-discovery diagnostic (``eigenfrequencies.io.axis``).
 
     Attributes:
         axis: Rotation axis, one of "x" / "y" / "z"
-        hub_center: Center (c1, c2) in the plane perpendicular to the axis
-        hub_radius: Clamp nodes whose radial distance from the axis <= this
-        axial_min: Optional lower bound of the axial clamp band
-        axial_max: Optional upper bound of the axial clamp band
-        mode: "radius_band" (radius + optional axial band), "axial_plane",
-            or "free" (no clamp at all; free-free vibration for experimental
-            validation -- the 6 rigid-body modes are expected and discarded)
+        hub_center: Axis offset (c1, c2) in the plane perpendicular to the axis
+        hub_radius: Fix nodes with radial distance from the axis <= this
+            (mode="radius_band")
+        axial_min: Optional inclusive lower axial bound (mode="radius_band")
+        axial_max: Optional inclusive upper axial bound (mode="radius_band")
+        mode: "radius_band" | "axial_plane" | "free"
         plane_value: Axial coordinate of the clamp plane (mode="axial_plane")
         plane_tol: Tolerance for the axial-plane match
     """
+
     # NOTE: smoke-test defaults for the T2_7461 mech mesh (bbox z in [0, 2.5]).
     # Clamps the flat z=0 end plane. Physical hub/shaft identification is still
     # TODO -- re-run `python3 mesh_prep.py` and adjust if z=0 is not the hub.
@@ -70,18 +79,29 @@ class BCConfig:
 class MeshConfig:
     """Mesh input and volume-meshing fallback options.
 
+    Either ``msh_path`` or ``step_path`` must be set. When only ``step_path``
+    is given, the 3-D volume mesh is generated from the CAD file (gmsh OCC,
+    ``fallback_element_size``) at load time.
+
     Attributes:
-        msh_path: Path to the dtOO-exported .msh (shared data/ directory)
-        step_path: Optional STEP/BREP file for the volume-meshing fallback
+        msh_path: Path to the .msh (shared data/ directory); optional when
+            ``step_path`` is provided
+        step_path: Optional STEP/BREP file -- sole mesh source when ``msh_path``
+            is unset, fallback for broken/surface-only meshes otherwise
         force_volume_remesh: Re-mesh to a 3-D volume even if a volume is present
         fallback_element_size: Target element size used by the fallback mesher
         gdim: Geometric dimension passed to the gmsh reader
     """
-    msh_path: str = "data/runner.msh"
+
+    msh_path: Optional[str] = None
     step_path: Optional[str] = None
     force_volume_remesh: bool = False
     fallback_element_size: float = 0.05
     gdim: int = 3
+
+    def __post_init__(self):
+        if self.msh_path is None and self.step_path is None:
+            raise ValueError("MeshConfig requires msh_path or step_path")
 
 
 @dataclass
@@ -96,20 +116,18 @@ class SolverConfig:
         tolerance: Eigensolver tolerance
         freq_min: Lower frequency of interest in Hz (reporting only)
         freq_max: Upper frequency of interest in Hz (reporting only)
-        element_degree: Displacement element degree. **Defaults to 2.** P1 (=1)
-            is cheaper but overestimates bending-dominated eigenfrequencies
-            ~15-20% on thin structures (measured against experiment on the
-            test-case disc), and nothing downstream can tell an intentional P1
-            from a forgotten one — the value only ever surfaces in the result
-            metadata. A wrong answer that looks right is worse than a slow one,
-            so P1 has to be asked for.
-        solver_backend: "scipy" (eigsh on CSR slices) or "slepc" (PETSc/SLEPc
+        element_degree: Displacement element degree. **Defaults to 2.**
+            P1 (=1) is cheaper but overestimates bending-dominated
+            eigenfrequencies ~15-20% on thin structures (measured against
+            experiment on the test-case (laval disc)).
+            solver_backend: "scipy" (eigsh on CSR slices) or "slepc" (PETSc/SLEPc
             shift-invert + MUMPS factorization, scales past ~1M DOFs). Both
             support every BC mode and agree to machine precision on the same
             problem, so this is a choice of numerics, not of physics: pick
             slepc when the factorization is the memory wall. See
             tests/solver/test_backend_equivalence.py.
     """
+
     num_eigenvalues: int = 10
     tolerance: float = 1e-6
     freq_min: float = 0.0
@@ -174,6 +192,7 @@ class DesignConfig:
     Attributes:
         params: {label: (min, max, initial)}
     """
+
     params: dict = None
 
     def __post_init__(self):
@@ -215,6 +234,7 @@ class OptimizationConfig:
         max_iter: Maximum optimizer iterations
         method: scipy.optimize.minimize method (gradient-free recommended)
     """
+
     n_rpm: float
     Z_guidevanes: int = 18
     max_harmonic: int = 6
@@ -243,6 +263,7 @@ class DEConfig:
         tol: Relative convergence tolerance (stops if std(objectives) < tol)
         seed: Random seed for reproducibility (None = non-reproducible)
     """
+
     pop_size: int = 20
     mutation: float = 0.8
     crossover: float = 0.9
@@ -281,6 +302,7 @@ class CFDConfig:
         post_folder: Post-processing folder name (turbulent restart writes into
             the folder named by its start time, so results live in "100")
     """
+
     n_rpm: float
     omega: Optional[float] = None
     rho: float = 1000.0
@@ -321,6 +343,7 @@ class ObjectiveConfig:
         mode: "penalty" (soft, additive) or "hard" (large multiplier on violation)
         hard_penalty: multiplier used when mode == "hard"
     """
+
     eval_mode: str = "combined"
     w_eta: float = 1.0
     w_cav: float = 1.0
@@ -333,9 +356,7 @@ class ObjectiveConfig:
         self.eval_mode = os.environ.get("EVAL_MODE", self.eval_mode)
         valid = ("combined", "cfd_only", "resonance_only")
         if self.eval_mode not in valid:
-            raise ValueError(
-                f"EVAL_MODE must be one of {valid}, got {self.eval_mode!r}"
-            )
+            raise ValueError(f"EVAL_MODE must be one of {valid}, got {self.eval_mode!r}")
 
 
 @dataclass
@@ -354,6 +375,7 @@ class WetModeConfig:
         rho_fluid: Fluid density in kg/m^3 (still water)
         method: "rayleigh" (per-mode level-1) or "matrix" (coupled added-mass)
     """
+
     enabled: bool = False
     compare_dry_wet: bool = True
     rho_fluid: float = 1000.0
@@ -369,6 +391,7 @@ class OutputConfig:
         save_xdmf: Write mesh + mode shapes to XDMF
         results_json: Filename (within output_dir) for the frequency table
     """
+
     output_dir: str = "output"
     save_xdmf: bool = True
     results_json: str = "frequencies.json"
@@ -381,6 +404,7 @@ class RunConfig:
     Holds one instance of every sub-config.  ``optimization`` and ``cfd``
     are required because they contain ``n_rpm`` (no default).
     """
+
     optimization: OptimizationConfig
     cfd: CFDConfig
     material: MaterialConfig = field(default_factory=MaterialConfig)

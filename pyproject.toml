@@ -88,6 +88,20 @@ ignore = [
     "F841",   # local variable unused — common in tests
 ]
 
+[tool.pyright]
+# eigenfrequencies ist editable-installed via .venv -> ohne venvPath unresolvt
+venvPath = "."
+venv = ".venv"
+include = ["src", "tests", "showcase.py"]
+exclude = [
+    "turbine_runner/",
+    "demo/",
+    "docs/",
+    "dtOO/",
+    "examples/",
+    ".venv/",
+]
+
 [tool.pytest.ini_options]
 addopts = "-n auto"
 markers = [

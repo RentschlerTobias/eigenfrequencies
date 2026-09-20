@@ -94,12 +94,34 @@ def _volume_mesh_from_surface(surf_msh: str, element_size: float, out_msh: str) 
     return out_msh
 
 
+def resolve_msh_path(mesh_cfg: MeshConfig) -> str:
+    """Return the path of an existing .msh, generating from STEP if needed.
+
+    When ``msh_path`` is unset, the volume mesh is meshed from ``step_path``
+    (gmsh OCC) and written next to the CAD file with a ``_volume`` suffix.
+    """
+    if mesh_cfg.msh_path:
+        return mesh_cfg.msh_path
+    assert mesh_cfg.step_path is not None  # guaranteed by MeshConfig.__post_init__
+    out_msh = mesh_cfg.step_path.replace(".step", "_volume").replace(
+        ".STEP", "_volume"
+    )
+    if not out_msh.endswith(".msh"):
+        out_msh += ".msh"
+    if os.path.isfile(out_msh):
+        return out_msh
+    print(f"[mesh_prep] meshing volume from CAD {mesh_cfg.step_path}")
+    _volume_mesh_from_cad(mesh_cfg.step_path, mesh_cfg.fallback_element_size, out_msh)
+    return out_msh
+
+
 def load_and_prepare_mesh(mesh_cfg: MeshConfig):
     """Return a 3-D dolfinx volume mesh, running the fallback only if needed."""
-    domain = _read_msh(mesh_cfg.msh_path, mesh_cfg.gdim)
+    msh_path = resolve_msh_path(mesh_cfg)
+    domain = _read_msh(msh_path, mesh_cfg.gdim)
     tdim = domain.topology.dim
     print(
-        f"[mesh_prep] read {mesh_cfg.msh_path}: topology.dim={tdim}, "
+        f"[mesh_prep] read {msh_path}: topology.dim={tdim}, "
         f"cells={domain.topology.index_map(tdim).size_local}"
     )
 
@@ -109,7 +131,7 @@ def load_and_prepare_mesh(mesh_cfg: MeshConfig):
     # Volume missing (surface-only mesh) or remesh forced.
     reason = "force_volume_remesh" if tdim == 3 else f"tdim={tdim} (no volume cells)"
     print(f"[mesh_prep] volume-meshing fallback triggered ({reason})")
-    out_msh = mesh_cfg.msh_path.replace(".msh", "_volume.msh")
+    out_msh = msh_path.replace(".msh", "_volume.msh")
 
     if mesh_cfg.step_path:
         print(f"[mesh_prep] meshing volume from CAD {mesh_cfg.step_path}")
@@ -117,9 +139,9 @@ def load_and_prepare_mesh(mesh_cfg: MeshConfig):
             mesh_cfg.step_path, mesh_cfg.fallback_element_size, out_msh
         )
     else:
-        print(f"[mesh_prep] meshing volume from surface {mesh_cfg.msh_path}")
+        print(f"[mesh_prep] meshing volume from surface {msh_path}")
         _volume_mesh_from_surface(
-            mesh_cfg.msh_path, mesh_cfg.fallback_element_size, out_msh
+            msh_path, mesh_cfg.fallback_element_size, out_msh
         )
 
     domain = _read_msh(out_msh, mesh_cfg.gdim)
