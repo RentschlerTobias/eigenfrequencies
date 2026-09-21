@@ -1,8 +1,0 @@
-# Generated results (mesh, mode shapes) — large binaries, not source
-output/
-data/*.msh
-data/*.step
-data/*.brep
-build.log
-__pycache__/
-data/design.json
