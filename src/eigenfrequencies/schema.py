@@ -2,57 +2,23 @@
 
 Derives schema programmatically from the dataclass tree using only stdlib
 ``dataclasses``, ``json``, and ``typing``.  Defaults that are not simple
-literals (e.g. env-dependent expressions) are omitted so the schema stays
-deterministic.
+literals are omitted so the schema stays deterministic.
 """
 
 import argparse
 import dataclasses
 import json
 import os
-import sys
 import typing
-from typing import Any, Dict, Optional, Tuple, get_args, get_origin
-
-# We must import the config module *after* sanitising the environment so that
-# class-level defaults that read os.environ resolve to their static fallbacks.
-_CLEAN_ENV_KEYS = (
-    "W_RESONANCE",
-    "EVAL_MODE",
-    "DESIGN_PRESET",
-    "DE_POP_SIZE",
-    "DE_MAX_GEN",
-    "DE_SEED",
-    "DE_MUTATION",
-    "DE_CROSSOVER",
-    "DE_TOL",
-)
-
-# Save and clear env vars before importing config module
-_env_backup = {k: os.environ.pop(k) for k in _CLEAN_ENV_KEYS if k in os.environ}
-try:
-    # Force re-evaluation of config module if already cached
-    if "eigenfrequencies.config" in sys.modules:
-        import importlib
-
-        importlib.reload(sys.modules["eigenfrequencies.config"])
-    else:
-        import eigenfrequencies.config  # noqa: F401
-finally:
-    for k, v in _env_backup.items():
-        os.environ[k] = v
+from typing import Any, Dict, Tuple, get_args, get_origin
 
 from eigenfrequencies.config import (
     BCConfig,
-    CFDConfig,
-    DEConfig,
-    DesignConfig,
     MaterialConfig,
     MeshConfig,
-    ObjectiveConfig,
-    OptimizationConfig,
+    ModalAnalysisConfig,
     OutputConfig,
-    RunConfig,
+    ResonanceConfig,
     SolverConfig,
     WetModeConfig,
 )
@@ -62,25 +28,17 @@ _SUB_CONFIG_CLASSES = [
     ("BCConfig", BCConfig),
     ("MeshConfig", MeshConfig),
     ("SolverConfig", SolverConfig),
-    ("DesignConfig", DesignConfig),
-    ("OptimizationConfig", OptimizationConfig),
-    ("DEConfig", DEConfig),
-    ("CFDConfig", CFDConfig),
-    ("ObjectiveConfig", ObjectiveConfig),
+    ("ResonanceConfig", ResonanceConfig),
     ("WetModeConfig", WetModeConfig),
     ("OutputConfig", OutputConfig),
 ]
 
-_RUNCONFIG_FIELD_MAP = {
+_CONFIG_FIELD_MAP = {
     "material": ("MaterialConfig", MaterialConfig),
     "bc": ("BCConfig", BCConfig),
     "mesh": ("MeshConfig", MeshConfig),
     "solver": ("SolverConfig", SolverConfig),
-    "design": ("DesignConfig", DesignConfig),
-    "optimization": ("OptimizationConfig", OptimizationConfig),
-    "de": ("DEConfig", DEConfig),
-    "cfd": ("CFDConfig", CFDConfig),
-    "objective": ("ObjectiveConfig", ObjectiveConfig),
+    "resonance": ("ResonanceConfig", ResonanceConfig),
     "wet_mode": ("WetModeConfig", WetModeConfig),
     "output": ("OutputConfig", OutputConfig),
 }
@@ -142,7 +100,7 @@ def _type_to_schema(t: Any) -> Dict[str, Any]:
     return {"type": "string"}
 
 
-def _field_to_schema(field: dataclasses.Field, cls_name: str) -> Dict[str, Any]:
+def _field_to_schema(field: dataclasses.Field) -> Dict[str, Any]:
     """Convert a single dataclass field to a JSON Schema property."""
     schema = _type_to_schema(field.type)
 
@@ -156,16 +114,12 @@ def _field_to_schema(field: dataclasses.Field, cls_name: str) -> Dict[str, Any]:
                         schema["type"] = [*schema["type"], "null"]
                 else:
                     schema["type"] = [schema["type"], "null"]
-        # else: omit default for complex / env-dependent expressions
-
-    # Mark computed fields as readOnly
-    if cls_name == "CFDConfig" and field.name == "omega":
-        schema["readOnly"] = True
+        # else: omit default for complex expressions
 
     return schema
 
 
-def _build_sub_schema(name: str, cls: type) -> Dict[str, Any]:
+def _build_sub_schema(cls: type) -> Dict[str, Any]:
     """Build JSON Schema for a single sub-config dataclass."""
     cls_schema: Dict[str, Any] = {
         "type": "object",
@@ -173,34 +127,32 @@ def _build_sub_schema(name: str, cls: type) -> Dict[str, Any]:
         "required": [],
     }
     for field in dataclasses.fields(cls):
-        cls_schema["properties"][field.name] = _field_to_schema(field, name)
+        cls_schema["properties"][field.name] = _field_to_schema(field)
         if field.default is dataclasses.MISSING:
             cls_schema["required"].append(field.name)
     return cls_schema
 
 
 def generate_schema() -> Dict[str, Any]:
-    """Generate a deterministic JSON Schema for the RunConfig dataclass tree."""
-    # Build sub-config schemas
+    """Generate a deterministic JSON Schema for the ModalAnalysisConfig tree."""
     sub_schemas: Dict[str, Any] = {}
     for name, cls in _SUB_CONFIG_CLASSES:
-        sub_schemas[name] = _build_sub_schema(name, cls)
+        sub_schemas[name] = _build_sub_schema(cls)
 
-    # Build RunConfig schema
-    run_properties: Dict[str, Any] = {}
-    run_required: list = []
-    for field_name, (sub_name, sub_cls) in _RUNCONFIG_FIELD_MAP.items():
-        run_properties[field_name] = sub_schemas[sub_name]
-        if field_name in ("optimization", "cfd"):
-            run_required.append(field_name)
+    config_properties: Dict[str, Any] = {}
+    config_required: list = []
+    for field_name, (sub_name, _sub_cls) in _CONFIG_FIELD_MAP.items():
+        config_properties[field_name] = sub_schemas[sub_name]
+        if field_name == "resonance":
+            config_required.append(field_name)
 
     schema: Dict[str, Any] = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "EigenfrequenciesConfig",
         "description": "Configuration schema for hydraulic turbine runner modal analysis",
         "type": "object",
-        "properties": run_properties,
-        "required": run_required,
+        "properties": config_properties,
+        "required": config_required,
     }
 
     return schema

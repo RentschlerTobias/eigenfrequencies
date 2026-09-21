@@ -1,56 +1,34 @@
-# naca — 2-D NACA00xx foil validation case with foil-root clamp.
+# naca — 2-D NACA00xx foil validation preset (foil-root clamp).
 #
-# Pre-check: dtOO/test/naca/machineSave.xml state ``init``, bounded volume
-# ``gridGmsh`` (2-D blade-in-channel mesh, extruded in spanwise direction).
-# No domain-adjust plugin is defined for this case — ``adjust_plugin`` is
-# set to the empty string and the export plugin is omitted.
-#
-# Design labels: 7 foil-blade profile parameters (no spanwise sections — this
-# is a 2-D validation geometry, not a 3-D turbine runner).
-# Mesh scale factor: 1.0 — dtOO mesh is assumed to be in metres (physical units).
-# BC template: foil_clamp — axial-plane clamp at the foil root surface (z=0),
-# simulating a disc validator with the blade root constrained.
-#
-# CFD-ONLY (verified 2026-08-28). The geometry export works — dtOO builds
-# gridGmsh in the container in seconds — but the result is the *fluid* channel
-# grid and it mixes hexahedra with prisms. dolfinx 0.11 refuses a function
-# space on a mixed-topology mesh ("Multiple index maps of this dimension"), so
-# run_modal_stage cannot use this machine. The case defines no second bounded
-# volume: gridGmsh and ru_gridGmsh are the only two, both CFD grids. A modal
-# naca run needs a tetrahedral mech volume added to the dtOO case first, the
-# way tistos has ruWithRounding_mechMesh (quadratic tets, reads fine).
-
+# NOTE: the naca dtOO case defines only fluid channel grids (hexahedra mixed
+# with prisms); dolfinx refuses a function space on that mixed-topology mesh.
+# A modal run therefore needs a tetrahedral mechanical volume added to the dtOO
+# case first.  This preset is kept for config-level validation only.
 name: naca
-case_dir: dtOO/test/naca
-state: init
-mech_volume: gridGmsh
-adjust_plugin: ""
-mesh_scale_factor: 1.0
-bc_template: foil_clamp
-axis: auto
 
-design:
-  # -----------------------------------------------------------------------
-  # Foil-blade profile parameters (2-D, no spanwise sections)
-  # -----------------------------------------------------------------------
-  cV_alpha_1_ex:
-    min: -5.0
-    max: 10.0
-  cV_alpha_2_ex:
-    min: -5.0
-    max: 5.0
-  cV_M_ex:
-    min: -0.05
-    max: 0.05
-  cV_offsetM_ex:
-    min: -0.6
-    max: 0.0
-  cV_offsetPhiR_ex:
-    min: -0.15
-    max: 0.15
-  cV_ratio:
-    min: 0.4
-    max: 0.6
-  cV_bladeLength:
-    min: 0.1
-    max: 2.0
+material:
+  youngs_modulus: 210.0e9
+  density: 7850.0
+  poisson_ratio: 0.30
+
+solver:
+  num_eigenvalues: 10
+  tolerance: 1.0e-6
+  freq_min: 0.0
+  freq_max: 2000.0
+  element_degree: 2
+  solver_backend: scipy
+
+# Axial-plane clamp at the foil root.
+bc_template:
+  type: foil_clamp
+
+axis: auto
+mesh_scale_factor: 1.0
+
+resonance:
+  Z_guidevanes: 18
+  max_harmonic: 6
+  margin_hz: 5.0
+  margin_fraction: 0.05
+  penalty_k: 1.0

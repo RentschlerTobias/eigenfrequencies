@@ -1,16 +1,13 @@
-"""Penalty subpackage — public API."""
+"""Penalty subpackage — public API.
 
-from eigenfrequencies.penalty.band import band_report, compute_penalty
-from eigenfrequencies.penalty.objective import (
-    cfd_scalar,
-    combined_objective,
-    resonance_term,
-)
+Only the resonance band penalty lives here; scaling/combination with other
+objectives is the caller's responsibility.
+"""
+
+from eigenfrequencies.penalty.band import band_report, compute_penalty, violating_modes
 
 __all__ = [
     "band_report",
     "compute_penalty",
-    "cfd_scalar",
-    "combined_objective",
-    "resonance_term",
+    "violating_modes",
 ]

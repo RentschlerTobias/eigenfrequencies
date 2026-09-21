@@ -98,7 +98,7 @@ def generate(config) -> dict:
     """Capture provenance metadata for a run.
 
     Args:
-        config: A ``RunConfig`` (or any dataclass with ``dataclasses.asdict``).
+        config: A ``ModalAnalysisConfig`` (or any dataclass with ``dataclasses.asdict``).
 
     Returns:
         A dict with keys:

@@ -1,12 +1,16 @@
 # Showcase how to use eigenfrequencies
 # Import docker (dolfinx) into iron repl :lua vim.g.iron_python_repl = "docker"
-#
+# Blockweise im Python-REPL ausfuehren (nvim + iron.nvim): jede "# %%" Zelle
+# einzeln senden und den Output der Zelle ansehen. Braucht eine FEniCSx-Umgebung.
 
 # =====  Mesh laden =================================================
 from eigenfrequencies.config import MeshConfig
 from eigenfrequencies.io import load_and_prepare_mesh
 
-cfg = MeshConfig(msh_path="turbine_runner/assets/runner_best.msh", gdim=3)
+# Hier deine strukturmechanik-.msh eintragen:
+MSH = "tests/fixtures/unit_box_coarse.msh"
+
+cfg = MeshConfig(msh_path=MSH, gdim=3)
 domain = load_and_prepare_mesh(cfg)
 
 # %%
@@ -40,7 +44,6 @@ solver_cfg = SolverConfig(
 
 from eigenfrequencies.solver import ModalSolver
 
-
 solver = ModalSolver(domain, mat, bc, solver_cfg)
 
 eigenvalues, eigenvectors = solver.solve()
@@ -51,9 +54,9 @@ for i, f in enumerate(freqs):
 
 
 # ===== Resonanz-Check =============================================
-from eigenfrequencies.config import OptimizationConfig
+from eigenfrequencies.config import ResonanceConfig
 
-opt = OptimizationConfig(
+res = ResonanceConfig(
     n_rpm=72.0,  # Drehzahl
     Z_guidevanes=18,  # Leitschaufeln
     max_harmonic=6,
@@ -63,8 +66,19 @@ opt = OptimizationConfig(
 )
 
 # %%
-from eigenfrequencies.penalty import band_report, compute_penalty
+from eigenfrequencies.penalty import band_report, compute_penalty, violating_modes
 
-penalty = compute_penalty(freqs, opt)
+penalty = compute_penalty(freqs, res)
 print(f"Penalty: {penalty:.4f}")
-print(band_report(freqs, opt))
+print("Verletzende Modi:", violating_modes(freqs, res))
+print(band_report(freqs, res))
+
+
+# =====  Alles in einem Aufruf (neue API) ===========================
+from eigenfrequencies.api import load_preset, solve_modal
+
+config = load_preset("tistos", {"n_rpm": 72.0})
+result = solve_modal(MSH, config)
+print("Frequenzen [Hz]:", result.frequencies_hz)
+print("Penalty        :", result.resonance_penalty)
+print(result.band_report)
