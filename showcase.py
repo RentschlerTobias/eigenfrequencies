@@ -1,7 +1,5 @@
 # Showcase how to use eigenfrequencies
 # Import docker (dolfinx) into iron repl :lua vim.g.iron_python_repl = "docker"
-# Blockweise im Python-REPL ausfuehren (nvim + iron.nvim): jede "# %%" Zelle
-# einzeln senden und den Output der Zelle ansehen. Braucht eine FEniCSx-Umgebung.
 
 # =====  Mesh laden =================================================
 from eigenfrequencies.config import MeshConfig
@@ -36,8 +34,8 @@ mat = MaterialConfig()  # Stahl: E=210 GPa, rho=7850, nu=0.30
 from eigenfrequencies.config import SolverConfig
 
 solver_cfg = SolverConfig(
-    num_eigenvalues=10,  # fuer Live-Demo ggf. 4
-    element_degree=2,
+    num_eigenvalues=10,
+    element_degree=1,
     solver_backend="scipy",
     tolerance=1e-6,
 )
