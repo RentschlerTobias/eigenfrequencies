@@ -46,7 +46,7 @@ def _frequencies(domain, bc_config, backend):
     return solver.compute_frequencies(eigenvalues)
 
 
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 class TestBackendEquivalence:
     def test_backends_agree_on_the_clamped_problem(self, domain):
         bc = BCConfig(mode="axial_plane", axis="z", plane_value=0.0)

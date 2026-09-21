@@ -54,95 +54,6 @@
       "required": [],
       "type": "object"
     },
-    "cfd": {
-      "properties": {
-        "design_head": {
-          "default": -2.4,
-          "type": "number"
-        },
-        "end_time": {
-          "default": 500,
-          "type": "integer"
-        },
-        "g": {
-          "default": 9.81,
-          "type": "number"
-        },
-        "n_rpm": {
-          "type": "number"
-        },
-        "omega": {
-          "default": null,
-          "readOnly": true,
-          "type": [
-            "number",
-            "null"
-          ]
-        },
-        "operating_point": {
-          "default": "n",
-          "type": "string"
-        },
-        "post_folder": {
-          "default": "100",
-          "type": "string"
-        },
-        "rho": {
-          "default": 1000.0,
-          "type": "number"
-        }
-      },
-      "required": [
-        "n_rpm"
-      ],
-      "type": "object"
-    },
-    "de": {
-      "properties": {
-        "crossover": {
-          "default": 0.9,
-          "type": "number"
-        },
-        "max_generations": {
-          "default": 30,
-          "type": "integer"
-        },
-        "mutation": {
-          "default": 0.8,
-          "type": "number"
-        },
-        "pop_size": {
-          "default": 20,
-          "type": "integer"
-        },
-        "seed": {
-          "default": null,
-          "type": [
-            "integer",
-            "null"
-          ]
-        },
-        "tol": {
-          "default": 0.01,
-          "type": "number"
-        }
-      },
-      "required": [],
-      "type": "object"
-    },
-    "design": {
-      "properties": {
-        "params": {
-          "default": null,
-          "type": [
-            "object",
-            "null"
-          ]
-        }
-      },
-      "required": [],
-      "type": "object"
-    },
     "material": {
       "properties": {
         "density": {
@@ -176,8 +87,15 @@
           "type": "integer"
         },
         "msh_path": {
-          "default": "data/runner.msh",
-          "type": "string"
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scale_factor": {
+          "default": 1.0,
+          "type": "number"
         },
         "step_path": {
           "default": null,
@@ -188,79 +106,6 @@
         }
       },
       "required": [],
-      "type": "object"
-    },
-    "objective": {
-      "properties": {
-        "eval_mode": {
-          "default": "combined",
-          "type": "string"
-        },
-        "hard_penalty": {
-          "default": 1000000.0,
-          "type": "number"
-        },
-        "mode": {
-          "default": "penalty",
-          "type": "string"
-        },
-        "w_cav": {
-          "default": 1.0,
-          "type": "number"
-        },
-        "w_eta": {
-          "default": 1.0,
-          "type": "number"
-        },
-        "w_head": {
-          "default": 1.0,
-          "type": "number"
-        },
-        "w_resonance": {
-          "default": 1.0,
-          "type": "number"
-        }
-      },
-      "required": [],
-      "type": "object"
-    },
-    "optimization": {
-      "properties": {
-        "Z_guidevanes": {
-          "default": 18,
-          "type": "integer"
-        },
-        "margin_fraction": {
-          "default": 0.05,
-          "type": "number"
-        },
-        "margin_hz": {
-          "default": 5.0,
-          "type": "number"
-        },
-        "max_harmonic": {
-          "default": 6,
-          "type": "integer"
-        },
-        "max_iter": {
-          "default": 40,
-          "type": "integer"
-        },
-        "method": {
-          "default": "Nelder-Mead",
-          "type": "string"
-        },
-        "n_rpm": {
-          "type": "number"
-        },
-        "penalty_k": {
-          "default": 1.0,
-          "type": "number"
-        }
-      },
-      "required": [
-        "n_rpm"
-      ],
       "type": "object"
     },
     "output": {
@@ -281,10 +126,41 @@
       "required": [],
       "type": "object"
     },
+    "resonance": {
+      "properties": {
+        "Z_guidevanes": {
+          "default": 18,
+          "type": "integer"
+        },
+        "margin_fraction": {
+          "default": 0.05,
+          "type": "number"
+        },
+        "margin_hz": {
+          "default": 5.0,
+          "type": "number"
+        },
+        "max_harmonic": {
+          "default": 6,
+          "type": "integer"
+        },
+        "n_rpm": {
+          "type": "number"
+        },
+        "penalty_k": {
+          "default": 1.0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "n_rpm"
+      ],
+      "type": "object"
+    },
     "solver": {
       "properties": {
         "element_degree": {
-          "default": 1,
+          "default": 2,
           "type": "integer"
         },
         "freq_max": {
@@ -335,8 +211,7 @@
     }
   },
   "required": [
-    "optimization",
-    "cfd"
+    "resonance"
   ],
   "title": "EigenfrequenciesConfig",
   "type": "object"

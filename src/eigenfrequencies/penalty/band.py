@@ -9,10 +9,10 @@ inside that interval; frequencies outside all intervals contribute nothing.
 
 import numpy as np
 
-from eigenfrequencies.config import OptimizationConfig
+from eigenfrequencies.config import ResonanceConfig
 
 
-def _forbidden_intervals(opt_cfg: OptimizationConfig):
+def _forbidden_intervals(opt_cfg: ResonanceConfig):
     """Return list of (lo, hi) tuples for each harmonic forbidden band."""
     f_bp = opt_cfg.Z_guidevanes * opt_cfg.n_rpm / 60.0
     intervals = []
@@ -25,7 +25,7 @@ def _forbidden_intervals(opt_cfg: OptimizationConfig):
     return intervals
 
 
-def compute_penalty(frequencies, opt_cfg: OptimizationConfig) -> float:
+def compute_penalty(frequencies, opt_cfg: ResonanceConfig) -> float:
     """Penalty = sum over modes inside any forbidden interval of k * depth.
 
     A frequency exactly at an interval edge contributes 0; one at the centre
@@ -44,7 +44,19 @@ def compute_penalty(frequencies, opt_cfg: OptimizationConfig) -> float:
     return float(total)
 
 
-def band_report(frequencies, opt_cfg: OptimizationConfig) -> str:
+def violating_modes(frequencies, opt_cfg: ResonanceConfig) -> list:
+    """1-based indices of modes that fall inside any forbidden interval."""
+    f = np.asarray(frequencies, dtype=float)
+    intervals = _forbidden_intervals(opt_cfg)
+    hits = set()
+    for lo, hi in intervals:
+        for i, v in enumerate(f):
+            if lo <= v <= hi:
+                hits.add(i + 1)
+    return sorted(hits)
+
+
+def band_report(frequencies, opt_cfg: ResonanceConfig) -> str:
     """Human-readable summary of which modes violate any forbidden interval."""
     f = np.asarray(frequencies, dtype=float)
     intervals = _forbidden_intervals(opt_cfg)

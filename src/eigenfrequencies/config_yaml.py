@@ -1,9 +1,9 @@
 """YAML config loader / dumper with strict validation.
 
-``load_config`` turns a YAML file into a ``RunConfig`` dataclass tree,
-rejecting unknown keys and missing required fields.
-``dump_config`` writes a ``RunConfig`` back to deterministic, human-readable
-YAML.
+``load_config`` turns a YAML file into a ``ModalAnalysisConfig`` dataclass
+tree, rejecting unknown keys and missing required fields.
+``dump_config`` writes a ``ModalAnalysisConfig`` back to deterministic,
+human-readable YAML.
 """
 
 import dataclasses
@@ -13,7 +13,7 @@ from typing import Any, Dict, Optional, Tuple, Type, get_type_hints
 
 import yaml
 
-from eigenfrequencies.config import RunConfig
+from eigenfrequencies.config import ModalAnalysisConfig
 
 
 class ConfigError(ValueError):
@@ -127,8 +127,8 @@ def _construct_dataclass(
         ) from exc
 
 
-def load_config(path: str | Path) -> RunConfig:
-    """Parse a YAML file and return a strictly-validated ``RunConfig``.
+def load_config(path: str | Path) -> ModalAnalysisConfig:
+    """Parse a YAML file and return a strictly-validated ``ModalAnalysisConfig``.
 
     Unknown keys raise ``ConfigError`` naming the dotted path.
     Missing required fields raise ``ConfigError`` listing the fields.
@@ -142,7 +142,7 @@ def load_config(path: str | Path) -> RunConfig:
             f"YAML root must be a mapping, got {type(raw).__name__}"
         )
 
-    return _construct_dataclass(raw, RunConfig, path="<root>")
+    return _construct_dataclass(raw, ModalAnalysisConfig, path="<root>")
 
 
 def _dataclass_to_dict(obj: Any) -> Any:
@@ -165,8 +165,8 @@ def _dataclass_to_dict(obj: Any) -> Any:
     return obj
 
 
-def dump_config(config: RunConfig, path: str | Path) -> None:
-    """Write a ``RunConfig`` to YAML in deterministic, human-readable form.
+def dump_config(config: ModalAnalysisConfig, path: str | Path) -> None:
+    """Write a ``ModalAnalysisConfig`` to YAML in deterministic, human-readable form.
 
     Output order follows the dataclass field definition order.
     """

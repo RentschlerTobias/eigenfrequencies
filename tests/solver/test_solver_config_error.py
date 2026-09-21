@@ -4,6 +4,9 @@ import numpy as np
 import pytest
 
 from eigenfrequencies.config import BCConfig, MaterialConfig, SolverConfig
+
+pytest.importorskip("dolfinx", reason="requires the FEniCSx environment")
+
 from eigenfrequencies.solver import ModalSolver, SolverConfigError
 
 
@@ -16,7 +19,7 @@ def _dummy_domain():
     return domain
 
 
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 def test_unknown_backend_raises():
     """An unsupported solver_backend string raises SolverConfigError."""
     domain = _dummy_domain()
@@ -30,7 +33,7 @@ def test_unknown_backend_raises():
     assert "solver_backend" in str(exc_info.value)
 
 
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 def test_slepc_accepts_a_clamped_bc():
     """SLEPc solves the clamped problem — it used to reject it outright.
 
@@ -58,7 +61,7 @@ def test_slepc_accepts_a_clamped_bc():
     assert np.all(np.isfinite(frequencies))
 
 
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 def test_invalid_bc_mode_raises():
     """An invalid BCConfig.mode raises SolverConfigError during solve."""
     domain = _dummy_domain()

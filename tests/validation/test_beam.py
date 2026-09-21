@@ -14,7 +14,7 @@ from eigenfrequencies.validation.beam.analytical import (
 TOLERANCE_PCT = 5.0
 
 
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 @pytest.mark.slow
 def test_beam_fem_vs_analytical():
     """Cantilever beam FEM frequencies match analytical within tolerance."""

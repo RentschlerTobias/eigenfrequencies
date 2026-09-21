@@ -15,7 +15,7 @@ _FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "..", "fixtures")
 _FIXTURE_MSH = os.path.join(_FIXTURE_DIR, "unit_box_coarse.msh")
 
 
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 @pytest.mark.slow
 def test_load_mesh_and_verify_volume():
     """Load a real 3-D mesh and verify it has positive volume.

@@ -5,7 +5,7 @@ returns structured data instead of only printing to stdout.
 """
 
 from eigenfrequencies.config import MeshConfig
-from eigenfrequencies.io.load import _read_msh
+from eigenfrequencies.io.load import _read_msh, resolve_msh_path
 
 
 def inspect_mesh(mesh_cfg: MeshConfig, verbose: bool = True) -> dict:
@@ -23,10 +23,11 @@ def inspect_mesh(mesh_cfg: MeshConfig, verbose: bool = True) -> dict:
         Dict with keys ``file``, ``topology_dim``, ``num_nodes``, and
         ``axes`` (a dict of ``{"x": {"min", "max", "span"}, ...}``).
     """
-    domain = _read_msh(mesh_cfg.msh_path, mesh_cfg.gdim)
+    domain_arg = resolve_msh_path(mesh_cfg)
+    domain = _read_msh(domain_arg, mesh_cfg.gdim)
     x = domain.geometry.x
     result = {
-        "file": mesh_cfg.msh_path,
+        "file": domain_arg,
         "topology_dim": domain.topology.dim,
         "num_nodes": int(x.shape[0]),
         "axes": {},
@@ -43,7 +44,7 @@ def inspect_mesh(mesh_cfg: MeshConfig, verbose: bool = True) -> dict:
         print("=" * 60)
         print("Mesh axis-discovery diagnostic")
         print("=" * 60)
-        print(f"file:          {mesh_cfg.msh_path}")
+        print(f"file:          {domain_arg}")
         print(f"topology.dim:  {domain.topology.dim}")
         print(f"num nodes:     {x.shape[0]}")
         for i, name in enumerate("xyz"):

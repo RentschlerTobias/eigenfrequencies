@@ -75,7 +75,7 @@ except ImportError:
 # Testcase coarse (free-free) via SLEPc
 # ---------------------------------------------------------------------------
 @pytest.mark.skipif(not slepc_available, reason="SLEPc not available")
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 @pytest.mark.slow
 def test_testcase_free_free_slepc():
     """Laval disc coarse mesh (free-free) via SLEPc matches frozen golden reference."""
