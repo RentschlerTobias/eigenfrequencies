@@ -50,7 +50,7 @@ Turbine design in industry is siloed: the fluid-mechanics group runs the CFD, ha
 ## Project context & goal
 
 - Stuttgart–Laval exchange within DFG Priority Programme  
-  - SPP 2335: Daring More Intelligence – Design Assistants in Mechanics and Dynamics
+  - SPP 2353: Daring More Intelligence – Design Assistants in Mechanics and Dynamics
   - Project: Shape Optimizations Using AI Agents to Accelerate Numerical Flow Field Simulation and to Control the Island Model for Massive Parallelization
 - Goal: **open-source structural modal-analysis framework**
   - independent usable
@@ -61,7 +61,7 @@ Turbine design in industry is siloed: the fluid-mechanics group runs the CFD, ha
 - Scope: CFD-only, modal-only, combined — validated on Laval Francis-runner reference data.
 
 ::: {.notes}
-This is the final report of my three-month Stuttgart–Laval exchange within DFG Priority Programme SPP 2335. The overarching programme theme: AI-driven shape optimisation and island-model parallelisation for hydraulic machines.
+This is the final report of my three-month Stuttgart–Laval exchange within DFG Priority Programme SPP 2353. The overarching programme theme: AI-driven shape optimisation and island-model parallelisation for hydraulic machines.
 
 My specific contribution: dtOO — our in-house shape optimiser for hydraulic turbines — previously only optimised hydraulic objectives: efficiency, cavitation volume, design head. I add a structural objective: eigenfrequencies of the runner. The goal is a standalone, pip-installable open-source package that is independently usable and cleanly coupled to dtOO for testing.
 :::
@@ -691,7 +691,7 @@ With thanks to
 
   - Université Laval
   - HEKI 
-  - DFG Priority Programme SPP 2335
+  - DFG Priority Programme SPP 2353
   - IHS, University of Stuttgart
   - BwUniCluster3.0
 :::
@@ -700,6 +700,6 @@ With thanks to
 ::: {.notes}
 The next steps are clear: Stage 2 is fluid–structure coupling. Still water lowers eigenfrequencies by 20–40%; a 15% placeholder shift is already stubbed in the code, with real Laplace coupling (added-mass matrix via Helmholtz acoustics) to follow. After that: diametral-mode matching — verifying that the correct mode shapes (nodal diameters n=1,2,3,...) are pushed out of the right bands.
 
-Long-term: unsteady CFD, full FSI, forced-response amplitude, and fatigue analysis. Thanks to DFG SPP 2335, IHS Stuttgart, Université Laval and HEKI — and especially to the Laval group for the validation data and an excellent exchange.
+Long-term: unsteady CFD, full FSI, forced-response amplitude, and fatigue analysis. Thanks to DFG SPP 2353, IHS Stuttgart, Université Laval and HEKI — and especially to the Laval group for the validation data and an excellent exchange.
 :::
 
