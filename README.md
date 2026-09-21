@@ -7,25 +7,6 @@ Given the structural-mechanics mesh (`.msh`, typically exported by
 **eigenfrequencies** and a **raw resonance penalty** that measures how close the modes sit to the
 blade-passing excitation bands.
 
-It is deliberately a **building block**, not an optimiser: it contains no CFD, no design-space
-handling, no optimisation loop and no cluster runtime. Those live in the external
-`hydroflow-opt` / `tistos-opt` framework, which calls this package to add a frequency term to an
-otherwise CFD-driven objective:
-
-```
-dtOO (geometry + structural-mechanics .msh)
-        │
-        ▼
-eigenfrequencies        ← modal analysis + raw penalty   (this repo)
-        │
-        ▼
-hydroflow-opt / tistos-opt   ← CFD + design space + optimisation loop
-```
-
-> **Status** — reduced to modal analysis and the resonance penalty. The differential-evolution
-> optimiser, CFD evaluation, dtOO mesh export, MCP server and container/cluster runtime were
-> removed during the standalone refactor (see [*Removed subsystems*](#removed-subsystems)).
-
 ---
 
 ## Install
@@ -332,23 +313,6 @@ The full suite runs with the `dev` extra; tests requiring `dolfinx` are marked `
 `showcase.py` is written as a **step-by-step walkthrough**: top-level statements in `# %%` cells that
 you can send one by one to a Python REPL (e.g. nvim + iron.nvim) and inspect the output of every
 step — mesh check, mesh loading, modal solve, mode list, penalty and, finally, the one-call API.
-
----
-
-## Removed subsystems
-
-The standalone refactor stripped everything optimisation- or deployment-specific:
-
-- `optimize/` — DE/PSO/CMA-ES/BO backends, evaluator pools, island model, RL export
-- `hydroflow/` — the previous hydroflow-opt plugin (dtOO export + modal + CFD in one worker)
-- `io/cfd_eval.py`, `penalty/objective.py` — CFD scalar and objective combination
-- `mcp/` — the MCP server (`eigenfrequencies-mcp`)
-- `adapters/dtoo/{adapter,export}.py` — dtOO mesh export (the mesh is now passed in)
-- `cli.py` — the old Typer CLI with `optimize` / `report` / `dtoo` / `cluster` commands
-- the dtOO submodule, `docker/`, `scripts/*container*.sh`, `turbine_runner/`, `examples/`
-
-The top-level `cluster/` directory holds **legacy** SLURM scripts from the removed optimiser run
-and is not maintained.
 
 ---
 
