@@ -39,7 +39,7 @@ def _make_surface_msh(path: str) -> None:
         gmsh.finalize()
 
 
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 @pytest.mark.slow
 def test_zero_volume_mesh_raises():
     """A surface-only mesh must raise MeshVerificationError."""

@@ -62,7 +62,7 @@ def _load_golden(path):
 # ---------------------------------------------------------------------------
 # Beam clamped test
 # ---------------------------------------------------------------------------
-@pytest.mark.requires_container
+@pytest.mark.requires_dolfinx
 @pytest.mark.slow
 def test_beam_clamped_scipy():
     """Cantilever beam via generic ModalSolver matches frozen golden reference."""

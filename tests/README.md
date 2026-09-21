@@ -29,7 +29,7 @@ If ``pytest-xdist`` is not installed, the ``-n auto`` flag from
 | Marker | Meaning |
 |--------|---------|
 | ``slow`` | Long-running tests (deselect with ``-m "not slow"``) |
-| ``requires_container`` | Needs a Docker container (e.g. FEniCSx image) |
+| ``requires_dolfinx`` | Needs a FEniCSx/dolfinx environment |
 | ``requires_dtoo`` | Needs the dtOO environment |
 | ``requires_slurm`` | Needs SLURM cluster access |
 | ``serial`` | Must not run in parallel with other tests (MPI/SLEPc or shared worker directories) |
